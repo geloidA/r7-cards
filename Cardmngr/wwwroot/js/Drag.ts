@@ -1,7 +1,7 @@
 /* draggable element */
-const item: HTMLElement | null = document.querySelector('.item');
+const items: NodeListOf<HTMLElement> = document.querySelectorAll('.item');
 
-item?.addEventListener('dragstart', dragStart);
+items.forEach(item => item.addEventListener('dragstart', dragStart));
 
 function dragStart(e: DragEvent) {
     e.dataTransfer?.setData('text/plain', (e.target as HTMLElement).id);
@@ -9,7 +9,6 @@ function dragStart(e: DragEvent) {
         (e.target as HTMLElement).classList.add('hide');
     }, 0);
 }
-
 
 /* drop targets */
 const boxes: NodeListOf<HTMLElement> = document.querySelectorAll('.box');
@@ -20,7 +19,6 @@ boxes.forEach(box => {
     box.addEventListener('dragleave', dragLeave);
     box.addEventListener('drop', drop);
 });
-
 
 function dragEnter(e: DragEvent) {
     e.preventDefault();
