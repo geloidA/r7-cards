@@ -1,0 +1,12 @@
+.viewport {
+    position: relative;
+    overflow: hidden;
+    margin: var(--padding-main);
+    min-height: 100px;
+    min-width: 150px;
+    background-color: var(--col-bg-2);
+  }
+  
+    .viewport.workarea {
+        flex: 1;
+    }
