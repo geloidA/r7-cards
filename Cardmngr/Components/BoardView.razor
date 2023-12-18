@@ -1,0 +1,100 @@
+﻿@using Vector2 = BlazorCards.Vector2;
+@using Utils
+@inject DragModule DragModule
+
+@implements IDisposable
+
+<div style="transform: @CssTransform; ">
+    <Card Class="@Board.CssName"
+        @onmousedown:stopPropagation
+        >
+        <div style="background-color: @Board.CssColor; border-radius: 4px;" class="flex-row vertical-align-middle" >
+            <div class="row">
+                <div class="col">
+                    <Icon class="grabbing" Name="IconName.ArrowsMove" style="margin-left: 2px;" @onmousedown="OnMouseDown" />
+                    <span class="ms-2">@Board.Title</span>
+                    <Icon class="highlight" Name="IconName.PencilFill" Size="IconSize.x6" style="margin-left: 2px;" />
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <span>
+                        @if (Board.IsCollapsed)
+                        {
+                            <Badge class="" Color="BadgeColor.Success">@Board.Count карточек</Badge>
+                            <Icon class="highlight" Name="IconName.ChevronUp" @onclick=ToggleCollapsed />
+                        }
+                        else
+                        {
+                            <Icon Name="IconName.Plus" Color="IconColor.Success" Size="IconSize.x4" class="highlight" />
+                            <Icon class="highlight" Name="IconName.ChevronDown" @onclick=ToggleCollapsed />
+                        }
+                    </span>
+                </div>
+            </div>                        
+        </div>
+        <div> @*column bars*@
+            @if (!Board.IsCollapsed)
+            {
+                <div class="d-flex flex-row" >
+                    <CascadingValue Value="Board" IsFixed="true">
+                        @foreach (var column in Board.Items)
+                        {
+                            <BoardColumnView BoardColumn="column" @key="column" />
+                        }
+                    </CascadingValue>
+                </div>
+            }
+        </div>
+    </Card>
+</div>
+
+@code {
+    [Parameter] public IBoardViewModel Board { get; set; } = null!;
+
+    string CssTransform => FormattableString.Invariant($"translate({(long)Board.Pos.X}px, {(long)Board.Pos.Y}px)");
+
+    private DotNetObjectReference<BoardView>? thisRef;
+    private Vector2 lastCursorPos;
+
+    protected override void OnInitialized()
+    {            
+        Board.PosChanged += Refresh;
+        Board.LayoutChanged += Refresh;
+        thisRef = DotNetObjectReference.Create(this);
+    }
+
+    [JSInvokable]
+    public void OnDrag(int clientX, int clientY)
+    {
+        DragCurrentBoard(clientX, clientY);
+    }
+
+    void ToggleCollapsed()
+    {
+        Board.IsCollapsed = !Board.IsCollapsed;
+        Board.OnLayoutChanged();
+    }
+
+    private void DragCurrentBoard(int posX, int posY)
+    {
+        var newCursorPos = new Vector2(posX, posY);
+        var dragOffset = (newCursorPos - lastCursorPos) / ZoomHandler.Zoom;
+        lastCursorPos = new Vector2(posX, posY);
+
+        Board.Pos += dragOffset;
+    }
+
+    async Task OnMouseDown(MouseEventArgs e)
+    {
+        lastCursorPos = e.GetClientPos();
+        await DragModule.StartDrag(thisRef!, nameof(OnDrag));
+    }
+
+    public void Dispose()
+    {
+        Board.PosChanged -= Refresh;
+        Board.LayoutChanged -= Refresh;
+        thisRef?.Dispose();
+    }
+
+    private void Refresh() => StateHasChanged();
+}

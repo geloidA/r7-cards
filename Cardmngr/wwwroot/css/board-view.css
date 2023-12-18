@@ -1,0 +1,58 @@
+.highlight:hover {
+    /* add your desired CSS styles here */
+    background-color: var(--highlight-col); /* Example: change background color */
+    border-radius: 2px; /* Rounds the corners of the element */
+    cursor: pointer;
+}
+
+.highlight:active:hover {
+    /* Reset the styles to their default values when the mouse is pressed */
+    background-color: initial;
+    border-radius: initial;
+}
+
+.grabbing:hover {
+    background-color: var(--highlight-col); /* Example: change background color */
+    border-radius: 2px; /* Rounds the corners of the element */
+    cursor: grab;
+}
+
+.grabbing:active {
+    cursor: grabbing;
+}
+
+.board {
+    display: flex;
+    position: absolute;
+    font-weight: 600;
+    min-width: 400px;
+    padding: 4px;
+    font-size: larger;
+    z-index: 1;
+}
+
+    .board .board-column {
+        font-size: medium;
+        min-width: 324px;
+        padding: 5px;
+        flex-direction: column;
+    }
+
+        .board .board-column .card-track {
+            justify-content: space-around;
+            padding: 30px;
+            border: 2px dashed #75868a;
+            list-style: none;
+        }
+
+            .board .board-column .card-track .my-card {
+                font-size: small;
+                margin-bottom: 10px;
+                padding: 10px 25px;
+                border: 1px solid #424d5c;
+                cursor: pointer;
+                background: #5c6b7f;
+                color: #ffffff;
+                border-radius: 5px;
+                width: 250px;
+            }

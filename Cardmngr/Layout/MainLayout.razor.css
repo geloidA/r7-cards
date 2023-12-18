@@ -41,6 +41,7 @@ a {
 #content {
   width: 100%;
   padding: 0;
+  z-index: 1;
   min-height: 100vh;
   -webkit-transition: all 0.3s;
   -o-transition: all 0.3s;
@@ -51,12 +52,14 @@ a {
 #sidebar {
     min-width: 270px;
     max-width: 270px;
+    height: 100%;
     background: #494ca2;
     color: #fff;
+    z-index: 3;
     -webkit-transition: all 0.3s;
     -o-transition: all 0.3s;
     transition: all 0.3s;
-    position: relative; }
+    position: absolute; }
     #sidebar .h6 {
       color: #fff; }
     #sidebar.active {

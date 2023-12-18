@@ -1,0 +1,11 @@
+.board .board-column .card-track.dragover {
+    border: 2px dashed var(--drop-highlight-col);
+}
+
+.board .board-column .card-track .my-card.dragover {
+    border-top: 3px solid var(--drop-highlight-col);
+}
+
+.board .board-column .card-track .my-card.dragged {
+    opacity: 0.5;
+}

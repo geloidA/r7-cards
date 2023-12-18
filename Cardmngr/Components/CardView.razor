@@ -1,0 +1,52 @@
+﻿<li class="@Card.CssName @CssDragOver @CssDragStart"
+    @ondragover="DragOver" @ondragover:stopPropagation @ondragover:preventDefault
+    @ondragenter:preventDefault draggable="true" @ondragleave="DragLeave"
+    @ondrop:stopPropagation @ondrop="Drop" @ondragstart="DragStart"
+    @ondragend="() => isDragged = false" @onclick="async () => await Offcanvas.ShowAsync()" >
+    @Card.Title
+    <br>
+</li>
+
+@code {
+    [CascadingParameter]
+    private CardBase? LastDraggingCard { get; set; }
+
+    [CascadingParameter]
+    private Offcanvas Offcanvas { get; set; } = null!;
+
+    [CascadingParameter]
+    private IBoardViewModel Board { get; set; } = null!;
+    
+    string CssDragOver => highlighted ? "dragover" : "";
+    string CssDragStart => isDragged ? "dragged" : "";
+    private bool highlighted;
+    private bool isDragged;
+    [Parameter] public CardBase Card { get; set; } = null!;
+
+    void Drop()
+    {
+        if (LastDraggingCard is { } && Card.Track is { })
+        {
+            Console.WriteLine("Dropped in " + LastDraggingCard.Title);
+            Card.Track.AddBefore(Card, LastDraggingCard);
+            Board.OnLayoutChanged();
+        }
+        highlighted = false;
+    }
+
+    void DragOver()
+    {
+        if (!highlighted) highlighted = true;
+    }
+
+    void DragLeave()
+    {
+        highlighted = false;
+    }
+
+    void DragStart()
+    {
+        isDragged = true;
+        Card.OnDragStarted();
+    }
+}

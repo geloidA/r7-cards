@@ -2,7 +2,7 @@
 @inherits LayoutComponentBase
 
 <div class="page">
-    <nav id="sidebar">
+    <aside id="sidebar" style="z-index: 3;">
         <div class="custom-menu">
             <button type="button" id="sidebarCollapse"
                 class="btn btn-primary">
@@ -14,7 +14,7 @@
                 <a href="/" class="logo">Bobby</a>
             </h1>
         </div>
-    </nav>
+    </aside>
     <div id="content" style="user-select: none;">
         @Body
     </div>

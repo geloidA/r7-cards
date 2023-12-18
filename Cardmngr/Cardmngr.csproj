@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="Components/ControlPanel/" />
-    <Folder Include="Services/" />
     <Folder Include="wwwroot/js/GeneratedJS/" />
   </ItemGroup>
 

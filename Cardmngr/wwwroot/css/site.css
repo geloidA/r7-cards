@@ -1,0 +1,10 @@
+:root {
+    --col-bg-2: #3d84ca;
+    --padding-main: 0;
+    --highlight-col: #e9cece;
+    --drop-highlight-col: #dfc036;
+}
+
+ul {
+    margin-bottom: 4px;
+}

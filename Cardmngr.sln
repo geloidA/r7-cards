@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorCards", "BlazorCards\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr", "Cardmngr\Cardmngr.csproj", "{2ABB4487-B4AD-442A-8376-F6252AE20155}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorCards.Tests", "BlazorCards.Tests\BlazorCards.Tests.csproj", "{C995AA8D-E9F5-4A64-B0CF-F2C16B13DC02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2ABB4487-B4AD-442A-8376-F6252AE20155}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ABB4487-B4AD-442A-8376-F6252AE20155}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ABB4487-B4AD-442A-8376-F6252AE20155}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C995AA8D-E9F5-4A64-B0CF-F2C16B13DC02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C995AA8D-E9F5-4A64-B0CF-F2C16B13DC02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C995AA8D-E9F5-4A64-B0CF-F2C16B13DC02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C995AA8D-E9F5-4A64-B0CF-F2C16B13DC02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

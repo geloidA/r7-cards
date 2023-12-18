@@ -1,0 +1,19 @@
+﻿
+<div class="@BoardColumn.CssName">
+    <div class="row">
+        <div class="col">
+            @BoardColumn.Title
+        </div>
+        <div class="col d-flex align-items-center justify-content-end">
+            <Badge Color="BadgeColor.Success">@BoardColumn.Count</Badge>
+        </div>
+    </div>
+    @foreach (var cardtrack in BoardColumn.Items)
+    {
+        <CardTrackView CardTrack="cardtrack" @key="cardtrack" />
+    }
+</div>
+
+@code {
+    [Parameter] public IBoardColumn BoardColumn { get; set; } = null!;
+}
