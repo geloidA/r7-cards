@@ -9,29 +9,33 @@
 
 @code {
     [CascadingParameter]
-    private CardBase? LastDraggingCard { get; set; }
+    private BlazorCards.Card? LastDraggingCard { get; set; }
 
     [CascadingParameter]
     private Offcanvas Offcanvas { get; set; } = null!;
 
     [CascadingParameter]
-    private IBoardViewModel Board { get; set; } = null!;
+    private Board Board { get; set; } = null!;
     
     string CssDragOver => highlighted ? "dragover" : "";
     string CssDragStart => isDragged ? "dragged" : "";
     private bool highlighted;
     private bool isDragged;
-    [Parameter] public CardBase Card { get; set; } = null!;
+    [Parameter] public BlazorCards.Card Card { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        Card.CssName = "my-card";
+    }
 
     void Drop()
     {
-        if (LastDraggingCard is { } && Card.Track is { })
-        {
-            Console.WriteLine("Dropped in " + LastDraggingCard.Title);
-            Card.Track.AddBefore(Card, LastDraggingCard);
-            Board.OnLayoutChanged();
-        }
         highlighted = false;
+        if (LastDraggingCard is { } && LastDraggingCard != Card)
+        {
+            LastDraggingCard.Column!.Remove(LastDraggingCard);
+            Card.Column!.AddBefore(Card, LastDraggingCard);
+        }
     }
 
     void DragOver()
@@ -47,6 +51,6 @@
     void DragStart()
     {
         isDragged = true;
-        Card.OnDragStarted();
+        Card.OnDragStart();
     }
 }

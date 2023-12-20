@@ -5,18 +5,7 @@
 
 @inject IJSRuntime JSRuntime
 
-<Offcanvas @ref="offcanvas" Placement="Placement.Bottom" />
-
-<Modal @ref="modal" Title="Создать колонку">
-    <BodyTemplate>
-        <label >Наименование</label>
-        <InputText  />
-    </BodyTemplate>
-    <FooterTemplate>
-        <Button Color="ButtonColor.Light" @onclick="async () => await modal.HideAsync()" />
-        <Button Color="ButtonColor.Success" @onclick="async () => await modal.HideAsync()" />
-    </FooterTemplate>
-</Modal>
+<Offcanvas @ref="offcanvas" Placement="Placement.End" />
 
 <div class="viewport workarea" @onmousedown="@StartPan"
     @onmousedown:preventDefault>
@@ -33,58 +22,43 @@
 </div>
 
 
-@code {    
-    CardBase? lastDraggingCard;
+@code {
+    BlazorCards.Card? lastDraggingCard;
     Offcanvas offcanvas = null!;
-    Modal modal = null!;
-    IEnumerable<IBoardViewModel> Boards { get; set; } = null!;
+    IEnumerable<Board> Boards { get; set; } = null!;
 
     protected override void OnInitialized()
     {
         Boards = new List<Board>{
-            new Board("Board 1", new List<BoardColumn> 
-                {
-                    new BoardColumn("Column 1", new List<CardTrack>
-                        {
-                            new CardTrack("CardTrack 1", new List<Cardmngr.Card> { new Cardmngr.Card { Title = "Card 1" } }), 
-                            new CardTrack("CardTrack 2", new List<Cardmngr.Card> { new Cardmngr.Card { Title = "Card 2" } }) 
-                        }),
-                    new BoardColumn("Column 2", new List<CardTrack>
-                        {
-                            new CardTrack("CardTrack 1", new List<Cardmngr.Card> { new Cardmngr.Card { Title = "Card 4" } }), 
-                            new CardTrack("CardTrack 2", new List<Cardmngr.Card> { new Cardmngr.Card { Title = "Card 5" } })
-                        })
-                }),
-            new Board("Board 2", new List<BoardColumn> 
-                {
-                    new BoardColumn("Column 1", new List<CardTrack>
-                        {
-                            new CardTrack("CardTrack 1", new List<Cardmngr.Card> { new Cardmngr.Card { Title = "Card 1" } }), 
-                            new CardTrack("CardTrack 2", new List<Cardmngr.Card> { new Cardmngr.Card { Title = "Card 2" } }) 
-                        }),
-                    new BoardColumn("Column 2", new List<CardTrack>
-                        {
-                            new CardTrack("CardTrack 1", new List<Cardmngr.Card> { new Cardmngr.Card { Title = "Card 4" } }), 
-                            new CardTrack("CardTrack 2", new List<Cardmngr.Card> { new Cardmngr.Card { Title = "Card 5" } })
-                        })
-                })
+            new Board("Ехал Грека через реку") 
+            { 
+                new BoardColumn("В очереди") { new BlazorCards.Card("Bobby") }, 
+                new BoardColumn("🤘 В работе"),
+                new BoardColumn("🧊 Готово")
+            },
+            new Board("Видит Грека в реке рак")
+            {
+                new BoardColumn("В очереди") { new BlazorCards.Card("Bobby 2") }, 
+                new BoardColumn("В работе"),
+                new BoardColumn("🧊 Готово")
+            }
         };
 
         
-        foreach (var card in Boards.SelectMany(x => x.TotalCards))
+        foreach (var card in Boards.AllCards())
             card.DragStart += UpdateDraggingCard;
     }
     
-    private void UpdateDraggingCard(CardBase card)
+    private void UpdateDraggingCard(BlazorCards.Card card)
     {
         lastDraggingCard = card;
-        StateHasChanged();
+        InvokeAsync(StateHasChanged);
         Console.WriteLine($"LastDraggingCard changed on {card.Title}");
     }
 
     public void Dispose()
     {
-        foreach (var card in Boards.SelectMany(x => x.TotalCards))
+        foreach (var card in Boards.AllCards())
             card.DragStart -= UpdateDraggingCard;
     }
 

@@ -1,5 +1,4 @@
 ﻿@using Vector2 = BlazorCards.Vector2;
-@using Utils
 @inject DragModule DragModule
 
 @implements IDisposable
@@ -19,7 +18,7 @@
                     <span>
                         @if (Board.IsCollapsed)
                         {
-                            <Badge class="" Color="BadgeColor.Success">@Board.Count карточек</Badge>
+                            <Badge class="" Color="BadgeColor.Success">@Board.Sum(x => x.Count) карточек</Badge>
                             <Icon class="highlight" Name="IconName.ChevronUp" @onclick=ToggleCollapsed />
                         }
                         else
@@ -36,7 +35,7 @@
             {
                 <div class="d-flex flex-row" >
                     <CascadingValue Value="Board" IsFixed="true">
-                        @foreach (var column in Board.Items)
+                        @foreach (var column in Board)
                         {
                             <BoardColumnView BoardColumn="column" @key="column" />
                         }
@@ -48,7 +47,7 @@
 </div>
 
 @code {
-    [Parameter] public IBoardViewModel Board { get; set; } = null!;
+    [Parameter] public Board Board { get; set; } = null!;
 
     string CssTransform => FormattableString.Invariant($"translate({(long)Board.Pos.X}px, {(long)Board.Pos.Y}px)");
 
@@ -56,7 +55,8 @@
     private Vector2 lastCursorPos;
 
     protected override void OnInitialized()
-    {            
+    {
+        Board.CssName = "board";
         Board.PosChanged += Refresh;
         Board.LayoutChanged += Refresh;
         thisRef = DotNetObjectReference.Create(this);

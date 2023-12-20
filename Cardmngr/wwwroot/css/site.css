@@ -1,10 +1,35 @@
 :root {
     --col-bg-2: #3d84ca;
     --padding-main: 0;
+    --main-board-bg: #45566b;
+    --main-col-bg: #556d6b;
     --highlight-col: #e9cece;
     --drop-highlight-col: #dfc036;
 }
 
 ul {
     margin-bottom: 4px;
+}
+
+.highlight:hover {
+    /* add your desired CSS styles here */
+    background-color: var(--highlight-col); /* Example: change background color */
+    border-radius: 2px; /* Rounds the corners of the element */
+    cursor: pointer;
+}
+
+.highlight:active:hover {
+    /* Reset the styles to their default values when the mouse is pressed */
+    background-color: initial;
+    border-radius: initial;
+}
+
+.grabbing:hover {
+    background-color: var(--highlight-col); /* Example: change background color */
+    border-radius: 2px; /* Rounds the corners of the element */
+    cursor: grab;
+}
+
+.grabbing:active {
+    cursor: grabbing;
 }

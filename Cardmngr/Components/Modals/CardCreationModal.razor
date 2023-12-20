@@ -1,0 +1,19 @@
+﻿
+<div class="d-flex flex-column">
+    <span class="font-monospace">Название</span>
+    <InputText style="font-size: larger;" @bind-Value="boardName" />    
+</div>
+<div class="mt-2 d-flex justify-content-end">
+    <Button Type="ButtonType.Submit" @onclick="SumbitCreate" Disabled="string.IsNullOrWhiteSpace(boardName)" 
+        Color="ButtonColor.Success" >Создать</Button>
+    <Button class="ms-2" Color="ButtonColor.Light" @onclick="Cancel" >Отмена</Button>
+</div>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    private string boardName = string.Empty;
+    
+    private async Task SumbitCreate() => await BlazoredModal.CloseAsync(ModalResult.Ok(boardName));
+    private async Task Cancel() => await BlazoredModal.CancelAsync();
+}

@@ -1,52 +1,58 @@
-﻿namespace BlazorCards.Core;
+﻿using BlazorCards.Utils;
 
-public interface IBoard : IWorkspaceElement, IContainer<IBoardColumn>
+namespace BlazorCards.Core;
+
+public class Board(string title) : ObservableLinkedCollection<BoardColumn>, IWorkspaceElement
 {
-    string? Title { get; set; }
-}
-
-public interface IBoardViewModel : IBoard
-{
-    bool IsCollapsed { get; set; }
-
-    IEnumerable<CardBase> TotalCards { get; }
-
-    event Action LayoutChanged;
-    void OnLayoutChanged();
-}
-
-public abstract class BoardViewModelBase : IBoardViewModel
-{
-    public bool IsCollapsed { get; set; }
-    public string? Title { get; set; }
+    public Board(IEnumerable<IBoardColumnDao> columns, string title) : this(title)
+    {
+        items = new(columns.Select(x => new BoardColumn(x.Title, this)));
+    }
 
     private Vector2 pos;
+    public string Title { get; set; } = title;
     public Vector2 Pos
-    { 
-        get => pos; 
+    {
+        get => pos;
         set
         {
             pos = value;
             PosChanged?.Invoke();
-        } 
+        }
     }
 
-    public abstract string CssName { get; }
+    public override void Add(BoardColumn item)
+    {
+        base.Add(item);
+        item.Board = this;
+    }
 
-    public abstract string CssColor { get; }
+    public override void AddAfter(BoardColumn target, BoardColumn item)
+    {
+        base.AddAfter(target, item);
+        item.Board = this;
+    }
 
-    public abstract IEnumerable<IBoardColumn> Items { get; }
+    public override void AddBefore(BoardColumn target, BoardColumn item)
+    {
+        base.AddBefore(target, item);
+        item.Board = this;
+    }
 
-    public abstract int Count { get; }
-
-    public abstract IEnumerable<CardBase> TotalCards { get; }
-
-    public event Action? LayoutChanged;
-    public event Action? PosChanged;
+    public override void Remove(BoardColumn item)
+    {
+        base.Remove(item);
+        item.Board = null;
+    }
 
     public void OnLayoutChanged() => LayoutChanged?.Invoke();
 
-    public abstract void Add(IBoardColumn item);
+    public bool IsCollapsed { get; set; }
 
-    public abstract void Remove(IBoardColumn item);
+    public string? CssName { get; set; }
+
+    public string? CssColor { get; set; }
+
+    public event Action? PosChanged;
+    public event Action? LayoutChanged;
 }

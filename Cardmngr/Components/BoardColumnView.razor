@@ -1,19 +1,79 @@
-﻿
-<div class="@BoardColumn.CssName">
-    <div class="row">
+﻿@using Modals
+
+@implements IDisposable
+
+<div class="@BoardColumn.CssName @CssDragOver" @ondrop="OnDrop"
+    @ondragover:preventDefault @ondragenter:preventDefault
+    @ondragover="@(() => { if (!highlighted) highlighted = true; })"
+    @ondragleave="() => highlighted = false" >
+    <div class="row mb-2 d-flex align-items-center">
         <div class="col">
-            @BoardColumn.Title
-        </div>
-        <div class="col d-flex align-items-center justify-content-end">
             <Badge Color="BadgeColor.Success">@BoardColumn.Count</Badge>
+            <span class="ms-1 font-monospace">@BoardColumn.Title</span>
+        </div>
+        <div class="col-2 hidden d-flex flex-row align-items-center" style="font-size: small !important;">
+            <Dropdown Size="Size.ExtraSmall" AutoClose="true" >
+                <DropdownToggleButton Color="ButtonColor.Light">
+                    <Icon Name="IconName.ThreeDots" />
+                </DropdownToggleButton>
+                <DropdownMenu>
+                    <DropdownItem @onclick="ShowCardModal" 
+                        >Добавить карточку</DropdownItem>
+                    <DropdownItem >Переименовать</DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
         </div>
     </div>
-    @foreach (var cardtrack in BoardColumn.Items)
-    {
-        <CardTrackView CardTrack="cardtrack" @key="cardtrack" />
-    }
+    <ul class="card-container">
+        @foreach (var card in BoardColumn)
+        {
+            <CardView Card="card" @key="card" />
+        }
+    </ul>
 </div>
 
 @code {
-    [Parameter] public IBoardColumn BoardColumn { get; set; } = null!;
+    string CssDragOver => highlighted ? "dragover" : "";
+    bool highlighted;
+
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
+    [CascadingParameter] BlazorCards.Card? LastDraggedCard { get; set; }
+    [Parameter] public BoardColumn BoardColumn { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        BoardColumn.CssName = "board-column";
+        BoardColumn.CollectionChanged += Refresh;
+    }
+
+    void OnDrop()
+    {
+        highlighted = false;
+        if (LastDraggedCard is { })
+        {
+            LastDraggedCard.Column!.Remove(LastDraggedCard);
+            BoardColumn.Add(LastDraggedCard);
+        }
+    }
+
+    private void Refresh() => StateHasChanged();
+
+    public void Dispose()
+    {
+        BoardColumn.CollectionChanged -= Refresh;
+    }
+
+    private async Task ShowCardModal()
+    {
+        var options = new ModalOptions { Position = ModalPosition.Middle };
+        var modal = Modal.Show<CardCreationModal>("Сформулируйте задачу 🐷", options);
+
+        var res = await modal.Result;
+
+        if (res.Confirmed)
+        {
+            var cardName = res.Data!.ToString()!;
+            BoardColumn.Add(new BlazorCards.Card(cardName));
+        }
+    }
 }

@@ -2,12 +2,15 @@
 
 public interface IUIElement
 {
-    string CssName { get; }
-    string CssColor { get; }
+    string? CssName { get; set; }
+    string? CssColor { get; set; }
 }
 
 public interface IWorkspaceElement : IUIElement
 {
     Vector2 Pos { get; set; }    
     event Action PosChanged;
+
+    event Action LayoutChanged;
+    void OnLayoutChanged();
 }

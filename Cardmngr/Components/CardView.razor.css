@@ -1,0 +1,19 @@
+.board .board-column .card-container .my-card {
+    font-size: small;
+    margin-bottom: 10px;
+    padding: 10px 25px;
+    border: 1px solid #424d5c;
+    cursor: pointer;
+    background: #5c6b7f;
+    color: #ffffff;
+    border-radius: 5px;
+    width: 250px;
+}
+
+.board .board-column .my-card.dragover {
+    border-top: 3px solid var(--drop-highlight-col);
+}
+
+.board .board-column .my-card.dragged {
+    opacity: 0.5;
+}

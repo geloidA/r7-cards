@@ -2,5 +2,10 @@
 
 public static class DeskColumnExtensions
 {
-    // public static int Count(this IEnumerable<IDeskColumnTrack> tracks) => tracks.Sum(t => t.Count);
+    public static IEnumerable<Card> AllCards(this IEnumerable<Board> boards)
+    {
+        return boards
+            .SelectMany(x => x)
+            .SelectMany(x => x);
+    }
 }
