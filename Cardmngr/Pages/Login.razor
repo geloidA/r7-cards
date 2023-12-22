@@ -1,0 +1,45 @@
+﻿@page "/login"
+
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
+    [CascadingParameter] private IModalService Modal { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthenticationState is { })
+        {
+            var state = await AuthenticationState;
+            if (state.User.Identity!.IsAuthenticated)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var res = await ShowAuthentication();
+
+                if (res.Confirmed)
+                {
+                    await LocalStorage.SetItemAsStringAsync("isauthenticated", "true");
+                    NavigationManager.NavigateTo("/", true);
+                }
+            }
+        }
+    }
+
+    private async Task<ModalResult> ShowAuthentication()
+    {
+        var options = new ModalOptions
+        {
+            DisableBackgroundCancel = true,
+            HideCloseButton = true,
+            Position = ModalPosition.Middle
+        };
+
+        var modal = Modal.Show<Components.Modals.AuthModal>("Авторизация 🪰", options);
+
+        return await modal.Result;
+    }
+}

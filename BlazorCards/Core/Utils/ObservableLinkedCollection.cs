@@ -22,19 +22,19 @@ public abstract class ObservableLinkedCollection<T> : IEnumerable<T>
     public virtual void Add(T item)
     {
         items.AddLast(item);
-        OnCollectionChanged();
+        OnAdd(item);
     }
 
     public virtual void AddAfter(T target, T item)
     {        
         items.AddAfter(CheckTarget(target), item);
-        OnCollectionChanged();
+        OnAdd(item);
     }
 
     public virtual void AddBefore(T target, T item)
     {        
         items.AddBefore(CheckTarget(target), item);
-        OnCollectionChanged();
+        OnAdd(item);
     }
 
     private LinkedListNode<T> CheckTarget(T item) => items.Find(item) ?? throw new InvalidOperationException("Item not found");
@@ -42,7 +42,7 @@ public abstract class ObservableLinkedCollection<T> : IEnumerable<T>
     public virtual void Remove(T item)
     {
         items.Remove(item);
-        OnCollectionChanged();
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
     }
 
     public event Action<NotifyCollectionChangedEventArgs>? CollectionChanged;
@@ -57,5 +57,10 @@ public abstract class ObservableLinkedCollection<T> : IEnumerable<T>
         return GetEnumerator();
     }
 
-    private void OnCollectionChanged() => CollectionChanged?.Invoke();
+    private void OnAdd(T item)
+    {
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+    } 
+
+    private void OnCollectionChanged(NotifyCollectionChangedEventArgs e) => CollectionChanged?.Invoke(e);
 }

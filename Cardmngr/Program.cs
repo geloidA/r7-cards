@@ -2,6 +2,11 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.Modal;
 using Cardmngr;
+using Cardmngr.Network.Handlers;
+using Cardmngr.Network.Providers;
+using Cardmngr.Network.Logics;
+using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.LocalStorage;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -11,7 +16,18 @@ builder.Services
     .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddScoped<DragModule>()
     .AddScoped<DragEventModule>()
+    .AddScoped<AuthenticationStateProvider, CookieStateProvider>()
+    .AddScoped<CookieHandler>()
+    .AddScoped<IAuthApiLogic, AuthApiLogic>()
+    .AddScoped<IProjectApi, ProjectApi>()
     .AddBlazoredModal()
-    .AddBlazorBootstrap();
+    .AddBlazoredLocalStorage()
+    .AddBlazorBootstrap()
+    .AddAuthorizationCore()
+    .AddOptions();
+
+builder.Services
+    .AddHttpClient("api", opt => opt.BaseAddress = new Uri("http://localhost:5054"))
+    .AddHttpMessageHandler<CookieHandler>();
 
 await builder.Build().RunAsync();

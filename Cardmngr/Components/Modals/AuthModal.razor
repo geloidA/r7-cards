@@ -1,0 +1,39 @@
+﻿@using Cardmngr.Network.Models.Authentication
+
+@inject IAuthApiLogic AuthApiLogic
+@inject ToastService ToastService
+
+<div class="d-flex flex-column">
+    <span class="font-monospace">Почта / Логин</span>
+    <InputText id="user-name-input" style="font-size: larger;" @bind-Value="userName" />    
+</div>
+
+<div class="d-flex flex-column mt-5">
+    <span class="font-monospace">Пароль</span>
+    <InputText type="password" id="password-input" style="font-size: larger;" @bind-Value="password" />
+</div>
+
+<div class="mt-2 d-flex justify-content-center">
+    <Button Type="ButtonType.Submit" LoadingText="Загрузка" Loading="busy" @onclick="SumbitAuth" Disabled="string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password)" 
+        Color="ButtonColor.Success" >Войти</Button>
+</div>
+
+@code {
+    private string userName = "";
+    private string password = "";
+    private bool busy;
+    
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    private async Task SumbitAuth()
+    {
+        busy = true;
+        var status = await AuthApiLogic.LoginAsync(new LoginModel(userName, password));
+        if (status == AuthenticationResponseType.Error)
+        {
+            ToastService.Notify(new(ToastType.Danger, title: "Ошибка авторизации", "Что-то пошло не так"));
+        }
+        else await BlazoredModal.CloseAsync(ModalResult.Ok(true));
+        busy = false;
+    }
+}

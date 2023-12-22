@@ -1,6 +1,13 @@
-﻿@page "/"
+﻿@using Network.Models
 
-<PageTitle>Home</PageTitle>
+@inject NavigationManager NavigationManager
+@inject IProjectApi ProjectApi
+
+@attribute [Authorize]
+
+@page "/"
+
+<PageTitle>Главная</PageTitle>
 
 <div style="
     background-color: hsl(218, 18%, 18%);
@@ -9,7 +16,42 @@
     <Toolbar />
 </div>
 
-<WorkspaceView />
+@if (Projects is { })
+{    
+    <WorkspaceView Boards="ConvertToBoards(Projects)" />
+}
+else
+{
+    <PlaceholderContainer Animation="PlaceholderAnimation.Glow">
+        <Placeholder Width="PlaceholderWidth.Col12" />
+        <Placeholder Width="PlaceholderWidth.Col12" />
+        <Placeholder Width="PlaceholderWidth.Col12" />
+        <Placeholder Width="PlaceholderWidth.Col12" />
+    </PlaceholderContainer>
+}
 
 @code {
+    IEnumerable<Project> Projects { get; set; } = null!;
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {        
+        if (AuthenticationState is { })
+        {
+            var user = await AuthenticationState;
+            if (!user.User.Identity!.IsAuthenticated)
+            {
+                NavigationManager.NavigateTo("login");
+                return;
+            }
+
+            Projects = await ProjectApi.GetProjects();
+        }
+    }
+
+    private static IEnumerable<Board> ConvertToBoards(IEnumerable<Project> projects)
+    {
+        return projects
+            .Select(x => new Board(x.Title!));
+    }
 }

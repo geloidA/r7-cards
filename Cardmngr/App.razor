@@ -1,14 +1,41 @@
-﻿<CascadingBlazoredModal>
-    <Router AppAssembly="@typeof(App).Assembly">
-        <Found Context="routeData">
-            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
-</CascadingBlazoredModal>
+﻿@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthenticationProvider
+@inject IAuthApiLogic AuthApiLogic
+
+<CascadingAuthenticationState>
+    <CascadingBlazoredModal>
+        <Router AppAssembly="@typeof(App).Assembly" OnNavigateAsync="OnNavigateAsync">
+            <Found Context="routeData">
+                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+                <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            </Found>
+            <NotFound>
+                <PageTitle>Not found</PageTitle>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p role="alert">Sorry, there's nothing at this address.</p>
+                </LayoutView>
+            </NotFound>
+        </Router>
+    </CascadingBlazoredModal>    
+</CascadingAuthenticationState>
+
+@code {
+    private async Task OnNavigateAsync(NavigationContext args)
+    {
+        var auth =  await LocalStorage.GetItemAsync<string>("isauthenticated");
+        var user = (await (AuthenticationProvider as CookieStateProvider)!.GetAuthenticationStateAsync()).User;
+
+        if(!string.IsNullOrEmpty(auth) && !user.Identity!.IsAuthenticated ){
+            var userDao = await AuthApiLogic.GetSelfProfileAsync();
+            if (userDao is { })
+            {
+                (AuthenticationProvider as CookieStateProvider)!.SetAuthInfo(userDao.Response!);
+            }
+            else 
+            {
+                Console.WriteLine("Can't authenticate");
+                await LocalStorage.RemoveItemAsync("isauthenticated");
+            }
+        }
+    }
+}

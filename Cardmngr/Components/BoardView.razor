@@ -37,7 +37,7 @@
                     <CascadingValue Value="Board" IsFixed="true">
                         @foreach (var column in Board)
                         {
-                            <BoardColumnView BoardColumn="column" @key="column" />
+                            <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="NewCardCreated" />
                         }
                     </CascadingValue>
                 </div>
@@ -48,6 +48,7 @@
 
 @code {
     [Parameter] public Board Board { get; set; } = null!;
+    [Parameter] public EventCallback<BlazorCards.Card> NewCardCreated { get; set; }
 
     string CssTransform => FormattableString.Invariant($"translate({(long)Board.Pos.X}px, {(long)Board.Pos.Y}px)");
 
