@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Models;
 using TaskStatus = Onlyoffice.Api.Models.TaskStatus;
 
@@ -45,5 +46,26 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         var taskDao = await client.GetFromJsonAsync<TaskDao>($"api/project/{projectId}/task");
 
         return taskDao?.Response ?? [];
+    }
+
+    public async System.Threading.Tasks.Task UpdateTaskStatusAsync(int taskId, Status status, int? statusId = null)
+    {
+        var client = httpClientFactory.CreateClient("api");
+        await client.PutAsJsonAsync($"api/project/task/{taskId}/status", new { status, statusId });
+    }
+
+    public async Task<List<Models.Task>> GetFiltredTasksAsync(FilterTasksBuilder builder)
+    {
+        var client = httpClientFactory.CreateClient("api");
+        var filterTasksDao = await client.GetFromJsonAsync<FilterTasksDao>($"api/project/task/{builder.Build()}");
+        return filterTasksDao?.Response ?? [];
+    }
+
+    public async Task<Models.Task> CreateTaskAsync(int projectId, string title)
+    {
+        var client = httpClientFactory.CreateClient("api");
+        var response = await client.PostAsJsonAsync($"api/project/{projectId}/task", new { title });
+        var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
+        return taskDao?.Response ?? throw new NullReferenceException("Task was not created");
     }
 }

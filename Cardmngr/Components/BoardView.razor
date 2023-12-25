@@ -1,5 +1,8 @@
-﻿@using Vector2 = BlazorCards.Vector2;
+﻿@using Modals
+@using Vector2 = BlazorCards.Vector2;
+
 @inject DragModule DragModule
+@inject IProjectApi ProjectApi
 
 @implements IDisposable
 
@@ -23,7 +26,7 @@
                         }
                         else
                         {
-                            <Icon Name="IconName.Plus" Color="IconColor.Success" Size="IconSize.x4" class="highlight" />
+                            <Icon Name="IconName.Plus" @onclick="ShowCardModal" Color="IconColor.Success" Size="IconSize.x4" class="highlight" />
                             <Icon class="highlight" Name="IconName.ChevronDown" @onclick=ToggleCollapsed />
                         }
                     </span>
@@ -47,6 +50,7 @@
 </div>
 
 @code {
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
     [Parameter] public Board Board { get; set; } = null!;
     [Parameter] public EventCallback<BlazorCards.Card> NewCardCreated { get; set; }
 
@@ -95,6 +99,23 @@
         Board.PosChanged -= Refresh;
         Board.LayoutChanged -= Refresh;
         thisRef?.Dispose();
+    }
+
+    private async Task ShowCardModal()
+    {
+        var options = new ModalOptions { Position = ModalPosition.Middle };
+        var modal = Modal.Show<CardCreationModal>("Сформулируйте задачу 🐷", options);
+
+        var res = await modal.Result;
+
+        if (res.Confirmed)
+        {
+            var cardName = res.Data!.ToString()!;
+            var card = new BlazorCards.Card(cardName);
+            card.Data = await ProjectApi.CreateTaskAsync(Board.GetProject().Id, cardName);
+            Board.First().Add(card);
+            await NewCardCreated.InvokeAsync(card);
+        }
     }
 
     private void Refresh() => StateHasChanged();

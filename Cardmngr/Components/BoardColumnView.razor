@@ -1,5 +1,7 @@
 ﻿@using Modals
 
+@inject IProjectApi ProjectApi
+
 @implements IDisposable
 
 <div class="@BoardColumn.CssName @CssDragOver" @ondrop="OnDrop"
@@ -16,11 +18,6 @@
                 <DropdownToggleButton Color="ButtonColor.Light">
                     <Icon Name="IconName.ThreeDots" />
                 </DropdownToggleButton>
-                <DropdownMenu>
-                    <DropdownItem @onclick="ShowCardModal" 
-                        >Добавить карточку</DropdownItem>
-                    <DropdownItem >Переименовать</DropdownItem>
-                </DropdownMenu>
             </Dropdown>
         </div>
     </div>
@@ -36,7 +33,6 @@
     string CssDragOver => highlighted ? "dragover" : "";
     bool highlighted;
 
-    [CascadingParameter] public IModalService Modal { get; set; } = default!;
     [CascadingParameter] BlazorCards.Card? LastDraggedCard { get; set; }
     [Parameter] public BoardColumn BoardColumn { get; set; } = null!;
     [Parameter] public EventCallback<BlazorCards.Card> NewCardCreated { get; set; }
@@ -47,13 +43,27 @@
         BoardColumn.CollectionChanged += Refresh;
     }
 
-    void OnDrop()
+    async Task OnDrop()
     {
         highlighted = false;
         if (LastDraggedCard is { })
         {
             LastDraggedCard.Column!.Remove(LastDraggedCard);
             BoardColumn.Add(LastDraggedCard);
+            await UpdateCardStatus(LastDraggedCard);
+        }
+    }
+
+    private async Task UpdateCardStatus(BlazorCards.Card card)
+    {
+        var taskStatus = BoardColumn.GetTaskStatus();
+        var task = card.GetTask();
+
+        if (taskStatus.StatusType != task.Status || taskStatus.Id != task.CustomTaskStatus)
+        {
+            await ProjectApi.UpdateTaskStatusAsync(task.Id, (Status)taskStatus.StatusType, taskStatus.Id);
+            task.Status = taskStatus.StatusType;
+            task.CustomTaskStatus = taskStatus.IsDefault ? null : taskStatus.Id;
         }
     }
 
@@ -63,21 +73,5 @@
     public void Dispose()
     {
         BoardColumn.CollectionChanged -= Refresh;
-    }
-
-    private async Task ShowCardModal()
-    {
-        var options = new ModalOptions { Position = ModalPosition.Middle };
-        var modal = Modal.Show<CardCreationModal>("Сформулируйте задачу 🐷", options);
-
-        var res = await modal.Result;
-
-        if (res.Confirmed)
-        {
-            var cardName = res.Data!.ToString()!;
-            var card = new BlazorCards.Card(cardName);
-            BoardColumn.Add(card);
-            await NewCardCreated.InvokeAsync(card);
-        }
     }
 }

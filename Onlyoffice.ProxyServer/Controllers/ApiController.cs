@@ -1,4 +1,5 @@
-﻿using AspNetCore.Proxy.Options;
+﻿using AspNetCore.Proxy;
+using AspNetCore.Proxy.Options;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Onlyoffice.ProxyServer.Controllers;
@@ -10,6 +11,8 @@ public abstract class ApiController(IConfiguration conf) : Controller
     protected virtual IHttpProxyOptionsBuilder HttpProxyOptionsBuilder { get; } 
         = AspNetCore.Proxy.Options.HttpProxyOptionsBuilder.Instance
             .WithAfterReceive(ChangeCORSHeaders);
+
+    protected Task ProxyRequestAsync(string destination) => this.HttpProxyAsync(destination, HttpProxyOptionsBuilder.Build());
 
     private static Task ChangeCORSHeaders(HttpContext _, HttpResponseMessage response)
     {

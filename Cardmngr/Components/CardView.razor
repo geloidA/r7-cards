@@ -1,4 +1,6 @@
-﻿<li class="@Card.CssName @CssDragOver @CssDragStart"
+﻿@inject IProjectApi ProjectApi
+
+<li class="@Card.CssName @CssDragOver @CssDragStart"
     @ondragover="DragOver" @ondragover:stopPropagation @ondragover:preventDefault
     @ondragenter:preventDefault draggable="true" @ondragleave="DragLeave"
     @ondrop:stopPropagation @ondrop="Drop" @ondragstart="DragStart"
@@ -28,13 +30,27 @@
         Card.CssName = "my-card";
     }
 
-    void Drop()
+    async void Drop()
     {
         highlighted = false;
         if (LastDraggingCard is { } && LastDraggingCard != Card)
         {
             LastDraggingCard.Column!.Remove(LastDraggingCard);
             Card.Column!.AddBefore(Card, LastDraggingCard);
+            await UpdateCardStatus(LastDraggingCard);
+        }
+    }
+
+    private async Task UpdateCardStatus(BlazorCards.Card card)
+    {
+        var current = Card.GetTask();
+        var other = card.GetTask();
+
+        if (current.Status != other.Status || current.CustomTaskStatus != other.CustomTaskStatus)
+        {
+            await ProjectApi.UpdateTaskStatusAsync(other.Id, (Status)current.Status, current.CustomTaskStatus);
+            other.Status = current.Status;
+            other.CustomTaskStatus = current.CustomTaskStatus;
         }
     }
 

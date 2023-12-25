@@ -2,6 +2,11 @@
 
 namespace Onlyoffice.Api.Models;
 
+public class SingleTaskDao : HttpResponseDaoBase
+{
+    public Task? Response { get; set; }
+}
+
 public class TaskDao : HttpResponseDaoBase
 {
     public List<Task>? Response { get; set; }

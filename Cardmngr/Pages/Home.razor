@@ -34,7 +34,7 @@ else
     [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
 
     protected override async Task OnInitializedAsync()
-    {        
+    {
         if (AuthenticationState is { })
         {
             var user = await AuthenticationState;
