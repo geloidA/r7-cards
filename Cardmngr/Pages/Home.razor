@@ -1,4 +1,6 @@
-﻿@using Network.Models
+﻿@using Onlyoffice.Api.Models
+@using Task = System.Threading.Tasks.Task
+@using TaskStatus = Onlyoffice.Api.Models.TaskStatus
 
 @inject NavigationManager NavigationManager
 @inject IProjectApi ProjectApi
@@ -16,22 +18,19 @@
     <Toolbar />
 </div>
 
-@if (Projects is { })
+@if (boards is { })
 {    
-    <WorkspaceView Boards="ConvertToBoards(Projects)" />
+    <WorkspaceView Boards="boards" />
 }
 else
 {
-    <PlaceholderContainer Animation="PlaceholderAnimation.Glow">
-        <Placeholder Width="PlaceholderWidth.Col12" />
-        <Placeholder Width="PlaceholderWidth.Col12" />
-        <Placeholder Width="PlaceholderWidth.Col12" />
-        <Placeholder Width="PlaceholderWidth.Col12" />
-    </PlaceholderContainer>
+    <div class="d-flex align-items-center justify-content-center" style="min-width: 250px;">
+        Загрузка...
+    </div>
 }
 
 @code {
-    IEnumerable<Project> Projects { get; set; } = null!;
+    IEnumerable<Board> boards = null!;
     [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -45,13 +44,39 @@ else
                 return;
             }
 
-            Projects = await ProjectApi.GetProjects();
+            boards = await GetBoards();
         }
     }
 
-    private static IEnumerable<Board> ConvertToBoards(IEnumerable<Project> projects)
+    private async Task<IEnumerable<Board>> GetBoards()
+    {
+        var projects = await ProjectApi.GetProjectsAsync();
+        var tasksTask = ProjectApi.GetTasksForProjectsAsync(projects.Select(x => x.Id));
+        var statusesTask = ProjectApi.GetAllTaskStatusesAsync();
+
+        return ConvertToBoards(projects, await tasksTask, await statusesTask);
+    }
+
+    private static IEnumerable<Board> ConvertToBoards(
+        IEnumerable<Project> projects, 
+        IEnumerable<List<Onlyoffice.Api.Models.Task>> tasks,
+        IEnumerable<TaskStatus> statuses)
     {
         return projects
-            .Select(x => new Board(x.Title!));
+            .Zip(tasks)
+            .Select(tuple => new Board(
+                statuses, 
+                DivideOnStatues(statuses, tuple.Second), 
+                tuple.First.Title!, 
+                tuple.First))
+            .ToList();
+    }
+
+    private static IEnumerable<IEnumerable<Onlyoffice.Api.Models.Task>> DivideOnStatues(
+        IEnumerable<TaskStatus> statuses,
+        IEnumerable<Onlyoffice.Api.Models.Task> tasks)
+    {
+        return statuses
+            .Select(x => tasks.Where(t => t.CustomTaskStatus.HasValue ? t.CustomTaskStatus.Value == x.Id : t.Status == x.StatusType));
     }
 }

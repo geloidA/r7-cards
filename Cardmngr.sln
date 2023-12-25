@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr", "Cardmngr\Cardmn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorCards.Tests", "BlazorCards.Tests\BlazorCards.Tests.csproj", "{C995AA8D-E9F5-4A64-B0CF-F2C16B13DC02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Network", "Cardmngr.Network\Cardmngr.Network.csproj", "{EE919612-372B-4EE2-B81F-94245A347D65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onlyoffice.Api", "Onlyoffice.Api\Onlyoffice.Api.csproj", "{EE919612-372B-4EE2-B81F-94245A347D65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.ProxyServer", "Cardmngr.ProxyServer\Cardmngr.ProxyServer.csproj", "{E075E512-23B5-4FD5-8A21-6E8DAD146F4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onlyoffice.ProxyServer", "Onlyoffice.ProxyServer\Onlyoffice.ProxyServer.csproj", "{E075E512-23B5-4FD5-8A21-6E8DAD146F4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,4 @@
-﻿namespace Cardmngr.Network.Models.Authentication;
+﻿namespace Onlyoffice.Api.Models.Authentication;
 
 
 public enum AuthenticationResponseType

@@ -4,6 +4,7 @@ public interface IUIElement
 {
     string? CssName { get; set; }
     string? CssColor { get; set; }
+    object? Data { get; set; }
 }
 
 public interface IWorkspaceElement : IUIElement

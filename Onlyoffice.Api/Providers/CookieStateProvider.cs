@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
-using Cardmngr.Network.Models;
+using Onlyoffice.Api.Models;
 using Microsoft.AspNetCore.Components.Authorization;
- 
+using Task = System.Threading.Tasks.Task;
 
-namespace Cardmngr.Network.Providers;
+namespace Onlyoffice.Api.Providers;
 
 public class CookieStateProvider : AuthenticationStateProvider
 {

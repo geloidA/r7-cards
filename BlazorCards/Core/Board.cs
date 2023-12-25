@@ -4,9 +4,15 @@ namespace BlazorCards.Core;
 
 public class Board(string title) : ObservableLinkedCollection<BoardColumn>, IWorkspaceElement
 {
-    public Board(IEnumerable<IBoardColumnDao> columns, string title) : this(title)
+    public Board(IEnumerable<IBoardColumnDao> columns, IEnumerable<IEnumerable<ICardDao>> cards, string title, object? data = null) : this(title)
     {
-        items = new(columns.Select(x => new BoardColumn(x.Title, this)));
+        if (columns.Count() != cards.Count()) throw new ArgumentException("Columns and cards count must be equal");
+
+        items = new(columns
+            .Zip(cards)
+            .Select(x => new BoardColumn(x.Second, x.First.Title!, this) { Data = x.First }));
+        
+        Data = data;
     }
 
     private Vector2 pos;
@@ -52,6 +58,7 @@ public class Board(string title) : ObservableLinkedCollection<BoardColumn>, IWor
     public string? CssName { get; set; }
 
     public string? CssColor { get; set; }
+    public object? Data { get; set; }
 
     public event Action? PosChanged;
     public event Action? LayoutChanged;

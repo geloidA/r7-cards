@@ -1,7 +1,7 @@
-﻿using Cardmngr.Network.Models;
-using Cardmngr.Network.Models.Authentication;
+﻿using Onlyoffice.Api.Models;
+using Onlyoffice.Api.Models.Authentication;
 
-namespace Cardmngr.Network.Logics;
+namespace Onlyoffice.Api.Logics;
 
 public interface IAuthApiLogic
 {

@@ -1,10 +1,10 @@
 ﻿using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using Cardmngr.Network.Models;
-using Cardmngr.Network.Models.Authentication;
+using Onlyoffice.Api.Models;
+using Onlyoffice.Api.Models.Authentication;
 
-namespace Cardmngr.Network.Logics;
+namespace Onlyoffice.Api.Logics;
 
 public class AuthApiLogic(IHttpClientFactory httpClientFactory) : ApiLogicBase(httpClientFactory), IAuthApiLogic
 {
@@ -16,7 +16,7 @@ public class AuthApiLogic(IHttpClientFactory httpClientFactory) : ApiLogicBase(h
 
         try
         {
-            response = await client.GetAsync("api/2.0/people/@self");
+            response = await client.GetAsync("api/people/@self");
         }
         catch (HttpRequestException)
         {
@@ -36,7 +36,7 @@ public class AuthApiLogic(IHttpClientFactory httpClientFactory) : ApiLogicBase(h
 
         try
         {
-            response = await client.PostAsync("api/2.0/authentication", content);
+            response = await client.PostAsync("api/authentication", content);
         }
         catch (HttpRequestException)
         {

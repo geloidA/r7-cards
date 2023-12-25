@@ -44,8 +44,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../Onlyoffice.Api/Onlyoffice.Api.csproj" />
     <ProjectReference Include="..\BlazorCards\BlazorCards.csproj" />
-    <ProjectReference Include="..\Cardmngr.Network\Cardmngr.Network.csproj" />
   </ItemGroup>
 
 </Project>

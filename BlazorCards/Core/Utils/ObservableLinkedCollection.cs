@@ -25,6 +25,15 @@ public abstract class ObservableLinkedCollection<T> : IEnumerable<T>
         OnAdd(item);
     }
 
+    public virtual void AddRange(IEnumerable<T> items)
+    {
+        foreach (var item in items)
+        {
+            this.items.AddLast(item);
+        }
+        OnAddRange(items);
+    }
+
     public virtual void AddAfter(T target, T item)
     {        
         items.AddAfter(CheckTarget(target), item);
@@ -60,6 +69,11 @@ public abstract class ObservableLinkedCollection<T> : IEnumerable<T>
     private void OnAdd(T item)
     {
         OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+    }
+
+    private void OnAddRange(IEnumerable<T> items)
+    {
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items));
     } 
 
     private void OnCollectionChanged(NotifyCollectionChangedEventArgs e) => CollectionChanged?.Invoke(e);

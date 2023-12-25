@@ -1,4 +1,4 @@
-﻿namespace Cardmngr.Network;
+﻿namespace Onlyoffice.Api;
 
 public class ApiLogicBase(IHttpClientFactory httpClientFactory)
 {

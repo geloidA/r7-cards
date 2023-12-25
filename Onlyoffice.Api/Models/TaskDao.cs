@@ -1,11 +1,13 @@
-﻿namespace Cardmngr.Network.Models;
+﻿using BlazorCards;
+
+namespace Onlyoffice.Api.Models;
 
 public class TaskDao : HttpResponseDaoBase
 {
     public List<Task>? Response { get; set; }
 }
 
-public class Task
+public class Task : ICardDao
 {
     public bool CanEdit { get; set; }
     public bool CanCreateSubtask { get; set; }
@@ -24,6 +26,7 @@ public class Task
     public CreatedBy? CreatedBy { get; set; }
     public DateTime Updated { get; set; }
     public List<Responsible>? Responsibles { get; set; }
+    public int? CustomTaskStatus { get; set; }
 }
 
 public class TaskOwner

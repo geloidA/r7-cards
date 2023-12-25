@@ -1,4 +1,4 @@
-﻿namespace Cardmngr.Network.Services;
+﻿namespace Onlyoffice.Api.Services;
 
 public abstract class ApiServiceBase : IDisposable
 {

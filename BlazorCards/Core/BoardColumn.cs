@@ -2,28 +2,32 @@
 
 namespace BlazorCards.Core;
 
-public class BoardColumn : ObservableLinkedCollection<Card>, IUIElement, IBoardColumnDao
+public class BoardColumn(string title) : ObservableLinkedCollection<Card>, IUIElement, IBoardColumnDao
 {
-    public BoardColumn(string title)
+    public BoardColumn(IEnumerable<ICardDao> cards, string title) : this(title)
     {
-        Title = title;
+        items = new(cards.Select(x => new Card(x.Title!, this) { Description = x.Description }));
     }
     
-    public BoardColumn(string title, Board board) : this(Enumerable.Empty<ICardDao>(), title, board)
+    internal BoardColumn(string title, Board board) : this(Enumerable.Empty<ICardDao>(), title, board)
     {
     }
 
-    public BoardColumn(IEnumerable<ICardDao> cards, string title, Board board)
+    internal BoardColumn(IEnumerable<ICardDao> cards, string title, Board board) : this(title)
     {
-        items = new(cards.Select(x => new Card(x.Title, this) { Description = x.Description }));
-        Title = title;
+        items = new(cards.Select(x => new Card(x.Title!, this) 
+        { 
+            Description = x.Description,
+            Data = x
+        }));
         Board = board;
     }
 
-    public string Title { get; set; }
+    public string? Title { get; set; } = title;
     public Board? Board { get; internal set; }
     public string? CssName { get; set; }
     public string? CssColor { get; set; }
+    public object? Data { get; set; }
 
     public override void Add(Card item)
     {
@@ -52,5 +56,5 @@ public class BoardColumn : ObservableLinkedCollection<Card>, IUIElement, IBoardC
 
 public interface IBoardColumnDao
 {
-    string Title { get; set; }
+    string? Title { get; set; }
 }

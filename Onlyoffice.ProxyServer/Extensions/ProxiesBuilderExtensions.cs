@@ -1,6 +1,6 @@
 ﻿using AspNetCore.Proxy.Builders;
 
-namespace Cardmngr.ProxyServer.Extensions;
+namespace Onlyoffice.ProxyServer.Extensions;
 
 public static class ProxiesBuilderExtensions
 {

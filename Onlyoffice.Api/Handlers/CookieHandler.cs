@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
-namespace Cardmngr.Network.Handlers;
+namespace Onlyoffice.Api.Handlers;
 
 public class CookieHandler : DelegatingHandler
 {

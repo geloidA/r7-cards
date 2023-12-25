@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.Modal;
 using Cardmngr;
-using Cardmngr.Network.Handlers;
-using Cardmngr.Network.Providers;
-using Cardmngr.Network.Logics;
+using Onlyoffice.Api.Handlers;
+using Onlyoffice.Api.Providers;
+using Onlyoffice.Api.Logics;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 

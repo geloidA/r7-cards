@@ -1,4 +1,4 @@
-﻿namespace Cardmngr.Network.Models;
+﻿namespace Onlyoffice.Api.Models;
 
 public abstract class HttpResponseDaoBase
 {
