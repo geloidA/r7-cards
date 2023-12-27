@@ -1,4 +1,5 @@
 ﻿@using Modals
+@using TypeStatus = Onlyoffice.Api.Models.TaskStatus
 
 @inject IProjectApi ProjectApi
 
@@ -11,13 +12,17 @@
     <div class="row mb-2 d-flex align-items-center">
         <div class="col">
             <Badge Color="BadgeColor.Success">@BoardColumn.Count</Badge>
-            <span class="ms-1 font-monospace">@BoardColumn.Title</span>
+            <span class="ms-1 font-monospace column-title">@BoardColumn.Title</span>
         </div>
         <div class="col-2 hidden d-flex flex-row align-items-center" style="font-size: small !important;">
             <Dropdown Size="Size.ExtraSmall" AutoClose="true" >
                 <DropdownToggleButton Color="ButtonColor.Light">
                     <Icon Name="IconName.ThreeDots" />
                 </DropdownToggleButton>
+                <DropdownMenu>
+                    <DropdownItem @onclick="ShowCardModal" 
+                        >Добавить карточку</DropdownItem>
+                </DropdownMenu>
             </Dropdown>
         </div>
     </div>
@@ -33,9 +38,12 @@
     string CssDragOver => highlighted ? "dragover" : "";
     bool highlighted;
 
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
     [CascadingParameter] BlazorCards.Card? LastDraggedCard { get; set; }
     [Parameter] public BoardColumn BoardColumn { get; set; } = null!;
     [Parameter] public EventCallback<BlazorCards.Card> NewCardCreated { get; set; }
+
+    private TypeStatus TypeStatus => BoardColumn.GetTaskStatus();
 
     protected override void OnInitialized()
     {
@@ -64,6 +72,30 @@
             await ProjectApi.UpdateTaskStatusAsync(task.Id, (Status)taskStatus.StatusType, taskStatus.Id);
             task.Status = taskStatus.StatusType;
             task.CustomTaskStatus = taskStatus.IsDefault ? null : taskStatus.Id;
+        }
+    }
+
+    
+    private async Task ShowCardModal()
+    {
+        var options = new ModalOptions { Position = ModalPosition.Middle };
+        var modal = Modal.Show<CardCreationModal>("Сформулируйте задачу 🐷", options);
+
+        var res = await modal.Result;
+
+        if (res.Confirmed)
+        {
+            var cardName = res.Data!.ToString()!;
+            var card = new BlazorCards.Card(cardName);
+            
+            var task = await ProjectApi.CreateTaskAsync(BoardColumn.Board!.GetProject().Id, 
+                cardName, 
+                (Status)TypeStatus.StatusType, 
+                TypeStatus.Id);
+
+            card.Data = task;
+            BoardColumn.Add(card);
+            await NewCardCreated.InvokeAsync(card);
         }
     }
 

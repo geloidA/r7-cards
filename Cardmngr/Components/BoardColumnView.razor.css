@@ -1,14 +1,18 @@
 .board .board-column {
     font-size: medium;
+    max-width: 324px;
     min-width: 324px;
-    min-height: 250px;
     background-color: var(--main-col-bg);
     margin: 5px;
+    min-height: 100%;
     border-radius: 5px;
     border: 1px solid #75868a;
     padding: 5px;
     flex-direction: column;
 }
+    .board .board-column .column-title {
+        color: var(--col-title-color);
+    }
 
     .board .board-column .hidden {
         opacity: 0;
@@ -27,8 +31,6 @@
         display: flex;
         align-items: center;
         flex-direction: column;
-        justify-content: space-around;
-        padding: 0;
-        margin: 0;
+        padding: 0px;
         list-style: none;
     }

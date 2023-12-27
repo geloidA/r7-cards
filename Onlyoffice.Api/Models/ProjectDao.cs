@@ -1,5 +1,10 @@
 ﻿namespace Onlyoffice.Api.Models;
 
+public class SingleProjectDao : HttpResponseDaoBase
+{
+    public Project? Response { get; set; }
+}
+
 public class ProjectDao : HttpResponseDaoBase
 {
     public List<Project>? Response { get; set; }
@@ -14,6 +19,7 @@ public class Project
     public Responsible? Responsible { get; set; }
     public bool CanEdit { get; set; }
     public bool IsPrivate { get; set; }
+    public DateTime Updated { get; set; }
 }
 
 public class Responsible

@@ -1,10 +1,4 @@
 .board {
-    background-color: var(--main-board-bg);
-    display: flex;
-    position: absolute;
     font-weight: 600;
-    min-width: 400px;
-    padding: 4px;
     font-size: larger;
-    z-index: 1;
 }

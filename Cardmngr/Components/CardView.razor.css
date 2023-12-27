@@ -1,13 +1,12 @@
 .board .board-column .card-container .my-card {
     font-size: small;
     margin-bottom: 10px;
-    padding: 10px 25px;
     border: 1px solid #424d5c;
     cursor: pointer;
-    background: #5c6b7f;
+    background: var(--main-board-bg);
     color: #ffffff;
     border-radius: 5px;
-    width: 250px;
+    width: 100%;
 }
 
 .board .board-column .my-card.dragover {
@@ -16,4 +15,15 @@
 
 .board .board-column .my-card.dragged {
     opacity: 0.5;
+}
+
+.max-height-100 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 5;
+ }
+
+.red-border {
+    border: 1px solid red !important;
 }

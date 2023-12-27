@@ -53,8 +53,6 @@ public class Board(string title) : ObservableLinkedCollection<BoardColumn>, IWor
 
     public void OnLayoutChanged() => LayoutChanged?.Invoke();
 
-    public bool IsCollapsed { get; set; }
-
     public string? CssName { get; set; }
 
     public string? CssColor { get; set; }

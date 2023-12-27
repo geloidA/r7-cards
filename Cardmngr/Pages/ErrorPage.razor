@@ -1,0 +1,7 @@
+﻿@page "/error/{ErrorMsg}"   
+
+<h3>@ErrorMsg</h3>
+
+@code {
+    [Parameter] public string? ErrorMsg { get; set; }
+}

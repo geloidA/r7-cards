@@ -1,0 +1,50 @@
+﻿@page "/project/{ProjectId:int}"
+
+@using Onlyoffice.Api.Models
+@using Task = System.Threading.Tasks.Task
+
+@inherits AuthorizedPage
+
+@inject IProjectApi ProjectApi
+
+@if (board is { })
+{    
+    <BoardView Board="board" />
+}
+else
+{
+    <CardText>Загрузка</CardText>
+}
+
+@code {
+    private Board board = null!;
+
+    [Parameter] public int? ProjectId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        if (ProjectId.HasValue)
+        {
+            var project = ProjectApi.GetProjectByIdAsync(ProjectId.Value);
+            var tasks = ProjectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(ProjectId.Value));
+            var statuses = ProjectApi.GetAllTaskStatusesAsync();
+            board = ConvertToBoard(await project, await tasks, await statuses);
+        }
+    }
+
+    private static Board ConvertToBoard(Project proj, List<Onlyoffice.Api.Models.Task> tasks, IEnumerable<Onlyoffice.Api.Models.TaskStatus> statuses)
+    {
+        return new Board(statuses, DivideOnStatues(statuses, tasks), proj.Title!, proj);
+    }
+
+    private static IEnumerable<IEnumerable<Onlyoffice.Api.Models.Task>> DivideOnStatues(
+        IEnumerable<Onlyoffice.Api.Models.TaskStatus> statuses,
+        IEnumerable<Onlyoffice.Api.Models.Task> tasks)
+    {
+        return statuses
+            .Select(x => tasks
+                .Where(t => t.CustomTaskStatus.HasValue ? t.CustomTaskStatus.Value == x.Id : t.Status == x.StatusType)
+                .OrderBy(x => x.Updated));
+    }
+}

@@ -1,8 +1,11 @@
 :root {
     --col-bg-2: #3d84ca;
     --padding-main: 0;
-    --main-board-bg: #45566b;
-    --main-col-bg: #556d6b;
+    --main-board-bg: #1d252c;
+    --main-board-bg-dark: #192127;
+    --main-board-bg-light: #6c7781;
+    --col-title-color: #dad7d7;
+    --main-col-bg: #000000;
     --highlight-col: #e9cece;
     --drop-highlight-col: #dfc036;
 }

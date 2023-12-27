@@ -1,4 +1,4 @@
-﻿@using BlazorCards
+﻿@* @using BlazorCards
 @using Cardmngr.Utils
 
 @implements IDisposable
@@ -14,7 +14,7 @@
             <CascadingValue Value="lastDraggingCard" >
                 @foreach (var board in Boards)
                 {
-                    <BoardView Board="board" @key="board" NewCardCreated="SubscribeDragHandler" />
+                    <BoardView Board="board" @key="board"  />
                 }
             </CascadingValue>
         </CascadingValue>
@@ -27,30 +27,6 @@
     Offcanvas offcanvas = null!;
     [Parameter] public IEnumerable<Board> Boards { get; set; } = null!;
 
-    protected override void OnInitialized()
-    {        
-        foreach (var card in Boards.AllCards())
-            card.DragStart += UpdateDraggingCard;
-    }
-    
-    private void UpdateDraggingCard(BlazorCards.Card card)
-    {
-        lastDraggingCard = card;
-        InvokeAsync(StateHasChanged);
-        Console.WriteLine($"LastDraggingCard changed on {card.Title}");
-    }
-
-    private void SubscribeDragHandler(BlazorCards.Card createdCard)
-    {
-        createdCard.DragStart += UpdateDraggingCard;
-    }
-
-    public void Dispose()
-    {
-        foreach (var card in Boards.AllCards())
-            card.DragStart -= UpdateDraggingCard;
-    }
-
     private Vector2 clickStartPos;
 
     private async Task StartPan(MouseEventArgs e)
@@ -58,4 +34,4 @@
         clickStartPos = e.GetClientPos();
         await JSRuntime.InvokeVoidAsync("panzoom.startPan");
     }
-}
+} *@

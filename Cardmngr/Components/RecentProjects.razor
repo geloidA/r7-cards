@@ -1,0 +1,45 @@
+﻿@using Onlyoffice.Api.Models
+@using Task = System.Threading.Tasks.Task
+@using TaskStatus = Onlyoffice.Api.Models.TaskStatus
+
+@inject IProjectApi ProjectApi
+
+<h5 class="text-light fw-lighter mb-4">Последние проекты</h5>
+
+@if (projects is { })
+{
+    <div class="d-flex align-items-start justify-content-center list-group" style="min-width: 250px;">
+        @{
+            var count = 0;
+        }
+        @if (projects.Any() && MaxCount != 0)
+        {
+            @foreach (var proj in projects)
+            {
+                if (count == MaxCount) break;
+                <a class="text-light fw-light" href=@($"/project/{proj.Id}")>
+                    @proj.Title
+                    <Icon Name="IconName.ArrowRight" />
+                </a>
+                count++;
+            }
+        }
+        else
+        {
+            <span class="text-light fw-light">Нет доступных проектов</span>
+        }
+    </div>
+}
+
+@code {
+    IEnumerable<Project> projects = null!;
+
+    [Parameter] public int MaxCount { get; set; } = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        projects = await ProjectApi.GetUserProjectsAsync();
+
+    }
+}

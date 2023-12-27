@@ -1,7 +1,10 @@
-﻿<div>
-    <Tooltip Title="Добавить доску" Placement="TooltipPlacement.Bottom">
-        <Icon class="highlight" Name="IconName.Plus" Size="IconSize.x2" Color="IconColor.Success" />
-    </Tooltip>
+﻿@inject IConfiguration Config
+@inject NavigationManager NavigationManager
+
+<div class="d-flex align-items-center">
+    <Tool IconName="IconName.BoxArrowUpRight" TooltipTitle="Перейти в Р7-Офис" IconColor="IconColor.Light" 
+        OnClick=@(() => NavigationManager.NavigateTo(Config["onlyoffice-url"] ?? throw new NullReferenceException("No onlyoffice config"))) 
+        />
 </div>
 
 @code {

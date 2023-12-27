@@ -27,7 +27,7 @@ builder.Services
     .AddOptions();
 
 builder.Services
-    .AddHttpClient("api", opt => opt.BaseAddress = new Uri("http://localhost:5054"))
+    .AddHttpClient("api", opt => opt.BaseAddress = new Uri("http://localhost:5054")) //TODO: make it configurable
     .AddHttpMessageHandler<CookieHandler>();
 
 await builder.Build().RunAsync();

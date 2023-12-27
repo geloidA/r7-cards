@@ -23,6 +23,7 @@ public interface IProjectApi
     Task<List<MyTask>> GetTasksByProjectIdAsync(int projectId);
     Task<List<MyTask>> GetFiltredTasksAsync(FilterTasksBuilder builder);
     Task<MyTask> CreateTaskAsync(int projectId, string title);
+    Task<MyTask> CreateTaskAsync(int projectId, string title, Status status, int? statusId = null);
     Task UpdateTaskStatusAsync(int taskId, Status status, int? statusId = null);
 }
 

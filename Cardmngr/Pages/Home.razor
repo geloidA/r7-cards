@@ -1,82 +1,30 @@
-﻿@using Onlyoffice.Api.Models
-@using Task = System.Threading.Tasks.Task
-@using TaskStatus = Onlyoffice.Api.Models.TaskStatus
+﻿@page "/"
 
-@inject NavigationManager NavigationManager
+@inherits AuthorizedPage
+
 @inject IProjectApi ProjectApi
-
-@attribute [Authorize]
-
-@page "/"
 
 <PageTitle>Главная</PageTitle>
 
-<div style="
-    background-color: hsl(218, 18%, 18%);
-    box-shadow: 0px 4px 7px #00000033;
-    z-index: 10;" class="d-flex justify-content-center">
-    <Toolbar />
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 90vh;">
+    <div class="row">
+        <div class="col bg">
+            <RecentProjects MaxCount="3" />
+        </div>
+        <div class="col d-flex align-items-center">
+            <div class="line" />
+        </div>
+        <div class="col d-flex align-items-center">
+            <div class="text-light">
+                <Tool Text="Проект" IconName="IconName.JournalText" TooltipTitle="Создать новый проект" TooltipPlacement="TooltipPlacement.Right"/>
+                <Tool Text="Веха" IconName="IconName.Star" TooltipTitle="Создать новую веху" TooltipPlacement="TooltipPlacement.Right"/>
+                <Tool Text="Задача" IconName="IconName.Check2Circle" TooltipTitle="Создать новую задачу" TooltipPlacement="TooltipPlacement.Right"/>
+            </div>
+        </div>
+    </div>
 </div>
 
-@if (boards is { })
-{    
-    <WorkspaceView Boards="boards" />
-}
-else
-{
-    <div class="d-flex align-items-center justify-content-center" style="min-width: 250px;">
-        Загрузка...
-    </div>
-}
-
 @code {
-    IEnumerable<Board> boards = null!;
-    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (AuthenticationState is { })
-        {
-            var user = await AuthenticationState;
-            if (!user.User.Identity!.IsAuthenticated)
-            {
-                NavigationManager.NavigateTo("login");
-                return;
-            }
-
-            boards = await GetBoards();
-        }
-    }
-
-    private async Task<IEnumerable<Board>> GetBoards()
-    {
-        var projects = await ProjectApi.GetProjectsAsync();
-        var tasksTask = ProjectApi.GetTasksForProjectsAsync(projects.Select(x => x.Id));
-        var statusesTask = ProjectApi.GetAllTaskStatusesAsync();
-
-        return ConvertToBoards(projects, await tasksTask, await statusesTask);
-    }
-
-    private static IEnumerable<Board> ConvertToBoards(
-        IEnumerable<Project> projects, 
-        IEnumerable<List<Onlyoffice.Api.Models.Task>> tasks,
-        IEnumerable<TaskStatus> statuses)
-    {
-        return projects
-            .Zip(tasks)
-            .Select(tuple => new Board(
-                statuses, 
-                DivideOnStatues(statuses, tuple.Second), 
-                tuple.First.Title!, 
-                tuple.First))
-            .ToList();
-    }
-
-    private static IEnumerable<IEnumerable<Onlyoffice.Api.Models.Task>> DivideOnStatues(
-        IEnumerable<TaskStatus> statuses,
-        IEnumerable<Onlyoffice.Api.Models.Task> tasks)
-    {
-        return statuses
-            .Select(x => tasks.Where(t => t.CustomTaskStatus.HasValue ? t.CustomTaskStatus.Value == x.Id : t.Status == x.StatusType));
-    }
+    
 }

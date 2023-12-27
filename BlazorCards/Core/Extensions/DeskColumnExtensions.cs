@@ -8,4 +8,9 @@ public static class DeskColumnExtensions
             .SelectMany(x => x)
             .SelectMany(x => x);
     }
+
+    public static IEnumerable<Card> AllCards(this Board board)
+    {
+        return board.SelectMany(x => x);
+    }
 }

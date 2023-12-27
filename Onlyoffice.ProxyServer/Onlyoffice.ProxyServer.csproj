@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.Proxy" Version="4.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Onlyoffice.Api\Onlyoffice.Api.csproj" />
   </ItemGroup>
 
 </Project>

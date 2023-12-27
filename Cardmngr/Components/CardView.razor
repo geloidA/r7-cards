@@ -1,12 +1,47 @@
-﻿@inject IProjectApi ProjectApi
+﻿@using Onlyoffice.Api.Common
 
-<li class="@Card.CssName @CssDragOver @CssDragStart"
+@inject IProjectApi ProjectApi
+
+<li class="@Card.CssName @CssDragOver @CssDragStart @CssHighPriority"
     @ondragover="DragOver" @ondragover:stopPropagation @ondragover:preventDefault
     @ondragenter:preventDefault draggable="true" @ondragleave="DragLeave"
     @ondrop:stopPropagation @ondrop="Drop" @ondragstart="DragStart"
-    @ondragend="() => isDragged = false" @onclick="async () => await Offcanvas.ShowAsync()" >
-    @Card.Title
-    <br>
+    @ondragend="() => isDragged = false" >
+    <div class="container py-1 px-4">
+        <div class="row py-1">
+            <div class="px-0 d-flex flex-row">
+                @if (Task.Priority == (int)TaskPriority.High)
+                {
+                    <Icon Name="IconName.Fire" Color="IconColor.Danger" />
+                }
+                else
+                {
+                    <Icon Name="IconName.EmojiNeutral" Color="IconColor.Success" />
+                }
+                <div class="ms-1">@Card.Title</div>
+            </div>
+        </div>
+        <div class="row fw-light max-height-100" >
+            @Task.Description
+        </div>
+        <div class="row py-1">
+            @if (Task.Subtasks?.Any() ?? false)
+            {
+                <div class="d-flex justify-content-end">
+                    + @Task.Subtasks.Count подзадачи
+                </div>
+            }
+        </div>
+        <div class="row py-1">
+            @if (Task.CreatedBy is { })
+            {
+                <div class="fw-light px-0"
+                    style="color: var(--main-board-bg-light);">
+                    Создано: @Task.CreatedBy.DisplayName
+                </div>
+            }
+        </div>
+    </div>
 </li>
 
 @code {
@@ -14,16 +49,16 @@
     private BlazorCards.Card? LastDraggingCard { get; set; }
 
     [CascadingParameter]
-    private Offcanvas Offcanvas { get; set; } = null!;
-
-    [CascadingParameter]
     private Board Board { get; set; } = null!;
     
     string CssDragOver => highlighted ? "dragover" : "";
+    string CssHighPriority => Task.Priority == (int)TaskPriority.High ? "red-border" : "";
     string CssDragStart => isDragged ? "dragged" : "";
     private bool highlighted;
     private bool isDragged;
     [Parameter] public BlazorCards.Card Card { get; set; } = null!;
+
+    private Onlyoffice.Api.Models.Task Task => Card.GetTask(); 
 
     protected override void OnInitialized()
     {

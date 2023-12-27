@@ -1,5 +1,4 @@
 using AspNetCore.Proxy;
-using Onlyoffice.ProxyServer.Extensions;
 
 internal class Program
 {
@@ -7,7 +6,12 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddProxies();
+        builder.Configuration.AddJsonFile("appsettings.json");
+        var config = builder.Configuration;
+
+        builder.Services
+            .AddProxies()
+            .AddHttpClient();
         builder.Services.AddControllers();
 
         var app = builder.Build();
@@ -16,6 +20,15 @@ internal class Program
         {
             app.UseDeveloperExceptionPage();
         }
+
+        app.UseCors(builder => 
+        {
+            builder
+                .WithOrigins(config["Receiver"] ?? throw new NullReferenceException("Receiver config is null"))
+                .AllowCredentials()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
 
         app.MapControllers();
 

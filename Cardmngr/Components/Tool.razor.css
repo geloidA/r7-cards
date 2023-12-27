@@ -1,0 +1,7 @@
+.tool {
+    user-select: none;
+}
+
+.tool:hover {
+    cursor: pointer;
+}

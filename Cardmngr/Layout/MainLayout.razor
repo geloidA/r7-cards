@@ -1,33 +1,48 @@
-﻿@inject IJSRuntime JSRuntime
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
 <Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
 
-<div class="page" style="overflow-y: hidden;">
-    <aside id="sidebar" class="active" style="z-index: 3;">
-        <div class="custom-menu">
-            <button type="button" id="sidebarCollapse"
-                class="btn btn-primary">
+<Offcanvas @ref="offcanvas" Placement="Placement.Start" Size="OffcanvasSize.Small" ShowCloseButton="false"
+    Style="background-color: var(--main-board-bg); border-radius: 10px;">
+    <HeaderTemplate >
+        <a class="text-light fw-bold fs-4" href="/">ДЕТАЛЬ</a>
+    </HeaderTemplate> 
+    <BodyTemplate>
+
+    </BodyTemplate>
+</Offcanvas>
+
+<div class="bb-page" >
+
+    <main class="p-0" style="overflow-y: hidden;">
+        <div class="bb-top-row px-4 d-flex" style="background-color: var(--main-col-bg);">
+            <div class="col justify-content-start">
+                <Button class="py-0" Color="ButtonColor.Light" Outline="true" @onclick="OpenSidebar" >
                     <Icon Name="IconName.List" />
-                </button>
+                </Button>
+            </div>
+            <div class="col d-flex justify-content-end">
+                <Toolbar />
+            </div>
         </div>
-        <div class="p-4">
-            <h1>
-                <a href="/" class="logo">Bobby</a>
-            </h1>
+
+        <div class="content px-4" style="background-color: var(--main-board-bg); height: 95%;">
+            <div class="py-2 h-100" >
+                @Body
+            </div>
         </div>
-    </aside>
-    <div id="content" style="user-select: none;">
-        @Body
-    </div>
+    </main>
+
 </div>
 
 @code {
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private Offcanvas? offcanvas;
+
+    private async Task OpenSidebar()
     {
-        if (firstRender)
+        if (offcanvas is { })
         {
-            await JSRuntime.InvokeVoidAsync("sidebar.initToggleButton");
+            await offcanvas.ShowAsync();
         }
     }
 }

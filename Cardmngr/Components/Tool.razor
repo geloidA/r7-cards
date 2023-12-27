@@ -1,0 +1,39 @@
+﻿
+@if (TooltipTitle is { })
+{
+    <Tooltip Title="@TooltipTitle" Placement="TooltipPlacement" >
+        <div class="d-flex align-items-center tool" @onclick="OnClickHandler">
+            <Icon Name="IconName" Size="IconSize" Color="IconColor"/>
+            <div class="ms-1">@Text</div>
+        </div>
+    </Tooltip>
+}
+else
+{
+    <div class="d-flex justify-content-center align-items-center tool" @onclick="OnClickHandler">
+        <Icon Name="IconName" Size="IconSize" Color="IconColor"/>
+        <div class="ms-1">@Text</div>
+    </div>
+}
+
+
+
+@code {
+
+    [Parameter] public IconName IconName { get; set; }
+    [Parameter] public IconSize IconSize { get; set; }
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? TooltipTitle { get; set; }
+    [Parameter] public TooltipPlacement TooltipPlacement { get; set; }
+    [Parameter] public IconColor IconColor { get; set; }
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    private async Task OnClickHandler(MouseEventArgs args)
+    {
+        // Вызов пользовательского обработчика клика, если он определен
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync(args);
+        }
+    }
+}
