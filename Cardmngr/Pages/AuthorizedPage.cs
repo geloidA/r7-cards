@@ -7,19 +7,24 @@ namespace Cardmngr;
 [Authorize]
 public abstract class AuthorizedPage : ComponentBase
 {
+    protected bool IsAuthenticated { get; private set; }
+    protected string? IdOnInitialization { get; private set; }
     [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
-    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
+    [CascadingParameter] protected Task<AuthenticationState>? AuthenticationState { get; set; }
     
     protected async override Task OnInitializedAsync()
     {
         if (AuthenticationState is { })
         {
             var user = await AuthenticationState;
+            IsAuthenticated = user.User.Identity!.IsAuthenticated;
             if (!user.User.Identity!.IsAuthenticated)
             {
                 NavigationManager.NavigateTo("login");
-                return; // TODO: Show error
+                return;
             }
+            IdOnInitialization = user.User.FindFirst("UserId")?.Value 
+                ?? throw new NullReferenceException("UserId not found");
         }
     }
 }

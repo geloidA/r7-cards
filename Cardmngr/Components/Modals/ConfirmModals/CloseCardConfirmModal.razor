@@ -1,0 +1,19 @@
+﻿@inherits ConfirmModalBase
+
+<h6>
+    Вы пытаетесь закрыть задачу с открытым подзадачами
+    <br>
+    Лучше всего вернуться и закрыть подзадачи вручную, 
+    затем снова закрыть задачу
+</h6>
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        OkTitle = "Закрыть все подзадачи и задачу";
+    }
+}

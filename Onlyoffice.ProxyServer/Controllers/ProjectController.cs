@@ -36,6 +36,33 @@ public class ProjectController(IConfiguration conf, IHttpClientFactory factory) 
     [Route("api/[controller]/@self")]
     public Task ProxyGetSelfProjects() => ProxyRequestAsync($"{apiUrl}/project/@self");
 
+    [Route("api/[controller]/{projectId}/team")]
+    public Task ProxyGetSelfProjectById(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/team");
+
+    [HttpDelete]
+    [Route("api/[controller]/task/{taskId}")]
+    public Task ProxyDeleteTask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+
+    [HttpPut]
+    [Route("api/[controller]/task/{taskId}/{subtaskId}")]
+    public Task ProxyUpdateSubtask(int taskId, int subtaskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/{subtaskId}");
+
+    [HttpPut]
+    [Route("api/[controller]/task/{taskId}/{subtaskId}/status")]
+    public Task ProxyUpdateSubtaskStatus(int taskId, int subtaskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/{subtaskId}/status");
+
+    [HttpDelete]
+    [Route("api/[controller]/task/{taskId}/{subtaskId}")]
+    public Task ProxyDeleteSubtask(int taskId, int subtaskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/{subtaskId}");
+
+    [HttpPost]
+    [Route("api/[controller]/task/{taskId}")]
+    public Task ProxyCreateSubtask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+
+    [HttpPut]
+    [Route("api/[controller]/task/{taskId}")]
+    public Task ProxyUpdateTask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+
     [HttpPost]
     [Route("api/[controller]/{projectId}/task/status")]
     public async Task CreateTaskWithStatus(int projectId)

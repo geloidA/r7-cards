@@ -9,13 +9,16 @@
 <div class="container d-flex align-items-center justify-content-center" style="min-height: 90vh;">
     <div class="row">
         <div class="col bg">
-            <RecentProjects MaxCount="3" />
+            @if (IsAuthenticated)
+            {
+                <RecentProjects MaxCount="4" />
+            }
         </div>
         <div class="col d-flex align-items-center">
             <div class="line" />
         </div>
         <div class="col d-flex align-items-center">
-            <div class="text-light">
+            <div class="text-dark">
                 <Tool Text="Проект" IconName="IconName.JournalText" TooltipTitle="Создать новый проект" TooltipPlacement="TooltipPlacement.Right"/>
                 <Tool Text="Веха" IconName="IconName.Star" TooltipTitle="Создать новую веху" TooltipPlacement="TooltipPlacement.Right"/>
                 <Tool Text="Задача" IconName="IconName.Check2Circle" TooltipTitle="Создать новую задачу" TooltipPlacement="TooltipPlacement.Right"/>
@@ -26,5 +29,4 @@
 
 @code {
 
-    
 }

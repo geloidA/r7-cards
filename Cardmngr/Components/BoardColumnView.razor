@@ -14,7 +14,7 @@
             <Badge Color="BadgeColor.Success">@BoardColumn.Count</Badge>
             <span class="ms-1 font-monospace column-title">@BoardColumn.Title</span>
         </div>
-        <div class="col-2 hidden d-flex flex-row align-items-center" style="font-size: small !important;">
+        <div class="col hidden d-flex flex-row justify-content-end" style="font-size: small !important;">
             <Dropdown Size="Size.ExtraSmall" AutoClose="true" >
                 <DropdownToggleButton Color="ButtonColor.Light">
                     <Icon Name="IconName.ThreeDots" />
@@ -24,6 +24,9 @@
                         >Добавить карточку</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
+            <div class="drag-tool">
+                <Icon Name="IconName.GripVertical" Size="IconSize.x6" />
+            </div>
         </div>
     </div>
     <ul class="card-container">
@@ -56,9 +59,20 @@
         highlighted = false;
         if (LastDraggedCard is { })
         {
+            if (TypeStatus.StatusType == (int)Status.Closed && !LastDraggedCard.CanMarkClosed())
+            {
+                var options = new ModalOptions { Position = ModalPosition.Middle, Size = Blazored.Modal.ModalSize.Automatic };
+                var modal = Modal.Show<CloseCardConfirmModal>("Закрытие задачи", options);
+                var res = await modal.Result;
+                if (res.Cancelled)
+                {
+                    return;
+                }
+                LastDraggedCard.CloseSubtasks();
+            }
+            await UpdateCardStatus(LastDraggedCard);
             LastDraggedCard.Column!.Remove(LastDraggedCard);
             BoardColumn.Add(LastDraggedCard);
-            await UpdateCardStatus(LastDraggedCard);
         }
     }
 
@@ -74,12 +88,11 @@
             task.CustomTaskStatus = taskStatus.IsDefault ? null : taskStatus.Id;
         }
     }
-
     
     private async Task ShowCardModal()
     {
         var options = new ModalOptions { Position = ModalPosition.Middle };
-        var modal = Modal.Show<CardCreationModal>("Сформулируйте задачу 🐷", options);
+        var modal = Modal.Show<CardCreationModal>("Сформулируйте задачу 🤔💭", options);
 
         var res = await modal.Result;
 

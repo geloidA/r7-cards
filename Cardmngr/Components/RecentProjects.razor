@@ -4,7 +4,7 @@
 
 @inject IProjectApi ProjectApi
 
-<h5 class="text-light fw-lighter mb-4">Последние проекты</h5>
+<h5 class="text-dark fw-lighter mb-4">Последние проекты</h5>
 
 @if (projects is { })
 {
@@ -17,7 +17,7 @@
             @foreach (var proj in projects)
             {
                 if (count == MaxCount) break;
-                <a class="text-light fw-light" href=@($"/project/{proj.Id}")>
+                <a class="text-dark fw-light" href=@($"/project/{proj.Id}")>
                     @proj.Title
                     <Icon Name="IconName.ArrowRight" />
                 </a>
@@ -26,7 +26,7 @@
         }
         else
         {
-            <span class="text-light fw-light">Нет доступных проектов</span>
+            <span class="text-dark fw-light">Нет доступных проектов</span>
         }
     </div>
 }

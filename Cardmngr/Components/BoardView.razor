@@ -1,23 +1,21 @@
 ﻿@using Modals
-@using Vector2 = BlazorCards.Vector2;
-
-@inject DragModule DragModule
-@inject IProjectApi ProjectApi
 
 @implements IDisposable
 
 <div class="h-100">
     <div class="row py-2 font-monospace fw-bold">
-        <span class="ms-2" style="color: white;">@Board.Title</span>
+        <span class="ms-2">@Board.Title</span>
     </div>
     <div class="row" style="overflow-x: scroll; height: 95%" >
         <div class="d-flex flex-row @Board.CssName pb-sm-2" >
             <CascadingValue Value="Board" IsFixed="true">
                 <CascadingValue Value="lastDraggingCard">
-                    @foreach (var column in Board)
-                    {
-                        <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
-                    }
+                    <CascadingValue Value="cardDetailsModalOptions">
+                        @foreach (var column in Board)
+                        {
+                            <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
+                        }
+                    </CascadingValue>
                 </CascadingValue>
             </CascadingValue>
         </div>
@@ -25,11 +23,18 @@
 </div>
 
 @code {
+    private readonly ModalOptions cardDetailsModalOptions = new()
+    {
+        Size = Blazored.Modal.ModalSize.ExtraLarge,
+        DisableBackgroundCancel = true
+    };
+
+    @* BoardColumn? lastDraggingColumn; *@
     BlazorCards.Card? lastDraggingCard;
+
     [Parameter] public Board Board { get; set; } = null!;
 
     private DotNetObjectReference<BoardView>? thisRef;
-    private Vector2 lastCursorPos;
 
     protected override void OnInitialized()
     {
@@ -42,30 +47,9 @@
             card.DragStart += UpdateDraggingCard;
     }
 
-    [JSInvokable]
-    public void OnDrag(int clientX, int clientY)
-    {
-        DragCurrentBoard(clientX, clientY);
-    }
-
     private void SubscribeDragHandler(BlazorCards.Card createdCard)
     {
         createdCard.DragStart += UpdateDraggingCard;
-    }
-
-    private void DragCurrentBoard(int posX, int posY)
-    {
-        var newCursorPos = new Vector2(posX, posY);
-        var dragOffset = (newCursorPos - lastCursorPos) / ZoomHandler.Zoom;
-        lastCursorPos = new Vector2(posX, posY);
-
-        Board.Pos += dragOffset;
-    }
-
-    async Task OnMouseDown(MouseEventArgs e)
-    {
-        lastCursorPos = e.GetClientPos();
-        await DragModule.StartDrag(thisRef!, nameof(OnDrag));
     }
     
     private void UpdateDraggingCard(BlazorCards.Card card)

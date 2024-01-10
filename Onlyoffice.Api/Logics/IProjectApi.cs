@@ -23,8 +23,15 @@ public interface IProjectApi
     Task<List<MyTask>> GetTasksByProjectIdAsync(int projectId);
     Task<List<MyTask>> GetFiltredTasksAsync(FilterTasksBuilder builder);
     Task<MyTask> CreateTaskAsync(int projectId, string title);
+    Task<List<UserProfile>> GetProjectTeam(int projectId);
+    Task<MyTask> DeleteTaskAsync(int taskId);
     Task<MyTask> CreateTaskAsync(int projectId, string title, Status status, int? statusId = null);
+    Task UpdateTaskAsync(int taskId, UpdatedStateTask state);
     Task UpdateTaskStatusAsync(int taskId, Status status, int? statusId = null);
+    Task UpdateSubtaskAsync(int taskId, int subtaskId, UpdatedStateSubtask state);
+    Task<Subtask> DeleteSubtaskAsync(int taskId, int subtaskId);
+    Task UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status);
+    Task<Subtask> CreateSubtaskAsync(int taskId, string title, string? responsible = null);
 }
 
 public static class ProjectApiExtensions

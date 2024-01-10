@@ -6,10 +6,19 @@
     margin: 5px;
     min-height: 100%;
     border-radius: 5px;
-    border: 1px solid #75868a;
+    border: 1px solid var(--boarder-color);
     padding: 5px;
     flex-direction: column;
 }
+
+    .board .board-column .drag-tool {
+        cursor: grab;
+    }
+
+    .board .board-column .drag-tool:active {
+        cursor: grabbing;
+    }
+
     .board .board-column .column-title {
         color: var(--col-title-color);
     }

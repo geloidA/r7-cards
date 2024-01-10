@@ -1,0 +1,39 @@
+﻿@inherits CreationModalBase
+
+<div class="row-cols-1">
+    <div class="row py-3">
+        <div class="col">
+            <span class="font-monospace">Название</span>            
+        </div>
+        <div class="col d-flex justify-content-end">
+            <InputText id="subtask-name-input" style="font-size: larger;" @bind-Value="subtask.Title" />
+        </div>
+    </div>
+    <div class="row py-3">
+        <div class="col">
+            <span class="font-monospace">Ответственный</span>           
+        </div>
+        <div class="col d-flex justify-content-end">
+            <ResponsibleSelection @bind-Responsible="subtask.Responsible" EditMode="true" Task="Task" />
+        </div>
+    </div>
+</div>
+<div class="mt-2 d-flex justify-content-end">
+    <Button Type="ButtonType.Submit" @onclick="SumbitCreate" Disabled="string.IsNullOrWhiteSpace(subtask.Title)"
+        Color="ButtonColor.Success" >Создать</Button>
+    <Button class="ms-2" Color="ButtonColor.Light" @onclick="Cancel" >Отмена</Button>
+</div>
+
+@code {
+    private SubtaskState subtask = new();
+
+    [Parameter] public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
+
+    protected override async Task SumbitCreate() => await BlazoredModal.CloseAsync(ModalResult.Ok(subtask));
+
+    public class SubtaskState
+    {
+        public string Title { get; set; } = null!;
+        public Onlyoffice.Api.Models.Responsible? Responsible { get; set; }
+    }
+}

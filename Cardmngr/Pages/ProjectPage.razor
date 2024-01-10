@@ -8,7 +8,7 @@
 @inject IProjectApi ProjectApi
 
 @if (board is { })
-{    
+{
     <BoardView Board="board" />
 }
 else
@@ -28,8 +28,8 @@ else
         {
             var project = ProjectApi.GetProjectByIdAsync(ProjectId.Value);
             var tasks = ProjectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(ProjectId.Value));
-            var statuses = ProjectApi.GetAllTaskStatusesAsync();
-            board = ConvertToBoard(await project, await tasks, await statuses);
+            var statuses = await ProjectApi.GetAllTaskStatusesAsync();
+            board = ConvertToBoard(await project, await tasks, statuses.OrderBy(x => x.Order));
         }
     }
 
@@ -44,7 +44,8 @@ else
     {
         return statuses
             .Select(x => tasks
-                .Where(t => t.CustomTaskStatus.HasValue ? t.CustomTaskStatus.Value == x.Id : t.Status == x.StatusType)
+                .Where(t => t.CustomTaskStatus.HasValue ? t.CustomTaskStatus.Value == x.Id : 
+                    t.Status == x.StatusType && x.IsDefault)
                 .OrderBy(x => x.Updated));
     }
 }

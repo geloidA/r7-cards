@@ -1,22 +1,25 @@
 ﻿@using Onlyoffice.Api.Common
+@using System.Security.Claims
 
 @inject IProjectApi ProjectApi
 
-<li class="@Card.CssName @CssDragOver @CssDragStart @CssHighPriority"
+<li class="@Card.CssName @CssDragOver @CssDragStart @CssDeadline" @onclick="OpenModal"
     @ondragover="DragOver" @ondragover:stopPropagation @ondragover:preventDefault
-    @ondragenter:preventDefault draggable="true" @ondragleave="DragLeave"
+    @ondragenter:preventDefault draggable="@canEdit.ToString()" @ondragleave="DragLeave"
     @ondrop:stopPropagation @ondrop="Drop" @ondragstart="DragStart"
     @ondragend="() => isDragged = false" >
-    <div class="container py-1 px-4">
+    <div class="container py-1 px-4 default-text">
         <div class="row py-1">
             <div class="px-0 d-flex flex-row">
                 @if (Task.Priority == (int)TaskPriority.High)
                 {
-                    <Icon Name="IconName.Fire" Color="IconColor.Danger" />
+                    <Tool IconName="IconName.Fire" IconColor="IconColor.Danger" 
+                        TooltipTitle="Приоритет - Высокий" TooltipPlacement="TooltipPlacement.Bottom" />
                 }
                 else
                 {
-                    <Icon Name="IconName.EmojiNeutral" Color="IconColor.Success" />
+                    <Tool IconName="IconName.EmojiNeutral" IconColor="IconColor.Success"
+                        TooltipTitle="Приоритет - Обычный" TooltipPlacement="TooltipPlacement.Bottom" />
                 }
                 <div class="ms-1">@Card.Title</div>
             </div>
@@ -33,6 +36,14 @@
             }
         </div>
         <div class="row py-1">
+            <div class="px-0">
+                @if (Task.Responsibles?.Any() ?? false)
+                {
+                    <ResponsiblesView ShowTooltip="true" Responsibles="Task.Responsibles" MaxCount="2" />
+                }
+            </div>
+        </div>
+        <div class="row py-1">
             @if (Task.CreatedBy is { })
             {
                 <div class="fw-light px-0"
@@ -45,34 +56,66 @@
 </li>
 
 @code {
+    private bool canEdit;
+
+    [CascadingParameter]
+    private ModalOptions CardDetailsModalOptions { get; set; } = null!;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    [CascadingParameter] IModalService Modal { get; set; } = null!;
+
     [CascadingParameter]
     private BlazorCards.Card? LastDraggingCard { get; set; }
 
     [CascadingParameter]
     private Board Board { get; set; } = null!;
-    
+
     string CssDragOver => highlighted ? "dragover" : "";
-    string CssHighPriority => Task.Priority == (int)TaskPriority.High ? "red-border" : "";
     string CssDragStart => isDragged ? "dragged" : "";
+    string CssDeadline => IsDeadlineOut() ? "red-border" : "";
+
     private bool highlighted;
     private bool isDragged;
     [Parameter] public BlazorCards.Card Card { get; set; } = null!;
 
-    private Onlyoffice.Api.Models.Task Task => Card.GetTask(); 
+    private Onlyoffice.Api.Models.Task Task => Card.GetTask();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine(DateTime.Now);
+        if (AuthenticationState is { })
+        {
+            var authState = await AuthenticationState;
+            canEdit = IsCanEdit(authState.User.Claims);
+
+        } else throw new NullReferenceException("Card auth state is null");
+        
         Card.CssName = "my-card";
     }
 
-    async void Drop()
+    private async Task OpenModal()
+    {
+        var parameters = new ModalParameters
+        {
+            { "Card", Card },
+            { "IsCanEdit", canEdit }
+        };
+
+        var modal = Modal.Show<Modals.CardDetailsModal>("", parameters, CardDetailsModalOptions);
+        
+        var res = await modal.Result;
+    }
+
+    async Task Drop()
     {
         highlighted = false;
         if (LastDraggingCard is { } && LastDraggingCard != Card)
         {
+            await UpdateCardStatus(LastDraggingCard);
             LastDraggingCard.Column!.Remove(LastDraggingCard);
             Card.Column!.AddBefore(Card, LastDraggingCard);
-            await UpdateCardStatus(LastDraggingCard);
         }
     }
 
@@ -87,6 +130,24 @@
             other.Status = current.Status;
             other.CustomTaskStatus = current.CustomTaskStatus;
         }
+    }
+
+    private bool IsCanEdit(IEnumerable<Claim> claims)
+    {
+        var isAdmin = bool.Parse(claims.First(x => x.Type == "IsAdmin").Value);
+        var userId = claims.First(x => x.Type == "UserId").Value;
+
+        return 
+            isAdmin || 
+            Task.CreatedBy!.Id == userId || 
+            Task.Responsibles!.Any(x => x.Id == userId);
+    }
+
+    private bool IsDeadlineOut()
+    {
+        return Task.Deadline.HasValue 
+            ? DateTime.Now >= Task.Deadline && Task.Status != (int)Status.Closed
+            : false;
     }
 
     void DragOver()

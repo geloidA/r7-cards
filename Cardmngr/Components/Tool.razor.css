@@ -5,3 +5,11 @@
 .tool:hover {
     cursor: pointer;
 }
+
+.tool.disabled:hover {
+    cursor: default;
+}
+
+.disabled {
+    opacity: 0.5;
+}

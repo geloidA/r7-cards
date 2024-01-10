@@ -1,0 +1,66 @@
+﻿@inject IProjectApi ProjectApi
+
+<Card>
+    <CardBody style="max-height: 300px; min-height: 160px; overflow-y: scroll;">
+        <CardTitle>
+            <div class="d-flex align-items-center">
+                Подзадачи
+            </div>
+        </CardTitle>
+        @if (Task.Subtasks?.Any() ?? false)
+        {
+            <CascadingValue Value="lastEditingSubtask" >
+                @foreach (var subtask in Task.Subtasks)
+                {
+                    <SubtaskView Subtask="subtask" Task="Task" @key="subtask" OnDeleted="Refresh"
+                        EditModeChanged="next => lastEditingSubtask = next" CanEdit="!Disabled" />
+                }
+            </CascadingValue>
+        }
+        else
+        {
+            <span class="text-secondary">Список пуст</span>
+        }
+    </CardBody>
+    <CardFooter class="d-flex justify-content-end">
+        <Tool IconName="IconName.Plus" IconSize="IconSize.x5" TooltipTitle="Добавить"
+            Disabled="Disabled" @onclick="ShowCreationModal" />
+    </CardFooter>
+</Card>
+
+@code {
+    private SubtaskView? lastEditingSubtask;
+    private string userId = null!;
+    
+    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
+    [CascadingParameter] IModalService Modal { get; set; } = default!;
+    [Parameter] public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
+    [Parameter] public bool Disabled { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthenticationState is { })
+        {
+            var state = await AuthenticationState;
+            userId = state.User.FindFirst("UserId")?.Value ?? throw new NullReferenceException("User ID is null");
+        }
+    }
+
+    private void Refresh() => StateHasChanged();
+
+    private async Task ShowCreationModal()
+    {
+        var modal = Modal.Show<SubtaskCreationModal>("Добавление подзадачи", 
+            new ModalParameters { { "Task", Task } }, 
+            new ModalOptions { Position = ModalPosition.Middle });
+
+        var res = await modal.Result;
+
+        if (res.Confirmed)
+        {
+            var data = (SubtaskCreationModal.SubtaskState)res.Data!;
+            var created = await ProjectApi.CreateSubtaskAsync(Task.Id, data.Title, data.Responsible?.Id);
+            Task.Subtasks?.Add(created);
+        }
+    }
+}

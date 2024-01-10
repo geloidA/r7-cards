@@ -1,0 +1,24 @@
+﻿
+<div class="d-flex flex-row align-items-center">
+    @for (var i = 0; i < MaxCount && i < Responsibles.Count; i++)
+    {
+        <ResponsibleAvatar Responsible="Responsibles[i]" ShowTooltip="@ShowTooltip" />
+    }
+    @if (Responsibles.Count > MaxCount)
+    {
+        <span class="fw-lighter ms-1">+@(Responsibles.Count - MaxCount)</span>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public List<Onlyoffice.Api.Models.Responsible> Responsibles { get; set; } = null!;
+
+    [Parameter]
+    public bool ShowTooltip { get; set; }
+
+    [Parameter]
+    public int MaxCount { get; set; } = 2;
+
+}

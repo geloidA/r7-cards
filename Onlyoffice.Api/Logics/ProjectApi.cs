@@ -60,6 +60,46 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/task/status", new { title, status, statusId }));
         var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
         return taskDao?.Response ?? throw new NullReferenceException("Task was not created");
+    }    
+
+    public async Task<List<UserProfile>> GetProjectTeam(int projectId)
+    {
+        var projectTeamDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<UserProfilesDao>($"api/project/{projectId}/team"));
+        return projectTeamDao?.Response ?? [];
+    }    
+
+    public async Task<Models.Task> DeleteTaskAsync(int taskId)
+    {
+        var deletedTask = await InvokeHttpClientAsync(c => c.DeleteFromJsonAsync<SingleTaskDao>($"api/project/task/{taskId}"));
+        return deletedTask?.Response ?? throw new NullReferenceException("Task was not deleted");
+    }
+
+    public System.Threading.Tasks.Task UpdateTaskAsync(int taskId, UpdatedStateTask state)
+    {
+        return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}", state));
+    }
+
+    public System.Threading.Tasks.Task UpdateSubtaskAsync(int taskId, int subtaskId, UpdatedStateSubtask state)
+    {
+        return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}/{subtaskId}", state));
+    }    
+
+    public async Task<Subtask> DeleteSubtaskAsync(int taskId, int subtaskId)
+    {
+        var deletedSubtask = await InvokeHttpClientAsync(c => c.DeleteFromJsonAsync<SingleSubtaskDao>($"api/project/task/{taskId}/{subtaskId}"));
+        return deletedSubtask?.Response ?? throw new NullReferenceException("Subtask was not deleted");
+    }
+
+    public System.Threading.Tasks.Task UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status)
+    {
+        return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}/{subtaskId}/status", new { status }));
+    }
+
+    public async Task<Subtask> CreateSubtaskAsync(int taskId, string title, string? responsible = null)
+    {
+        var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/task/{taskId}", new { title, responsible }));
+        var subtaskDao = await response.Content.ReadFromJsonAsync<SingleSubtaskDao>();
+        return subtaskDao?.Response ?? throw new NullReferenceException("Subtask was not created");
     }
 
     private async Task<T> InvokeHttpClientAsync<T>(Func<HttpClient, Task<T>> func)

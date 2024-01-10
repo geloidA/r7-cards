@@ -1,0 +1,29 @@
+﻿@inject IConfiguration Config
+
+@if (proxyUrl is { })
+{
+    <div class="avatar-circle responsible-view">
+        @if (ShowTooltip)
+        {
+            <Tooltip Title="@Responsible.DisplayName" Placement="TooltipPlacement.Bottom" >
+                <img src=@($"{proxyUrl}/api/people{Responsible.AvatarSmall}") />
+            </Tooltip>
+        }
+        else
+        {
+            <img src=@($"{proxyUrl}/api/people{Responsible.AvatarSmall}") />
+        }
+    </div>
+}
+
+@code {
+    private string? proxyUrl;
+
+    [Parameter] public Onlyoffice.Api.Models.Responsible Responsible { get; set; } = null!;
+    [Parameter] public bool ShowTooltip { get; set; }
+
+    protected override void OnInitialized()
+    {
+        proxyUrl = Config["proxy-url"] ?? throw new NullReferenceException("No proxy url config");
+    }
+}

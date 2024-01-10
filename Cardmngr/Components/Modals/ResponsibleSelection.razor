@@ -1,0 +1,66 @@
+﻿@if (Responsible is { })
+{
+    @if (EditMode)
+    {
+        <a class="clickable" @onclick="ShowResponsibleSelectionModal">
+            <ResponsibleAvatar Responsible="Responsible" ShowTooltip="true" />
+        </a>
+    }
+    else
+    {
+        <ResponsibleAvatar Responsible="Responsible" ShowTooltip="true" />
+    }
+}
+else
+{
+    @if (EditMode)
+    {
+        <a class="text-secondary fw-light clickable" @onclick="ShowResponsibleSelectionModal" style="font-size: small;">
+            <i>Без ответственного</i>
+        </a>
+    }
+    else
+    {
+        <i class="text-secondary fw-light" style="font-size: small;">Без ответственного</i>
+    }
+}
+
+@code {
+
+    [CascadingParameter] IModalService Modal { get; set; } = default!;
+
+    [Parameter]
+    public Onlyoffice.Api.Models.Responsible? Responsible { get; set; } 
+
+    [Parameter]
+    public EventCallback<Onlyoffice.Api.Models.Responsible> ResponsibleChanged { get; set; }
+
+    [Parameter]
+    public bool EditMode { get; set; }
+
+    [Parameter]
+    public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
+
+    private async Task ShowResponsibleSelectionModal()
+    {
+        var parameters = new ModalParameters
+        {
+            { "ProjectId", Task.ProjectOwner!.Id },
+            { "Multiple", false }
+        };
+
+        ModalOptions commonOptions = new()
+        {
+            Position = ModalPosition.Middle
+        };
+
+        var modal = Modal.Show<ResponsiblesSelectionModal>("Выберите ответственного", parameters, commonOptions);
+        
+        var result = await modal.Result;
+
+        if (result.Confirmed)
+        {
+            await ResponsibleChanged.InvokeAsync((Onlyoffice.Api.Models.Responsible)result.Data!);
+        }
+    }
+}

@@ -1,0 +1,14 @@
+﻿<div class="row">
+    <div class="col d-flex justify-content-center">
+        <Button Color="ButtonColor.Light"
+            @onclick="async () => await Modal.CloseAsync(ModalResult.Ok())">
+            @OkTitle
+        </Button>
+    </div>
+    <div class="col d-flex justify-content-center">
+        <Button Color="ButtonColor.Secondary" Outline
+            @onclick="async () => await Modal.CloseAsync(ModalResult.Cancel())" >
+            @CancelTitle
+        </Button>
+    </div>
+</div>

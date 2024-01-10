@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components/ControlPanel/" />
     <Folder Include="wwwroot/js/GeneratedJS/" />
   </ItemGroup>
 
@@ -38,7 +37,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <PropertyGroup Label="Typescript Config (Debug)" Condition="'$(Configuration)' == 'Debug'">
+  <PropertyGroup Label="Typescript Config (Debug)">
     <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
   </PropertyGroup>

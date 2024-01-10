@@ -1,6 +1,8 @@
 ﻿using BlazorCards;
 using BlazorCards.Core;
+using Onlyoffice.Api.Models.Extensions;
 using Onlyoffice.Api.Models;
+using Onlyoffice.Api.Common;
 
 namespace Cardmngr;
 
@@ -22,5 +24,23 @@ public static class BlazorCardExtensions
     {
         return board.Data as Project ??
             throw new InvalidOperationException("Board data is not a project");
-    }    
+    }
+
+    public static bool CanMarkClosed(this Card card)
+    {
+        return card.GetTask().CanMarkClosed();
+    }
+
+    public static void CloseSubtasks(this Card card)
+    {
+        var task = card.GetTask();
+
+        if (task.Subtasks is not { } || task.Subtasks.Count == 0)
+            throw new InvalidOperationException("No subtasks found");
+
+        foreach (var subtask in task.Subtasks)
+        {
+            subtask.Status = (int)Status.Closed;
+        }
+    }
 }

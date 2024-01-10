@@ -1,17 +1,22 @@
 :root {
     --col-bg-2: #3d84ca;
     --padding-main: 0;
-    --main-board-bg: #1d252c;
-    --main-board-bg-dark: #192127;
-    --main-board-bg-light: #6c7781;
-    --col-title-color: #dad7d7;
-    --main-col-bg: #000000;
-    --highlight-col: #e9cece;
-    --drop-highlight-col: #dfc036;
+    --main-board-bg: #ffffff;
+    --main-board-bg-dark: #303436;
+    --main-board-bg-light: #667a8d;
+    --col-title-color: #2a2f35;
+    --boarder-color: #75868a;
+    --main-col-bg: #f6f8fa;
+    --highlight-col: #441f1f;
+    --drop-highlight-col: #ecd052;
 }
 
 ul {
     margin-bottom: 4px;
+}
+
+.clickable {
+    cursor: pointer;
 }
 
 .highlight:hover {

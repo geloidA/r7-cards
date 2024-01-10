@@ -1,0 +1,15 @@
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid var(--boarder-color);
+}
+
+.avatar-circle img {
+  max-width: 100%;
+  max-height: 100%;
+}

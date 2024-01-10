@@ -1,5 +1,10 @@
 ﻿namespace Onlyoffice.Api.Models;
 
+public class UserProfilesDao : HttpResponseDaoBase
+{
+    public List<UserProfile>? Response { get; set; }
+}
+
 public class UserProfileDao : HttpResponseDaoBase
 {
     public UserProfile? Response { get; set; }

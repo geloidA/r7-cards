@@ -3,9 +3,9 @@
 <Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
 
 <Offcanvas @ref="offcanvas" Placement="Placement.Start" Size="OffcanvasSize.Small" ShowCloseButton="false"
-    Style="background-color: var(--main-board-bg); border-radius: 10px;">
+    Style="background-color: var(--main-board-bg); border-radius: 0px 7px 7px 0px;">
     <HeaderTemplate >
-        <a class="text-light fw-bold fs-4" href="/">ДЕТАЛЬ</a>
+        <a class="text-dark fw-bold fs-4" href="/">ДЕТАЛЬ</a>
     </HeaderTemplate> 
     <BodyTemplate>
 
@@ -17,7 +17,7 @@
     <main class="p-0" style="overflow-y: hidden;">
         <div class="bb-top-row px-4 d-flex" style="background-color: var(--main-col-bg);">
             <div class="col justify-content-start">
-                <Button class="py-0" Color="ButtonColor.Light" Outline="true" @onclick="OpenSidebar" >
+                <Button class="py-0" Color="ButtonColor.Dark" Outline="true" @onclick="OpenSidebar" >
                     <Icon Name="IconName.List" />
                 </Button>
             </div>

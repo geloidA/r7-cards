@@ -1,7 +1,7 @@
 .board .board-column .card-container .my-card {
     font-size: small;
     margin-bottom: 10px;
-    border: 1px solid #424d5c;
+    border: 1px solid var(--boarder-color);
     cursor: pointer;
     background: var(--main-board-bg);
     color: #ffffff;
@@ -25,5 +25,9 @@
  }
 
 .red-border {
-    border: 1px solid red !important;
+    border: 2px solid red !important;
+}
+
+.default-text {
+    color: var(--col-title-color);
 }

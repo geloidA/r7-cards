@@ -2,6 +2,11 @@
 
 namespace Onlyoffice.Api.Models;
 
+public class SingleSubtaskDao : HttpResponseDaoBase
+{
+    public Subtask? Response { get; set; }
+}
+
 public class SingleTaskDao : HttpResponseDaoBase
 {
     public Task? Response { get; set; }
@@ -32,6 +37,53 @@ public class Task : ICardDao
     public DateTime Updated { get; set; }
     public List<Responsible>? Responsibles { get; set; }
     public int? CustomTaskStatus { get; set; }
+    public DateTime? Deadline { get; set; }
+
+    public Task FullCopy(bool copySubtasks = true)
+    {
+        return new Task
+        {
+            CanEdit = CanEdit,
+            CanCreateSubtask = CanCreateSubtask,
+            CanDelete = CanDelete,
+            CanReadFiles = CanReadFiles,
+            Id = Id,
+            Title = Title,
+            Description = Description,
+            Priority = Priority,
+            ProjectOwner = ProjectOwner?.FullCopy(),
+            Subtasks = copySubtasks ? Subtasks?.Select(x => x.FullCopy()).ToList() : Subtasks,
+            Status = Status,
+            UpdatedBy = UpdatedBy?.FullCopy(),
+            Created = Created,
+            CreatedBy = CreatedBy?.FullCopy(),
+            Updated = Updated,
+            Responsibles = Responsibles?.Select(x => x.FullCopy()).ToList(),
+            CustomTaskStatus = CustomTaskStatus,
+            Deadline = Deadline
+        };
+    }
+
+    public UpdatedStateTask GetUpdateState()
+    {
+        return new UpdatedStateTask
+        {
+            Description = Description,
+            Deadline = Deadline,
+            Priority = Priority,
+            Title = Title,
+            Responsibles = Responsibles!.Select(x => x.Id).ToList()
+        };
+    }
+}
+
+public class UpdatedStateTask
+{
+    public string? Description { get; set; }
+    public DateTime? Deadline { get; set; }
+    public int Priority { get; set; }
+    public string? Title { get; set; }
+    public List<string?>? Responsibles { get; set; }
 }
 
 public class TaskOwner
@@ -40,6 +92,17 @@ public class TaskOwner
     public string? Title { get; set; }
     public int Status { get; set; }
     public bool IsPrivate { get; set; }
+
+    public TaskOwner FullCopy()
+    {
+        return new TaskOwner
+        {
+            Id = Id,
+            Title = Title,
+            Status = Status,
+            IsPrivate = IsPrivate
+        };
+    }
 }
 
 public class Subtask
@@ -53,6 +116,50 @@ public class Subtask
     public DateTime Created { get; set; }
     public CreatedBy? CreatedBy { get; set; }
     public DateTime Updated { get; set; }
+    public Responsible? Responsible { get; set; }
+
+    public UpdatedStateSubtask GetUpdatedState()
+    {
+        return new UpdatedStateSubtask
+        {
+            Title = Title,
+            Responsible = Responsible?.Id
+        };
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Subtask other) return false;
+        return other.Id == Id;
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
+
+    public Subtask FullCopy()
+    {
+        return new Subtask
+        {
+            CanEdit = CanEdit,
+            TaskId = TaskId,
+            Id = Id,
+            Title = Title,
+            Description = Description,
+            Status = Status,
+            Created = Created,
+            CreatedBy = CreatedBy?.FullCopy(),
+            Updated = Updated,
+            Responsible = Responsible?.FullCopy()
+        };
+    }
+}
+
+public class UpdatedStateSubtask
+{
+    public string? Responsible { get; set; }
+    public string? Title { get; set; }
 }
 
 public class CreatedBy
@@ -61,6 +168,17 @@ public class CreatedBy
     public string? DisplayName { get; set; }
     public string? AvatarSmall { get; set; }
     public string? ProfileUrl { get; set; }
+
+    public CreatedBy FullCopy()
+    {
+        return new CreatedBy
+        {
+            Id = Id,
+            DisplayName = DisplayName,
+            AvatarSmall = AvatarSmall,
+            ProfileUrl = ProfileUrl
+        };
+    }
 }
 
 public class UpdatedBy
@@ -69,4 +187,15 @@ public class UpdatedBy
     public string? DisplayName { get; set; }
     public string? AvatarSmall { get; set; }
     public string? ProfileUrl { get; set; }
+
+    public UpdatedBy FullCopy()
+    {
+        return new UpdatedBy
+        {
+            Id = Id,
+            DisplayName = DisplayName,
+            AvatarSmall = AvatarSmall,
+            ProfileUrl = ProfileUrl
+        };
+    }
 }

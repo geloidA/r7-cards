@@ -32,6 +32,6 @@ internal class Program
 
         app.MapControllers();
 
-        app.Run();
+        app.Run($"http://localhost:{config["Port"] ?? throw new NullReferenceException("Port config is null")}");
     }    
 }

@@ -18,7 +18,8 @@ public class CookieStateProvider : AuthenticationStateProvider
         var identity = new ClaimsIdentity(new[]{
             new Claim(ClaimTypes.Email, Check(userProfile.Email)),
             new Claim(ClaimTypes.Name, $"{userProfile.FirstName} {userProfile.LastName}"),
-            new Claim("UserId", Check(userProfile.Id))
+            new Claim("UserId", Check(userProfile.Id)),
+            new Claim("IsAdmin", userProfile.IsAdmin.ToString())
         }, "AuthCookie");
     
         claimsPrincipal = new ClaimsPrincipal(identity);

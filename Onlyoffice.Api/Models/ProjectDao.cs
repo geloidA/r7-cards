@@ -1,4 +1,6 @@
-﻿namespace Onlyoffice.Api.Models;
+﻿using System.Security.Cryptography;
+
+namespace Onlyoffice.Api.Models;
 
 public class SingleProjectDao : HttpResponseDaoBase
 {
@@ -28,4 +30,15 @@ public class Responsible
     public string? DisplayName { get; set; }
     public string? AvatarSmall { get; set; }
     public string? ProfileUrl { get; set; }
+
+    public Responsible FullCopy()
+    {
+        return new Responsible
+        {
+            Id = Id,
+            DisplayName = DisplayName,
+            AvatarSmall = AvatarSmall,
+            ProfileUrl = ProfileUrl
+        };
+    }
 }

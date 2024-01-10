@@ -1,0 +1,46 @@
+﻿
+<Card >
+    <CardBody class="d-flex flex-column" style="overflow-y: scroll; max-height: 200px;">
+        <CardTitle>
+            <div class="row d-flex align-items-center">
+                <div class="col"> 
+                    Ответственные
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <Tool Disabled="Disabled" IconName="IconName.Pencil" IconSize="IconSize.x6"
+                        TooltipTitle="Изменить" OnClick="ShowResponsibleSelectionModal" />
+                </div>
+            </div>
+        </CardTitle>
+        <ResponsibleList Responsibles="Task.Responsibles" />
+    </CardBody>
+</Card>
+
+
+@code {
+    [CascadingParameter] ModalOptions CommonOptions { get; set; } = null!;
+
+    [CascadingParameter] IModalService Modal { get; set; } = default!;
+
+    [Parameter] public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
+    [Parameter] public bool Disabled { get; set; }
+    
+
+    private async Task ShowResponsibleSelectionModal()
+    {
+        var parameters = new ModalParameters
+        {
+            { "SelectedIds", Task.Responsibles!.Select(x => x.Id).ToList() },
+            { "ProjectId", Task.ProjectOwner!.Id }
+        };
+
+        var modal = Modal.Show<ResponsiblesSelectionModal>("Выберите ответственных", parameters, CommonOptions);
+        
+        var result = await modal.Result;
+
+        if (result.Confirmed)
+        {
+            Task.Responsibles = (List<Onlyoffice.Api.Models.Responsible>)result.Data!;
+        }
+    }
+}

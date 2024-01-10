@@ -1,0 +1,67 @@
+﻿
+<Card>
+    <CardBody>
+        <div class="d-flex flex-row align-items-center">
+            Приоритет -
+            @if (Task.Priority == (int)TaskPriority.High)
+            {
+                <i class="ms-1 text-danger">Высокий</i>
+                <Icon class="ms-1" Name="IconName.Fire" Size="IconSize.x5" Color="IconColor.Danger"/>
+            }
+            else
+            {
+                <i class="ms-1 text-success">Обычный</i>
+                <Icon class="ms-1" Name="IconName.EmojiNeutral" Size="IconSize.x5" Color="IconColor.Success"/>
+            }
+            <div class="col d-flex justify-content-end">
+                <Tool IconName="IconName.ArrowDownUp" TooltipPlacement="TooltipPlacement.Top"
+                    Disabled="Disabled"
+                    TooltipTitle="Изменить" 
+                    OnClick="() => Task.Priority = Task.Priority == (int)TaskPriority.High 
+                        ? (int)TaskPriority.Regular 
+                        : (int)TaskPriority.High"/>
+            </div>
+        </div>
+        <div class="mt-1">
+            Создана:
+            <span class="small ms-2">@Task.Created.ToString("d MMM yyyy г., HH:mm")</span>
+            <i class="fw-light">
+                - @Task.CreatedBy?.DisplayName
+            </i>
+        </div>
+        <div class="mt-1">
+            Обновлено:
+            <span class="small ms-2">@Task.Updated.ToString("d MMM yyyy г., HH:mm")</span>
+        </div>
+        <div class="mt-1 d-flex flex-row align-items-center">
+            Крайний срок: 
+            @if (isEditMode)
+            {
+                <InputDate class="ms-2" @bind-Value="@Task.Deadline" style="max-width: 150px;" />
+            }
+            else
+            {
+                @if (Task.Deadline.HasValue)
+                {
+                    <span class="small ms-2">@Task.Deadline?.ToString("d MMM yyyy г.")</span>
+                }
+                else
+                {
+                    <i class="text-secondary fw-lighter ms-2"> Не установлен</i>
+                }
+            }            
+            <div class="col d-flex justify-content-end">
+                <Tool IconName="@(isEditMode ? IconName.PencilFill : IconName.Pencil)" 
+                    Disabled="Disabled"
+                    TooltipTitle="@(isEditMode ? "Прекратить" : "Изменить")" 
+                    OnClick="() => isEditMode = !isEditMode"/>
+            </div>
+        </div>
+    </CardBody>
+</Card>
+
+@code {
+    private bool isEditMode;
+    [Parameter] public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
+    [Parameter] public bool Disabled { get; set; }
+}
