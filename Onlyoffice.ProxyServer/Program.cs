@@ -12,6 +12,7 @@ internal class Program
         builder.Services
             .AddProxies()
             .AddHttpClient();
+
         builder.Services.AddControllers();
 
         var app = builder.Build();
@@ -32,6 +33,6 @@ internal class Program
 
         app.MapControllers();
 
-        app.Run($"http://localhost:{config["Port"] ?? throw new NullReferenceException("Port config is null")}");
+        app.Run($"http://{config["Host"] ?? throw new NullReferenceException("Host config is null")}");
     }    
 }

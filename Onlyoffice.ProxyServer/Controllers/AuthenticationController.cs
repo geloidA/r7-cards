@@ -1,5 +1,4 @@
-﻿using AspNetCore.Proxy;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Onlyoffice.ProxyServer.Controllers;
 

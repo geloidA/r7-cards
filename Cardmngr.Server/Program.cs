@@ -8,7 +8,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddResponseCompression(opts =>
 {
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-        new[] { "application/octet-stream" });
+        ["application/octet-stream"]);
 });
 
 var app = builder.Build();
@@ -26,5 +26,4 @@ app.MapRazorPages();
 
 app.MapFallbackToFile("index.html");
 
-
-app.Run($"http://0.0.0.0:{config["Port"] ?? throw new NullReferenceException("Port config is null")}");
+app.Run($"http://{config["Host"] ?? throw new NullReferenceException("Host config is null")}");
