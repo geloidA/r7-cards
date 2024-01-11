@@ -13,6 +13,10 @@ internal class Program
             .AddProxies()
             .AddHttpClient();
 
+        builder.Services
+            .AddHttpClient("NoCookie")
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { UseCookies = false });
+
         builder.Services.AddControllers();
 
         var app = builder.Build();
