@@ -11,6 +11,11 @@
     flex-direction: column;
 }
 
+    .board .board-column.collapsed {
+        min-width: 36px;
+        max-width: 36px;
+    }
+
     .board .board-column .drag-tool {
         cursor: grab;
     }
@@ -37,9 +42,20 @@
     }
 
     .board .board-column .card-container {
+        overflow-y: auto;
         display: flex;
+        max-height: 96%;
         align-items: center;
         flex-direction: column;
         padding: 0px;
         list-style: none;
     }
+
+    .board .board-column .card-container::-webkit-scrollbar {
+        width: 0px;
+    }
+
+.text-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+}

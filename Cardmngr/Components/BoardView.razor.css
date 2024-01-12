@@ -1,4 +1,6 @@
 .board {
     font-weight: 600;
     font-size: larger;
+    overflow-x: auto;
+    overflow-y: hidden;
 }

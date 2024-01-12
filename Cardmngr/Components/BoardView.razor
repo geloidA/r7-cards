@@ -2,24 +2,17 @@
 
 @implements IDisposable
 
-<div class="h-100">
-    <div class="row py-2 font-monospace fw-bold">
-        <span class="ms-2">@Board.Title</span>
-    </div>
-    <div class="row" style="overflow-x: scroll; height: 95%" >
-        <div class="d-flex flex-row @Board.CssName pb-sm-2" >
-            <CascadingValue Value="Board" IsFixed="true">
-                <CascadingValue Value="lastDraggingCard">
-                    <CascadingValue Value="cardDetailsModalOptions">
-                        @foreach (var column in Board)
-                        {
-                            <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
-                        }
-                    </CascadingValue>
-                </CascadingValue>
+<div class="d-flex h-100 flex-row @Board.CssName pb-sm-2" >
+    <CascadingValue Value="Board" IsFixed="true">
+        <CascadingValue Value="lastDraggingCard">
+            <CascadingValue Value="cardDetailsModalOptions">
+                @foreach (var column in Board)
+                {
+                    <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
+                }
             </CascadingValue>
-        </div>
-    </div>
+        </CascadingValue>
+    </CascadingValue>
 </div>
 
 @code {
@@ -28,8 +21,7 @@
         Size = Blazored.Modal.ModalSize.ExtraLarge,
         DisableBackgroundCancel = true
     };
-
-    @* BoardColumn? lastDraggingColumn; *@
+    
     BlazorCards.Card? lastDraggingCard;
 
     [Parameter] public Board Board { get; set; } = null!;

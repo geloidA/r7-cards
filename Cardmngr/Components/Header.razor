@@ -1,0 +1,49 @@
+﻿@implements IDisposable
+
+<Offcanvas @ref="offcanvas" Placement="Placement.Start" Size="OffcanvasSize.Small" ShowCloseButton="false"
+    Style="background-color: var(--main-board-bg); border-radius: 0px 7px 7px 0px;">
+    <HeaderTemplate >
+        <a class="text-dark fw-bold fs-4" href="/">Карточки</a>
+    </HeaderTemplate> 
+    <BodyTemplate>
+
+    </BodyTemplate>
+</Offcanvas>
+
+<div class="bb-top-row px-4 d-flex" style="background-color: var(--main-col-bg);">
+    <div class="col-md-1 justify-content-start">
+        <Button class="py-0" Color="ButtonColor.Dark" Outline="true" @onclick="OpenSidebar" >
+            <Icon Name="IconName.List" />
+        </Button>
+    </div>
+    <div class="col-md-5">
+        @HeaderTitle.Content
+    </div>
+    <div class="col-md-6 d-flex justify-content-end">
+        <Toolbar />
+    </div>
+</div>
+
+@code {
+    private Offcanvas? offcanvas;
+
+    [CascadingParameter] HeaderTitle HeaderTitle { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        HeaderTitle.ContentChanged += StateHasChanged;
+    }
+
+    private async Task OpenSidebar()
+    {
+        if (offcanvas is { })
+        {
+            await offcanvas.ShowAsync();
+        }
+    }
+
+    public void Dispose()
+    {
+        HeaderTitle.ContentChanged -= StateHasChanged;
+    }
+}

@@ -1,11 +1,14 @@
 ﻿@page "/project/{ProjectId:int}"
 
+@implements IDisposable
+
 @using Onlyoffice.Api.Models
 @using Task = System.Threading.Tasks.Task
 
 @inherits AuthorizedPage
 
 @inject IProjectApi ProjectApi
+
 
 @if (board is { })
 {
@@ -20,6 +23,7 @@ else
     private Board board = null!;
 
     [Parameter] public int? ProjectId { get; set; }
+    [CascadingParameter] HeaderTitle HeaderTitle { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -29,7 +33,13 @@ else
             var project = ProjectApi.GetProjectByIdAsync(ProjectId.Value);
             var tasks = ProjectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(ProjectId.Value));
             var statuses = await ProjectApi.GetAllTaskStatusesAsync();
-            board = ConvertToBoard(await project, await tasks, statuses.OrderBy(x => x.Order));
+
+            var orderedStatuses = statuses
+                .OrderBy(x => x.StatusType)
+                .ThenBy(x => x.Order);
+
+            board = ConvertToBoard(await project, await tasks, orderedStatuses);
+            HeaderTitle.Content = GetTitleContent(board.GetProject().Title!);
         }
     }
 
@@ -47,5 +57,15 @@ else
                 .Where(t => t.CustomTaskStatus.HasValue ? t.CustomTaskStatus.Value == x.Id : 
                     t.Status == x.StatusType && x.IsDefault)
                 .OrderBy(x => x.Updated));
+    }
+
+    private RenderFragment<string> GetTitleContent = title => 
+        @<div class="font-monospace fw-bold">
+            @title
+        </div>;
+
+    public void Dispose()
+    {
+        HeaderTitle.Content = null;
     }
 }

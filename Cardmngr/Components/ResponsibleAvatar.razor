@@ -2,16 +2,22 @@
 
 @if (proxyUrl is { })
 {
-    <div class="avatar-circle responsible-view">
-        @if (ShowTooltip)
-        {
-            <Tooltip Title="@Responsible.DisplayName" Placement="TooltipPlacement.Bottom" >
+    <div class="d-flex flex-row align-items-center py-1">
+        <div class="avatar-circle responsible-view" style="@($"width: {Size}px; height: {Size}px;")">
+            @if (ShowTooltip)
+            {
+                <Tooltip Title="@Responsible.DisplayName" Placement="TooltipPlacement.Bottom" >
+                    <img src=@($"{proxyUrl}/api/people{Responsible.AvatarSmall}") />
+                </Tooltip>
+            }
+            else
+            {
                 <img src=@($"{proxyUrl}/api/people{Responsible.AvatarSmall}") />
-            </Tooltip>
-        }
-        else
+            }
+        </div>
+        @if (ShowName)
         {
-            <img src=@($"{proxyUrl}/api/people{Responsible.AvatarSmall}") />
+            <div class="ms-1 fw-light">@Responsible.DisplayName</div>
         }
     </div>
 }
@@ -21,6 +27,8 @@
 
     [Parameter] public Onlyoffice.Api.Models.Responsible Responsible { get; set; } = null!;
     [Parameter] public bool ShowTooltip { get; set; }
+    [Parameter] public bool ShowName { get; set; }
+    [Parameter] public int Size { get; set; } = 32;
 
     protected override void OnInitialized()
     {

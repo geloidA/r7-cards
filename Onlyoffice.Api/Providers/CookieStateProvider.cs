@@ -15,12 +15,12 @@ public class CookieStateProvider : AuthenticationStateProvider
 
     public void SetAuthInfo(UserProfile userProfile)
     {
-        var identity = new ClaimsIdentity(new[]{
+        var identity = new ClaimsIdentity([
             new Claim(ClaimTypes.Email, Check(userProfile.Email)),
             new Claim(ClaimTypes.Name, $"{userProfile.FirstName} {userProfile.LastName}"),
             new Claim("UserId", Check(userProfile.Id)),
             new Claim("IsAdmin", userProfile.IsAdmin.ToString())
-        }, "AuthCookie");
+        ], "AuthCookie");
     
         claimsPrincipal = new ClaimsPrincipal(identity);
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());

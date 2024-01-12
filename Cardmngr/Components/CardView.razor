@@ -13,15 +13,12 @@
             <div class="px-0 d-flex flex-row">
                 @if (Task.Priority == (int)TaskPriority.High)
                 {
-                    <Tool IconName="IconName.Fire" IconColor="IconColor.Danger" 
-                        TooltipTitle="Приоритет - Высокий" TooltipPlacement="TooltipPlacement.Bottom" />
+                    <div style="margin-right: 5px;">
+                        <Tool IconName="IconName.ArrowUpCircleFill" IconColor="IconColor.Primary" 
+                            TooltipTitle="Приоритет - Высокий" TooltipPlacement="TooltipPlacement.Bottom" />
+                    </div>
                 }
-                else
-                {
-                    <Tool IconName="IconName.EmojiNeutral" IconColor="IconColor.Success"
-                        TooltipTitle="Приоритет - Обычный" TooltipPlacement="TooltipPlacement.Bottom" />
-                }
-                <div class="ms-1">@Card.Title</div>
+                <div style="overflow: hidden;">@Card.Title</div>
             </div>
         </div>
         <div class="row fw-light max-height-100" >
@@ -39,16 +36,28 @@
             <div class="px-0">
                 @if (Task.Responsibles?.Any() ?? false)
                 {
-                    <ResponsiblesView ShowTooltip="true" Responsibles="Task.Responsibles" MaxCount="2" />
+                    <ResponsiblesView Responsibles="Task.Responsibles" ImageSize="25" ShowName="true" MaxCount="2" />
                 }
             </div>
         </div>
         <div class="row py-1">
-            @if (Task.CreatedBy is { })
+            @if (Task.Deadline is { })
             {
-                <div class="fw-light px-0"
-                    style="color: var(--main-board-bg-light);">
-                    Создано: @Task.CreatedBy.DisplayName
+                <div class="d-flex p-0 justify-content-end align-items-center">
+                    @if (IsDeadlineOut())
+                    {
+                        <Tool IconName="IconName.Fire" IconColor="IconColor.Danger" 
+                            TooltipTitle="@(GetDeadlineString())" TooltipPlacement="TooltipPlacement.Left" />
+                        <span class="small ms-2 text-danger" >
+                            Крайний срок:
+                            @Task.Deadline?.ToString("d MMM yyyy г.")</span>
+                    }
+                    else
+                    {
+                        <span class="small ms-2 fw-lighter" >
+                            Крайний срок:
+                            @Task.Deadline?.ToString("d MMM yyyy г.")</span>
+                    }
                 </div>
             }
         </div>
@@ -84,7 +93,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine(DateTime.Now);
         if (AuthenticationState is { })
         {
             var authState = await AuthenticationState;
@@ -148,6 +156,15 @@
         return Task.Deadline.HasValue 
             ? DateTime.Now >= Task.Deadline && Task.Status != (int)Status.Closed
             : false;
+    }
+
+    private string GetDeadlineString()
+    {
+        if (Task.Deadline is not { }) throw new InvalidOperationException("Task deadline is null");
+        var diff = DateTime.Now.Date - Task.Deadline.Value.Date;
+        return diff.TotalDays == 0
+            ? "Срок истек - Сегодня"
+            : $"Срок истек - {diff.TotalDays} {Common.GetDayNameByDayCount(diff.TotalDays)} назад";
     }
 
     void DragOver()

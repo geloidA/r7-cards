@@ -4,7 +4,10 @@
     <Tooltip Title="@(Disabled ? DisabledTitle : TooltipTitle)" Placement="TooltipPlacement" >
         <div class="d-flex align-items-center tool @cssDisabled" @onclick="OnClickHandler">
             <Icon Name="IconName" Size="IconSize" Color="IconColor"/>
-            <div class="ms-1">@Text</div>
+            @if (Text is { })
+            {
+                <div class="ms-1">@Text</div>
+            }
         </div>
     </Tooltip>
 }
@@ -12,7 +15,10 @@ else
 {
     <div class="d-flex justify-content-center align-items-center tool @cssDisabled" @onclick="OnClickHandler">
         <Icon Name="IconName" Size="IconSize" Color="IconColor"/>
-        <div class="ms-1">@Text</div>
+        @if (Text is { })
+        {
+            <div class="ms-1">@Text</div>
+        }
     </div>
 }
 

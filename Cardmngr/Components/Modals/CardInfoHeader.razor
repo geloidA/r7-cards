@@ -5,13 +5,12 @@
             Приоритет -
             @if (Task.Priority == (int)TaskPriority.High)
             {
-                <i class="ms-1 text-danger">Высокий</i>
-                <Icon class="ms-1" Name="IconName.Fire" Size="IconSize.x5" Color="IconColor.Danger"/>
+                <i class="ms-1 text-primary">Высокий</i>
+                <Icon class="ms-1" Name="IconName.ArrowUpCircleFill" Size="IconSize.x5" Color="IconColor.Primary"/>
             }
             else
             {
-                <i class="ms-1 text-success">Обычный</i>
-                <Icon class="ms-1" Name="IconName.EmojiNeutral" Size="IconSize.x5" Color="IconColor.Success"/>
+                <i class="ms-1 text-secondary">Обычный</i>
             }
             <div class="col d-flex justify-content-end">
                 <Tool IconName="IconName.ArrowDownUp" TooltipPlacement="TooltipPlacement.Top"
@@ -41,7 +40,7 @@
             }
             else
             {
-                @if (Task.Deadline.HasValue)
+                @if (Task.Deadline is { })
                 {
                     <span class="small ms-2">@Task.Deadline?.ToString("d MMM yyyy г.")</span>
                 }

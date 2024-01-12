@@ -7,6 +7,7 @@ using Onlyoffice.Api.Providers;
 using Onlyoffice.Api.Logics;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -27,6 +28,13 @@ builder.Services
     .AddBlazorBootstrap()
     .AddAuthorizationCore()
     .AddOptions();
+
+builder.Services
+    .AddCascadingValue(sp =>
+    {
+        var headerTitle = new HeaderTitle();
+        return new CascadingValueSource<HeaderTitle>(headerTitle, true);
+    });
 
 builder.Services
     .AddHttpClient("api", opt => opt.BaseAddress = new Uri(config["proxy-url"] 
