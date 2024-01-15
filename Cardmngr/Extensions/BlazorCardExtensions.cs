@@ -4,7 +4,7 @@ using Onlyoffice.Api.Models.Extensions;
 using Onlyoffice.Api.Models;
 using Onlyoffice.Api.Common;
 
-namespace Cardmngr;
+namespace Cardmngr.Extensions;
 
 public static class BlazorCardExtensions
 {

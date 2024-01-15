@@ -2,15 +2,13 @@
 
 @implements IDisposable
 
-<div class="d-flex h-100 flex-row @Board.CssName pb-sm-2" >
-    <CascadingValue Value="Board" IsFixed="true">
-        <CascadingValue Value="lastDraggingCard">
-            <CascadingValue Value="cardDetailsModalOptions">
-                @foreach (var column in Board)
-                {
-                    <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
-                }
-            </CascadingValue>
+<div class="d-flex @Board.CssName pb-5">
+    <CascadingValue Value="lastDraggingCard">
+        <CascadingValue Value="cardDetailsModalOptions">
+            @foreach (var column in Board)
+            {
+                <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
+            }
         </CascadingValue>
     </CascadingValue>
 </div>
@@ -26,14 +24,11 @@
 
     [Parameter] public Board Board { get; set; } = null!;
 
-    private DotNetObjectReference<BoardView>? thisRef;
-
     protected override void OnInitialized()
     {
         Board.CssName = "board";
         Board.PosChanged += Refresh;
         Board.LayoutChanged += Refresh;
-        thisRef = DotNetObjectReference.Create(this);
 
         foreach (var card in Board.AllCards())
             card.DragStart += UpdateDraggingCard;
@@ -55,7 +50,6 @@
     {
         Board.PosChanged -= Refresh;
         Board.LayoutChanged -= Refresh;
-        thisRef?.Dispose();
 
         foreach (var card in Board.AllCards())
             card.DragStart -= UpdateDraggingCard;

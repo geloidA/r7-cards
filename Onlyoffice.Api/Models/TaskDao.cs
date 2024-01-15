@@ -28,9 +28,11 @@ public class Task : ICardDao
     public string? Title { get; set; }
     public string? Description { get; set; }
     public int Priority { get; set; }
+    public int? MilestoneId { get; set; }
     public TaskOwner? ProjectOwner { get; set; }
     public List<Subtask>? Subtasks { get; set; }
     public int Status { get; set; }
+    public int? Progress { get; set; }
     public UpdatedBy? UpdatedBy { get; set; }
     public DateTime Created { get; set; }
     public CreatedBy? CreatedBy { get; set; }
@@ -38,6 +40,7 @@ public class Task : ICardDao
     public List<Responsible>? Responsibles { get; set; }
     public int? CustomTaskStatus { get; set; }
     public DateTime? Deadline { get; set; }
+    public DateTime? StartDate { get; set; }
 
     public Task FullCopy(bool copySubtasks = true)
     {
@@ -51,9 +54,11 @@ public class Task : ICardDao
             Title = Title,
             Description = Description,
             Priority = Priority,
+            MilestoneId = MilestoneId,
             ProjectOwner = ProjectOwner?.FullCopy(),
             Subtasks = copySubtasks ? Subtasks?.Select(x => x.FullCopy()).ToList() : Subtasks,
             Status = Status,
+            Progress = Progress,
             UpdatedBy = UpdatedBy?.FullCopy(),
             Created = Created,
             CreatedBy = CreatedBy?.FullCopy(),
@@ -70,9 +75,13 @@ public class Task : ICardDao
         {
             Description = Description,
             Deadline = Deadline,
+            StartDate = StartDate,
             Priority = Priority,
             Title = Title,
-            Responsibles = Responsibles!.Select(x => x.Id).ToList()
+            MilestoneId = MilestoneId,
+            Responsibles = Responsibles!.Select(x => x.Id).ToList(),
+            ProjectId = ProjectOwner!.Id,
+            Progress = Progress
         };
     }
 }
@@ -81,9 +90,15 @@ public class UpdatedStateTask
 {
     public string? Description { get; set; }
     public DateTime? Deadline { get; set; }
+    public DateTime? StartDate { get; set; }
     public int Priority { get; set; }
     public string? Title { get; set; }
+    public int? MilestoneId { get; set; }
     public List<string?>? Responsibles { get; set; }
+    public int? ProjectId { get; set; }
+    public bool? Notify { get; set; }
+    public int? Status { get; set; }
+    public int? Progress { get; set; }
 }
 
 public class TaskOwner

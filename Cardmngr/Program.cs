@@ -8,6 +8,7 @@ using Onlyoffice.Api.Logics;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
+using Cardmngr.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -23,6 +24,7 @@ builder.Services
     .AddScoped<CookieHandler>()
     .AddScoped<IAuthApiLogic, AuthApiLogic>()
     .AddScoped<IProjectApi, ProjectApi>()
+    .AddScoped<CardDropService>()
     .AddBlazoredModal()
     .AddBlazoredLocalStorage()
     .AddBlazorBootstrap()

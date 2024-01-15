@@ -2,11 +2,13 @@
 @using System.Security.Claims
 
 @inject IProjectApi ProjectApi
+@inject AuthenticationStateProvider AuthenticationState
+@inject CardDropService CardDropService
 
 <li class="@Card.CssName @CssDragOver @CssDragStart @CssDeadline" @onclick="OpenModal"
-    @ondragover="DragOver" @ondragover:stopPropagation @ondragover:preventDefault
-    @ondragenter:preventDefault draggable="@canEdit.ToString()" @ondragleave="DragLeave"
-    @ondrop:stopPropagation @ondrop="Drop" @ondragstart="DragStart"
+    @ondragover="() => { if (!highlighted) highlighted = true; }" @ondragover:stopPropagation @ondragover:preventDefault
+    @ondragenter:preventDefault draggable="@canEdit.ToString()" @ondragleave="() => highlighted = false"
+    @ondrop:stopPropagation @ondrop="OnDrop" @ondragstart="OnDragStart"
     @ondragend="() => isDragged = false" >
     <div class="container py-1 px-4 default-text">
         <div class="row py-1">
@@ -44,7 +46,7 @@
             @if (Task.Deadline is { })
             {
                 <div class="d-flex p-0 justify-content-end align-items-center">
-                    @if (IsDeadlineOut())
+                    @if (Task.IsDeadlineOut())
                     {
                         <Tool IconName="IconName.Fire" IconColor="IconColor.Danger" 
                             TooltipTitle="@(GetDeadlineString())" TooltipPlacement="TooltipPlacement.Left" />
@@ -66,24 +68,18 @@
 
 @code {
     private bool canEdit;
-
+    
     [CascadingParameter]
     private ModalOptions CardDetailsModalOptions { get; set; } = null!;
-
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthenticationState { get; set; }
 
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     [CascadingParameter]
     private BlazorCards.Card? LastDraggingCard { get; set; }
 
-    [CascadingParameter]
-    private Board Board { get; set; } = null!;
-
     string CssDragOver => highlighted ? "dragover" : "";
     string CssDragStart => isDragged ? "dragged" : "";
-    string CssDeadline => IsDeadlineOut() ? "red-border" : "";
+    string CssDeadline => Task.IsDeadlineOut() ? "red-border" : "";
 
     private bool highlighted;
     private bool isDragged;
@@ -91,12 +87,11 @@
 
     private Onlyoffice.Api.Models.Task Task => Card.GetTask();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         if (AuthenticationState is { })
         {
-            var authState = await AuthenticationState;
-            canEdit = IsCanEdit(authState.User.Claims);
+            canEdit = IsCanEdit((CookieStateProvider)AuthenticationState);
 
         } else throw new NullReferenceException("Card auth state is null");
         
@@ -116,46 +111,26 @@
         var res = await modal.Result;
     }
 
-    async Task Drop()
+    private async Task OnDrop()
     {
         highlighted = false;
-        if (LastDraggingCard is { } && LastDraggingCard != Card)
+        if (LastDraggingCard is { } && !ReferenceEquals(LastDraggingCard, Card))
         {
-            await UpdateCardStatus(LastDraggingCard);
-            LastDraggingCard.Column!.Remove(LastDraggingCard);
-            Card.Column!.AddBefore(Card, LastDraggingCard);
+            if (await CardDropService.Drop(LastDraggingCard, Card))
+            {
+                Card.Column!.AddBefore(Card, LastDraggingCard);
+            }
         }
     }
 
-    private async Task UpdateCardStatus(BlazorCards.Card card)
+    private bool IsCanEdit(CookieStateProvider provider)
     {
-        var current = Card.GetTask();
-        var other = card.GetTask();
-
-        if (current.Status != other.Status || current.CustomTaskStatus != other.CustomTaskStatus)
-        {
-            await ProjectApi.UpdateTaskStatusAsync(other.Id, (Status)current.Status, current.CustomTaskStatus);
-            other.Status = current.Status;
-            other.CustomTaskStatus = current.CustomTaskStatus;
-        }
-    }
-
-    private bool IsCanEdit(IEnumerable<Claim> claims)
-    {
-        var isAdmin = bool.Parse(claims.First(x => x.Type == "IsAdmin").Value);
-        var userId = claims.First(x => x.Type == "UserId").Value;
+        var userId = provider["UserId"];
 
         return 
-            isAdmin || 
+            bool.Parse(provider["IsAdmin"]) ||
             Task.CreatedBy!.Id == userId || 
             Task.Responsibles!.Any(x => x.Id == userId);
-    }
-
-    private bool IsDeadlineOut()
-    {
-        return Task.Deadline.HasValue 
-            ? DateTime.Now >= Task.Deadline && Task.Status != (int)Status.Closed
-            : false;
     }
 
     private string GetDeadlineString()
@@ -167,17 +142,7 @@
             : $"Срок истек - {diff.TotalDays} {Common.GetDayNameByDayCount(diff.TotalDays)} назад";
     }
 
-    void DragOver()
-    {
-        if (!highlighted) highlighted = true;
-    }
-
-    void DragLeave()
-    {
-        highlighted = false;
-    }
-
-    void DragStart()
+    void OnDragStart()
     {
         isDragged = true;
         Card.OnDragStart();

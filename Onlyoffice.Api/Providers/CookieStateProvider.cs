@@ -26,6 +26,11 @@ public class CookieStateProvider : AuthenticationStateProvider
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
+    public string this[string claim]
+    {
+        get => claimsPrincipal.FindFirst(claim)?.Value ?? throw new NullReferenceException("One of user profile property is null");
+    }
+
     public void ClearAuthInfo()
     {
         claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());

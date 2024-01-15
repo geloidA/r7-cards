@@ -12,7 +12,13 @@
 
 @if (board is { })
 {
-    <BoardView Board="board" />
+    <div class="d-flex flex-column">
+        <div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr; flex-grow: 1;">            
+        <BoardView Board="board" />
+        </div>
+    </div>
 }
 else
 {
@@ -35,8 +41,7 @@ else
             var statuses = await ProjectApi.GetAllTaskStatusesAsync();
 
             var orderedStatuses = statuses
-                .OrderBy(x => x.StatusType)
-                .ThenBy(x => x.Order);
+                .OrderBy(x => (x.StatusType, x.Order));
 
             board = ConvertToBoard(await project, await tasks, orderedStatuses);
             HeaderTitle.Content = GetTitleContent(board.GetProject().Title!);
@@ -56,7 +61,8 @@ else
             .Select(x => tasks
                 .Where(t => t.CustomTaskStatus.HasValue ? t.CustomTaskStatus.Value == x.Id : 
                     t.Status == x.StatusType && x.IsDefault)
-                .OrderBy(x => x.Updated));
+                .OrderBy(x => (-x.Priority, x.Deadline ?? DateTime.MaxValue))
+                .ThenByDescending(x => x.Updated));
     }
 
     private RenderFragment<string> GetTitleContent = title => 
