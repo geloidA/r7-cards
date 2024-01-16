@@ -2,7 +2,7 @@
 
 namespace BlazorCards.Core;
 
-public class Board(string title) : ObservableLinkedCollection<BoardColumn>, IWorkspaceElement
+public class Board(string title) : ObservableLinkedCollection<BoardColumn>
 {
     public Board(IEnumerable<IBoardColumnDao> columns, IEnumerable<IEnumerable<ICardDao>> cards, string title, object? data = null) : this(title)
     {
@@ -15,17 +15,7 @@ public class Board(string title) : ObservableLinkedCollection<BoardColumn>, IWor
         Data = data;
     }
 
-    private Vector2 pos;
     public string Title { get; set; } = title;
-    public Vector2 Pos
-    {
-        get => pos;
-        set
-        {
-            pos = value;
-            PosChanged?.Invoke();
-        }
-    }
 
     public override void Add(BoardColumn item)
     {
@@ -51,13 +41,8 @@ public class Board(string title) : ObservableLinkedCollection<BoardColumn>, IWor
         item.Board = null;
     }
 
-    public void OnLayoutChanged() => LayoutChanged?.Invoke();
-
     public string? CssName { get; set; }
 
     public string? CssColor { get; set; }
     public object? Data { get; set; }
-
-    public event Action? PosChanged;
-    public event Action? LayoutChanged;
 }

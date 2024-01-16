@@ -1,7 +1,7 @@
 .board {
     font-weight: 600;
     font-size: larger;
-    overflow-x: auto;
-    overflow-y: hidden;
-    height: 95%;
+    flex: auto !important;
+    overflow-x: visible !important;
+    height: 0;
 }

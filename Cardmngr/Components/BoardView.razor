@@ -1,19 +1,23 @@
 ﻿@using Modals
 
-@implements IDisposable
-
-<div class="d-flex @Board.CssName pb-5">
-    <CascadingValue Value="lastDraggingCard">
-        <CascadingValue Value="cardDetailsModalOptions">
-            @foreach (var column in Board)
-            {
-                <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
-            }
+@if (Board is { })
+{
+    <div class="d-flex position-relative overflow-hidden p-sm-3 flex-row @Board.CssName" >
+        <CascadingValue Value="lastDraggingCard">
+            <CascadingValue Value="cardDetailsModalOptions">
+                <div class="d-flex flex-row" style="flex: auto !important; width: 100% !important;">
+                    @foreach (var column in Board)
+                    {
+                        <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
+                    }
+                </div>
+            </CascadingValue>
         </CascadingValue>
-    </CascadingValue>
-</div>
+    </div>
+}
 
 @code {
+
     private readonly ModalOptions cardDetailsModalOptions = new()
     {
         Size = Blazored.Modal.ModalSize.ExtraLarge,
@@ -22,15 +26,11 @@
     
     BlazorCards.Card? lastDraggingCard;
 
-    [Parameter] public Board Board { get; set; } = null!;
+    [Parameter] public Board? Board { get; set; }
 
-    protected override void OnInitialized()
+    public void InitializeEventHandlers(Board value)
     {
-        Board.CssName = "board";
-        Board.PosChanged += Refresh;
-        Board.LayoutChanged += Refresh;
-
-        foreach (var card in Board.AllCards())
+        foreach (var card in value.AllCards())
             card.DragStart += UpdateDraggingCard;
     }
 
@@ -46,14 +46,10 @@
         Console.WriteLine($"LastDraggingCard changed on {card.Title}");
     }
 
-    public void Dispose()
-    {
-        Board.PosChanged -= Refresh;
-        Board.LayoutChanged -= Refresh;
-
-        foreach (var card in Board.AllCards())
-            card.DragStart -= UpdateDraggingCard;
-    }
-
     private void Refresh() => StateHasChanged();
+
+    public override string ToString()
+    {
+        return $"BoardView - {Board}";
+    }
 }

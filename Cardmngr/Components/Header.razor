@@ -1,4 +1,6 @@
-﻿@implements IDisposable
+﻿@inject IProjectApi ProjectApi
+
+@implements IDisposable
 
 <Offcanvas @ref="offcanvas" Placement="Placement.Start" Size="OffcanvasSize.Small" ShowCloseButton="false"
     Style="background-color: var(--main-board-bg); border-radius: 0px 7px 7px 0px;">
@@ -6,7 +8,26 @@
         <a class="text-dark fw-bold fs-4" href="/">Карточки</a>
     </HeaderTemplate> 
     <BodyTemplate>
-
+        <div class="container">
+            <Card class="row bg-shadow">
+                <CardTitle><h6 class="py-1">Мои проекты</h6></CardTitle>
+                <CardBody>
+                    @if (userProjects is { } && userProjects.Any())
+                    {
+                        <div class="list-group box">
+                            @foreach (var proj in userProjects)
+                            {
+                                <ProjectReference Project="proj" />
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <span>Вы не состоите ни в одном из проектов</span>
+                    }
+                </CardBody>
+            </Card>
+        </div>
     </BodyTemplate>
 </Offcanvas>
 
@@ -26,12 +47,14 @@
 
 @code {
     private Offcanvas? offcanvas;
+    private List<Onlyoffice.Api.Models.Project>? userProjects = null!;
 
     [CascadingParameter] HeaderTitle HeaderTitle { get; set; } = null!;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         HeaderTitle.ContentChanged += StateHasChanged;
+        userProjects = await ProjectApi.GetUserProjectsAsync();
     }
 
     private async Task OpenSidebar()

@@ -22,15 +22,12 @@
                 <img src=@($"data:{TypeStatus.ImageType};base64, {TypeStatus.Image}")
                     style="max-width: 18px;">
             </div>
-            <div class="mt-2 hidden align-self-center" >
-                @DropDown
-            </div>
         </div>
     }
     else
     {
-        <div class="row mb-2 align-self-baseline">
-            <div class="col-md-11 align-self-baseline" >
+        <div class="row mb-2 ">
+            <div class="col-md-10 align-self-baseline" >
                 <div class="row">
                     <div class="col-md-10">
                         <Badge Color="BadgeColor.Success">@BoardColumn.Count</Badge>
@@ -42,7 +39,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-1 hidden d-flex flex-row justify-content-end">
+            <div class="col-md-2 hidden">
                 @DropDown
             </div>
         </div>

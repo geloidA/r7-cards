@@ -1,4 +1,13 @@
 .board .board-column {
+    display: flex !important;
+    white-space: normal !important;
+    margin-right: 16px !important;
+    overflow: hidden !important;
+    vertical-align: top !important;
+    position: relative !important;
+    flex: auto !important;
+    flex-direction: column !important;
+
     font-size: medium;
     max-width: 324px;
     min-width: 324px;

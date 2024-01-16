@@ -1,0 +1,13 @@
+﻿@inject NavigationManager NavigationManager
+
+<a class="text-dark fw-light small py-1" href=@($"/project/{Project.Id}")>
+    <div class="container">
+        @Project.Title
+        <Icon Name="IconName.ArrowRight" />
+    </div>
+</a>
+
+@code {
+
+    [Parameter] public Onlyoffice.Api.Models.Project Project { get; set; } = null!;
+}

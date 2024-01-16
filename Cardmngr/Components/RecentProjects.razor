@@ -17,10 +17,7 @@
             @foreach (var proj in projects)
             {
                 if (count == MaxCount) break;
-                <a class="text-dark fw-light small py-1" href=@($"/project/{proj.Id}")>
-                    @proj.Title
-                    <Icon Name="IconName.ArrowRight" />
-                </a>
+                <ProjectReference Project="proj" />
                 count++;
             }
         }

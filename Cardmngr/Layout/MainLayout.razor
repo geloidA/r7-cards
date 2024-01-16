@@ -2,13 +2,16 @@
 
 <Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
 
-<div class="bb-page" >
+<div class="d-flex h-100" style="flex: auto !important;" >
 
-    <main class="p-0" style="overflow-y: hidden;">
-
-        <Header />
-        <div class="content px-4 h-100" style="background-color: var(--main-board-bg);">
-            <div class="d-flex py-2 h-100" >
+    <main class="p-0 container-xl overflow-hidden" style="width: 100%; max-width: none; flex: auto !important;">
+        <AuthorizeView>
+            <Authorized>
+                <Header />
+            </Authorized>
+        </AuthorizeView>
+        <div class="content px-4 h-100 d-flex flex-column" style="background-color: var(--main-board-bg); flex: auto !important;" >
+            <div class="d-flex flex-column h-100 py-2" style="flex: auto !important;">
                 @Body
             </div>
         </div>

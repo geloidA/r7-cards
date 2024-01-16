@@ -11,6 +11,10 @@
     --drop-highlight-col: #ecd052;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 ul {
     margin-bottom: 4px;
 }
@@ -58,3 +62,10 @@ ul {
     position: absolute;
     right: 0.75rem;
     top: 0.5rem;}
+
+.bg-shadow {
+    background-color: var(--main-col-bg);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+}

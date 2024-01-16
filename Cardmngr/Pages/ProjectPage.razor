@@ -12,11 +12,11 @@
 
 @if (board is { })
 {
-    <div class="d-flex flex-column">
+    <div class="d-flex flex-column overflow-auto position-relative mb-5" style="flex: auto !important;">
         <div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr; flex-grow: 1;">            
-        <BoardView Board="board" />
+        <div class="d-flex flex-column" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
+            <BoardView @ref="boardView" Board="board"  />
         </div>
     </div>
 }
@@ -26,31 +26,41 @@ else
 }
 
 @code {
-    private Board board = null!;
+    private Board? board;
+    private BoardView boardView = null!;
 
     [Parameter] public int? ProjectId { get; set; }
     [CascadingParameter] HeaderTitle HeaderTitle { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        await base.OnInitializedAsync();
-        if (ProjectId.HasValue)
+        if (ProjectId.HasValue && ProjectId != board?.GetProject().Id)
         {
-            var project = ProjectApi.GetProjectByIdAsync(ProjectId.Value);
-            var tasks = ProjectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(ProjectId.Value));
-            var statuses = await ProjectApi.GetAllTaskStatusesAsync();
-
-            var orderedStatuses = statuses
-                .OrderBy(x => (x.StatusType, x.Order));
-
-            board = ConvertToBoard(await project, await tasks, orderedStatuses);
-            HeaderTitle.Content = GetTitleContent(board.GetProject().Title!);
+            Console.WriteLine("Invoked!");
+            board = await InitializeBoard();
+            boardView?.InitializeEventHandlers(board);
+            HeaderTitle.Content = GetTitleContent(board.GetProject().Title!);   
         }
+    }
+
+    private async Task<Board> InitializeBoard()
+    {
+        var project = ProjectApi.GetProjectByIdAsync(ProjectId!.Value);
+        var tasks = ProjectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(ProjectId.Value));
+        var statuses = await ProjectApi.GetAllTaskStatusesAsync();
+
+        var orderedStatuses = statuses
+            .OrderBy(x => (x.StatusType, x.Order));
+
+        return ConvertToBoard(await project, await tasks, orderedStatuses);
     }
 
     private static Board ConvertToBoard(Project proj, List<Onlyoffice.Api.Models.Task> tasks, IEnumerable<Onlyoffice.Api.Models.TaskStatus> statuses)
     {
-        return new Board(statuses, DivideOnStatues(statuses, tasks), proj.Title!, proj);
+        return new Board(statuses, DivideOnStatues(statuses, tasks), proj.Title!, proj)
+        {
+            CssName = "board"
+        };
     }
 
     private static IEnumerable<IEnumerable<Onlyoffice.Api.Models.Task>> DivideOnStatues(
