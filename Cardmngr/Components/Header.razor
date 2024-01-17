@@ -5,12 +5,15 @@
 <Offcanvas @ref="offcanvas" Placement="Placement.Start" Size="OffcanvasSize.Small" ShowCloseButton="false"
     Style="background-color: var(--main-board-bg); border-radius: 0px 7px 7px 0px;">
     <HeaderTemplate >
-        <a class="text-dark fw-bold fs-4" href="/">Карточки</a>
+        <a class="text-dark fw-bold fs-4" href="/">
+            <Icon Name="IconName.Stack" />
+            Карточки
+        </a>
     </HeaderTemplate> 
     <BodyTemplate>
         <div class="container">
             <Card class="row bg-shadow">
-                <CardTitle><h6 class="py-1">Мои проекты</h6></CardTitle>
+                <CardTitle><h6>Мои проекты</h6></CardTitle>
                 <CardBody>
                     @if (userProjects is { } && userProjects.Any())
                     {

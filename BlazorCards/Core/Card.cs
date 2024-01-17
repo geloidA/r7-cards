@@ -2,7 +2,7 @@
 
 namespace BlazorCards;
 
-public class Card(string title) : UIElementBase, ICardDao, IDisposable
+public class Card(string title) : UIElementBase, ICardDao
 {
     internal Card(string title, BoardColumn column) : this(title)
     {
@@ -14,11 +14,6 @@ public class Card(string title) : UIElementBase, ICardDao, IDisposable
     public BoardColumn? Column { get; internal set; }
 
     public event Action<Card>? DragStart;
-
-    public void Dispose()
-    {
-        DragStart = null;
-    }
 
     public void OnDragStart() => DragStart?.Invoke(this);
 }

@@ -12,8 +12,18 @@
 
 @if (board is { })
 {
-    <div class="d-flex flex-column overflow-auto position-relative mb-5" style="flex: auto !important;">
-        <div>
+
+    <Offcanvas @ref="menuCanvas" ShowCloseButton="false" />
+
+    <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
+        <div class="row">
+            <div class="col-md-11">
+
+            </div>
+            <div class="col-md-1">
+                <Tool IconName="IconName.List" IconSize="IconSize.x5" Text="Меню"
+                    OnClick="ShowMenu" />
+            </div>
         </div>
         <div class="d-flex flex-column" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
             <BoardView @ref="boardView" Board="board"  />
@@ -27,6 +37,7 @@ else
 
 @code {
     private Board? board;
+    private Offcanvas menuCanvas = null!;
     private BoardView boardView = null!;
 
     [Parameter] public int? ProjectId { get; set; }
@@ -36,10 +47,9 @@ else
     {
         if (ProjectId.HasValue && ProjectId != board?.GetProject().Id)
         {
-            Console.WriteLine("Invoked!");
             board = await InitializeBoard();
             boardView?.InitializeEventHandlers(board);
-            HeaderTitle.Content = GetTitleContent(board.GetProject().Title!);   
+            HeaderTitle.Content = GetTitleContent(board.GetProject().Title!);
         }
     }
 
@@ -80,8 +90,17 @@ else
             @title
         </div>;
 
+    private async Task ShowMenu()
+    {
+        await menuCanvas.ShowAsync<ProjectMenuModal>("", new Dictionary<string, object>
+        {
+            { "Project", board!.GetProject() }
+        });
+    }
+
     public void Dispose()
     {
+        menuCanvas.Dispose();
         HeaderTitle.Content = null;
     }
 }

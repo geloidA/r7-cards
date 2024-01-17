@@ -1,5 +1,4 @@
-﻿@using Modals
-@using TypeStatus = Onlyoffice.Api.Models.TaskStatus
+﻿@using TypeStatus = Onlyoffice.Api.Models.TaskStatus
 
 @inject IProjectApi ProjectApi
 @inject CardDropService CardDropService
@@ -35,7 +34,7 @@
                             @BoardColumn.Title
                         </span>
                         <img src=@($"data:{TypeStatus.ImageType};base64, {TypeStatus.Image}")
-                                style="max-width: 18px;" alt="SVG Icon">
+                                style="max-width: 18px;" alt="SVG Icon">                        
                     </div>
                 </div>
             </div>
@@ -43,8 +42,14 @@
                 @DropDown
             </div>
         </div>
+        @if (BoardView.SelectedMilestone is { })
+        {
+            <div class="mb-1 d-flex justify-content-center fw-light" style="font-size: small;">
+                @BoardColumn.Where(FilterByMilestone).Count() результатов
+            </div>
+        }
         <ul class="card-container">
-            @foreach (var card in BoardColumn)
+            @foreach (var card in BoardColumn.Where(FilterByMilestone))
             {
                 <CardView Card="card" @key="card" />
             }
@@ -58,8 +63,9 @@
     bool highlighted;
     bool isCollapsed;
 
-    [CascadingParameter] public IModalService Modal { get; set; } = default!;
+    [CascadingParameter] IModalService Modal { get; set; } = default!;
     [CascadingParameter] BlazorCards.Card? LastDraggedCard { get; set; }
+    [CascadingParameter] BoardView BoardView { get; set; } = null!;
     [Parameter] public BoardColumn BoardColumn { get; set; } = null!;
     [Parameter] public EventCallback<BlazorCards.Card> NewCardCreated { get; set; }
 
@@ -69,6 +75,7 @@
     {
         BoardColumn.CssName = "board-column";
         BoardColumn.CollectionChanged += Refresh;
+        BoardView.SelectedMilestoneChanged += Refresh;
     }
 
     private async Task OnDrop()
@@ -106,6 +113,12 @@
         }
     }
 
+    private bool FilterByMilestone(BlazorCards.Card card)
+    {
+        return BoardView.SelectedMilestone == null ||
+            card.GetTask().MilestoneId == BoardView.SelectedMilestone.Id;
+    }
+
     private void Refresh() => StateHasChanged();
     private void Refresh(System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => StateHasChanged();
 
@@ -123,5 +136,6 @@
     public void Dispose()
     {
         BoardColumn.CollectionChanged -= Refresh;
+        BoardView.SelectedMilestoneChanged -= Refresh;
     }
 }

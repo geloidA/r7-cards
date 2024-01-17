@@ -29,6 +29,7 @@ public class Task : ICardDao
     public string? Description { get; set; }
     public int Priority { get; set; }
     public int? MilestoneId { get; set; }
+    public Milestone? Milestone { get; set; }
     public TaskOwner? ProjectOwner { get; set; }
     public List<Subtask>? Subtasks { get; set; }
     public int Status { get; set; }
@@ -55,6 +56,7 @@ public class Task : ICardDao
             Description = Description,
             Priority = Priority,
             MilestoneId = MilestoneId,
+            Milestone = Milestone?.FullCopy(),
             ProjectOwner = ProjectOwner?.FullCopy(),
             Subtasks = copySubtasks ? Subtasks?.Select(x => x.FullCopy()).ToList() : Subtasks,
             Status = Status,

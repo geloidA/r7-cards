@@ -1,0 +1,33 @@
+﻿
+<Card >
+    <CardBody class="d-flex flex-column">
+        <CardTitle>
+            <div class="row d-flex align-items-center">
+                <div class="col"> 
+                    Веха
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <Tool Disabled="true" IconName="IconName.Pencil" IconSize="IconSize.x6"
+                        DisabledTitle="В разработке" />
+                </div>
+            </div>
+        </CardTitle>
+        @if (Milestone is { })
+        {
+            <div>
+                <MilestoneLabel Milestone="Milestone" />
+            </div>
+        }
+        else
+        {
+            <span class="text-secondary">Вне вехи</span>
+        }
+    </CardBody>
+</Card>
+
+@code {
+
+    [Parameter] public Onlyoffice.Api.Models.Milestone Milestone { get; set; } = null!;
+    [Parameter] public bool Disabled { get; set; }
+
+}

@@ -69,3 +69,11 @@ ul {
     padding: 15px;
     box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 }
+
+.hide-max-140 {
+    max-width: 140px; /* Ширина контейнера */
+    display: -webkit-box; /* Установка элемента как flex-контейнера */
+    overflow: hidden; /* Скрытие содержимого, выходящего за пределы контейнера */
+    text-overflow: ellipsis; /* Вывод многоточия, если текст обрезан */
+    white-space: nowrap; /* Предотвращение переноса текста на новую строку */
+}

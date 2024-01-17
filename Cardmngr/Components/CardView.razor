@@ -10,7 +10,7 @@
     @ondragenter:preventDefault draggable="@canEdit.ToString()" @ondragleave="() => highlighted = false"
     @ondrop:stopPropagation @ondrop="OnDrop" @ondragstart="OnDragStart"
     @ondragend="() => isDragged = false" >
-    <div class="container py-1 px-4 default-text">
+    <div class="container py-1 px-4 default-text" style="min-height: 100px;">
         <div class="row py-1">
             <div class="px-0 d-flex flex-row">
                 @if (Task.Priority == (int)TaskPriority.High)
@@ -23,28 +23,39 @@
                 <div style="overflow: hidden;">@Card.Title</div>
             </div>
         </div>
-        <div class="row fw-light max-height-100" >
-            @Task.Description
-        </div>
-        <div class="row py-1">
-            @if (Task.Subtasks?.Any() ?? false)
-            {
-                <div class="d-flex justify-content-end">
-                    + @Task.Subtasks.Count подзадачи
-                </div>
-            }
-        </div>
-        <div class="row py-1">
-            <div class="px-0">
-                @if (Task.Responsibles?.Any() ?? false)
-                {
-                    <ResponsiblesView Responsibles="Task.Responsibles" ImageSize="25" ShowName="true" MaxCount="2" />
-                }
+        @if (Task.Description is { })
+        {
+            <div class="row fw-light max-height-100" >
+                @Task.Description
             </div>
-        </div>
-        <div class="row py-1">
-            @if (Task.Deadline is { })
-            {
+        }
+        @if (Task.Subtasks?.Any() ?? false)
+        {
+            <div class="row py-1">
+                    <div class="d-flex justify-content-end">
+                        + @Task.Subtasks.Count подзадачи
+                    </div>
+            </div>
+        }
+        @if (Task.Milestone is { })
+        {
+            <div class="row py-1">
+                <div class="px-0">
+                    <MilestoneLabel Milestone="Task.Milestone" OnClick="ToggleMilestone" />
+                </div>
+            </div>
+        }
+        @if (Task.Responsibles?.Any() ?? false)
+        {
+            <div class="row py-1">
+                <div class="px-0">
+                    <ResponsiblesView Responsibles="Task.Responsibles" ImageSize="25" ShowName="true" MaxCount="2" />
+                </div>
+            </div>
+        }
+        @if (Task.Deadline is { })
+        {
+            <div class="row py-1">
                 <div class="d-flex p-0 justify-content-end align-items-center">
                     @if (Task.IsDeadlineOut())
                     {
@@ -61,8 +72,8 @@
                             @Task.Deadline?.ToString("d MMM yyyy г.")</span>
                     }
                 </div>
-            }
-        </div>
+            </div>
+        }
     </div>
 </li>
 
@@ -73,9 +84,11 @@
     private ModalOptions CardDetailsModalOptions { get; set; } = null!;
 
     [CascadingParameter] IModalService Modal { get; set; } = null!;
+    [CascadingParameter] BoardView BoardView { get; set; } = null!;
 
     [CascadingParameter]
     private BlazorCards.Card? LastDraggingCard { get; set; }
+    
 
     string CssDragOver => highlighted ? "dragover" : "";
     string CssDragStart => isDragged ? "dragged" : "";
@@ -146,5 +159,12 @@
     {
         isDragged = true;
         Card.OnDragStart();
+    }
+
+    void ToggleMilestone()
+    {
+        BoardView.SelectedMilestone = BoardView.SelectedMilestone == null
+            ? Task.Milestone
+            : null;
     }
 }

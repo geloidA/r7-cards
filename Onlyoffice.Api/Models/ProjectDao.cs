@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace Onlyoffice.Api.Models;
+﻿namespace Onlyoffice.Api.Models;
 
 public class SingleProjectDao : HttpResponseDaoBase
 {
@@ -22,6 +20,9 @@ public class Project
     public bool CanEdit { get; set; }
     public bool IsPrivate { get; set; }
     public DateTime Updated { get; set; }
+    public CreatedBy? CreatedBy { get; set; }
+    public int TaskCount { get; set; }
+    public int TaskCountTotal { get; set; }    
 }
 
 public class Responsible

@@ -1,0 +1,41 @@
+﻿
+@if (OnClick.HasDelegate)
+{
+    <div @onclick:stopPropagation @ondblclick:stopPropagation >
+        @if (Milestone.Title!.Length > 20)
+        {
+            <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Bottom">
+                @Badge
+            </Tooltip>        
+        }
+        else
+        {
+            @Badge
+        }
+    </div>
+}
+else
+{
+    @if (Milestone.Title!.Length > 20)
+    {
+        <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Bottom">
+            @Badge
+        </Tooltip>
+    }
+    else
+    {
+        @Badge
+    }
+}
+
+@code {
+    [Parameter] public Onlyoffice.Api.Models.Milestone Milestone { get; set; } = null!;
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    private RenderFragment Badge =>
+        @<Badge @onclick="OnClick" IndicatorType="BadgeIndicatorType.RoundedPill" Color="BadgeColor.Warning" >
+            <span style="font-size: 12px; font-weight: 500; user-select: none;" class="hide-max-140">
+                @Milestone.Title
+            </span>
+        </Badge>;
+}

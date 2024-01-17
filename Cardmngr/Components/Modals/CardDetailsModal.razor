@@ -6,31 +6,24 @@
         <div>
             <MyCardTitle Task="changingState" Disabled="!IsCanEdit" />
         </div>
-        <div class="row py-3">
-            <div class="col" >
+        <div class="d-flex flex-row">
+            <div class="col px-2 d-flex flex-column" >
                 <CardInfoHeader Task="changingState" Disabled="!IsCanEdit" />
+                <div class="pt-2">
+                    <CardDescription Task="changingState" Disabled="!IsCanEdit" />  
+                </div>              
             </div>
-            <dic class="col">                
-                <div class="row">
-                    <div>
-                        <CascadingValue IsFixed="true" Value="commonOptions" >
-                            <CardResponsibles Task="changingState" Disabled="!IsCanEdit" />
-                        </CascadingValue>
-                    </div>
+            <div class="col d-flex flex-column">
+                <div class="pb-2">
+                    <CascadingValue IsFixed="true" Value="commonOptions" >
+                        <CardResponsibles Task="changingState" Disabled="!IsCanEdit" />
+                    </CascadingValue>
                 </div>
-            </dic>
-        </div>
-        <div class="row">
-            <div class="col">
-                <CardDescription Task="changingState" Disabled="!IsCanEdit" />
-            </div>
-            <div class="col">
-                <div class="row">
-                    <div>
-                        <CardSubtasks Task="changingState" Disabled="!IsCanEdit" />
-                    </div>
+                <div class="pb-2">                    
+                    <CardMilestone Milestone="Task.Milestone" />
                 </div>
-                <div class="row py-3 d-flex align-items-end justify-content-end">
+                <CardSubtasks Task="changingState" Disabled="!IsCanEdit" />
+                <div class="row pt-2 d-flex justify-content-end">
                     <div class="d-flex flex-row">
                         <Button Loading="saveLoading" Color="ButtonColor.Success" Outline="true" @onclick="ConfirmSaving"
                             Disabled="!IsCanEdit" >
@@ -88,7 +81,6 @@
         {
             await ProjectApi.DeleteTaskAsync(Task.Id);
             Card.Column!.Remove(Card);
-            Card.Dispose();
             await CurrentModel.CloseAsync();
         }
     }

@@ -1,16 +1,17 @@
-﻿@using Modals
-
+﻿
 @if (Board is { })
 {
     <div class="d-flex position-relative overflow-hidden p-sm-3 flex-row @Board.CssName" >
         <CascadingValue Value="lastDraggingCard">
-            <CascadingValue Value="cardDetailsModalOptions">
-                <div class="d-flex flex-row" style="flex: auto !important; width: 100% !important;">
-                    @foreach (var column in Board)
-                    {
-                        <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
-                    }
-                </div>
+            <CascadingValue Value="cardDetailsModalOptions" IsFixed="true" >
+                <CascadingValue Value="this" IsFixed="true" >
+                    <div class="d-flex flex-row" style="flex: auto !important; width: 100% !important;">
+                        @foreach (var column in Board)
+                        {
+                            <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
+                        }
+                    </div>
+                </CascadingValue>
             </CascadingValue>
         </CascadingValue>
     </div>
@@ -27,6 +28,27 @@
     BlazorCards.Card? lastDraggingCard;
 
     [Parameter] public Board? Board { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Board is { })
+        {
+            InitializeEventHandlers(Board);
+        }
+    }
+
+    public event Action? SelectedMilestoneChanged;
+
+    private Onlyoffice.Api.Models.Milestone? selectedMilestone;
+    public Onlyoffice.Api.Models.Milestone? SelectedMilestone
+    {
+        get => selectedMilestone;
+        set
+        {
+            selectedMilestone = value;
+            SelectedMilestoneChanged?.Invoke();
+        }
+    }
 
     public void InitializeEventHandlers(Board value)
     {

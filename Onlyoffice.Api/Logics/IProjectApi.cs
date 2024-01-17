@@ -32,6 +32,7 @@ public interface IProjectApi
     Task<Subtask> DeleteSubtaskAsync(int taskId, int subtaskId);
     Task UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status);
     Task<Subtask> CreateSubtaskAsync(int taskId, string title, string? responsible = null);
+    Task<List<Milestone>> GetMilestonesByProjectIdAsync(int projectId);
 }
 
 public static class ProjectApiExtensions

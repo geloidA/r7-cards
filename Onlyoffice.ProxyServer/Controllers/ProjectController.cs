@@ -11,12 +11,21 @@ public class ProjectController(IConfiguration conf, IHttpClientFactory factory) 
 {
     private readonly IHttpClientFactory httpClientFactory = factory;
 
+    #region Project Proxy
     [Route("api/[controller]")]
     public Task ProxyProject() => ProxyRequestAsync($"{apiUrl}/project");
 
     [Route("api/[controller]/{projectId}")]
     public Task ProxyProjectById(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}");
 
+    [Route("api/[controller]/@self")]
+    public Task ProxyGetSelfProjects() => ProxyRequestAsync($"{apiUrl}/project/@self");
+
+    [Route("api/[controller]/{projectId}/team")]
+    public Task ProxyGetSelfProjectById(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/team");
+    #endregion
+
+    #region Task Proxy
     [Route("api/[controller]/status")]
     public Task ProxyTaskStatuses() => ProxyRequestAsync($"{apiUrl}/project/status");
 
@@ -33,16 +42,16 @@ public class ProjectController(IConfiguration conf, IHttpClientFactory factory) 
     [Route("api/[controller]/{projectId}/task")]
     public Task ProxyCreateTask(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/task");
 
-    [Route("api/[controller]/@self")]
-    public Task ProxyGetSelfProjects() => ProxyRequestAsync($"{apiUrl}/project/@self");
-
-    [Route("api/[controller]/{projectId}/team")]
-    public Task ProxyGetSelfProjectById(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/team");
-
     [HttpDelete]
     [Route("api/[controller]/task/{taskId}")]
     public Task ProxyDeleteTask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
 
+    [HttpPut]
+    [Route("api/[controller]/task/{taskId}")]
+    public Task ProxyUpdateTask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+    #endregion
+
+    #region Subtask Proxy
     [HttpPut]
     [Route("api/[controller]/task/{taskId}/{subtaskId}")]
     public Task ProxyUpdateSubtask(int taskId, int subtaskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/{subtaskId}");
@@ -58,10 +67,13 @@ public class ProjectController(IConfiguration conf, IHttpClientFactory factory) 
     [HttpPost]
     [Route("api/[controller]/task/{taskId}")]
     public Task ProxyCreateSubtask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+    #endregion
 
-    [HttpPut]
-    [Route("api/[controller]/task/{taskId}")]
-    public Task ProxyUpdateTask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+    #region Milestone Proxy
+    [HttpGet]
+    [Route("api/[controller]/{projectId}/milestone")]
+    public Task ProxyMilestones(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/milestone");
+    #endregion
 
     [HttpPost]
     [Route("api/[controller]/{projectId}/task/status")]

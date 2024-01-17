@@ -1,0 +1,47 @@
+﻿
+@if (Project is { })
+{
+    <div class="container">
+        <div class="row header">
+            <div class="col d-flex flex-row">
+                <h5>@Project.Title</h5>
+                @if (Project.IsPrivate)
+                {
+                    <div class="ms-1">
+                        <Tool IconName="IconName.LockFill" IconColor="IconColor.Warning" TooltipTitle="Приватный проект" />
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row mt-4">
+            <span>@Project.Description</span>
+        </div>
+    </div>
+
+    <footer class="footer mb-2" >
+        <div class="top-line m-2"></div>
+        <div class="d-flex align-items-center flex-row m-2">
+            <span>Статус - </span>
+            @if (Project.Status == (int)ProjectStatus.Open)
+            {                
+                <span class="ms-1 text-primary">Открыт</span>
+                <Icon class="ms-1" Color="IconColor.Primary" Name="IconName.ForwardFill" Size="IconSize.x5" />
+            } 
+            else if (Project.Status == (int)ProjectStatus.Closed)
+            {
+                <span class="ms-1 text-success">Закрыт</span>
+                <Icon class="ms-1" Color="IconColor.Success" Name="IconName.CheckCircleFill" />
+            }
+            else 
+            {
+                <span class="ms-1 text-secondary">Приостановлен</span>
+                <Icon class="ms-1" Name="IconName.PauseCircleFill" Color="IconColor.Secondary" />
+            }
+        </div>
+    </footer>
+}
+
+@code {
+    [Parameter] public Onlyoffice.Api.Models.Project? Project { get; set; }
+
+}

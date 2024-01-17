@@ -4,13 +4,20 @@
     height: 100px;
   }
   
-  .line::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0.1px;
-    height: 100%;
-    background-color: rgb(150, 150, 150);
-  }
+.line::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0.1px;
+  height: 100%;
+  background-color: rgb(150, 150, 150);
+}
+
+.detal-background {
+  background-repeat: no-repeat;
+  background-size: 70% 70%;
+  background-image: url(images/logo-detal-white.svg);
+  background-position: 50% 50%;
+}

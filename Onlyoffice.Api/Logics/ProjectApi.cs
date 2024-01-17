@@ -102,6 +102,12 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         return subtaskDao?.Response ?? throw new NullReferenceException("Subtask was not created");
     }
 
+    public async Task<List<Milestone>> GetMilestonesByProjectIdAsync(int projectId)
+    {
+        var milestoneDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<MilestoneDao>($"api/project/{projectId}/milestone"));
+        return milestoneDao?.Response ?? throw new NullReferenceException("Milestones were not found");
+    }
+
     private async Task<T> InvokeHttpClientAsync<T>(Func<HttpClient, Task<T>> func)
     {
         using var client = httpClientFactory.CreateClient("api");
