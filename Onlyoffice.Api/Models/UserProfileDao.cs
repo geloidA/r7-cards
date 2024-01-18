@@ -10,7 +10,7 @@ public class UserProfileDao : HttpResponseDaoBase
     public UserProfile? Response { get; set; }
 }
 
-public class UserProfile
+public class UserProfile : IUser
 {
     public string? Id { get; set; }
     public string? UserName { get; set; }

@@ -12,13 +12,13 @@
                 </div>
             </div>
         </CardTitle>
-        <ResponsibleList Responsibles="Task.Responsibles" />
+        <UserList Users="Task.Responsibles" />
     </CardBody>
 </Card>
 
 
 @code {
-    [CascadingParameter] ModalOptions CommonOptions { get; set; } = null!;
+    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
 
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
@@ -34,10 +34,8 @@
             { "ProjectId", Task.ProjectOwner!.Id }
         };
 
-        var modal = Modal.Show<ResponsiblesSelectionModal>("Выберите ответственных", parameters, CommonOptions);
+        var result = await Modal.Show<ResponsiblesSelectionModal>("Выберите ответственных", parameters, ModalOptions).Result;
         
-        var result = await modal.Result;
-
         if (result.Confirmed)
         {
             Task.Responsibles = (List<Onlyoffice.Api.Models.Responsible>)result.Data!;

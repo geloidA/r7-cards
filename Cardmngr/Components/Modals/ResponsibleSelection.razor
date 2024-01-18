@@ -1,14 +1,16 @@
-﻿@if (Responsible is { })
+﻿@inject IProjectApi ProjectApi
+
+@if (Responsible is { })
 {
     @if (EditMode)
     {
         <a class="clickable" @onclick="ShowResponsibleSelectionModal">
-            <ResponsibleAvatar Responsible="Responsible" ShowTooltip="true" />
+            <UserAvatar User="Responsible" ShowTooltip="true" />
         </a>
     }
     else
     {
-        <ResponsibleAvatar Responsible="Responsible" ShowTooltip="true" />
+        <UserAvatar User="Responsible" ShowTooltip="true" />
     }
 }
 else
@@ -27,10 +29,12 @@ else
 
 @code {
 
+    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
+
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
     [Parameter]
-    public Onlyoffice.Api.Models.Responsible? Responsible { get; set; } 
+    public Onlyoffice.Api.Models.Responsible? Responsible { get; set; }
 
     [Parameter]
     public EventCallback<Onlyoffice.Api.Models.Responsible> ResponsibleChanged { get; set; }
@@ -45,22 +49,39 @@ else
     {
         var parameters = new ModalParameters
         {
-            { "ProjectId", Task.ProjectOwner!.Id },
-            { "Multiple", false }
+            { "Items", await GetProjectTeamResponsiblesAsync() },
+            { "ItemRender", RenderResponsible }
         };
 
-        ModalOptions commonOptions = new()
-        {
-            Position = ModalPosition.Middle
-        };
-
-        var modal = Modal.Show<ResponsiblesSelectionModal>("Выберите ответственного", parameters, commonOptions);
-        
-        var result = await modal.Result;
+        var result = await Modal.Show<SelectionModal<Onlyoffice.Api.Models.Responsible>>("Выберите ответственного", parameters, ModalOptions).Result;
 
         if (result.Confirmed)
         {
             await ResponsibleChanged.InvokeAsync((Onlyoffice.Api.Models.Responsible)result.Data!);
         }
     }
+
+    private async Task<List<Onlyoffice.Api.Models.Responsible>> GetProjectTeamResponsiblesAsync()
+    {   
+        var team = await ProjectApi.GetProjectTeamAsync(Task.ProjectOwner!.Id);
+        return team
+            .Select(x => new Onlyoffice.Api.Models.Responsible
+            {
+                Id = x.Id,
+                AvatarSmall = x.AvatarSmall,
+                DisplayName = x.DisplayName,
+                ProfileUrl = x.ProfileUrl
+            })
+            .ToList();
+    }
+
+    private static RenderFragment<Onlyoffice.Api.Models.Responsible> RenderResponsible = responsible =>
+        @<div class="d-flex flex-row py-2 align-items-center">
+            <div class="ms-1">
+            <UserAvatar User="responsible"/>
+            </div>
+            <span class="ms-2">
+                @responsible.DisplayName
+            </span>
+        </div>;
 }

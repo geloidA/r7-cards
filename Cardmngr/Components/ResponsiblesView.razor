@@ -6,7 +6,7 @@
     <div class="d-flex flex-column">
         @for (var i = 0; i < MaxCount && i < Responsibles.Count; i++)
         {
-            <ResponsibleAvatar Responsible="Responsibles[i]" ShowTooltip="@ShowTooltip" Size="ImageSize"
+            <UserAvatar User="Responsibles[i]" ShowTooltip="@ShowTooltip" Size="ImageSize"
                 ShowName="ShowName" />
         }
     </div>

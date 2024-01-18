@@ -119,9 +119,7 @@
             { "IsCanEdit", canEdit }
         };
 
-        var modal = Modal.Show<Modals.CardDetailsModal>("", parameters, CardDetailsModalOptions);
-        
-        var res = await modal.Result;
+        await Modal.Show<Modals.CardDetailsModal>("", parameters, CardDetailsModalOptions).Result;
     }
 
     private async Task OnDrop()

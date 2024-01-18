@@ -12,7 +12,6 @@
 
 @if (board is { })
 {
-
     <Offcanvas @ref="menuCanvas" ShowCloseButton="false" />
 
     <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
@@ -94,7 +93,7 @@ else
     {
         await menuCanvas.ShowAsync<ProjectMenuModal>("", new Dictionary<string, object>
         {
-            { "Project", board!.GetProject() }
+            { "Board", board! }
         });
     }
 

@@ -32,6 +32,7 @@
     private SubtaskView? lastEditingSubtask;
     private string userId = null!;
     
+    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
     [CascadingParameter] IModalService Modal { get; set; } = default!;
     [Parameter] public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
@@ -50,11 +51,8 @@
 
     private async Task ShowCreationModal()
     {
-        var modal = Modal.Show<SubtaskCreationModal>("Добавление подзадачи", 
-            new ModalParameters { { "Task", Task } }, 
-            new ModalOptions { Position = ModalPosition.Middle });
-
-        var res = await modal.Result;
+        var res = await Modal.Show<SubtaskCreationModal>("Добавление подзадачи", 
+            new ModalParameters { { "Task", Task } }, ModalOptions).Result;
 
         if (res.Confirmed)
         {

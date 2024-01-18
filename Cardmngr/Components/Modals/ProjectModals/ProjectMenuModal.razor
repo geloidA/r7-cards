@@ -1,11 +1,18 @@
-﻿
-@if (Project is { })
+﻿@inject IProjectApi ProjectApi
+
+
+@if (Board is { })
 {
     <div class="container">
         <div class="row header">
-            <div class="col d-flex flex-row">
-                <h5>@Project.Title</h5>
-                @if (Project.IsPrivate)
+            <div class="d-flex flex-row align-items-center mb-2">
+                <span>@Board.Title</span>
+                <Tooltip Title="Кол-во открытых задач">
+                    <Badge class="p-1 ms-1 user-select-none" Color="BadgeColor.Info">
+                        @OpenTaskCount
+                    </Badge>
+                </Tooltip>
+                @if (Board.GetProject().IsPrivate)
                 {
                     <div class="ms-1">
                         <Tool IconName="IconName.LockFill" IconColor="IconColor.Warning" TooltipTitle="Приватный проект" />
@@ -13,35 +20,99 @@
                 }
             </div>
         </div>
-        <div class="row mt-4">
-            <span>@Project.Description</span>
+        <div class="row mt-2 align-items-center">
+            <div class="col">
+                <i class="text-secondary fw-light small">
+                    Создан - @Board.GetProject().Created.ToShortDateString()
+                </i>
+            </div>
+            <div class="col d-flex justify-content-end">                
+                @RenderStatus(GetDataByStatus((ProjectStatus)Board.GetProject().Status))
+            </div>
         </div>
+        <div class="row mt-3">
+            <span>@Board.GetProject().Description</span>
+        </div>
+        <Card class="row mt-4 p-1 bg-shadow">
+            <CardTitle class="mt-2">
+                <h6>
+                    Вехи
+                    <Badge class="p-1" Color="BadgeColor.Info">@milestones.Count</Badge>
+                </h6>
+            </CardTitle>
+            <CardBody class="m-0" style="max-height: 190px; overflow: auto;">
+                <MilestoneList Milestones="milestones" />
+            </CardBody>
+        </Card>
+        <Card class="row mt-4 p-1 bg-shadow">
+            <CardTitle class="mt-2">
+                <h6>
+                    Команда 
+                    <Badge class="p-1" Color="BadgeColor.Info">@projectTeam.Count</Badge>
+                </h6>
+            </CardTitle>
+            <CardBody class="m-0" style="max-height: 255px; overflow: auto;">
+                <UserList Users="projectTeam" />
+            </CardBody>
+        </Card> 
+        <div class="mt-4 d-flex align-items-center justify-content-end">
+            <h6>Менеджер проекта</h6>
+            <Badge class="d-flex ms-2 py-0" Color="BadgeColor.Success" IndicatorType="BadgeIndicatorType.RoundedPill">
+                <UserAvatar ShowName="true" Size="25" User="Board.GetProject().Responsible" />
+            </Badge>
+        </div>       
     </div>
-
-    <footer class="footer mb-2" >
-        <div class="top-line m-2"></div>
-        <div class="d-flex align-items-center flex-row m-2">
-            <span>Статус - </span>
-            @if (Project.Status == (int)ProjectStatus.Open)
-            {                
-                <span class="ms-1 text-primary">Открыт</span>
-                <Icon class="ms-1" Color="IconColor.Primary" Name="IconName.ForwardFill" Size="IconSize.x5" />
-            } 
-            else if (Project.Status == (int)ProjectStatus.Closed)
-            {
-                <span class="ms-1 text-success">Закрыт</span>
-                <Icon class="ms-1" Color="IconColor.Success" Name="IconName.CheckCircleFill" />
-            }
-            else 
-            {
-                <span class="ms-1 text-secondary">Приостановлен</span>
-                <Icon class="ms-1" Name="IconName.PauseCircleFill" Color="IconColor.Secondary" />
-            }
-        </div>
-    </footer>
 }
 
 @code {
-    [Parameter] public Onlyoffice.Api.Models.Project? Project { get; set; }
+    private int? previosProjectId;
+    private List<Onlyoffice.Api.Models.UserProfile> projectTeam = [];
+    private List<Onlyoffice.Api.Models.Milestone> milestones = [];
 
+    [Parameter] public Board? Board { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Board is { } && previosProjectId != Board.GetProject().Id)
+        {
+            projectTeam = await ProjectApi.GetProjectTeamAsync(Board.GetProject().Id);
+            milestones = await ProjectApi.GetMilestonesByProjectIdAsync(Board.GetProject().Id);
+            previosProjectId = Board.GetProject().Id;
+        }
+    }
+
+    private int? OpenTaskCount => Board?
+        .AllCards()
+        .Where(x => x.GetTask().Status != (int)Status.Closed)
+        .Count();
+
+    private static StatusData GetDataByStatus(ProjectStatus status)
+    {
+        return status switch
+        {
+            ProjectStatus.Paused => StatusData.Paused,
+            ProjectStatus.Open => StatusData.Open,
+            ProjectStatus.Closed => StatusData.Closed,
+            _ => throw new NotImplementedException("Unknown ProjectStatus type")
+        };
+    }
+
+    private static RenderFragment<StatusData> RenderStatus => data =>
+        @<Badge Color="data.BadgeColor" class="user-select-none">
+            <div class="d-flex align-items-center" >
+                <span style="font-size: small;">@data.Title</span>
+                <Icon class="ms-1 d-flex" Name="data.IconName" />
+            </div>
+        </Badge>;
+
+    private class StatusData(BadgeColor badgeColor, IconName iconName, string title)
+    {
+        public BadgeColor BadgeColor => badgeColor;
+        public IconName IconName => iconName;
+        public string Title => title;
+
+        public static StatusData Open => new(BadgeColor.Primary, IconName.ForwardFill, "Открыт");
+        public static StatusData Closed => new(BadgeColor.Success, IconName.CheckCircleFill, "Закрыт");
+        public static StatusData Paused => new(BadgeColor.Secondary, IconName.PauseCircleFill, "Приостановлен");
+    }
 }

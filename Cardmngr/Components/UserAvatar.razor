@@ -6,18 +6,18 @@
         <div class="avatar-circle responsible-view" style="@($"width: {Size}px; height: {Size}px;")">
             @if (ShowTooltip)
             {
-                <Tooltip Title="@Responsible.DisplayName" Placement="TooltipPlacement.Bottom" >
-                    <img src=@($"{proxyUrl}/api/people{Responsible.AvatarSmall}") />
+                <Tooltip Title="@User.DisplayName" Placement="TooltipPlacement.Bottom" >
+                    <img src=@($"{proxyUrl}/api/people{User.AvatarSmall}") />
                 </Tooltip>
             }
             else
             {
-                <img src=@($"{proxyUrl}/api/people{Responsible.AvatarSmall}") />
+                <img src=@($"{proxyUrl}/api/people{User.AvatarSmall}") />
             }
         </div>
         @if (ShowName)
         {
-            <div class="ms-1 fw-light">@Responsible.DisplayName</div>
+            <div class="ms-1 fw-light">@User.DisplayName</div>
         }
     </div>
 }
@@ -25,7 +25,7 @@
 @code {
     private string? proxyUrl;
 
-    [Parameter] public Onlyoffice.Api.Models.Responsible Responsible { get; set; } = null!;
+    [Parameter] public Onlyoffice.Api.Models.IUser User { get; set; } = null!;
     [Parameter] public bool ShowTooltip { get; set; }
     [Parameter] public bool ShowName { get; set; }
     [Parameter] public int Size { get; set; } = 32;

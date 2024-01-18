@@ -1,31 +1,12 @@
 ﻿@inject IConfiguration Config
 @inject NavigationManager NavigationManager
-@inject ILocalStorageService LocalStorage
-@inject AuthenticationStateProvider AuthenticationState
 
 <div class="d-flex align-items-center">
     <Tool IconName="IconName.BoxArrowUpRight" TooltipTitle="Перейти в Р7-Офис" IconColor="IconColor.Dark" 
         OnClick=@(() => NavigationManager.NavigateTo(Config["onlyoffice-url"] ?? throw new NullReferenceException("No onlyoffice config"))) 
         />
-    <div class="ms-3" @onmouseenter="() => logoutHover = true" @onmouseout="() => logoutHover = false">
-        <Tool IconName="@(logoutHover ? IconName.DoorOpenFill : IconName.DoorClosedFill)" 
-            TooltipTitle="Выйти" IconColor="IconColor.Dark" IconSize="IconSize.x5"
-            OnClick="LogoutAsync"
-            />
-    </div>
 </div>
 
 @code {
-    private bool logoutHover;
-
-    private async Task LogoutAsync()
-    {
-        if (AuthenticationState is { })
-        {            
-            var provider = (CookieStateProvider)AuthenticationState;
-            provider.ClearAuthInfo();
-            await LocalStorage.RemoveItemAsync("isauthenticated");
-            NavigationManager.NavigateTo("login");
-        }
-    }
+    
 }

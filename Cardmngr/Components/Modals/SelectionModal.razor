@@ -1,0 +1,25 @@
+﻿@typeparam T
+
+@if (Items is { })
+{
+    <Card>
+        <CardBody style="max-height: 250px; overflow-y: scroll;">
+            @foreach (var item in Items)
+            {
+                <div @key="item" @onclick="async () => await Modal.CloseAsync(ModalResult.Ok(item))"
+                    class="item" >
+                    @ItemRender?.Invoke(item)
+                </div>
+            }
+        </CardBody>
+    </Card>
+}
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance Modal { get; set; } = default!;
+
+    [Parameter] public IEnumerable<T>? Items { get; set; }
+
+    [Parameter] public RenderFragment<T>? ItemRender { get; set; }
+}

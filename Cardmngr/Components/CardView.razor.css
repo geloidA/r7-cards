@@ -3,8 +3,7 @@
     margin-bottom: 10px;
     border: 1px solid var(--boarder-color);
     cursor: pointer;
-    background: var(--main-board-bg);
-    color: #ffffff;
+    background-color: var(--main-card-bg);
     border-radius: 5px;
     width: 100%;
 }

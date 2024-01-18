@@ -21,11 +21,12 @@ public class Project
     public bool IsPrivate { get; set; }
     public DateTime Updated { get; set; }
     public CreatedBy? CreatedBy { get; set; }
+    public DateTime Created { get; set; }
     public int TaskCount { get; set; }
     public int TaskCountTotal { get; set; }    
 }
 
-public class Responsible
+public class Responsible : IUser
 {
     public string? Id { get; set; }
     public string? DisplayName { get; set; }

@@ -2,6 +2,8 @@
 using Onlyoffice.Api.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Task = System.Threading.Tasks.Task;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Onlyoffice.Api.Providers;
 
@@ -19,7 +21,8 @@ public class CookieStateProvider : AuthenticationStateProvider
             new Claim(ClaimTypes.Email, Check(userProfile.Email)),
             new Claim(ClaimTypes.Name, $"{userProfile.FirstName} {userProfile.LastName}"),
             new Claim("UserId", Check(userProfile.Id)),
-            new Claim("IsAdmin", userProfile.IsAdmin.ToString())
+            new Claim("IsAdmin", userProfile.IsAdmin.ToString()),
+            new Claim("Data", JsonSerializer.Serialize(userProfile))
         ], "AuthCookie");
     
         claimsPrincipal = new ClaimsPrincipal(identity);

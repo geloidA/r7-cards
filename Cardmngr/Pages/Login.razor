@@ -38,8 +38,6 @@
             Position = ModalPosition.Middle
         };
 
-        var modal = Modal.Show<Components.Modals.AuthModal>("Авторизация 🪆", options);
-
-        return await modal.Result;
+        return await Modal.Show<Components.Modals.AuthModal>("Авторизация 🪆", options).Result;
     }
 }

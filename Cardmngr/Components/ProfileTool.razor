@@ -1,0 +1,9 @@
+﻿
+@if (UserProfile is { })
+{
+    <UserAvatar User="UserProfile" ShowTooltip="true" />
+}
+
+@code {
+    [Parameter] public Onlyoffice.Api.Models.UserProfile UserProfile { get; set; } = null!;
+}

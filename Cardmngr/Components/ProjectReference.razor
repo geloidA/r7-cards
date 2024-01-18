@@ -1,6 +1,6 @@
 ﻿@inject NavigationManager NavigationManager
 
-<a class="text-dark fw-light small py-1" href=@($"/project/{Project.Id}")>
+<a class="text-dark fw-light small py-1" title="@Project.Title" href=@($"/project/{Project.Id}")>
     <div class="container">
         @Project.Title
         <Icon Name="IconName.ArrowRight" />
@@ -8,6 +8,5 @@
 </a>
 
 @code {
-
     [Parameter] public Onlyoffice.Api.Models.Project Project { get; set; } = null!;
 }

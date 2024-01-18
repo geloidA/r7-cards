@@ -36,6 +36,11 @@ builder.Services
     {
         var headerTitle = new HeaderTitle();
         return new CascadingValueSource<HeaderTitle>(headerTitle, true);
+    })
+    .AddCascadingValue(sp =>
+    {
+        var modalOptions = new ModalOptions { Position = ModalPosition.Middle };
+        return new CascadingValueSource<ModalOptions>("MiddleModal", modalOptions, true);
     });
 
 builder.Services

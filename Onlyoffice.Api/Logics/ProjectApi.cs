@@ -62,7 +62,7 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         return taskDao?.Response ?? throw new NullReferenceException("Task was not created");
     }    
 
-    public async Task<List<UserProfile>> GetProjectTeam(int projectId)
+    public async Task<List<UserProfile>> GetProjectTeamAsync(int projectId)
     {
         var projectTeamDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<UserProfilesDao>($"api/project/{projectId}/team"));
         return projectTeamDao?.Response ?? [];

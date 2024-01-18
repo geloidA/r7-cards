@@ -15,12 +15,10 @@
             </div>
             <div class="col d-flex flex-column">
                 <div class="pb-2">
-                    <CascadingValue IsFixed="true" Value="commonOptions" >
-                        <CardResponsibles Task="changingState" Disabled="!IsCanEdit" />
-                    </CascadingValue>
+                    <CardResponsibles Task="changingState" Disabled="!IsCanEdit" />
                 </div>
                 <div class="pb-2">                    
-                    <CardMilestone Milestone="Task.Milestone" />
+                    <CardMilestone Task="changingState" Disabled="!IsCanEdit" />
                 </div>
                 <CardSubtasks Task="changingState" Disabled="!IsCanEdit" />
                 <div class="row pt-2 d-flex justify-content-end">
@@ -43,16 +41,13 @@
 @code {
     private bool saveLoading;
     private Onlyoffice.Api.Models.Task changingState = null!;
-    private readonly ModalOptions commonOptions = new()
-    {
-        Position = ModalPosition.Middle
-    };
 
+    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] BlazoredModalInstance CurrentModel { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
-    private Onlyoffice.Api.Models.Task Task => Card.GetTask();
     [Parameter] public BlazorCards.Card Card { get; set; } = null!;
     [Parameter] public bool IsCanEdit { get; set; }
+    private Onlyoffice.Api.Models.Task Task => Card.GetTask();
 
     protected override void OnInitialized()
     {
@@ -73,9 +68,7 @@
 
     private async Task ShowDeleteConfirmModal()
     {
-        var modal = Modal.Show<DefaultConfirmModal>("Удалить?", commonOptions);
-
-        var result = await modal.Result;
+        var result = await Modal.Show<DefaultConfirmModal>("Удалить?", ModalOptions).Result;
 
         if (result.Confirmed)
         {

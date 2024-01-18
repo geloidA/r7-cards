@@ -1,0 +1,18 @@
+﻿
+@if (Milestones.Any())
+{
+    @foreach (var milestone in Milestones)
+    {
+        <div @key="milestone" class="d-flex align-items-center mt-2">
+            <MilestoneLabel Milestone="milestone" />
+        </div>
+    }
+}
+else
+{
+    <span class="text-secondary">Список пуст</span>
+}
+
+@code {
+    [Parameter] public IEnumerable<Onlyoffice.Api.Models.Milestone> Milestones { get; set; } = null!;
+}
