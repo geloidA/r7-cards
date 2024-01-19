@@ -80,28 +80,24 @@ public class ProjectController(IConfiguration conf, IHttpClientFactory factory) 
     public async Task CreateTaskWithStatus(int projectId)
     {
         var body = await ConvertStreamToDynamicAsync(HttpContext.Request.Body);
-        var task = await CreateTaskAsync(projectId, (string)body.title);
-        var response = await UpdateTaskStatus(task.Id, (int)body.status, (int?)body.statusId);
+        var cookieCollection = HttpContext.Request.Cookies;
+        var task = await CreateTaskAsync(projectId, (string)body.title, cookieCollection);
+        var response = await UpdateTaskStatus(task.Id, (int)body.status, (int?)body.statusId, cookieCollection);
         var str = await response.Content.ReadAsStringAsync();
 
         await HttpContext.Response.Body.WriteAsync(Encoding.UTF8.GetBytes(str));
     }
 
-    private async Task<HttpResponseMessage> UpdateTaskStatus(int id, int status, int? statusId)
+    private static async Task<dynamic> ConvertStreamToDynamicAsync(Stream stream)
     {
-        using var client = HttpContext.Request.Cookies.GetClientFor(apiUrl);
-        var httpContent = new StringContent(JsonConvert.SerializeObject(new { status, statusId }), Encoding.UTF8, "application/json");
-        var request = new HttpRequestMessage(HttpMethod.Put, $"{apiUrl}/project/task/{id}/status")
-        {
-            Content = httpContent
-        };
-        var response = await client.SendAsync(request);
-        return response;
+        using var reader = new StreamReader(stream);
+        var requestBody = await reader.ReadToEndAsync();
+        return JsonConvert.DeserializeObject(requestBody) ?? throw new NullReferenceException("Request body is null");
     }
 
-    private async Task<Api.Models.Task> CreateTaskAsync(int projectId, string title)
+    private async Task<Api.Models.Task> CreateTaskAsync(int projectId, string title, IRequestCookieCollection cookie)
     {
-        using var client = HttpContext.Request.Cookies.GetClientFor(apiUrl);
+        using var client = cookie.GetClientFor(apiUrl);
         var httpContent = new StringContent(JsonConvert.SerializeObject(new { title }), Encoding.UTF8, "application/json");
         var request = new HttpRequestMessage(HttpMethod.Post, $"{apiUrl}/project/{projectId}/task")
         {
@@ -112,10 +108,15 @@ public class ProjectController(IConfiguration conf, IHttpClientFactory factory) 
         return taskDao?.Response ?? throw new NullReferenceException("Task was not created");
     }
 
-    private static async Task<dynamic> ConvertStreamToDynamicAsync(Stream stream)
+    private async Task<HttpResponseMessage> UpdateTaskStatus(int id, int status, int? statusId, IRequestCookieCollection cookie)
     {
-        using var reader = new StreamReader(stream);
-        var requestBody = await reader.ReadToEndAsync();
-        return JsonConvert.DeserializeObject(requestBody) ?? throw new NullReferenceException("Request body is null");
+        using var client = cookie.GetClientFor(apiUrl);
+        var httpContent = new StringContent(JsonConvert.SerializeObject(new { status, statusId }), Encoding.UTF8, "application/json");
+        var request = new HttpRequestMessage(HttpMethod.Put, $"{apiUrl}/project/task/{id}/status")
+        {
+            Content = httpContent
+        };
+        var response = await client.SendAsync(request);
+        return response;
     }
 }
