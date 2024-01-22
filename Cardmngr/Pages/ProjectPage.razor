@@ -3,6 +3,7 @@
 @implements IDisposable
 
 @using Onlyoffice.Api.Models
+@using KolBlazor.Components.Timeline
 @using Task = System.Threading.Tasks.Task
 
 @inherits AuthorizedPage
@@ -10,16 +11,24 @@
 @inject IProjectApi ProjectApi
 
 
-@if (board is { })
+@if (board is { } && milestones is { })
 {
     <Offcanvas @ref="menuCanvas" ShowCloseButton="false" />
 
     <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
-        <div class="row">
+        <div class="row ms-3 mb-1">
             <div class="col-md-11">
-
+                <KolTimeline >
+                    @foreach (var milestone in milestones.Where(m => board.AllCards().Any(x => x.GetTask().MilestoneId == m.Id)))
+                    {
+                        var minDate = GetMinStartDate(milestone)!.Value;
+                        <KolTimelineItem End="milestone.Deadline!.Value" Start="minDate">
+                            <TimelineMilestone OnClick="() => { }" Milestone="milestone" Start="minDate" />
+                        </KolTimelineItem>
+                    }
+                </KolTimeline>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-1 align-self-center">
                 <Tool IconName="IconName.List" IconSize="IconSize.x5" Text="Меню"
                     OnClick="ShowMenu" />
             </div>
@@ -36,6 +45,7 @@ else
 
 @code {
     private Board? board;
+    private List<Milestone> milestones = null!;
     private Offcanvas menuCanvas = null!;
     private BoardView boardView = null!;
 
@@ -47,6 +57,7 @@ else
         if (ProjectId.HasValue && ProjectId != board?.GetProject().Id)
         {
             board = await InitializeBoard();
+            milestones = await ProjectApi.GetMilestonesByProjectIdAsync(ProjectId.Value);
             boardView?.InitializeEventHandlers(board);
             HeaderTitle.Content = GetTitleContent(board.GetProject().Title!);
         }
@@ -84,8 +95,16 @@ else
                 .ThenByDescending(x => x.Updated));
     }
 
+    private DateTime? GetMinStartDate(Milestone milestone)
+    {
+        return board!.AllCards()
+            .Select(x => x.GetTask())
+            .Where(x => x.MilestoneId == milestone.Id && x.StartDate.HasValue)
+            .Min(x => x.StartDate!.Value);
+    }
+
     private RenderFragment<string> GetTitleContent = title => 
-        @<div class="font-monospace fw-bold">
+        @<div class="fw-bold">
             @title
         </div>;
 

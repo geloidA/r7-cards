@@ -1,0 +1,39 @@
+﻿
+<Tooltip data-bs-html="true" Title="@GetString" Placement="TooltipPlacement.Right" >
+    <Badge @onclick="OnClicked" class="px-0 w-100 overflow-hidden" Color="BadgeColor.Warning">
+        @if (isSelected)
+        {
+            <Icon Name="IconName.EmojiSmileUpsideDown" />
+        }
+        @Milestone.Title
+    </Badge>
+</Tooltip>
+
+@code {
+
+    private bool isSelected;
+
+    [Parameter] public Onlyoffice.Api.Models.Milestone Milestone { get; set; } = null!;
+    [Parameter] public DateTime Start { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private async Task OnClicked()
+    {
+        if (OnClick.HasDelegate)
+        {
+            isSelected = !isSelected;
+            await OnClick.InvokeAsync(); 
+        }
+    }
+
+    private string GetString => 
+        $@"<div class=""super-small"">
+            <div class=""row"">
+                <span >{Milestone.Title}</span>
+            </div>
+            <div class=""row"">
+                <span>Начало: {Start:d MMM yyyy г.}</span>
+                <span>Конец: {Milestone.Deadline!.Value:d MMM yyyy г.}</span>
+            </div>
+        </div>";
+}

@@ -120,3 +120,7 @@ ul {
     background-color: var(--boarder-color);
     border-radius: 20px;
 }
+
+.super-small {
+    font-size: 10px;
+}

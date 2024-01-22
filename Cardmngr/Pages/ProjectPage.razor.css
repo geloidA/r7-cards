@@ -1,0 +1,4 @@
+.timeline-header {
+    background-color: var(--boarder-color);
+    border-radius: 10px;
+}

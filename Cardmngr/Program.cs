@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Services;
+using KolBlazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -26,6 +27,7 @@ builder.Services
     .AddScoped<IProjectApi, ProjectApi>()
     .AddScoped<CardDropService>()
     .AddBlazoredModal()
+    .AddKolBlazor()
     .AddBlazoredLocalStorage()
     .AddBlazorBootstrap()
     .AddAuthorizationCore()

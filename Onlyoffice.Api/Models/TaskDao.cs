@@ -67,7 +67,8 @@ public class Task : ICardDao
             Updated = Updated,
             Responsibles = Responsibles?.Select(x => x.FullCopy()).ToList(),
             CustomTaskStatus = CustomTaskStatus,
-            Deadline = Deadline
+            Deadline = Deadline,
+            StartDate = StartDate
         };
     }
 
