@@ -1,33 +1,27 @@
 ﻿
 @if (Board is { })
 {
-    <div class="d-flex position-relative overflow-hidden p-sm-3 flex-row @Board.CssName" >
+    <div class="d-flex position-relative overflow-hidden pb-2 flex-row @Board.CssName" >
         <CascadingValue Value="lastDraggingCard">
-            <CascadingValue Value="cardDetailsModalOptions" IsFixed="true" >
-                <CascadingValue Value="this" IsFixed="true" >
-                    <div class="d-flex flex-row" style="flex: auto !important; width: 100% !important;">
-                        @foreach (var column in Board)
-                        {
-                            <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
-                        }
-                    </div>
-                </CascadingValue>
+            <CascadingValue Value="this" IsFixed="true" >
+                <div class="d-flex flex-row" style="flex: auto !important; width: 100% !important;">
+                    @foreach (var column in Board)
+                    {
+                        <BoardColumnView BoardColumn="column" @key="column" NewCardCreated="SubscribeDragHandler" />
+                    }
+                </div>
             </CascadingValue>
         </CascadingValue>
     </div>
 }
 
 @code {
-
-    private readonly ModalOptions cardDetailsModalOptions = new()
-    {
-        Size = Blazored.Modal.ModalSize.ExtraLarge,
-        DisableBackgroundCancel = true
-    };
+    private readonly HashSet<Onlyoffice.Api.Models.Milestone> selectedMilestones = [];
     
     BlazorCards.Card? lastDraggingCard;
 
     [Parameter] public Board? Board { get; set; }
+    [Parameter] public EventCallback OnCreatedCard { get; set; }
 
     protected override void OnInitialized()
     {
@@ -36,17 +30,30 @@
             InitializeEventHandlers(Board);
         }
     }
+    public event Action? SelectedMilestonesChanged;
 
-    public event Action? SelectedMilestoneChanged;
-
-    private Onlyoffice.Api.Models.Milestone? selectedMilestone;
-    public Onlyoffice.Api.Models.Milestone? SelectedMilestone
+    public void ToggleMilestone(Onlyoffice.Api.Models.Milestone milestone)
     {
-        get => selectedMilestone;
-        set
+        if (selectedMilestones.Contains(milestone))
         {
-            selectedMilestone = value;
-            SelectedMilestoneChanged?.Invoke();
+            selectedMilestones.Remove(milestone);
+        }
+        else
+        {
+            selectedMilestones.Add(milestone);
+        }
+        
+        SelectedMilestonesChanged?.Invoke();
+    }
+    public bool HaveSelectedMilestones => selectedMilestones.Any();
+    public IEnumerable<Onlyoffice.Api.Models.Milestone> SelectedMilestones
+    {
+        get 
+        {
+            foreach (var milestone in selectedMilestones)
+            {
+                yield return milestone;
+            }
         }
     }
 
@@ -56,9 +63,18 @@
             card.DragStart += UpdateDraggingCard;
     }
 
-    private void SubscribeDragHandler(BlazorCards.Card createdCard)
+    private void SubscribeDragHandler(BlazorCards.Card created)
     {
-        createdCard.DragStart += UpdateDraggingCard;
+        created.DragStart += UpdateDraggingCard;
+        created.LayoutChanged += async () => await CreateCardEventHandler();
+    }
+
+    private async Task CreateCardEventHandler()
+    {
+        if (OnCreatedCard.HasDelegate)
+        {
+            await OnCreatedCard.InvokeAsync();
+        }
     }
     
     private void UpdateDraggingCard(BlazorCards.Card card)

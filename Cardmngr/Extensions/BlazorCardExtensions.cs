@@ -1,5 +1,6 @@
 ﻿using BlazorCards;
 using BlazorCards.Core;
+using BlazorCards.Core.Extensions;
 using Onlyoffice.Api.Models.Extensions;
 using Onlyoffice.Api.Models;
 using Onlyoffice.Api.Common;
@@ -12,6 +13,15 @@ public static class BlazorCardExtensions
     {
         return card.Data as Onlyoffice.Api.Models.Task ?? 
             throw new InvalidOperationException("Card data is not a task");
+    }
+
+    public static DateTime GetMilestoneStart(this Board board, Milestone milestone)
+    {
+        var milestoneTasks = board.AllCards()
+            .Select(x => x.GetTask())
+            .Where(x => x.MilestoneId == milestone.Id && x.StartDate.HasValue);
+
+        return milestoneTasks.Any() ? milestoneTasks.Min(x => x.StartDate!.Value) : milestone.Deadline!.Value.AddDays(-7);
     }
 
     public static Onlyoffice.Api.Models.TaskStatus GetTaskStatus(this BoardColumn column)

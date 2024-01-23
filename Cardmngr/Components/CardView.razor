@@ -41,7 +41,7 @@
         {
             <div class="row py-1">
                 <div class="px-0">
-                    <MilestoneLabel Milestone="Task.Milestone" OnClick="ToggleMilestone" />
+                    <MilestoneLabel Milestone="Task.Milestone" />
                 </div>
             </div>
         }
@@ -80,11 +80,10 @@
 @code {
     private bool canEdit;
     
-    [CascadingParameter]
-    private ModalOptions CardDetailsModalOptions { get; set; } = null!;
+    [CascadingParameter(Name = "DetailsModal")]
+    private ModalOptions DetailsModal { get; set; } = null!;
 
     [CascadingParameter] IModalService Modal { get; set; } = null!;
-    [CascadingParameter] BoardView BoardView { get; set; } = null!;
 
     [CascadingParameter]
     private BlazorCards.Card? LastDraggingCard { get; set; }
@@ -119,7 +118,12 @@
             { "IsCanEdit", canEdit }
         };
 
-        await Modal.Show<Modals.CardDetailsModal>("", parameters, CardDetailsModalOptions).Result;
+        var res = await Modal.Show<Modals.CardDetailsModal>("", parameters, DetailsModal).Result;
+
+        if (res.Confirmed)
+        {
+            Card.OnLayoutChanged();
+        }
     }
 
     private async Task OnDrop()
@@ -150,19 +154,12 @@
         var diff = DateTime.Now.Date - Task.Deadline.Value.Date;
         return diff.TotalDays == 0
             ? "Срок истек - Сегодня"
-            : $"Срок истек - {diff.TotalDays} {Common.GetDayNameByDayCount(diff.TotalDays)} назад";
+            : $"Срок истек - {diff.TotalDays} {Utils.Common.GetDayNameByDayCount(diff.TotalDays)} назад";
     }
 
     void OnDragStart()
     {
         isDragged = true;
         Card.OnDragStart();
-    }
-
-    void ToggleMilestone()
-    {
-        BoardView.SelectedMilestone = BoardView.SelectedMilestone == null
-            ? Task.Milestone
-            : null;
     }
 }

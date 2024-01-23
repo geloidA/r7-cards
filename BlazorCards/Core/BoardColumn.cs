@@ -29,6 +29,8 @@ public class BoardColumn(string title) : ObservableLinkedCollection<Card>, IUIEl
     public string? CssColor { get; set; }
     public object? Data { get; set; }
 
+    public event Action? LayoutChanged;
+
     public override void Add(Card item)
     {
         base.Add(item);

@@ -3,21 +3,21 @@
 @if (Card is { })
 {
     <div class="container">
-        <div>
-            <MyCardTitle Task="changingState" Disabled="!IsCanEdit" />
+        <div class="m-2">
+            <TitleChanger @bind-Title="changingState.Title" Disabled="!IsCanEdit" />
         </div>
         <div class="d-flex flex-row">
             <div class="col px-2 d-flex flex-column" >
                 <CardInfoHeader Task="changingState" Disabled="!IsCanEdit" />
                 <div class="pt-2">
-                    <CardDescription Task="changingState" Disabled="!IsCanEdit" />  
+                    <DescriptionChanger @bind-Description="changingState.Description" Disabled="!IsCanEdit" />
                 </div>              
             </div>
             <div class="col d-flex flex-column">
                 <div class="pb-2">
                     <CardResponsibles Task="changingState" Disabled="!IsCanEdit" />
                 </div>
-                <div class="pb-2">                    
+                <div class="pb-2">
                     <CardMilestone Task="changingState" Disabled="!IsCanEdit" />
                 </div>
                 <CardSubtasks Task="changingState" Disabled="!IsCanEdit" />
@@ -74,7 +74,7 @@
         {
             await ProjectApi.DeleteTaskAsync(Task.Id);
             Card.Column!.Remove(Card);
-            await CurrentModel.CloseAsync();
+            await CurrentModel.CloseAsync(ModalResult.Ok());
         }
     }
 }

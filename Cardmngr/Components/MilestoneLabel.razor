@@ -1,4 +1,6 @@
 ﻿
+@inherits KolComponentBase
+
 @if (OnClick.HasDelegate)
 {
     <div style="max-width: 135px;" @onclick:stopPropagation @ondblclick:stopPropagation >
@@ -33,7 +35,7 @@ else
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     private RenderFragment Badge =>
-        @<Badge @onclick="OnClick" IndicatorType="BadgeIndicatorType.RoundedPill" Color="BadgeColor.Warning" >
+        @<Badge @onclick="OnClick" class="@Class" IndicatorType="BadgeIndicatorType.RoundedPill" Color="BadgeColor.Warning" >
             <span style="font-size: 12px; font-weight: 500;" class="hide-max-140 user-select-none">
                 @Milestone.Title
             </span>

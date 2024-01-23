@@ -51,6 +51,17 @@ public class Milestone
             Updated = Updated
         };
     }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Milestone other) return false;
+        return other.Id == Id;
+    }
 }
 
 public class ProjectOwner

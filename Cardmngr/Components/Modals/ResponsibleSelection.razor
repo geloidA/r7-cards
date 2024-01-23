@@ -1,4 +1,5 @@
 ﻿@inject IProjectApi ProjectApi
+@inject ResponsibleSelectionDialog SelectionDialog
 
 @if (Responsible is { })
 {
@@ -47,41 +48,11 @@ else
 
     private async Task ShowResponsibleSelectionModal()
     {
-        var parameters = new ModalParameters
-        {
-            { "Items", await GetProjectTeamResponsiblesAsync() },
-            { "ItemRender", RenderResponsible }
-        };
+        var selected = await SelectionDialog.ShowAsync(Task.ProjectOwner!.Id, ModalOptions);
 
-        var result = await Modal.Show<SelectionModal<Onlyoffice.Api.Models.Responsible>>("Выберите ответственного", parameters, ModalOptions).Result;
-
-        if (result.Confirmed)
+        if (selected is { })
         {
-            await ResponsibleChanged.InvokeAsync((Onlyoffice.Api.Models.Responsible)result.Data!);
+            await ResponsibleChanged.InvokeAsync(selected);
         }
     }
-
-    private async Task<List<Onlyoffice.Api.Models.Responsible>> GetProjectTeamResponsiblesAsync()
-    {   
-        var team = await ProjectApi.GetProjectTeamAsync(Task.ProjectOwner!.Id);
-        return team
-            .Select(x => new Onlyoffice.Api.Models.Responsible
-            {
-                Id = x.Id,
-                AvatarSmall = x.AvatarSmall,
-                DisplayName = x.DisplayName,
-                ProfileUrl = x.ProfileUrl
-            })
-            .ToList();
-    }
-
-    private static RenderFragment<Onlyoffice.Api.Models.Responsible> RenderResponsible = responsible =>
-        @<div class="d-flex flex-row py-2 align-items-center">
-            <div class="ms-1">
-            <UserAvatar User="responsible"/>
-            </div>
-            <span class="ms-2">
-                @responsible.DisplayName
-            </span>
-        </div>;
 }

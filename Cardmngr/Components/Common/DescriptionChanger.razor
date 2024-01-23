@@ -1,0 +1,50 @@
+﻿@inherits KolComponentBase
+
+<div class="@Class">
+    <Card>
+        <CardBody >
+            <CardTitle>
+                <div class="d-flex align-items-center">
+                    Описание
+                </div>
+            </CardTitle>
+            <div class="d-flex flex-column">
+                @if (descriptionEditMode)
+                {
+                    <InputTextArea @bind-Value:get="Description" @bind-Value:set="SetDescription"
+                        style="height: 100%; resize:none; min-height:150px;" />
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(Description))
+                    {
+                        <span class="text-secondary">Описание пусто</span>
+                    }
+                    else
+                    {
+                        @Description
+                    }
+                }
+            </div>                        
+        </CardBody>
+        <CardFooter class="d-flex justify-content-end">
+            <Tool Disabled="Disabled" IconName="@(descriptionEditMode ? IconName.PencilFill : IconName.Pencil)" 
+                OnClick="() => descriptionEditMode = !descriptionEditMode"
+                TooltipTitle="@(descriptionEditMode ? "Прекратить" : "Изменить")"/>
+        </CardFooter>
+    </Card>
+</div>
+
+@code {
+    private bool descriptionEditMode;
+
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public EventCallback<string?> DescriptionChanged { get; set; }
+
+    private async Task SetDescription(string? value)
+    {
+        await DescriptionChanged.InvokeAsync(value);
+    }
+
+    [Parameter] public bool Disabled { get; set; }
+}

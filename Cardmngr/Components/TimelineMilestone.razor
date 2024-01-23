@@ -1,39 +1,58 @@
-﻿
-<Tooltip data-bs-html="true" Title="@GetString" Placement="TooltipPlacement.Right" >
-    <Badge @onclick="OnClicked" class="px-0 w-100 overflow-hidden" Color="BadgeColor.Warning">
-        @if (isSelected)
-        {
-            <Icon Name="IconName.EmojiSmileUpsideDown" />
-        }
+﻿<Badge class="p-0 w-100 overflow-hidden" @onclick="ChangeSelectionMode" Color="BadgeColor">
+    <div class="@CssSelected p-1 timeline-milestone">
         @Milestone.Title
-    </Badge>
-</Tooltip>
+    </div>
+</Badge>
+
+<div class="tool-bar d-flex justify-content-center" style="margin-top: -8px;">
+    <Icon class="clickable" @onclick="ShowDetailsModal" Name="IconName.EyeFill" />
+</div>
 
 @code {
-
     private bool isSelected;
+    private string CssSelected => isSelected ? "selected" : "";
 
+    [CascadingParameter] IModalService Modal { get; set; } = null!;
     [Parameter] public Onlyoffice.Api.Models.Milestone Milestone { get; set; } = null!;
     [Parameter] public DateTime Start { get; set; }
-    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public EventCallback<bool> OnSelectionChanged { get; set; }
 
-    private async Task OnClicked()
+    private BadgeColor BadgeColor
     {
-        if (OnClick.HasDelegate)
+        get
         {
-            isSelected = !isSelected;
-            await OnClick.InvokeAsync(); 
+            if (Milestone.Status == (int)CommonStatus.Closed) return BadgeColor.Success;
+
+            return DateTime.Now > Milestone.Deadline!.Value
+                ? BadgeColor.Danger
+                : BadgeColor.Warning;
         }
     }
 
-    private string GetString => 
-        $@"<div class=""super-small"">
-            <div class=""row"">
-                <span >{Milestone.Title}</span>
-            </div>
-            <div class=""row"">
-                <span>Начало: {Start:d MMM yyyy г.}</span>
-                <span>Конец: {Milestone.Deadline!.Value:d MMM yyyy г.}</span>
-            </div>
-        </div>";
+    private async Task ChangeSelectionMode()
+    {
+        isSelected = !isSelected;
+
+        if (OnSelectionChanged.HasDelegate)
+        {
+            await OnSelectionChanged.InvokeAsync(isSelected);
+        }
+    }
+
+    private async Task ShowDetailsModal()
+    {
+        var paramerters = new ModalParameters
+        {
+            { "Milestone", Milestone }
+        };
+
+        var options = new ModalOptions 
+        { 
+            Position = ModalPosition.Middle,
+            Size = Blazored.Modal.ModalSize.Medium,
+            DisableBackgroundCancel = true 
+        };
+
+        await Modal.Show<MilestoneDetailsModal>("", paramerters, options).Result;
+    }
 }

@@ -10,20 +10,20 @@
 
 @inject IProjectApi ProjectApi
 
-
 @if (board is { } && milestones is { })
 {
     <Offcanvas @ref="menuCanvas" ShowCloseButton="false" />
 
     <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
-        <div class="row ms-3 mb-1">
-            <div class="col-md-11">
+        <div class="row mb-2" style="margin-left: 10px;">
+            <div class="col-md-11 d-flex flex-column" >
                 <KolTimeline >
-                    @foreach (var milestone in milestones.Where(m => board.AllCards().Any(x => x.GetTask().MilestoneId == m.Id)))
+                    @foreach (var milestone in milestones)
                     {
-                        var minDate = GetMinStartDate(milestone)!.Value;
-                        <KolTimelineItem End="milestone.Deadline!.Value" Start="minDate">
-                            <TimelineMilestone OnClick="() => { }" Milestone="milestone" Start="minDate" />
+                        var minDate = board.GetMilestoneStart(milestone);
+                        <KolTimelineItem @key="milestone" End="milestone.Deadline!.Value" Start="minDate">
+                            <TimelineMilestone OnSelectionChanged="x => boardView.ToggleMilestone(milestone)" 
+                                Milestone="milestone" Start="minDate" />
                         </KolTimelineItem>
                     }
                 </KolTimeline>
@@ -33,8 +33,8 @@
                     OnClick="ShowMenu" />
             </div>
         </div>
-        <div class="d-flex flex-column" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
-            <BoardView @ref="boardView" Board="board"  />
+        <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
+            <BoardView @ref="boardView" Board="board" OnCreatedCard="Refresh" />
         </div>
     </div>
 }
@@ -59,6 +59,10 @@ else
             board = await InitializeBoard();
             milestones = await ProjectApi.GetMilestonesByProjectIdAsync(ProjectId.Value);
             boardView?.InitializeEventHandlers(board);
+
+            foreach (var card in board.AllCards())
+                card.LayoutChanged += Refresh;
+
             HeaderTitle.Content = GetTitleContent(board.GetProject().Title!);
         }
     }
@@ -72,35 +76,7 @@ else
         var orderedStatuses = statuses
             .OrderBy(x => (x.StatusType, x.Order));
 
-        return ConvertToBoard(await project, await tasks, orderedStatuses);
-    }
-
-    private static Board ConvertToBoard(Project proj, List<Onlyoffice.Api.Models.Task> tasks, IEnumerable<Onlyoffice.Api.Models.TaskStatus> statuses)
-    {
-        return new Board(statuses, DivideOnStatues(statuses, tasks), proj.Title!, proj)
-        {
-            CssName = "board"
-        };
-    }
-
-    private static IEnumerable<IEnumerable<Onlyoffice.Api.Models.Task>> DivideOnStatues(
-        IEnumerable<Onlyoffice.Api.Models.TaskStatus> statuses,
-        IEnumerable<Onlyoffice.Api.Models.Task> tasks)
-    {
-        return statuses
-            .Select(x => tasks
-                .Where(t => t.CustomTaskStatus.HasValue ? t.CustomTaskStatus.Value == x.Id : 
-                    t.Status == x.StatusType && x.IsDefault)
-                .OrderBy(x => (-x.Priority, x.Deadline ?? DateTime.MaxValue))
-                .ThenByDescending(x => x.Updated));
-    }
-
-    private DateTime? GetMinStartDate(Milestone milestone)
-    {
-        return board!.AllCards()
-            .Select(x => x.GetTask())
-            .Where(x => x.MilestoneId == milestone.Id && x.StartDate.HasValue)
-            .Min(x => x.StartDate!.Value);
+        return ModelConverter.ConvertToBoard(await project, await tasks, orderedStatuses);
     }
 
     private RenderFragment<string> GetTitleContent = title => 
@@ -115,6 +91,8 @@ else
             { "Board", board! }
         });
     }
+
+    private void Refresh() => StateHasChanged();
 
     public void Dispose()
     {

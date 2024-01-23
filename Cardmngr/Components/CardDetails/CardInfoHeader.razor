@@ -32,60 +32,18 @@
             Обновлено:
             <span class="small ms-2">@Task.Updated.ToString("d MMM yyyy г., HH:mm")</span>
         </div>
-        <div class="mt-1 d-flex flex-row align-items-center">
-            Дата начала: 
-            @if (isStartDateEditMode)
-            {
-                <InputDate class="ms-2" @bind-Value="@Task.StartDate" style="max-width: 150px;" />
-            }
-            else
-            {
-                @if (Task.StartDate is { })
-                {
-                    <span class="small ms-2">@Task.StartDate?.ToString("d MMM yyyy г.")</span>
-                }
-                else
-                {
-                    <i class="text-secondary fw-lighter ms-2"> Не установлена</i>
-                }
-            }            
-            <div class="col d-flex justify-content-end">
-                <Tool IconName="@(isStartDateEditMode ? IconName.PencilFill : IconName.Pencil)" 
-                    Disabled="Disabled"
-                    TooltipTitle="@(isStartDateEditMode ? "Прекратить" : "Изменить")" 
-                    OnClick="() => isStartDateEditMode = !isStartDateEditMode"/>
-            </div>
+        <div class="mt-1">
+            <DateChanger Title="Дата начала:" EmptyText="Не установлена" Disabled="Disabled"
+                @bind-Date="Task.StartDate" />
         </div>
-        <div class="mt-1 d-flex flex-row align-items-center">
-            Крайний срок: 
-            @if (isDeadlineEditMode)
-            {
-                <InputDate class="ms-2" @bind-Value="@Task.Deadline" style="max-width: 150px;" />
-            }
-            else
-            {
-                @if (Task.Deadline is { })
-                {
-                    <span class="small ms-2">@Task.Deadline?.ToString("d MMM yyyy г.")</span>
-                }
-                else
-                {
-                    <i class="text-secondary fw-lighter ms-2"> Не установлен</i>
-                }
-            }            
-            <div class="col d-flex justify-content-end">
-                <Tool IconName="@(isDeadlineEditMode ? IconName.PencilFill : IconName.Pencil)" 
-                    Disabled="Disabled"
-                    TooltipTitle="@(isDeadlineEditMode ? "Прекратить" : "Изменить")" 
-                    OnClick="() => isDeadlineEditMode = !isDeadlineEditMode"/>
-            </div>
+        <div class="mt-1">
+            <DateChanger Title="Крайний срок:" EmptyText="Не установлен" Disabled="Disabled"
+                @bind-Date="Task.Deadline" />
         </div>
     </CardBody>
 </Card>
 
 @code {
-    private bool isStartDateEditMode;
-    private bool isDeadlineEditMode;
     [Parameter] public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
 }

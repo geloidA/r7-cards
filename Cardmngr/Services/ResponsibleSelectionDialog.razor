@@ -1,0 +1,34 @@
+﻿@code {
+    public async Task<Onlyoffice.Api.Models.Responsible?> ShowAsync(int projectId, ModalOptions options)
+    {
+        var parameters = new ModalParameters
+        {
+            { "Items", await projectApi.GetProjectTeamAsync(projectId) },
+            { "ItemRender", RenderUser }
+        };
+
+        var result = await modal.Show<SelectionModal<Onlyoffice.Api.Models.IUser>>("Выберите ответственного", parameters, options).Result;
+
+        if (result.Confirmed)
+        {
+            var user = (Onlyoffice.Api.Models.IUser)result.Data!;
+            return new Onlyoffice.Api.Models.Responsible
+            {
+                Id = user.Id,
+                DisplayName = user.DisplayName,
+                AvatarSmall = user.AvatarSmall
+            };
+        }
+        return null;
+    }
+
+    private static RenderFragment<Onlyoffice.Api.Models.IUser> RenderUser = user =>
+        @<div class="d-flex flex-row py-2 align-items-center">
+            <div class="ms-1">
+            <UserAvatar User="user"/>
+            </div>
+            <span class="ms-2">
+                @user.DisplayName
+            </span>
+        </div>;
+}

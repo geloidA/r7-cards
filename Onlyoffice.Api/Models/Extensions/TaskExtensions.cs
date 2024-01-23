@@ -13,10 +13,10 @@ public static class TaskExtensions
     public static bool IsDeadlineOut(this Task task)
     {
         bool hasDeadline = task.Deadline.HasValue;
-        bool isPastDeadline = DateTime.Now >= task.Deadline;
+        bool isPastDeadline = DateTime.Now.Date > task.Deadline;
         bool isNotClosed = task.Status != (int)Status.Closed;
 
-        return hasDeadline && isPastDeadline && isNotClosed;
+        return hasDeadline && isNotClosed && isPastDeadline;
     }
 
 }

@@ -41,14 +41,14 @@
                 @DropDown
             </div>
         </div>
-        @if (BoardView.SelectedMilestone is { })
+        @if (BoardView.HaveSelectedMilestones)
         {
             <div class="mb-1 d-flex justify-content-center fw-light" style="font-size: small;">
-                @BoardColumn.Where(FilterByMilestone).Count() результатов
+                @BoardColumn.Where(FilterByMilestones).Count() результатов
             </div>
         }
         <ul class="card-container">
-            @foreach (var card in BoardColumn.Where(FilterByMilestone))
+            @foreach (var card in BoardColumn.Where(FilterByMilestones))
             {
                 <CardView Card="card" @key="card" />
             }
@@ -62,6 +62,7 @@
     bool highlighted;
     bool isCollapsed;
 
+    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
     [CascadingParameter] BlazorCards.Card? LastDraggedCard { get; set; }
     [CascadingParameter] BoardView BoardView { get; set; } = null!;
@@ -74,7 +75,7 @@
     {
         BoardColumn.CssName = "board-column";
         BoardColumn.CollectionChanged += Refresh;
-        BoardView.SelectedMilestoneChanged += Refresh;
+        BoardView.SelectedMilestonesChanged += Refresh;
     }
 
     private async Task OnDrop()
@@ -91,8 +92,7 @@
     
     private async Task ShowCreateCardModal()
     {
-        var options = new ModalOptions { Position = ModalPosition.Middle };
-        var res = await Modal.Show<CardCreationModal>("Сформулируйте задачу 🤔💭", options).Result;
+        var res = await Modal.Show<CardCreationModal>("Сформулируйте задачу 🤔💭", ModalOptions).Result;
 
         if (res.Confirmed)
         {
@@ -110,10 +110,10 @@
         }
     }
 
-    private bool FilterByMilestone(BlazorCards.Card card)
+    private bool FilterByMilestones(BlazorCards.Card card)
     {
-        return BoardView.SelectedMilestone == null ||
-            card.GetTask().MilestoneId == BoardView.SelectedMilestone.Id;
+        var milestoneId = card.GetTask().MilestoneId;
+        return !BoardView.SelectedMilestones.Any() || BoardView.SelectedMilestones.Any(x => x.Id == milestoneId);
     }
 
     private void Refresh() => StateHasChanged();
@@ -133,6 +133,6 @@
     public void Dispose()
     {
         BoardColumn.CollectionChanged -= Refresh;
-        BoardView.SelectedMilestoneChanged -= Refresh;
+        BoardView.SelectedMilestonesChanged -= Refresh;
     }
 }

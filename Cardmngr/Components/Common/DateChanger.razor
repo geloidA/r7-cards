@@ -1,0 +1,43 @@
+﻿<div class="row">
+    <div class="col-md-11">
+        @Title
+        @if (isDeadlineEditMode)
+        {
+            <InputDate class="ms-2" @bind-Value:get="Date" @bind-Value:set="SetDateAsync" 
+                style="max-width: 150px;" />
+        }
+        else
+        {
+            @if (Date is { })
+            {
+                <span class="small ms-2">@Date?.ToString("d MMM yyyy г.")</span>
+            }
+            else
+            {
+                <i class="text-secondary fw-lighter ms-2">@EmptyText</i>
+            }
+        }
+    </div>         
+    <div class="col-md-1 d-flex justify-content-end">
+        <Tool IconName="@(isDeadlineEditMode ? IconName.PencilFill : IconName.Pencil)" 
+            Disabled="Disabled"
+            TooltipTitle="@(isDeadlineEditMode ? "Прекратить" : "Изменить")" 
+            OnClick="() => isDeadlineEditMode = !isDeadlineEditMode"/>
+    </div>
+</div>
+
+@code {
+    private bool isDeadlineEditMode;
+
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string? EmptyText { get; set; }
+
+    [Parameter] public DateTime? Date { get; set; }
+    [Parameter] public EventCallback<DateTime?> DateChanged { get; set; }
+
+    private async Task SetDateAsync(DateTime? value)
+    {
+        await DateChanged.InvokeAsync(value);
+    }
+}
