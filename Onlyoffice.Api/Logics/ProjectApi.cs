@@ -7,6 +7,7 @@ namespace Onlyoffice.Api.Logics;
 
 public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(httpClientFactory), IProjectApi
 {
+    #region CRUD Project
     public async Task<Project> GetProjectByIdAsync(int projectId)
     {
         var project = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<SingleProjectDao>($"api/project/{projectId}"));
@@ -25,6 +26,14 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         return projectDao?.Response ?? [];
     }
 
+    public async Task<List<UserProfile>> GetProjectTeamAsync(int projectId)
+    {
+        var projectTeamDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<UserProfilesDao>($"api/project/{projectId}/team"));
+        return projectTeamDao?.Response ?? [];
+    }
+    #endregion
+
+    #region CRUD Task
     public async Task<List<TaskStatus>> GetAllTaskStatusesAsync()
     {
         var taskStatusDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<TaskStatusDao>("api/project/status"));
@@ -60,13 +69,7 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/task/status", new { title, status, statusId }));
         var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
         return taskDao?.Response ?? throw new NullReferenceException("Task was not created");
-    }    
-
-    public async Task<List<UserProfile>> GetProjectTeamAsync(int projectId)
-    {
-        var projectTeamDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<UserProfilesDao>($"api/project/{projectId}/team"));
-        return projectTeamDao?.Response ?? [];
-    }    
+    }
 
     public async Task<Models.Task> DeleteTaskAsync(int taskId)
     {
@@ -78,7 +81,9 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
     {
         return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}", state));
     }
+    #endregion
 
+    #region CRUD Subtask
     public System.Threading.Tasks.Task UpdateSubtaskAsync(int taskId, int subtaskId, UpdatedStateSubtask state)
     {
         return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}/{subtaskId}", state));
@@ -101,12 +106,31 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         var subtaskDao = await response.Content.ReadFromJsonAsync<SingleSubtaskDao>();
         return subtaskDao?.Response ?? throw new NullReferenceException("Subtask was not created");
     }
+    #endregion
 
+    #region CRUD Milestone
     public async Task<List<Milestone>> GetMilestonesByProjectIdAsync(int projectId)
     {
         var milestoneDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<MilestoneDao>($"api/project/{projectId}/milestone"));
         return milestoneDao?.Response ?? throw new NullReferenceException("Milestones were not found");
     }
+
+    public System.Threading.Tasks.Task UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
+    {
+        return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}", state));
+    }
+
+    public async Task<Milestone> DeleteMilestoneAsync(int milestoneId)
+    {
+        var milestoneDao = await InvokeHttpClientAsync(c => c.DeleteFromJsonAsync<SingleMilestoneDao>($"api/project/milestone/{milestoneId}"));
+        return milestoneDao?.Response ?? throw new NullReferenceException("Milestone was not deleted");
+    }
+
+    public System.Threading.Tasks.Task UpdateMilestoneStatusAsync(int milestoneId, CommonStatus status)
+    {
+        return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}/status", new { status }));
+    }
+    #endregion
 
     private async Task<T> InvokeHttpClientAsync<T>(Func<HttpClient, Task<T>> func)
     {

@@ -16,6 +16,8 @@
     [Parameter] public Onlyoffice.Api.Models.Milestone Milestone { get; set; } = null!;
     [Parameter] public DateTime Start { get; set; }
     [Parameter] public EventCallback<bool> OnSelectionChanged { get; set; }
+    [Parameter] public EventCallback<Onlyoffice.Api.Models.Milestone> OnUpdated { get; set; }
+    [Parameter] public EventCallback<Onlyoffice.Api.Models.Milestone> OnDeleted { get; set; }
 
     private BadgeColor BadgeColor
     {
@@ -53,6 +55,25 @@
             DisableBackgroundCancel = true 
         };
 
-        await Modal.Show<MilestoneDetailsModal>("", paramerters, options).Result;
+        var res = await Modal.Show<MilestoneDetailsModal>("", paramerters, options).Result;
+
+        if (res.Confirmed && res.Data is MilestoneDetailsModal.ModalAction<Onlyoffice.Api.Models.Milestone> action)
+        {
+            //TODO: do something. shit code
+            if (action.Type == MilestoneDetailsModal.ModalActionType.Delete)
+            {
+                if (OnDeleted.HasDelegate)
+                {
+                    await OnDeleted.InvokeAsync(action.Data);
+                }
+            }
+            else if (action.Type == MilestoneDetailsModal.ModalActionType.Update)
+            {
+                if (OnUpdated.HasDelegate)
+                {
+                    await OnUpdated.InvokeAsync(action.Data);
+                }
+            }            
+        }
     }
 }

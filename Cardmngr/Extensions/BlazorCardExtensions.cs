@@ -17,11 +17,12 @@ public static class BlazorCardExtensions
 
     public static DateTime GetMilestoneStart(this Board board, Milestone milestone)
     {
-        var milestoneTasks = board.AllCards()
+        return board.AllCards()
             .Select(x => x.GetTask())
-            .Where(x => x.MilestoneId == milestone.Id && x.StartDate.HasValue);
-
-        return milestoneTasks.Any() ? milestoneTasks.Min(x => x.StartDate!.Value) : milestone.Deadline!.Value.AddDays(-7);
+            .Where(x => x.MilestoneId == milestone.Id && x.StartDate.HasValue)
+            .Select(x => x.StartDate!.Value)
+            .Concat([milestone.Deadline!.Value.AddDays(-7)])
+            .Min();
     }
 
     public static Onlyoffice.Api.Models.TaskStatus GetTaskStatus(this BoardColumn column)

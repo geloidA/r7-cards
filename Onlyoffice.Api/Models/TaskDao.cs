@@ -30,7 +30,7 @@ public class Task : ICardDao
     public int Priority { get; set; }
     public int? MilestoneId { get; set; }
     public Milestone? Milestone { get; set; }
-    public TaskOwner? ProjectOwner { get; set; }
+    public ProjectOwner? ProjectOwner { get; set; }
     public List<Subtask>? Subtasks { get; set; }
     public int Status { get; set; }
     public int? Progress { get; set; }
@@ -104,25 +104,6 @@ public class UpdatedStateTask
     public int? Progress { get; set; }
 }
 
-public class TaskOwner
-{
-    public int Id { get; set; }
-    public string? Title { get; set; }
-    public int Status { get; set; }
-    public bool IsPrivate { get; set; }
-
-    public TaskOwner FullCopy()
-    {
-        return new TaskOwner
-        {
-            Id = Id,
-            Title = Title,
-            Status = Status,
-            IsPrivate = IsPrivate
-        };
-    }
-}
-
 public class Subtask
 {
     public bool CanEdit { get; set; }
@@ -180,7 +161,7 @@ public class UpdatedStateSubtask
     public string? Title { get; set; }
 }
 
-public class CreatedBy
+public class CreatedBy : IUser
 {
     public string? Id { get; set; }
     public string? DisplayName { get; set; }
@@ -199,7 +180,7 @@ public class CreatedBy
     }
 }
 
-public class UpdatedBy
+public class UpdatedBy : IUser
 {
     public string? Id { get; set; }
     public string? DisplayName { get; set; }

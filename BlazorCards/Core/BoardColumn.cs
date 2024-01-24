@@ -9,7 +9,7 @@ public class BoardColumn(string title) : ObservableLinkedCollection<Card>, IUIEl
         items = new(cards.Select(x => new Card(x.Title!, this) { Description = x.Description }));
     }
     
-    internal BoardColumn(string title, Board board) : this(Enumerable.Empty<ICardDao>(), title, board)
+    internal BoardColumn(string title, Board board) : this([], title, board)
     {
     }
 
@@ -30,6 +30,8 @@ public class BoardColumn(string title) : ObservableLinkedCollection<Card>, IUIEl
     public object? Data { get; set; }
 
     public event Action? LayoutChanged;
+
+    public void OnLayoutChanged() => LayoutChanged?.Invoke();
 
     public override void Add(Card item)
     {

@@ -62,6 +62,35 @@ public class Milestone
         if (obj is not Milestone other) return false;
         return other.Id == Id;
     }
+
+    public UpdatedStateMilestone GetUpdatedState()
+    {
+        return new UpdatedStateMilestone
+        {
+            Description = Description,
+            Title = Title,
+            IsKey = IsKey,
+            Status = Status,
+            IsNotify = IsNotify,
+            Deadline = Deadline,
+            ProjectID = ProjectOwner?.Id ?? throw new Exception("ProjectOwner is null when call GetUpdatedState"),
+            Responsible = Responsible?.Id,
+            NotifyResponsible = IsNotify
+        };
+    }
+}
+
+public class UpdatedStateMilestone
+{
+    public string? Description { get; set; }
+    public string? Title { get; set; }
+    public bool IsKey { get; set; }
+    public int Status { get; set; }
+    public bool IsNotify { get; set; }
+    public DateTime? Deadline { get; set; }
+    public int ProjectID { get; set; }
+    public string? Responsible { get; set; }
+    public bool NotifyResponsible { get; set; }
 }
 
 public class ProjectOwner

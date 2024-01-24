@@ -1,21 +1,14 @@
 ﻿using BlazorCards.Core;
-using Onlyoffice.Api.Models;
+using MyTask = Onlyoffice.Api.Models.Task;
+using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
 
 namespace Cardmngr.Utils;
 
-public class ModelConverter
+public static class ModelConverter
 {
-    public static Board ConvertToBoard(Project proj, List<Onlyoffice.Api.Models.Task> tasks, IEnumerable<Onlyoffice.Api.Models.TaskStatus> statuses)
-    {
-        return new Board(statuses, DivideOnStatues(statuses, tasks), proj.Title!, proj)
-        {
-            CssName = "board"
-        };
-    }
-
-    private static IEnumerable<IEnumerable<Onlyoffice.Api.Models.Task>> DivideOnStatues(
-        IEnumerable<Onlyoffice.Api.Models.TaskStatus> statuses,
-        IEnumerable<Onlyoffice.Api.Models.Task> tasks)
+    private static IEnumerable<IEnumerable<MyTask>> DivideOnStatues(
+        IEnumerable<MyTaskStatus> statuses,
+        IEnumerable<MyTask> tasks)
     {
         return statuses
             .Select(x => tasks
@@ -23,5 +16,13 @@ public class ModelConverter
                     t.Status == x.StatusType && x.IsDefault)
                 .OrderBy(x => (-x.Priority, x.Deadline ?? DateTime.MaxValue))
                 .ThenByDescending(x => x.Updated));
+    }
+
+    public static IEnumerable<MyTask> FilterByStatus(this IEnumerable<MyTask> tasks, MyTaskStatus status)
+    {
+        return tasks
+            .Where(t => t.CustomTaskStatus.HasValue 
+                ? t.CustomTaskStatus.Value == status.Id 
+                : t.Status == status.StatusType && status.IsDefault);
     }
 }

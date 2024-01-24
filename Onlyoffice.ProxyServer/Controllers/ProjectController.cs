@@ -73,6 +73,18 @@ public class ProjectController(IConfiguration conf, IHttpClientFactory factory) 
     [HttpGet]
     [Route("api/[controller]/{projectId}/milestone")]
     public Task ProxyMilestones(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/milestone");
+
+    [HttpDelete]
+    [Route("api/[controller]/milestone/{milestoneId}")]
+    public Task ProxyDeleteMilestone(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}");
+
+    [HttpPut]
+    [Route("api/[controller]/milestone/{milestoneId}/status")]
+    public Task ProxyUpdateMilestoneStatus(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}/status");
+
+    [HttpPut]
+    [Route("api/[controller]/milestone/{milestoneId}")]
+    public Task ProxyUpdateMilestone(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}");
     #endregion
 
     [HttpPost]
