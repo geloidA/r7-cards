@@ -3,16 +3,41 @@ using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Models;
 
-public class SubtaskModel(Subtask subtask) : ModelBase
+public class SubtaskModel : ModelBase
 {
-    public bool CanEdit { get; } = subtask.CanEdit;
-    public int TaskId { get; } = subtask.TaskId;
-    public int Id { get; } = subtask.TaskId;
-    public string? Title { get; set; } = subtask.Title;
-    public string? Description { get; set; } = subtask.Description;
-    public Status Status { get; set; } = (Status)subtask.Status;
-    public DateTime Created { get; } = subtask.Created;
-    public User CreatedBy { get; } = new User(subtask.CreatedBy!);
-    public DateTime Updated { get; } = subtask.Updated;
-    public User? Responsible { get; } = subtask.Responsible != null ? new User(subtask.Responsible) : null;
+    public SubtaskModel(Subtask subtask)
+    {
+        CanEdit = subtask.CanEdit;
+        TaskId = subtask.TaskId;
+        Id = subtask.Id;
+        Title = subtask.Title;
+        Description = subtask.Description;
+        Status = (Status)subtask.Status;
+        Created = subtask.Created;
+        CreatedBy = new User(subtask.CreatedBy!);
+        Updated = subtask.Updated;
+        Responsible = subtask.Responsible != null ? new User(subtask.Responsible) : null;
+    }
+
+    private SubtaskModel(SubtaskModel source)
+    {
+        CanEdit = source.CanEdit;
+        TaskId = source.TaskId;
+        Id = source.Id;
+        Title = source.Title;
+        Description = source.Description;
+        Status = source.Status;
+        Created = source.Created;
+        CreatedBy = source.CreatedBy;
+    }
+
+    public bool CanEdit { get; }
+    public int TaskId { get; }
+    public int Id { get; }
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+    public Status Status { get; set; }
+    public IUser? Responsible { get; set; }
+    
+    public SubtaskModel Clone() => new(this);
 }

@@ -1,32 +1,79 @@
-﻿using Onlyoffice.Api.Common;
+﻿using System.Collections;
+using Onlyoffice.Api.Common;
 using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
 
 namespace Cardmngr.Models;
 
-public class TaskStatusColumn(MyTaskStatus taskStatus, IEnumerable<Onlyoffice.Api.Models.Task> tasks, ProjectModel projectModel) : ModelBase
+public class TaskStatusColumn : ModelBase, IEnumerable<TaskModel>
 {
-    private readonly List<TaskModel> tasks = tasks
-        .Select(x => new TaskModel(x, projectModel))
-        .ToList();
+    private readonly List<TaskModel> tasks;
 
-    public CommonStatus StatusType { get; } = (CommonStatus)taskStatus.StatusType;
-    public bool CanChangeAvailable { get; } = taskStatus.CanChangeAvailable;
-    public int Id { get; } = taskStatus.Id;
-    public string? Image { get; } = taskStatus.Image;
-    public string? ImageType { get; } = taskStatus.ImageType;
-    public string? Title { get; } = taskStatus.Title;
-    public string? Description { get; } = taskStatus.Description;
-    public string? Color { get; } = taskStatus.Color;
-    public int Order { get; } = taskStatus.Order;
-    public bool IsDefault { get; } = taskStatus.IsDefault;
-    public bool Available { get; } = taskStatus.Available;
-
-    public IEnumerable<TaskModel> Tasks
+    public TaskStatusColumn(MyTaskStatus taskStatus, IEnumerable<Onlyoffice.Api.Models.Task> tasks, ProjectModel projectModel)
     {
-        get
-        {
-            foreach (var task in tasks)
-                yield return task;
-        }
+        Project = projectModel;
+        
+        this.tasks = tasks
+            .Select(x => new TaskModel(x, this))
+            .ToList();
+        
+        StatusType = (Status)taskStatus.StatusType;
+        CanChangeAvailable = taskStatus.CanChangeAvailable;
+        Id = taskStatus.Id;
+        Image = taskStatus.Image;
+        ImageType = taskStatus.ImageType;
+        Title = taskStatus.Title;
+        Description = taskStatus.Description;
+        Color = taskStatus.Color;
+        Order = taskStatus.Order;
+        IsDefault = taskStatus.IsDefault;
+        Available = taskStatus.Available;
     }
+
+    public Status StatusType { get; }
+    public bool CanChangeAvailable { get; }
+    public int Id { get; }
+    public string? Image { get; }
+    public string? ImageType { get; }
+    public string? Title { get; }
+    public string? Description { get; }
+    public string? Color { get; }
+    public int Order { get; }
+    public bool IsDefault { get; }
+    public bool Available { get; }
+    public ProjectModel Project { get; }
+
+    public void Add(TaskModel task)
+    {
+        if (tasks.Contains(task))
+            throw new InvalidOperationException("Task already exists");
+
+        tasks.Add(task);
+        OnModelChanged();
+    }
+
+    public bool Remove(TaskModel task) 
+    {
+        if (tasks.Remove(task))
+        {
+            OnModelChanged();
+            return true;
+        }
+
+        return false;
+    }
+
+    public int Count => tasks.Count;
+
+    public IEnumerator<TaskModel> GetEnumerator() => tasks.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not TaskStatusColumn other)
+            return false;
+        return other.Id == Id;
+    }
+
+    public override int GetHashCode() => Id.GetHashCode();
 }

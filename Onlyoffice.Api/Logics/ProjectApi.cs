@@ -77,9 +77,11 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         return deletedTask?.Response ?? throw new NullReferenceException("Task was not deleted");
     }
 
-    public System.Threading.Tasks.Task UpdateTaskAsync(int taskId, UpdatedStateTask state)
+    public async Task<Models.Task> UpdateTaskAsync(int taskId, UpdatedStateTask state)
     {
-        return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}", state));
+        var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}", state));
+        var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
+        return taskDao?.Response ?? throw new NullReferenceException("Task was not updated");
     }
     #endregion
 
@@ -126,7 +128,7 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         return milestoneDao?.Response ?? throw new NullReferenceException("Milestone was not deleted");
     }
 
-    public System.Threading.Tasks.Task UpdateMilestoneStatusAsync(int milestoneId, CommonStatus status)
+    public System.Threading.Tasks.Task UpdateMilestoneStatusAsync(int milestoneId, Status status)
     {
         return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}/status", new { status }));
     }

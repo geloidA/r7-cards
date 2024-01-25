@@ -1,6 +1,7 @@
 ﻿using Blazored.Modal;
 using Bunit;
 using Cardmngr.Components;
+using Cardmngr.Models;
 using Cardmngr.Pages;
 using Cardmngr.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,6 @@ public class ProjectPageTests : TestContext
         Services
             .AddBlazoredModal()
             .AddBlazorBootstrap()
-            .AddScoped<CardDropService>()
             .AddScoped<IProjectApi, ProjectApiMock>();
     }
 
@@ -27,7 +27,7 @@ public class ProjectPageTests : TestContext
             p.Add(p => p.ProjectId, 1)
              .AddCascadingValue(new HeaderTitle()));
         
-        var boardView = cut.FindComponent<BoardView>();
+        var boardView = cut.FindComponent<StatusColumnsView>();
         
         Assert.NotNull(boardView);
     }

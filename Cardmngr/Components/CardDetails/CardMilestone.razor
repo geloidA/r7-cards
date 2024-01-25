@@ -1,6 +1,4 @@
-﻿@inject IProjectApi ProjectApi
-
-<Card >
+﻿<Card >
     <CardBody class="d-flex flex-column">
         <CardTitle>
             <div class="row d-flex align-items-center">
@@ -35,37 +33,33 @@
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    [Parameter] public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
+    [Parameter] public TaskModel Task { get; set; } = null!;
 
     [Parameter] public bool Disabled { get; set; }
 
     private async Task ShowSelectionModalAsync()
     {
-        var milestones = await ProjectApi.GetMilestonesByProjectIdAsync(Task.ProjectOwner!.Id);
-
         var parameters = new ModalParameters
         {
-            { "Items", milestones },
+            { "Items", Task.ProjectOwner.Milestones },
             { "ItemRender", RenderMilestone }
         };
 
-        var res = await Modal.Show<SelectionModal<Onlyoffice.Api.Models.Milestone>>("Выберите веху", parameters, ModalOptions).Result;
+        var res = await Modal.Show<SelectionModal<MilestoneModel>>("Выберите веху", parameters, ModalOptions).Result;
 
         if (res.Confirmed)
         {
-            var milestone = (Onlyoffice.Api.Models.Milestone)res.Data!;
+            var milestone = (MilestoneModel)res.Data!;
             Task.Milestone = milestone;
-            Task.MilestoneId = milestone.Id;
         }
     }
 
     private void DeleteMilestone()
     {
         Task.Milestone = null;
-        Task.MilestoneId = 0;
     }
 
-    private static RenderFragment<Onlyoffice.Api.Models.Milestone> RenderMilestone = milestone =>
+    private static RenderFragment<MilestoneModel> RenderMilestone = milestone =>
         @<div class="py-1 px-1 d-flex align-items-center">
             <Badge Color="BadgeColor.Warning" IndicatorType="BadgeIndicatorType.RoundedPill"
                 style="max-width: 425px; overflow: hidden;">

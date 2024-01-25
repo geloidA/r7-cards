@@ -21,6 +21,11 @@ public class ProjectApiMock : IProjectApi
         throw new NotImplementedException();
     }
 
+    public Task<Milestone> DeleteMilestoneAsync(int milestoneId)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<Subtask> DeleteSubtaskAsync(int taskId, int subtaskId)
     {
         throw new NotImplementedException();
@@ -84,6 +89,16 @@ public class ProjectApiMock : IProjectApi
         throw new NotImplementedException();
     }
 
+    public System.Threading.Tasks.Task UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
+    {
+        throw new NotImplementedException();
+    }
+
+    public System.Threading.Tasks.Task UpdateMilestoneStatusAsync(int milestoneId, Status status)
+    {
+        throw new NotImplementedException();
+    }
+
     public System.Threading.Tasks.Task UpdateSubtaskAsync(int taskId, int subtaskId, UpdatedStateSubtask state)
     {
         throw new NotImplementedException();
@@ -100,6 +115,11 @@ public class ProjectApiMock : IProjectApi
     }
 
     public System.Threading.Tasks.Task UpdateTaskStatusAsync(int taskId, Status status, int? statusId = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<Onlyoffice.Api.Models.Task> IProjectApi.UpdateTaskAsync(int taskId, UpdatedStateTask state)
     {
         throw new NotImplementedException();
     }

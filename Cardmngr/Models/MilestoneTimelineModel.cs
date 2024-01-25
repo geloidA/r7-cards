@@ -1,20 +1,13 @@
-﻿using BlazorCards;
+﻿using System.Collections;
 using Onlyoffice.Api.Models;
-using BlazorCards.Core.Extensions;
-using MyTask = Onlyoffice.Api.Models.Task;
-using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
 
 namespace Cardmngr.Models;
 
-public class ProjectPageModel(Project project, List<MyTask> tasks, List<MyTaskStatus> statuses, List<Milestone> milestones) : ModelBase
+public class MilestoneTimelineModel(IEnumerable<Milestone> milestones, ProjectModel project) : ModelBase, IEnumerable<MilestoneModel>
 {
-    private readonly ProjectModel projectModel = new(project, tasks, statuses, milestones);
-
-    public string ProjectTitle => projectModel.Title;
-
-    public Card? LastDraggedCard { get; private set; }
-    public IEnumerable<Card> Cards => board.AllCards();
-    public IEnumerable<MilestoneModel> Milestones => projectModel.Milestones;
+    private readonly HashSet<MilestoneModel> milestones = milestones
+        .Select(m => new MilestoneModel(m, project))
+        .ToHashSet();
 
     public void AddMilestone(MilestoneModel milestone) 
     {
@@ -46,6 +39,14 @@ public class ProjectPageModel(Project project, List<MyTask> tasks, List<MyTaskSt
         OnModelChanged();
         SelectedMilestonesChanged?.Invoke();
     }
+
+    public int Count => milestones.Count;
     
     public event Action? SelectedMilestonesChanged;
+
+    public IEnumerable<MilestoneModel> SelectedMilestones => milestones.Where(x => x.IsSelected);
+
+    public IEnumerator<MilestoneModel> GetEnumerator() => milestones.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

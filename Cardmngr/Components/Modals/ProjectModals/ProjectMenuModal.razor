@@ -1,18 +1,18 @@
 ﻿@inject IProjectApi ProjectApi
 
 
-@if (Board is { })
+@if (ProjectModel is { })
 {
     <div class="container">
         <div class="row header">
             <div class="d-flex flex-row align-items-center mb-2">
-                <span>@Board.Title</span>
+                <span>@ProjectModel.Title</span>
                 <Tooltip Title="Кол-во открытых задач">
                     <Badge class="p-1 ms-1 user-select-none" Color="BadgeColor.Info">
-                        @OpenTaskCount
+                        @ProjectModel.TaskCount
                     </Badge>
                 </Tooltip>
-                @if (Board.GetProject().IsPrivate)
+                @if (ProjectModel.IsPrivate)
                 {
                     <div class="ms-1">
                         <Tool IconName="IconName.LockFill" IconColor="IconColor.Warning" TooltipTitle="Приватный проект" />
@@ -23,68 +23,52 @@
         <div class="row mt-2 align-items-center">
             <div class="col">
                 <i class="text-secondary fw-light small">
-                    Создан - @Board.GetProject().Created.ToShortDateString()
+                    Создан - @ProjectModel.Created.ToShortDateString()
                 </i>
             </div>
             <div class="col d-flex justify-content-end">                
-                @RenderStatus(GetDataByStatus((ProjectStatus)Board.GetProject().Status))
+                @RenderStatus(GetDataByStatus(ProjectModel.Status))
             </div>
         </div>
         <div class="row mt-3">
-            <span>@Board.GetProject().Description</span>
+            <span>@ProjectModel.Description</span>
         </div>
         <Card class="row mt-4 p-1 bg-shadow">
             <CardTitle class="mt-2">
                 <h6>
                     Вехи
-                    <Badge class="p-1" Color="BadgeColor.Info">@milestones.Count</Badge>
+                    <Badge class="p-1" Color="BadgeColor.Info">@ProjectModel.Milestones.Count</Badge>
                 </h6>
             </CardTitle>
             <CardBody class="m-0" style="max-height: 190px; overflow: auto;">
-                <MilestoneList Milestones="milestones" />
+                <MilestoneList Milestones="ProjectModel.Milestones" />
             </CardBody>
         </Card>
         <Card class="row mt-4 p-1 bg-shadow">
             <CardTitle class="mt-2">
                 <h6>
                     Команда 
-                    <Badge class="p-1" Color="BadgeColor.Info">@projectTeam.Count</Badge>
+                    <Badge class="p-1" Color="BadgeColor.Info">@ProjectModel.TeamCount</Badge>
                 </h6>
             </CardTitle>
             <CardBody class="m-0" style="max-height: 255px; overflow: auto;">
-                <UserList Users="projectTeam" />
+                <UserList Users="ProjectModel.Team" />
             </CardBody>
         </Card> 
         <div class="mt-4 d-flex align-items-center justify-content-end">
             <h6>Менеджер проекта</h6>
             <Badge class="d-flex ms-2 py-0" Color="BadgeColor.Success" IndicatorType="BadgeIndicatorType.RoundedPill">
-                <UserAvatar ShowName="true" Size="25" User="Board.GetProject().Responsible" />
+                <UserAvatar ShowName="true" Size="25" User="ProjectModel.Responsible" />
             </Badge>
         </div>       
     </div>
 }
 
 @code {
-    private int? previosProjectId;
-    private List<Onlyoffice.Api.Models.UserProfile> projectTeam = [];
-    private List<Onlyoffice.Api.Models.Milestone> milestones = [];
 
-    [Parameter] public Board? Board { get; set; }
+    [Parameter]
+    public ProjectModel ProjectModel { get; set; } = null!;
 
-    protected override async Task OnParametersSetAsync()
-    {
-        if (Board is { } && previosProjectId != Board.GetProject().Id)
-        {
-            projectTeam = await ProjectApi.GetProjectTeamAsync(Board.GetProject().Id);
-            milestones = await ProjectApi.GetMilestonesByProjectIdAsync(Board.GetProject().Id);
-            previosProjectId = Board.GetProject().Id;
-        }
-    }
-
-    private int? OpenTaskCount => Board?
-        .AllCards()
-        .Where(x => x.GetTask().Status != (int)Status.Closed)
-        .Count();
 
     private static StatusData GetDataByStatus(ProjectStatus status)
     {

@@ -12,8 +12,4 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BlazorCards\BlazorCards.csproj" />
-  </ItemGroup>
-
 </Project>

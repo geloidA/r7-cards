@@ -1,0 +1,18 @@
+﻿
+@if (Model is { })
+{
+    <div class="d-flex position-relative overflow-hidden pb-2 flex-row board" >
+        <div class="d-flex flex-row" style="flex: auto !important; width: 100% !important;">
+            <CascadingValue Value="Model" IsFixed="true">
+                @foreach (var column in Model)
+                {
+                    <StatusColumnView TaskStatusModel="column" @key="column" />
+                }
+            </CascadingValue>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public StatusColumnsModel? Model { get; set; }
+}

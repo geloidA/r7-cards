@@ -1,13 +1,11 @@
-﻿using BlazorCards.Core;
-
-namespace Onlyoffice.Api.Models;
+﻿namespace Onlyoffice.Api.Models;
 
 public class TaskStatusDao : HttpResponseDaoBase
 {
     public List<TaskStatus>? Response { get; set; }
 }
 
-public class TaskStatus : IBoardColumnDao
+public class TaskStatus
 {
     public int StatusType { get; set; }
     public bool CanChangeAvailable { get; set; }

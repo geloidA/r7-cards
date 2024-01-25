@@ -1,4 +1,4 @@
-﻿<Badge class="p-0 w-100 overflow-hidden" @onclick="ChangeSelectionMode" Color="BadgeColor">
+﻿<Badge class="p-0 w-100 overflow-hidden" @onclick="Toggle" Color="BadgeColor">
     <div class="@CssSelected p-1 timeline-milestone">
         @Milestone.Title
     </div>
@@ -9,13 +9,10 @@
 </div>
 
 @code {
-    private bool isSelected;
-    private string CssSelected => isSelected ? "selected" : "";
+    private string CssSelected => Milestone.IsSelected ? "selected" : "";
 
     [CascadingParameter] IModalService Modal { get; set; } = null!;
-    [Parameter] public Onlyoffice.Api.Models.Milestone Milestone { get; set; } = null!;
-    [Parameter] public DateTime Start { get; set; }
-    [Parameter] public EventCallback<bool> OnSelectionChanged { get; set; }
+    [Parameter] public MilestoneModel Milestone { get; set; } = null!;
     [Parameter] public EventCallback<Onlyoffice.Api.Models.Milestone> OnUpdated { get; set; }
     [Parameter] public EventCallback<Onlyoffice.Api.Models.Milestone> OnDeleted { get; set; }
 
@@ -23,7 +20,7 @@
     {
         get
         {
-            if (Milestone.Status == (int)CommonStatus.Closed) return BadgeColor.Success;
+            if (Milestone.Status == Status.Closed) return BadgeColor.Success;
 
             return DateTime.Now > Milestone.Deadline!.Value
                 ? BadgeColor.Danger
@@ -31,14 +28,9 @@
         }
     }
 
-    private async Task ChangeSelectionMode()
+    private void Toggle()
     {
-        isSelected = !isSelected;
-
-        if (OnSelectionChanged.HasDelegate)
-        {
-            await OnSelectionChanged.InvokeAsync(isSelected);
-        }
+        Milestone.Project.Milestones.ToggleMilestone(Milestone);
     }
 
     private async Task ShowDetailsModal()

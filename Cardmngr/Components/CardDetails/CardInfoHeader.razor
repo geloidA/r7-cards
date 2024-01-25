@@ -3,7 +3,7 @@
     <CardBody>
         <div class="d-flex flex-row align-items-center">
             Приоритет -
-            @if (Task.Priority == (int)TaskPriority.High)
+            @if (Task.Priority == TaskPriority.High)
             {
                 <i class="ms-1 text-primary">Высокий</i>
                 <Icon class="ms-1" Name="IconName.ArrowUpCircleFill" Size="IconSize.x5" Color="IconColor.Primary"/>
@@ -16,9 +16,9 @@
                 <Tool IconName="IconName.ArrowDownUp" TooltipPlacement="TooltipPlacement.Top"
                     Disabled="Disabled"
                     TooltipTitle="Изменить" 
-                    OnClick="() => Task.Priority = Task.Priority == (int)TaskPriority.High 
-                        ? (int)TaskPriority.Regular 
-                        : (int)TaskPriority.High"/>
+                    OnClick="() => Task.Priority = Task.Priority == TaskPriority.High 
+                        ? TaskPriority.Regular 
+                        : TaskPriority.High"/>
             </div>
         </div>
         <div class="mt-1">
@@ -44,6 +44,6 @@
 </Card>
 
 @code {
-    [Parameter] public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
+    [Parameter] public TaskModel Task { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
 }

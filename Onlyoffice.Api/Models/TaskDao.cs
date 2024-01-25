@@ -1,6 +1,4 @@
-﻿using BlazorCards;
-
-namespace Onlyoffice.Api.Models;
+﻿namespace Onlyoffice.Api.Models;
 
 public class SingleSubtaskDao : HttpResponseDaoBase
 {
@@ -17,7 +15,7 @@ public class TaskDao : HttpResponseDaoBase
     public List<Task>? Response { get; set; }
 }
 
-public class Task : ICardDao
+public class Task
 {
     public bool CanEdit { get; set; }
     public bool CanCreateSubtask { get; set; }

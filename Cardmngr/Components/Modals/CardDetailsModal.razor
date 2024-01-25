@@ -1,6 +1,6 @@
 ﻿@inject IProjectApi ProjectApi
 
-@if (Card is { })
+@if (changingState is { })
 {
     <div class="container">
         <div class="m-2">
@@ -11,7 +11,7 @@
                 <CardInfoHeader Task="changingState" Disabled="!IsCanEdit" />
                 <div class="pt-2">
                     <DescriptionChanger @bind-Description="changingState.Description" Disabled="!IsCanEdit" />
-                </div>              
+                </div>
             </div>
             <div class="col d-flex flex-column">
                 <div class="pb-2">
@@ -40,28 +40,25 @@
 
 @code {
     private bool saveLoading;
-    private Onlyoffice.Api.Models.Task changingState = null!;
+    private TaskModel? changingState;
 
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] BlazoredModalInstance CurrentModel { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
-    [Parameter] public BlazorCards.Card Card { get; set; } = null!;
+    [Parameter] public TaskModel Task { get; set; } = null!;
     [Parameter] public bool IsCanEdit { get; set; }
-    private Onlyoffice.Api.Models.Task Task => Card.GetTask();
 
     protected override void OnInitialized()
     {
-        changingState = Task.FullCopy(false);
+        changingState = Task.Clone(false);
     }
 
     private async Task ConfirmSaving()
     {
         saveLoading = true;
 
-        await ProjectApi.UpdateTaskAsync(changingState.Id, changingState.GetUpdateState());
-        Card.Title = changingState.Title;
-        Card.Description = changingState.Description;
-        Card.Data = changingState;
+        var updatedTask = await ProjectApi.UpdateTaskAsync(changingState!.Id, changingState.GetUpdateState());
+        Task.Update(updatedTask);
 
         await CurrentModel.CloseAsync(ModalResult.Ok());
     }
@@ -73,7 +70,7 @@
         if (result.Confirmed)
         {
             await ProjectApi.DeleteTaskAsync(Task.Id);
-            Card.Column!.Remove(Card);
+            Task.StatusColumn.Remove(Task);
             await CurrentModel.CloseAsync(ModalResult.Ok());
         }
     }

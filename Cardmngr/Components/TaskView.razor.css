@@ -8,10 +8,6 @@
     width: 100%;
 }
 
-.board .board-column .my-card.dragover {
-    border-top: 3px solid var(--drop-highlight-col);
-}
-
 .board .board-column .my-card.dragged {
     opacity: 0.5;
 }

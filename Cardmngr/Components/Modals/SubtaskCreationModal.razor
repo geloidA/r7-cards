@@ -14,7 +14,7 @@
             <span class="font-monospace">Ответственный</span>           
         </div>
         <div class="col d-flex justify-content-end">
-            <ResponsibleSelection @bind-Responsible="subtask.Responsible" EditMode="true" Task="Task" />
+            <ResponsibleSelection @bind-Responsible="subtask.Responsible" EditMode="true" Project="Project" />
         </div>
     </div>
 </div>
@@ -27,13 +27,13 @@
 @code {
     private SubtaskState subtask = new();
 
-    [Parameter] public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
+    [Parameter] public ProjectModel Project { get; set; } = null!;
 
     protected override async Task SumbitCreate() => await BlazoredModal.CloseAsync(ModalResult.Ok(subtask));
 
     public class SubtaskState
     {
         public string Title { get; set; } = null!;
-        public Onlyoffice.Api.Models.Responsible? Responsible { get; set; }
+        public Onlyoffice.Api.Models.IUser? Responsible { get; set; }
     }
 }

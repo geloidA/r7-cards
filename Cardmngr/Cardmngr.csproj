@@ -45,7 +45,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../Onlyoffice.Api/Onlyoffice.Api.csproj" />
-    <ProjectReference Include="..\BlazorCards\BlazorCards.csproj" />
     <ProjectReference Include="..\..\KolBlazor\KolBlazor\KolBlazor.csproj" />
   </ItemGroup>
 

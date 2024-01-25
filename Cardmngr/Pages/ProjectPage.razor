@@ -12,19 +12,16 @@
 
 @if (model is { })
 {
-    <span>Успешно</span>
-    @* <Offcanvas @ref="menuCanvas" ShowCloseButton="false" />
+    <Offcanvas @ref="menuCanvas" ShowCloseButton="false" />
 
     <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
         <div class="row mb-2" style="margin-left: 10px;">
             <div class="col-md-11 d-flex flex-column" >
-                <KolTimeline @ref="timeline" >
+                <KolTimeline @ref="timeline">
                     @foreach (var milestone in model.Milestones)
                     {
-                        var minDate = board.GetMilestoneStart(milestone);
-                        <KolTimelineItem @key="milestone" End="milestone.Deadline!.Value" Start="minDate">
-                            <TimelineMilestone OnSelectionChanged="x => boardView.ToggleMilestone(milestone)"
-                                Milestone="milestone" Start="minDate" OnUpdated="UpdateMilestone" OnDeleted="DeleteMilestone" />
+                        <KolTimelineItem @key="milestone" End="milestone.Deadline!.Value" Start="milestone.Start">
+                            <TimelineMilestone Milestone="milestone" OnUpdated="UpdateMilestone" OnDeleted="DeleteMilestone" />
                         </KolTimelineItem>
                     }
                 </KolTimeline>
@@ -35,9 +32,11 @@
             </div>
         </div>
         <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
-            <BoardView @ref="boardView" Board="board" OnCreatedCard="Refresh" />
+            <CascadingValue Value="model.Milestones" IsFixed="true" >
+                <StatusColumnsView Model="model.StatusColumns" />
+            </CascadingValue>
         </div>
-    </div> *@
+    </div>
 }
 else
 {
@@ -45,12 +44,9 @@ else
 }
 
 @code {
-    private KolTimeline timeline = null!;
-    private Board? board;
-    private List<Milestone> milestones = null!;
+    private KolTimeline? timeline;
     private Offcanvas menuCanvas = null!;
-    private BoardView boardView = null!;
-    private ProjectPageModel? model;
+    private ProjectModel? model;
 
     [Parameter] public int? ProjectId { get; set; }
     [CascadingParameter] HeaderTitle HeaderTitle { get; set; } = null!;
@@ -63,29 +59,19 @@ else
             var tasks = ProjectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(ProjectId.Value));
             var statuses = ProjectApi.GetAllTaskStatusesAsync();
             var milestones = ProjectApi.GetMilestonesByProjectIdAsync(ProjectId.Value);
+            var team = ProjectApi.GetProjectTeamAsync(ProjectId.Value);
 
-            model = new ProjectPageModel(await project, await tasks, await statuses, await milestones);
+            model = new ProjectModel(await project, await tasks, await statuses, await milestones, await team);
 
-            @* boardView?.InitializeEventHandlers(board);
+            if (timeline is { })
+            {
+                foreach (var task in model.Tasks)
+                    task.ModelChanged += timeline.Refresh;
+            }
 
-            foreach (var card in board.AllCards())
-                card.LayoutChanged += Refresh; *@
-
-            HeaderTitle.Content = GetTitleContent(model.ProjectTitle);
+            HeaderTitle.Content = GetTitleContent(model.Title);
         }
     }
-
-    @* private async Task<Board> InitializeBoard()
-    {
-        var project = ProjectApi.GetProjectByIdAsync(ProjectId!.Value);
-        var tasks = ProjectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(ProjectId.Value));
-        var statuses = await ProjectApi.GetAllTaskStatusesAsync();
-
-        var orderedStatuses = statuses
-            .OrderBy(x => (x.StatusType, x.Order));
-
-        return ModelConverter.ConvertToBoard(await project, await tasks, orderedStatuses);
-    } *@
 
     private RenderFragment<string> GetTitleContent = title => 
         @<div class="fw-bold">
@@ -96,25 +82,25 @@ else
     {
         await menuCanvas.ShowAsync<ProjectMenuModal>("", new Dictionary<string, object>
         {
-            { "Board", board! }
+            { "ProjectModel", model! }
         });
     }
 
     private void UpdateMilestone(Onlyoffice.Api.Models.Milestone value)
     {
-        var update = milestones.Find(x => x.Id == value.Id);
+        @* var update = milestones.Find(x => x.Id == value.Id);
         if (update is { })
         {
             update.Title = value.Title;
             update.Description = value.Description;
             update.Deadline = value.Deadline;
             update.Responsible = value.Responsible;
-        }
+        } *@
     }
 
     private void DeleteMilestone(Onlyoffice.Api.Models.Milestone value)
     {
-        milestones.Remove(value);
+        @* milestones.Remove(value);
         
         var taskWithMilestone = board!
             .AllCards()
@@ -125,7 +111,7 @@ else
         {
             task.Milestone = null;
             task.MilestoneId = 0;
-        }
+        } *@
     }
     
     private void Refresh() => StateHasChanged();

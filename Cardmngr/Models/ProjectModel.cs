@@ -1,5 +1,4 @@
 ﻿using Cardmngr.Models;
-using Cardmngr.Utils;
 using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Models;
 using MyTask = Onlyoffice.Api.Models.Task;
@@ -9,19 +8,16 @@ namespace Cardmngr;
 
 public class ProjectModel : ModelBase
 {
-    private readonly List<TaskStatusColumn> statusColumns;
-    private readonly HashSet<MilestoneModel> milestones;
+    private readonly MilestoneTimelineModel milestoneTimeline;
+    private readonly StatusColumnsModel statusColumns;
+    private readonly List<IUser> team;
 
-    public ProjectModel(Project project, List<MyTask> tasks, List<MyTaskStatus> statuses, List<Milestone> milestones)
+    public ProjectModel(Project project, List<MyTask> tasks, List<MyTaskStatus> statuses, List<Milestone> milestones, IEnumerable<IUser> team)
     {
-        this.milestones = milestones
-            .Select(m => new MilestoneModel(m))
-            .ToHashSet();
+        milestoneTimeline = new MilestoneTimelineModel(milestones, this);
+        this.team = team.ToList();
         
-        statusColumns = statuses
-            .OrderBy(x => (x.StatusType, x.Order))
-            .Select(x => new TaskStatusColumn(x, tasks.FilterByStatus(x), this))
-            .ToList();
+        statusColumns = new StatusColumnsModel(tasks, statuses, this);
 
         Id = project.Id;
         Title = project.Title ?? string.Empty;
@@ -39,21 +35,29 @@ public class ProjectModel : ModelBase
     public string Title { get; set; }
     public string? Description { get; set; } 
     public ProjectStatus Status { get; set; } 
-    public User Responsible { get; set; } 
+    public IUser Responsible { get; set; } 
     public bool CanEdit { get; } 
-    public bool IsPrivate { get; set; } 
-    public DateTime Updated { get; }
-    public User CreatedBy { get; }
-    public DateTime Created { get; }
-    public int TaskCount { get; private set; }
-    public int TaskCountTotal { get; private set; }
-
-    public IEnumerable<MilestoneModel> Milestones
+    public bool IsPrivate { get; set; }
+    
+    public IEnumerable<IUser> Team
     {
         get
         {
-            foreach (var milestone in milestones)
-                yield return milestone;
+            foreach (var user in team)
+                yield return user;
         }
     }
+
+    public int TeamCount => team.Count;
+
+    public int TaskCount => statusColumns
+        .Where(x => x.StatusType == Onlyoffice.Api.Common.Status.Open)
+        .Sum(x => x.Count);
+
+    public int TaskCountTotal => statusColumns.Sum(x => x.Count);
+
+    public IEnumerable<TaskModel> Tasks => statusColumns.SelectMany(x => x);
+
+    public MilestoneTimelineModel Milestones => milestoneTimeline;
+    public StatusColumnsModel StatusColumns => statusColumns;
 }

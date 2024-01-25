@@ -117,7 +117,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="taskId">Task ID</param>
     /// <param name="state">Updated state</param>
-    Task UpdateTaskAsync(int taskId, UpdatedStateTask state);
+    Task<MyTask> UpdateTaskAsync(int taskId, UpdatedStateTask state);
 
     /// <summary>
     /// Updates a status of a task with the ID specified in the request.
@@ -215,7 +215,7 @@ public interface IProjectApi
     /// <param name="milestoneId">Milestone ID</param>
     /// <param name="status">New milestone status</param>
     /// <returns>Updated milestone</returns>
-    Task UpdateMilestoneStatusAsync(int milestoneId, CommonStatus status);
+    Task UpdateMilestoneStatusAsync(int milestoneId, Status status);
 }
 
 public static class ProjectApiExtensions

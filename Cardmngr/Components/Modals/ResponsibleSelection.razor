@@ -1,5 +1,4 @@
-﻿@inject IProjectApi ProjectApi
-@inject ResponsibleSelectionDialog SelectionDialog
+﻿@inject TeamMemberSelectionDialog SelectionDialog
 
 @if (Responsible is { })
 {
@@ -32,23 +31,21 @@ else
 
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
 
-    [CascadingParameter] IModalService Modal { get; set; } = default!;
+    [Parameter]
+    public Onlyoffice.Api.Models.IUser? Responsible { get; set; }
 
     [Parameter]
-    public Onlyoffice.Api.Models.Responsible? Responsible { get; set; }
-
-    [Parameter]
-    public EventCallback<Onlyoffice.Api.Models.Responsible> ResponsibleChanged { get; set; }
+    public EventCallback<Onlyoffice.Api.Models.IUser> ResponsibleChanged { get; set; }
 
     [Parameter]
     public bool EditMode { get; set; }
 
     [Parameter]
-    public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
+    public ProjectModel Project { get; set; } = null!; // TODO: Change on Team enumerable
 
     private async Task ShowResponsibleSelectionModal()
     {
-        var selected = await SelectionDialog.ShowAsync(Task.ProjectOwner!.Id, ModalOptions);
+        var selected = await SelectionDialog.ShowAsync(Project, ModalOptions);
 
         if (selected is { })
         {

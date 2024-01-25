@@ -1,4 +1,4 @@
-﻿@inject ResponsibleSelectionDialog SelectionDialog
+﻿@inject TeamMemberSelectionDialog SelectionDialog
 @inject IProjectApi ProjectApi
 @inject ToastService ToastService
 
@@ -55,12 +55,12 @@
 
     private async Task ShowSelectionDialog()
     {
-        var selected = await SelectionDialog.ShowAsync(Milestone.ProjectOwner!.Id, ModalOptions);
+        @* var selected = await SelectionDialog.ShowAsync(Milestone.ProjectOwner!.Id, ModalOptions);
 
         if (selected is { })
         {
             changingState.Responsible = selected;
-        }
+        } *@
     }
 
     private async Task Save()

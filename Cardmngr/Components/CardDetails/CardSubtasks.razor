@@ -12,8 +12,8 @@
             <CascadingValue Value="lastEditingSubtask" >
                 @foreach (var subtask in Task.Subtasks)
                 {
-                    <SubtaskView Subtask="subtask" Task="Task" @key="subtask" OnDeleted="Refresh"
-                        EditModeChanged="next => lastEditingSubtask = next" CanEdit="!Disabled" />
+                    <SubtaskView Subtask="subtask" Task="Task" EditModeChanged="next => lastEditingSubtask = next" 
+                        CanEdit="!Disabled" @key="subtask" />
                 }
             </CascadingValue>
         }
@@ -24,7 +24,7 @@
     </CardBody>
     <CardFooter class="d-flex justify-content-end">
         <Tool IconName="IconName.Plus" IconSize="IconSize.x5" TooltipTitle="Добавить"
-            Disabled="Disabled || Task.Status == (int)Status.Closed" @onclick="ShowCreationModal" />
+            Disabled="Disabled || Task.StatusColumn.StatusType == Status.Closed" @onclick="ShowCreationModal" />
     </CardFooter>
 </Card>
 
@@ -35,11 +35,12 @@
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
     [CascadingParameter] IModalService Modal { get; set; } = default!;
-    [Parameter] public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
+    [Parameter] public TaskModel Task { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        Task.Subtasks.CollectionChanged += (_, _) => Refresh();
         if (AuthenticationState is { })
         {
             var state = await AuthenticationState;
@@ -52,13 +53,14 @@
     private async Task ShowCreationModal()
     {
         var res = await Modal.Show<SubtaskCreationModal>("Добавление подзадачи", 
-            new ModalParameters { { "Task", Task } }, ModalOptions).Result;
+            new ModalParameters { { "Project", Task.ProjectOwner } }, ModalOptions).Result;
 
         if (res.Confirmed)
         {
             var data = (SubtaskCreationModal.SubtaskState)res.Data!;
             var created = await ProjectApi.CreateSubtaskAsync(Task.Id, data.Title, data.Responsible?.Id);
-            Task.Subtasks?.Add(created);
+            var subtaskModel = new SubtaskModel(created);
+            Task.Subtasks?.Add(subtaskModel);
         }
     }
 }

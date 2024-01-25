@@ -1,4 +1,6 @@
-﻿namespace Cardmngr.Models;
+﻿using Onlyoffice.Api.Models;
+
+namespace Cardmngr.Models;
 
 public interface IModel
 {
@@ -7,6 +9,10 @@ public interface IModel
 
 public abstract class ModelBase : IModel
 {
+    public DateTime Created { get; protected set; }
+    public IUser? CreatedBy { get; protected set; }
+    public DateTime Updated { get; protected set;}
+
     public event Action? ModelChanged;
 
     protected void OnModelChanged() => ModelChanged?.Invoke();

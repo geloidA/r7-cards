@@ -4,24 +4,49 @@ using Onlyoffice.Api.Models;
 
 namespace Cardmngr;
 
-public class MilestoneModel(Milestone milestone) : ModelBase
+public class MilestoneModel : ModelBase
 {
-    public int Id { get; } = milestone.Id;
-    public string? Title { get; set; } = milestone.Title;
-    public string? Description { get; set; } = milestone.Description;
-    public ProjectOwner ProjectOwner { get; } = milestone.ProjectOwner!; // TODO: fix
-    public DateTime? Deadline { get; set; } = milestone.Deadline;
-    public bool IsKey { get; set; } = milestone.IsKey;
-    public bool IsNotify { get; set; } = milestone.IsNotify;
-    public int ActiveTaskCount { get; set; } = milestone.ActiveTaskCount;
-    public int ClosedTaskCount { get; set; } = milestone.ClosedTaskCount;
-    public CommonStatus Status { get; set; } = (CommonStatus)milestone.Status;
-    public User Responsible { get; set; } = new User(milestone.Responsible!);
-    public DateTime Created { get; } = milestone.Created;
-    public User CreatedBy { get; } = new User(milestone.CreatedBy!);
-    public DateTime Updated { get; set; } = milestone.Updated;
+    public int Id { get; }
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+    public ProjectModel Project { get; }
+    public DateTime? Deadline { get; set; }
+    public bool IsKey { get; set; }
+    public bool IsNotify { get; set; }
+    public int ActiveTaskCount => Project.Tasks.Where(x => x.StatusColumn.StatusType == Status.Open).Count();
+    public int ClosedTaskCount => Project.Tasks.Where(x => x.StatusColumn.StatusType == Status.Closed).Count();
+    public Status Status { get; set; }
+    public IUser Responsible { get; set; }
 
     public bool IsSelected { get; private set; }
+
+    public DateTime Start 
+    {
+        get
+        {
+            return Project.Tasks
+                .Where(x => x.Milestone == this && x.StartDate.HasValue)
+                .Select(x => x.StartDate!.Value)
+                .Concat([Deadline!.Value.AddDays(-7)])
+                .Min();
+        }
+    }
+
+    public MilestoneModel(Milestone milestone, ProjectModel project)
+    {
+        Id = milestone.Id;
+        Title = milestone.Title;
+        Description = milestone.Description;
+        Project = project;
+        Deadline = milestone.Deadline;
+        IsKey = milestone.IsKey;
+        IsNotify = milestone.IsNotify;
+        Status = (Status)milestone.Status;
+        Responsible = new User(milestone.Responsible!);
+        Created = milestone.Created;
+        CreatedBy = new User(milestone.CreatedBy!);
+        Updated = milestone.Updated;
+    }
 
     public void ToggleSelection() => IsSelected = !IsSelected;
 }

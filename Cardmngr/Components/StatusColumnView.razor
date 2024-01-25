@@ -1,0 +1,135 @@
+﻿@using TypeStatus = Onlyoffice.Api.Models.TaskStatus
+
+@inject IProjectApi ProjectApi
+
+<div class="board-column @CssDragOver @CssCollapsed user-select-none" @ondrop="OnDrop"
+    @ondragover:preventDefault @ondragenter:preventDefault @ondblclick="() => isCollapsed = !isCollapsed"
+    @ondragover="@(() => { if (!highlighted) highlighted = true; })"
+    @ondragleave="() => highlighted = false">
+    @if (isCollapsed)
+    {
+        <div class="d-flex flex-column mt-1">            
+            <Badge class="align-self-center" Color="BadgeColor.Success">@TaskStatusModel.Count</Badge>
+            <span class="mt-2 text-vertical ">
+                @TaskStatusModel.Title
+            </span>
+            <div class="mt-2 align-self-center" >
+                <img src=@($"data:{TaskStatusModel.ImageType};base64, {TaskStatusModel.Image}")
+                    style="max-width: 18px;">
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row mb-2 ">
+            <div class="col-md-10 align-self-baseline" >
+                <div class="row">
+                    <div class="col-md-10">
+                        <Badge Color="BadgeColor.Success">@TaskStatusModel.Count</Badge>
+                        <span class="ms-1 user-select-none">
+                            @TaskStatusModel.Title
+                        </span>
+                        <img src=@($"data:{TaskStatusModel.ImageType};base64, {TaskStatusModel.Image}")
+                            style="max-width: 18px;" alt="SVG Icon">                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 hidden">
+                @DropDown
+            </div>
+        </div>
+        @if (MilestoneTimelineModel.SelectedMilestones.Any())
+        {
+            <div class="mb-1 d-flex justify-content-center fw-light" style="font-size: small;">
+                @TaskStatusModel.Where(FilterByMilestones).Count() результатов
+            </div>
+        }
+        <ul class="card-container">
+            @foreach (var task in TaskStatusModel.Where(FilterByMilestones))
+            {
+                <TaskView Task="task" @key="task" />
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    string CssDragOver => highlighted ? "dragover" : "";
+    string CssCollapsed => isCollapsed ? "collapsed" : "";
+    bool highlighted;
+    bool isCollapsed;
+
+    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
+    [CascadingParameter] IModalService Modal { get; set; } = default!;
+
+    [CascadingParameter] StatusColumnsModel StatusColumnsModel { get; set; } = null!;
+    [CascadingParameter] MilestoneTimelineModel MilestoneTimelineModel { get; set; } = null!;
+    [Parameter] public TaskStatusColumn TaskStatusModel { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        TaskStatusModel.ModelChanged += Refresh;
+        MilestoneTimelineModel.SelectedMilestonesChanged += Refresh;
+    }
+
+    private async Task OnDrop()
+    {
+        highlighted = false;
+        var dropped = StatusColumnsModel.LastDraggedTask;
+        if (dropped is { } && !ReferenceEquals(dropped.StatusColumn, TaskStatusModel))
+        {
+            if (TaskStatusModel.StatusType == Status.Closed && !dropped.CanMarkClosed)
+            {
+                var modalRes = await ShowCloseCardConfirmModal();
+                if (modalRes.Cancelled) return;
+                dropped.CloseAllSubtasks();
+            }
+            
+            await ProjectApi.UpdateTaskStatusAsync(dropped.Id, TaskStatusModel.StatusType, TaskStatusModel.Id);
+            dropped.StatusColumn = TaskStatusModel;
+        }
+    }
+
+    private async Task<ModalResult> ShowCloseCardConfirmModal()
+    {
+        var modal = Modal.Show<CloseCardConfirmModal>("Закрытие задачи", ModalOptions);
+        return await modal.Result;
+    }
+    
+    private async Task ShowCreateCardModal()
+    {
+        var res = await Modal.Show<CardCreationModal>("Сформулируйте задачу 🤔💭", ModalOptions).Result;
+
+        if (res.Confirmed)
+        {
+            var title = res.Data!.ToString()!;
+            
+            var task = await ProjectApi.CreateTaskAsync(
+                TaskStatusModel.Project.Id, 
+                title, 
+                TaskStatusModel.StatusType, 
+                TaskStatusModel.Id);
+
+            TaskStatusModel.Add(new TaskModel(task, TaskStatusModel));
+        }
+    }
+
+    private bool FilterByMilestones(TaskModel task)
+    {
+        return !MilestoneTimelineModel.SelectedMilestones.Any() || 
+            MilestoneTimelineModel.SelectedMilestones.Any(x => x.Id == task.Milestone?.Id);
+    }
+
+    private void Refresh() => StateHasChanged();
+
+    private RenderFragment DropDown => 
+        @<Dropdown Size="Size.ExtraSmall" AutoClose="true" >
+            <DropdownToggleButton Color="ButtonColor.Light">
+                <Icon Name="IconName.ThreeDots" />
+            </DropdownToggleButton>
+            <DropdownMenu>
+                <DropdownItem @onclick="ShowCreateCardModal"
+                    >Добавить карточку</DropdownItem>
+            </DropdownMenu>
+        </Dropdown>;
+}

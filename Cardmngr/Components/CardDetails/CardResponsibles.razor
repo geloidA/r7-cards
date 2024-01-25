@@ -1,4 +1,5 @@
-﻿
+﻿@using System.Collections.ObjectModel
+
 <Card >
     <CardBody class="d-flex flex-column" style="overflow-y: scroll; max-height: 200px;">
         <CardTitle>
@@ -22,23 +23,23 @@
 
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
-    [Parameter] public Onlyoffice.Api.Models.Task Task { get; set; } = null!;
+    [Parameter] public TaskModel Task { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
-    
+
 
     private async Task ShowResponsibleSelectionModal()
     {
         var parameters = new ModalParameters
         {
             { "SelectedIds", Task.Responsibles!.Select(x => x.Id).ToList() },
-            { "ProjectId", Task.ProjectOwner!.Id }
+            { "Project", Task.ProjectOwner }
         };
 
         var result = await Modal.Show<ResponsiblesSelectionModal>("Выберите ответственных", parameters, ModalOptions).Result;
-        
+
         if (result.Confirmed)
         {
-            Task.Responsibles = (List<Onlyoffice.Api.Models.Responsible>)result.Data!;
+            Task.Responsibles = new ObservableCollection<Onlyoffice.Api.Models.IUser>((IEnumerable<Onlyoffice.Api.Models.IUser>)result.Data!);
         }
     }
 }

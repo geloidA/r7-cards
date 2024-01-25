@@ -3,24 +3,20 @@
 
 @inject IProjectApi ProjectApi
 @inject AuthenticationStateProvider AuthenticationState
-@inject CardDropService CardDropService
 
-<li class="@Card.CssName @CssDragOver @CssDragStart @CssDeadline" @onclick="OpenModal"
-    @ondragover="() => { if (!highlighted) highlighted = true; }" @ondragover:stopPropagation @ondragover:preventDefault
-    @ondragenter:preventDefault draggable="@canEdit.ToString()" @ondragleave="() => highlighted = false"
-    @ondrop:stopPropagation @ondrop="OnDrop" @ondragstart="OnDragStart"
-    @ondragend="() => isDragged = false" >
+<li class="my-card @CssDragStart @CssDeadline" @onclick="OpenModal" draggable="@canEdit.ToString()"
+    @ondragstart="OnDragStart" @ondragend="() => isDragged = false" >
     <div class="container py-1 px-4 default-text" style="min-height: 100px;">
         <div class="row py-1">
             <div class="px-0 d-flex flex-row">
-                @if (Task.Priority == (int)TaskPriority.High)
+                @if (Task.Priority == TaskPriority.High)
                 {
                     <div style="margin-right: 5px;">
                         <Tool IconName="IconName.ArrowUpCircleFill" IconColor="IconColor.Primary" 
                             TooltipTitle="Приоритет - Высокий" TooltipPlacement="TooltipPlacement.Bottom" />
                     </div>
                 }
-                <div style="overflow: hidden;">@Card.Title</div>
+                <div style="overflow: hidden;">@Task.Title</div>
             </div>
         </div>
         @if (Task.Description is { })
@@ -32,9 +28,9 @@
         @if (Task.Subtasks?.Any() ?? false)
         {
             <div class="row py-1">
-                    <div class="d-flex justify-content-end">
-                        + @Task.Subtasks.Count подзадачи
-                    </div>
+                <div class="d-flex justify-content-end">
+                    + @Task.Subtasks.Count подзадачи
+                </div>
             </div>
         }
         @if (Task.Milestone is { })
@@ -57,7 +53,7 @@
         {
             <div class="row py-1">
                 <div class="d-flex p-0 justify-content-end align-items-center">
-                    @if (Task.IsDeadlineOut())
+                    @if (Task.IsDeadlineOut)
                     {
                         <Tool IconName="IconName.Fire" IconColor="IconColor.Danger" 
                             TooltipTitle="@(GetDeadlineString())" TooltipPlacement="TooltipPlacement.Left" />
@@ -84,58 +80,34 @@
     private ModalOptions DetailsModal { get; set; } = null!;
 
     [CascadingParameter] IModalService Modal { get; set; } = null!;
-
-    [CascadingParameter]
-    private BlazorCards.Card? LastDraggingCard { get; set; }
+    [CascadingParameter] StatusColumnsModel StatusColumnsModel { get; set; } = null!;
     
-
-    string CssDragOver => highlighted ? "dragover" : "";
     string CssDragStart => isDragged ? "dragged" : "";
-    string CssDeadline => Task.IsDeadlineOut() ? "red-border" : "";
+    string CssDeadline => Task.IsDeadlineOut ? "red-border" : "";
 
-    private bool highlighted;
     private bool isDragged;
-    [Parameter] public BlazorCards.Card Card { get; set; } = null!;
-
-    private Onlyoffice.Api.Models.Task Task => Card.GetTask();
+    [Parameter] public TaskModel Task { get; set; } = null!;
 
     protected override void OnInitialized()
     {
+        Task.ModelChanged += Refresh;
+        
         if (AuthenticationState is { })
         {
             canEdit = IsCanEdit((CookieStateProvider)AuthenticationState);
 
         } else throw new NullReferenceException("Card auth state is null");
-        
-        Card.CssName = "my-card";
     }
 
     private async Task OpenModal()
     {
         var parameters = new ModalParameters
         {
-            { "Card", Card },
+            { "Task", Task },
             { "IsCanEdit", canEdit }
         };
 
-        var res = await Modal.Show<Modals.CardDetailsModal>("", parameters, DetailsModal).Result;
-
-        if (res.Confirmed)
-        {
-            Card.OnLayoutChanged();
-        }
-    }
-
-    private async Task OnDrop()
-    {
-        highlighted = false;
-        if (LastDraggingCard is { } && !ReferenceEquals(LastDraggingCard, Card))
-        {
-            if (await CardDropService.Drop(LastDraggingCard, Card))
-            {
-                Card.Column!.AddBefore(Card, LastDraggingCard);
-            }
-        }
+        await Modal.Show<Modals.CardDetailsModal>("", parameters, DetailsModal).Result;
     }
 
     private bool IsCanEdit(CookieStateProvider provider)
@@ -144,7 +116,7 @@
 
         return 
             bool.Parse(provider["IsAdmin"]) ||
-            Task.CreatedBy!.Id == userId || 
+            Task.CreatedBy?.Id == userId || 
             Task.Responsibles!.Any(x => x.Id == userId);
     }
 
@@ -160,6 +132,8 @@
     void OnDragStart()
     {
         isDragged = true;
-        Card.OnDragStart();
+        StatusColumnsModel.StartDrag(Task);
     }
+
+    private void Refresh() => StateHasChanged();
 }

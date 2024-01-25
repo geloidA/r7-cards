@@ -1,7 +1,5 @@
 ﻿@using Onlyoffice.Api.Models
 
-@inject IProjectApi ProjectApi
-
 @if (Responsibles is { })
 {
     <Card>
@@ -37,45 +35,32 @@ else
 
 @code {
     [CascadingParameter] BlazoredModalInstance Modal { get; set; } = default!;
-    List<SelectionResponsible>? Responsibles;
+    List<SelectionUser>? Responsibles;
 
     [Parameter] public List<string>? SelectedIds { get; set; }
-    [Parameter] public int ProjectId { get; set; }
+    [Parameter] public ProjectModel Project { get; set; } = null!;
 
-    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        var team = await ProjectApi.GetProjectTeamAsync(ProjectId);
-        Responsibles = team
-            .Select(CreateSelectionResponsible)
+        Responsibles = Project.Team
+            .Select(x => new SelectionUser(SelectedIds?.Contains(x.Id!) ?? false, x))
             .ToList();
-    }
-
-    private SelectionResponsible CreateSelectionResponsible(UserProfile profile)
-    {
-        return new SelectionResponsible(SelectedIds?.Contains(profile.Id!) ?? false, new Responsible
-        {
-            Id = profile.Id,
-            AvatarSmall = profile.AvatarSmall,
-            DisplayName = profile.DisplayName,
-            ProfileUrl = profile.ProfileUrl
-        });
     }
 
     private async System.Threading.Tasks.Task Confirm()
     {
         var selected = Responsibles!
             .Where(x => x.Checked)
-            .Select(x => x.Value)
-            .ToList();
+            .Select(x => x.Value);
         
         await Modal.CloseAsync(ModalResult.Ok(selected));
     }
 
     private async System.Threading.Tasks.Task Cancel() => await Modal.CancelAsync();
 
-    private class SelectionResponsible(bool isChecked, Responsible value)
+    private class SelectionUser(bool isChecked, IUser value)
     {
         public bool Checked { get; set; } = isChecked;
-        public Responsible Value = value;
+        public IUser Value = value;
     }
 }

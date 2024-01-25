@@ -1,0 +1,11 @@
+﻿@code {
+    private static RenderFragment<Onlyoffice.Api.Models.IUser> RenderUser = user =>
+        @<div class="d-flex flex-row py-2 align-items-center">
+            <div class="ms-1">
+            <UserAvatar User="user"/>
+            </div>
+            <span class="ms-2">
+                @user.DisplayName
+            </span>
+        </div>;
+}

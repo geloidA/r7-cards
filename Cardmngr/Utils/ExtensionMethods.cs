@@ -1,5 +1,4 @@
-﻿using BlazorCards;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
 namespace Cardmngr.Utils;
 

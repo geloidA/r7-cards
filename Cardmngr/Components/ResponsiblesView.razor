@@ -4,29 +4,41 @@
         Ответственные
     </div>
     <div class="d-flex flex-column">
-        @for (var i = 0; i < MaxCount && i < Responsibles.Count; i++)
-        {
-            <UserAvatar User="Responsibles[i]" ShowTooltip="@ShowTooltip" Size="ImageSize"
-                ShowName="ShowName" />
+        @{
+            var count = 0;
+            foreach (var user in Responsibles)
+            {
+                if (count > MaxCount) break;
+
+                <UserAvatar User="user" ShowTooltip="@ShowTooltip" Size="ImageSize"
+                    ShowName="ShowName" />
+
+                count++;
+            }
         }
     </div>
-    @if (Responsibles.Count > MaxCount)
+    @if (totalCount > MaxCount)
     {
-        <span class="d-flex justify-content-end" style="margin-right: 2px;">+@(Responsibles.Count - MaxCount)</span>
+        <span class="d-flex justify-content-end" style="margin-right: 2px;">+@(totalCount - MaxCount)</span>
     }
 </Card>
 
 @code {
+    private int totalCount;
 
     [Parameter]
-    public List<Onlyoffice.Api.Models.Responsible> Responsibles { get; set; } = null!;
+    public IEnumerable<Onlyoffice.Api.Models.IUser> Responsibles { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        totalCount = Responsibles.Count();
+    }
 
     [Parameter]
     public int ImageSize { get; set; } = 32;
 
     [Parameter]
     public bool ShowTooltip { get; set; }
-
     
     [Parameter] 
     public bool ShowName { get; set; }
