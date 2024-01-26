@@ -40,51 +40,6 @@ public class Task
     public int? CustomTaskStatus { get; set; }
     public DateTime? Deadline { get; set; }
     public DateTime? StartDate { get; set; }
-
-    public Task FullCopy(bool copySubtasks = true)
-    {
-        return new Task
-        {
-            CanEdit = CanEdit,
-            CanCreateSubtask = CanCreateSubtask,
-            CanDelete = CanDelete,
-            CanReadFiles = CanReadFiles,
-            Id = Id,
-            Title = Title,
-            Description = Description,
-            Priority = Priority,
-            MilestoneId = MilestoneId,
-            Milestone = Milestone?.FullCopy(),
-            ProjectOwner = ProjectOwner?.FullCopy(),
-            Subtasks = copySubtasks ? Subtasks?.Select(x => x.FullCopy()).ToList() : Subtasks,
-            Status = Status,
-            Progress = Progress,
-            UpdatedBy = UpdatedBy?.FullCopy(),
-            Created = Created,
-            CreatedBy = CreatedBy?.FullCopy(),
-            Updated = Updated,
-            Responsibles = Responsibles?.Select(x => x.FullCopy()).ToList(),
-            CustomTaskStatus = CustomTaskStatus,
-            Deadline = Deadline,
-            StartDate = StartDate
-        };
-    }
-
-    public UpdatedStateTask GetUpdateState()
-    {
-        return new UpdatedStateTask
-        {
-            Description = Description,
-            Deadline = Deadline,
-            StartDate = StartDate,
-            Priority = Priority,
-            Title = Title,
-            MilestoneId = MilestoneId,
-            Responsibles = Responsibles!.Select(x => x.Id).ToList(),
-            ProjectId = ProjectOwner!.Id,
-            Progress = Progress
-        };
-    }
 }
 
 public class UpdatedStateTask
@@ -115,15 +70,6 @@ public class Subtask
     public DateTime Updated { get; set; }
     public Responsible? Responsible { get; set; }
 
-    public UpdatedStateSubtask GetUpdatedState()
-    {
-        return new UpdatedStateSubtask
-        {
-            Title = Title,
-            Responsible = Responsible?.Id
-        };
-    }
-
     public override bool Equals(object? obj)
     {
         if (obj is not Subtask other) return false;
@@ -133,23 +79,6 @@ public class Subtask
     public override int GetHashCode()
     {
         return Id.GetHashCode();
-    }
-
-    public Subtask FullCopy()
-    {
-        return new Subtask
-        {
-            CanEdit = CanEdit,
-            TaskId = TaskId,
-            Id = Id,
-            Title = Title,
-            Description = Description,
-            Status = Status,
-            Created = Created,
-            CreatedBy = CreatedBy?.FullCopy(),
-            Updated = Updated,
-            Responsible = Responsible?.FullCopy()
-        };
     }
 }
 
@@ -165,17 +94,6 @@ public class CreatedBy : IUser
     public string? DisplayName { get; set; }
     public string? AvatarSmall { get; set; }
     public string? ProfileUrl { get; set; }
-
-    public CreatedBy FullCopy()
-    {
-        return new CreatedBy
-        {
-            Id = Id,
-            DisplayName = DisplayName,
-            AvatarSmall = AvatarSmall,
-            ProfileUrl = ProfileUrl
-        };
-    }
 }
 
 public class UpdatedBy : IUser
@@ -184,15 +102,4 @@ public class UpdatedBy : IUser
     public string? DisplayName { get; set; }
     public string? AvatarSmall { get; set; }
     public string? ProfileUrl { get; set; }
-
-    public UpdatedBy FullCopy()
-    {
-        return new UpdatedBy
-        {
-            Id = Id,
-            DisplayName = DisplayName,
-            AvatarSmall = AvatarSmall,
-            ProfileUrl = ProfileUrl
-        };
-    }
 }

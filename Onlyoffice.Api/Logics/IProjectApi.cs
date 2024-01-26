@@ -194,7 +194,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="milestoneId">Milestone ID</param>
     /// <param name="state">Updated state</param>
-    Task UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state);
+    Task<Milestone> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state);
 
     /// <summary>
     /// Deletes a milestone with the ID specified in the request.

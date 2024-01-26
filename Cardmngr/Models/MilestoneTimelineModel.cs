@@ -5,6 +5,7 @@ namespace Cardmngr.Models;
 
 public class MilestoneTimelineModel(IEnumerable<Milestone> milestones, ProjectModel project) : ModelBase, IEnumerable<MilestoneModel>
 {
+    private readonly ProjectModel project = project;
     private readonly HashSet<MilestoneModel> milestones = milestones
         .Select(m => new MilestoneModel(m, project))
         .ToHashSet();
@@ -16,14 +17,14 @@ public class MilestoneTimelineModel(IEnumerable<Milestone> milestones, ProjectMo
         
         milestones.Add(milestone);
 
-        OnModelChanged();
+        project.OnModelChanged();
     }
 
     public bool DeleteMilestone(MilestoneModel milestone)
     {
         if (milestones.Remove(milestone))
         {
-            OnModelChanged();
+            project.OnModelChanged();
             return true;
         }
 
@@ -36,7 +37,7 @@ public class MilestoneTimelineModel(IEnumerable<Milestone> milestones, ProjectMo
 
         milestone.ToggleSelection(); // TODO: fix
 
-        OnModelChanged();
+        project.OnModelChanged();
         SelectedMilestonesChanged?.Invoke();
     }
 

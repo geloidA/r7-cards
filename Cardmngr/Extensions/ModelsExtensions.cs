@@ -29,4 +29,20 @@ public static class ModelsExtensions
             Responsible = val.Responsible?.Id
         };
     }
+
+    public static UpdatedStateMilestone GetUpdatedState(this MilestoneModel val)
+    {
+        return new UpdatedStateMilestone
+        {
+            Description = val.Description,
+            Title = val.Title,
+            IsKey = val.IsKey,
+            Status = (int)val.Status,
+            IsNotify = val.IsNotify,
+            Deadline = val.Deadline,
+            ProjectID = val.Project.Id,
+            Responsible = val.Responsible?.Id,
+            NotifyResponsible = val.IsNotify
+        };
+    }
 }

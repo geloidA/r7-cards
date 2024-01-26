@@ -48,14 +48,14 @@ public class TaskStatusColumn : ModelBase, IEnumerable<TaskModel>
             throw new InvalidOperationException("Task already exists");
 
         tasks.Add(task);
-        OnModelChanged();
+        Project.OnModelChanged();
     }
 
     public bool Remove(TaskModel task) 
     {
         if (tasks.Remove(task))
         {
-            OnModelChanged();
+            Project.OnModelChanged();
             return true;
         }
 
@@ -64,7 +64,20 @@ public class TaskStatusColumn : ModelBase, IEnumerable<TaskModel>
 
     public int Count => tasks.Count;
 
-    public IEnumerator<TaskModel> GetEnumerator() => tasks.GetEnumerator();
+    public IEnumerator<TaskModel> GetEnumerator() 
+    {
+        foreach (var task in OrderedTasks())
+        {
+            yield return task;
+        }
+    }
+
+    private IEnumerable<TaskModel> OrderedTasks()
+    {
+        return tasks
+            .OrderBy(x => (-(int)x.Priority, x.Deadline ?? DateTime.MaxValue))
+            .ThenByDescending(x => x.Updated);
+    }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

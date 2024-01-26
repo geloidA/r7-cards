@@ -3,9 +3,21 @@
 {
     @foreach (var milestone in Milestones)
     {
-        <div @key="milestone" class="d-flex align-items-center mt-2">
-            <MilestoneLabel Milestone="milestone" />
-        </div>
+        <div @key="milestone.Id" class="mt-2">
+            <div class="row">
+                <div class="col-md-9">
+                    <MilestoneLabel Milestone="milestone" />
+                </div>
+                @if (ShowTaskCounts)
+                {
+                    <div class="col-md-3 d-flex justify-content-end align-self-center">
+                        <Tooltip Title="Открытых задач">
+                            <Badge Color="BadgeColor.Info" class="p-1" >@milestone.ActiveTaskCount</Badge>
+                        </Tooltip>
+                    </div>
+                }                
+            </div>
+        </div>        
     }
 }
 else
@@ -15,4 +27,5 @@ else
 
 @code {
     [Parameter] public IEnumerable<MilestoneModel> Milestones { get; set; } = null!;
+    [Parameter] public bool ShowTaskCounts { get; set; }
 }

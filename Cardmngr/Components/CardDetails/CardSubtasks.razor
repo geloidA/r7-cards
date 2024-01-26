@@ -13,7 +13,7 @@
                 @foreach (var subtask in Task.Subtasks)
                 {
                     <SubtaskView Subtask="subtask" Task="Task" EditModeChanged="next => lastEditingSubtask = next" 
-                        CanEdit="!Disabled" @key="subtask" />
+                        CanEdit="!Disabled" @key="subtask.Id" />
                 }
             </CascadingValue>
         }

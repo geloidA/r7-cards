@@ -29,29 +29,6 @@ public class Milestone
     public CreatedBy? CreatedBy { get; set; }
     public DateTime Updated { get; set; }
 
-    public Milestone FullCopy()
-    {
-        return new Milestone
-        {
-            CanEdit = CanEdit,
-            CanDelete = CanDelete,
-            Id = Id,
-            Title = Title,
-            Description = Description,
-            ProjectOwner = ProjectOwner?.FullCopy(),
-            Deadline = Deadline,
-            IsKey = IsKey,
-            IsNotify = IsNotify,
-            ActiveTaskCount = ActiveTaskCount,
-            ClosedTaskCount = ClosedTaskCount,
-            Status = Status,
-            Responsible = Responsible?.FullCopy(),
-            Created = Created,
-            CreatedBy = CreatedBy?.FullCopy(),
-            Updated = Updated
-        };
-    }
-
     public override int GetHashCode()
     {
         return Id.GetHashCode();
@@ -61,22 +38,6 @@ public class Milestone
     {
         if (obj is not Milestone other) return false;
         return other.Id == Id;
-    }
-
-    public UpdatedStateMilestone GetUpdatedState()
-    {
-        return new UpdatedStateMilestone
-        {
-            Description = Description,
-            Title = Title,
-            IsKey = IsKey,
-            Status = Status,
-            IsNotify = IsNotify,
-            Deadline = Deadline,
-            ProjectID = ProjectOwner?.Id ?? throw new Exception("ProjectOwner is null when call GetUpdatedState"),
-            Responsible = Responsible?.Id,
-            NotifyResponsible = IsNotify
-        };
     }
 }
 
@@ -99,15 +60,4 @@ public class ProjectOwner
     public string? Title { get; set; }
     public int Status { get; set; }
     public bool IsPrivate { get; set; }
-
-    public ProjectOwner FullCopy()
-    {
-        return new ProjectOwner
-        {
-            Id = Id,
-            Title = Title,
-            Status = Status,
-            IsPrivate = IsPrivate
-        };
-    }
 }

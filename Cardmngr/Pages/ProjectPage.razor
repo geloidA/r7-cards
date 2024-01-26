@@ -10,41 +10,40 @@
 
 @inject IProjectApi ProjectApi
 
-@if (model is { })
-{
-    <Offcanvas @ref="menuCanvas" ShowCloseButton="false" />
 
-    <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
-        <div class="row mb-2" style="margin-left: 10px;">
-            <div class="col-md-11 d-flex flex-column" >
-                <KolTimeline @ref="timeline">
-                    @foreach (var milestone in model.Milestones)
+<Offcanvas @ref="menuCanvas" ShowCloseButton="false" />
+
+<div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
+    <div class="row mb-2" style="margin-left: 10px;">
+        <div class="col-md-11 d-flex flex-column" >
+            <KolTimeline ShowTodayLine="true" >
+                @if (model is { })
+                {
+                    foreach (var milestone in model.Milestones)
                     {
-                        <KolTimelineItem @key="milestone" End="milestone.Deadline!.Value" Start="milestone.Start">
-                            <TimelineMilestone Milestone="milestone" OnUpdated="UpdateMilestone" OnDeleted="DeleteMilestone" />
+                        <KolTimelineItem @key="milestone.Id" End="milestone.Deadline!.Value" Start="milestone.Start">
+                            <TimelineMilestone Milestone="milestone" />
                         </KolTimelineItem>
                     }
-                </KolTimeline>
-            </div>
-            <div class="col-md-1 align-self-center d-flex justify-content-end">
-                <Tool IconName="IconName.List" IconSize="IconSize.x5" Text="Меню"
-                    OnClick="ShowMenu" />
-            </div>
+                }
+            </KolTimeline>
         </div>
-        <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
+        <div class="col-md-1 align-self-center d-flex justify-content-end">
+            <Tool IconName="IconName.List" IconSize="IconSize.x5" Text="Меню"
+                OnClick="ShowMenu" />
+        </div>
+    </div>
+    <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
+        @if (model is { })
+        {
             <CascadingValue Value="model.Milestones" IsFixed="true" >
                 <StatusColumnsView Model="model.StatusColumns" />
             </CascadingValue>
-        </div>
+        }
     </div>
-}
-else
-{
-    <CardText>Загрузка</CardText>
-}
+</div>
 
 @code {
-    private KolTimeline? timeline;
     private Offcanvas menuCanvas = null!;
     private ProjectModel? model;
 
@@ -53,7 +52,7 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        if (ProjectId.HasValue && ProjectId != null)
+        if (ProjectId.HasValue && ProjectId != null && ProjectId != model?.Id)
         {
             var project = ProjectApi.GetProjectByIdAsync(ProjectId.Value);
             var tasks = ProjectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(ProjectId.Value));
@@ -63,11 +62,7 @@ else
 
             model = new ProjectModel(await project, await tasks, await statuses, await milestones, await team);
 
-            if (timeline is { })
-            {
-                foreach (var task in model.Tasks)
-                    task.ModelChanged += timeline.Refresh;
-            }
+            model.ModelChanged += Refresh;
 
             HeaderTitle.Content = GetTitleContent(model.Title);
         }
@@ -82,36 +77,9 @@ else
     {
         await menuCanvas.ShowAsync<ProjectMenuModal>("", new Dictionary<string, object>
         {
-            { "ProjectModel", model! }
+            { "ProjectModel", model! },
+            { "Close", EventCallback.Factory.Create(this, async () => await menuCanvas.HideAsync()) }
         });
-    }
-
-    private void UpdateMilestone(Onlyoffice.Api.Models.Milestone value)
-    {
-        @* var update = milestones.Find(x => x.Id == value.Id);
-        if (update is { })
-        {
-            update.Title = value.Title;
-            update.Description = value.Description;
-            update.Deadline = value.Deadline;
-            update.Responsible = value.Responsible;
-        } *@
-    }
-
-    private void DeleteMilestone(Onlyoffice.Api.Models.Milestone value)
-    {
-        @* milestones.Remove(value);
-        
-        var taskWithMilestone = board!
-            .AllCards()
-            .Select(x => x.GetTask())
-            .Where(x => x.MilestoneId == value.Id);
-
-        foreach (var task in taskWithMilestone)
-        {
-            task.Milestone = null;
-            task.MilestoneId = 0;
-        } *@
     }
     
     private void Refresh() => StateHasChanged();

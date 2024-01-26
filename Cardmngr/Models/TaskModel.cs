@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Cardmngr.Models.Attributes;
 using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Models;
 
@@ -8,7 +9,7 @@ public class TaskModel : ModelBase
 {
     public TaskModel(Onlyoffice.Api.Models.Task task, TaskStatusColumn statusColumn)
     {
-        this.statusColumn = statusColumn;
+        this.statusColumn = statusColumn;        
         CanEdit = task.CanEdit;
         CanCreateSubtask = task.CanCreateSubtask;
         CanCreateTimeSpend = task.CanCreateTimeSpend;
@@ -63,16 +64,32 @@ public class TaskModel : ModelBase
     public bool CanDelete { get; }
     public bool CanReadFiles { get; }
     public int Id { get; }
+
+    [Updatable]
     public string? Title { get; set; }
+
+    [Updatable]
     public string? Description { get; set; }
+
+    [Updatable]
     public TaskPriority Priority { get; set; }
+
     public MilestoneModel? Milestone { get; set; }
+
     public ProjectModel ProjectOwner { get; }
     public ObservableCollection<SubtaskModel> Subtasks { get; set; }
+
+    [Updatable]
     public int? Progress { get; set; }
+
+    [Updatable]
     public IUser? UpdatedBy { get; private set; }
     public ObservableCollection<IUser> Responsibles { get; set; }
+
+    [Updatable]
     public DateTime? Deadline { get; set; }
+
+    [Updatable]
     public DateTime? StartDate { get; set; }
     #endregion
 
@@ -87,19 +104,13 @@ public class TaskModel : ModelBase
     {
         ArgumentNullException.ThrowIfNull(task);
 
-        Title = task.Title;
-        Description = task.Description;
-        Priority = (TaskPriority)task.Priority;
+        UpdateProperties(task);
+
         Milestone = ProjectOwner.Milestones.FirstOrDefault(m => m.Id == task.MilestoneId);
-        Progress = task.Progress;
-        Updated = task.Updated;
-        UpdatedBy = task.UpdatedBy == null ? null : new User(task.UpdatedBy);
         Subtasks = new ObservableCollection<SubtaskModel>(task.Subtasks?.Select(s => new SubtaskModel(s)) ?? []);
         Responsibles = new ObservableCollection<IUser>(task.Responsibles?.Select(u => new User(u)) ?? []);
-        Deadline = task.Deadline;
-        StartDate = task.StartDate;
 
-        OnModelChanged();
+        ProjectOwner.OnModelChanged();
     }
 
     /// <summary>

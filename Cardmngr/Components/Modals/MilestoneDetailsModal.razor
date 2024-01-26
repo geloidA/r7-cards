@@ -5,7 +5,7 @@
 @if (changingState is { })
 {
     <div class="row">
-        <TitleChanger @bind-Title="changingState.Title" />
+        <TitleChanger Disabled="Disabled" @bind-Title="changingState.Title" />
         <div class="mt-3">
             <Card >
                 <CardBody class="d-flex flex-column">
@@ -16,7 +16,7 @@
                             </div>
                             <div class="col d-flex justify-content-end">
                                 <Tool IconName="IconName.Pencil" IconSize="IconSize.x6"
-                                    TooltipTitle="Изменить" OnClick="ShowSelectionDialog" />
+                                    TooltipTitle="Изменить" Disabled="Disabled" OnClick="ShowSelectionDialog" />
                             </div>
                         </div>
                     </CardTitle>
@@ -24,16 +24,16 @@
                 </CardBody>
             </Card>
         </div>
-        <DescriptionChanger Class="mt-3" @bind-Description="changingState.Description" />
+        <DescriptionChanger Disabled="Disabled" Class="mt-3" @bind-Description="changingState.Description" />
     </div>
-    <div class="row mt-3 py-1 mx-0" style="border-radius: 5px; border: 1px solid;">
-        <DateChanger Title="Крайний срок" EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
+    <div class="row mt-3 py-1 mx-0" style="border-radius: 5px; border: 1px solid gray;">
+        <DateChanger Title="Крайний срок" Disabled="Disabled" EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
     </div>
     <div class="d-flex mt-3 flex-row justify-content-end">
-        <Button Loading="saving" Type="ButtonType.Submit" Color="ButtonColor.Success" Outline="true" @onclick="Save" >
+        <Button Loading="saving" Disabled="Disabled" Type="ButtonType.Submit" Color="ButtonColor.Success" Outline="true" @onclick="Save" >
             Сохранить
         </Button>
-        <Button class="ms-2" Color="ButtonColor.Danger" @onclick="Delete" Outline="true" >
+        <Button class="ms-2" Disabled="Disabled" Color="ButtonColor.Danger" @onclick="Delete" Outline="true" >
             Удалить
         </Button>
     </div>
@@ -41,26 +41,28 @@
 
 @code {
     private bool saving;
-    private Onlyoffice.Api.Models.Milestone changingState = null!;
+    private MilestoneModel changingState = null!;
 
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] BlazoredModalInstance CurrentModel { get; set; } = null!;
+    [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    [Parameter] public Onlyoffice.Api.Models.Milestone Milestone { get; set; } = null!;
+    [Parameter] public MilestoneModel Milestone { get; set; } = null!;
+    [Parameter] public bool Disabled { get; set; }
 
     protected override void OnInitialized()
     {
-        changingState = Milestone.FullCopy();
+        changingState = Milestone.Clone();
     }
 
     private async Task ShowSelectionDialog()
     {
-        @* var selected = await SelectionDialog.ShowAsync(Milestone.ProjectOwner!.Id, ModalOptions);
+        var selected = await SelectionDialog.ShowAsync(Milestone.Project, ModalOptions);
 
         if (selected is { })
         {
             changingState.Responsible = selected;
-        } *@
+        }
     }
 
     private async Task Save()
@@ -73,22 +75,20 @@
 
         saving = true;
 
-        await ProjectApi.UpdateMilestoneAsync(Milestone.Id, changingState.GetUpdatedState());
-
-        await CurrentModel.CloseAsync(ModalResult.Ok(new ModalAction<Onlyoffice.Api.Models.Milestone>(ModalActionType.Update, changingState)));
+        var milestone = await ProjectApi.UpdateMilestoneAsync(Milestone.Id, changingState.GetUpdatedState());
+        Milestone.Update(milestone);
+        await CurrentModel.CloseAsync(ModalResult.Ok());
     }
 
     private async Task Delete()
     {
-        await ProjectApi.DeleteMilestoneAsync(Milestone.Id);
-        await CurrentModel.CloseAsync(ModalResult.Ok(new ModalAction<Onlyoffice.Api.Models.Milestone>(ModalActionType.Delete, changingState)));
-    }
+        var result = await Modal.Show<DefaultConfirmModal>("Удалить?", ModalOptions).Result;
 
-    internal record ModalAction<T>(ModalActionType Type, T Data);
-    internal enum ModalActionType
-    {
-        Create,
-        Delete,
-        Update
+        if (result.Confirmed)
+        {
+            await ProjectApi.DeleteMilestoneAsync(Milestone.Id);
+            Milestone.Project.DeleteMilestone(Milestone);
+            await CurrentModel.CloseAsync(ModalResult.Ok());
+        }        
     }
 }

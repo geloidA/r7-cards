@@ -1,4 +1,6 @@
-﻿<Badge class="p-0 w-100 overflow-hidden" @onclick="Toggle" Color="BadgeColor">
+﻿@inject AuthenticationStateProvider AuthenticationState
+
+<Badge class="p-0 w-100 overflow-hidden" @onclick="Toggle" Color="BadgeColor">
     <div class="@CssSelected p-1 timeline-milestone">
         @Milestone.Title
     </div>
@@ -9,12 +11,29 @@
 </div>
 
 @code {
+    private bool canEdit;
     private string CssSelected => Milestone.IsSelected ? "selected" : "";
 
     [CascadingParameter] IModalService Modal { get; set; } = null!;
     [Parameter] public MilestoneModel Milestone { get; set; } = null!;
-    [Parameter] public EventCallback<Onlyoffice.Api.Models.Milestone> OnUpdated { get; set; }
-    [Parameter] public EventCallback<Onlyoffice.Api.Models.Milestone> OnDeleted { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (AuthenticationState is { })
+        {
+            canEdit = IsCanEdit((CookieStateProvider)AuthenticationState);
+
+        } else throw new NullReferenceException("Card auth state is null");
+    }
+
+    private bool IsCanEdit(CookieStateProvider provider)
+    {
+        var userId = provider["UserId"];
+
+        return bool.Parse(provider["IsAdmin"]) ||
+            Milestone.CreatedBy?.Id == userId || 
+            Milestone.Responsible?.Id == userId;
+    }
 
     private BadgeColor BadgeColor
     {
@@ -37,7 +56,8 @@
     {
         var paramerters = new ModalParameters
         {
-            { "Milestone", Milestone }
+            { "Milestone", Milestone },
+            { "Disabled", !canEdit }
         };
 
         var options = new ModalOptions 
@@ -47,25 +67,6 @@
             DisableBackgroundCancel = true 
         };
 
-        var res = await Modal.Show<MilestoneDetailsModal>("", paramerters, options).Result;
-
-        if (res.Confirmed && res.Data is MilestoneDetailsModal.ModalAction<Onlyoffice.Api.Models.Milestone> action)
-        {
-            //TODO: do something. shit code
-            if (action.Type == MilestoneDetailsModal.ModalActionType.Delete)
-            {
-                if (OnDeleted.HasDelegate)
-                {
-                    await OnDeleted.InvokeAsync(action.Data);
-                }
-            }
-            else if (action.Type == MilestoneDetailsModal.ModalActionType.Update)
-            {
-                if (OnUpdated.HasDelegate)
-                {
-                    await OnUpdated.InvokeAsync(action.Data);
-                }
-            }            
-        }
+        await Modal.Show<MilestoneDetailsModal>("", paramerters, options).Result;
     }
 }

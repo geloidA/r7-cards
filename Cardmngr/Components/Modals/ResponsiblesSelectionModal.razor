@@ -6,7 +6,7 @@
         <CardBody style="max-height: 250px; overflow-y: scroll;">
             @foreach (var responsible in Responsibles)
             {
-                <div @key="responsible" class="d-flex flex-row py-2 align-items-center">
+                <div @key="responsible.Value.Id" class="d-flex flex-row py-2 align-items-center">
                     <InputCheckbox @bind-Value="responsible.Checked" />
                     <div class="ms-1">
                         <UserAvatar User="responsible.Value"/>

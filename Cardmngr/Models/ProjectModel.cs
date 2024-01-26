@@ -60,4 +60,24 @@ public class ProjectModel : ModelBase
 
     public MilestoneTimelineModel Milestones => milestoneTimeline;
     public StatusColumnsModel StatusColumns => statusColumns;
+
+    public bool DeleteMilestone(MilestoneModel milestone)
+    {
+        foreach (var task in Tasks.Where(x => x.Milestone == milestone))
+        {
+            task.Milestone = null;
+        }
+
+        if (milestoneTimeline.DeleteMilestone(milestone))
+        {
+            OnModelChanged();
+            return true;
+        }
+
+        return false;
+    }
+
+    public event Action? ModelChanged;
+
+    internal void OnModelChanged() => ModelChanged?.Invoke();
 }

@@ -89,9 +89,7 @@
     [Parameter] public TaskModel Task { get; set; } = null!;
 
     protected override void OnInitialized()
-    {
-        Task.ModelChanged += Refresh;
-        
+    {        
         if (AuthenticationState is { })
         {
             canEdit = IsCanEdit((CookieStateProvider)AuthenticationState);
@@ -117,7 +115,7 @@
         return 
             bool.Parse(provider["IsAdmin"]) ||
             Task.CreatedBy?.Id == userId || 
-            Task.Responsibles!.Any(x => x.Id == userId);
+            Task.Responsibles.Any(x => x.Id == userId);
     }
 
     private string GetDeadlineString()
@@ -134,6 +132,4 @@
         isDragged = true;
         StatusColumnsModel.StartDrag(Task);
     }
-
-    private void Refresh() => StateHasChanged();
 }

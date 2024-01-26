@@ -47,7 +47,7 @@
         <ul class="card-container">
             @foreach (var task in TaskStatusModel.Where(FilterByMilestones))
             {
-                <TaskView Task="task" @key="task" />
+                <TaskView Task="task" @key="task.Id" />
             }
         </ul>
     }
@@ -65,12 +65,6 @@
     [CascadingParameter] StatusColumnsModel StatusColumnsModel { get; set; } = null!;
     [CascadingParameter] MilestoneTimelineModel MilestoneTimelineModel { get; set; } = null!;
     [Parameter] public TaskStatusColumn TaskStatusModel { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        TaskStatusModel.ModelChanged += Refresh;
-        MilestoneTimelineModel.SelectedMilestonesChanged += Refresh;
-    }
 
     private async Task OnDrop()
     {
@@ -119,8 +113,6 @@
         return !MilestoneTimelineModel.SelectedMilestones.Any() || 
             MilestoneTimelineModel.SelectedMilestones.Any(x => x.Id == task.Milestone?.Id);
     }
-
-    private void Refresh() => StateHasChanged();
 
     private RenderFragment DropDown => 
         @<Dropdown Size="Size.ExtraSmall" AutoClose="true" >

@@ -32,15 +32,4 @@ public class Responsible : IUser
     public string? DisplayName { get; set; }
     public string? AvatarSmall { get; set; }
     public string? ProfileUrl { get; set; }
-
-    public Responsible FullCopy()
-    {
-        return new Responsible
-        {
-            Id = Id,
-            DisplayName = DisplayName,
-            AvatarSmall = AvatarSmall,
-            ProfileUrl = ProfileUrl
-        };
-    }
 }

@@ -117,9 +117,11 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         return milestoneDao?.Response ?? throw new NullReferenceException("Milestones were not found");
     }
 
-    public System.Threading.Tasks.Task UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
+    public async Task<Milestone> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
     {
-        return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}", state));
+        var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}", state));
+        var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
+        return milestoneDao?.Response ?? throw new NullReferenceException("Milestone was not updated");
     }
 
     public async Task<Milestone> DeleteMilestoneAsync(int milestoneId)
