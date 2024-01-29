@@ -1,3 +1,5 @@
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using AspNetCore.Proxy;
 
 internal class Program
@@ -19,11 +21,30 @@ internal class Program
 
         builder.Services.AddControllers();
 
+        builder.WebHost.UseKestrel(opt => 
+        {
+            var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
+            var certificatePath = config["CertificateSettings:CertificatePublic"] ?? throw new NullReferenceException();
+            var keyCertificate = config["CertificateSettings:CertificatePrivate"];
+
+            var port = int.Parse(config["Port"] ?? throw new Exception("Haven't port in config"));
+                
+            opt.Listen(IPAddress.Parse(config["IPAddress"]!), port, listenOptions =>
+            {                
+                listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2AndHttp3;
+                listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
+            });
+        });
+
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            app.UseHsts();
         }
 
         app.UseCors(builder => 
@@ -37,6 +58,6 @@ internal class Program
 
         app.MapControllers();
 
-        app.Run($"http://{config["Host"] ?? throw new NullReferenceException("Host config is null")}");
-    }    
+        app.Run();
+    }
 }
