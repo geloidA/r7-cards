@@ -124,3 +124,8 @@ ul {
 .super-small {
     font-size: 10px;
 }
+
+.scrollbar-none::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}

@@ -18,6 +18,7 @@
     border: 1px solid var(--boarder-color);
     padding: 5px;
     flex-direction: column;
+    transition: max-width 0.4s ease-in-out, min-width 0.4s ease-in-out;
 }
 
     .board .board-column.collapsed {
@@ -58,10 +59,6 @@
         flex-direction: column;
         padding: 0px;
         list-style: none;
-    }
-
-    .board .board-column .card-container::-webkit-scrollbar {
-        width: 0px;
     }
 
 .text-vertical {

@@ -44,7 +44,7 @@
                 @TaskStatusModel.Where(FilterByMilestones).Count() результатов
             </div>
         }
-        <ul class="card-container">
+        <ul class="card-container scrollbar-none">
             @foreach (var task in TaskStatusModel.Where(FilterByMilestones))
             {
                 <TaskView Task="task" @key="task.Id" />

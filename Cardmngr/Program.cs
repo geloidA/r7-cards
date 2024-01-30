@@ -8,7 +8,7 @@ using Onlyoffice.Api.Logics;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using Cardmngr.Services;
-using KolBlazor;
+using KolBlazor.Extensions;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

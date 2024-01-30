@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="col d-flex flex-column">
-                <div class="pb-2">
+                <div class="pb-2">                 
                     <CardResponsibles Task="changingState" Disabled="!IsCanEdit" />
                 </div>
                 <div class="pb-2">
@@ -45,6 +45,7 @@
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] BlazoredModalInstance CurrentModel { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
+
     [Parameter] public TaskModel Task { get; set; } = null!;
     [Parameter] public bool IsCanEdit { get; set; }
 
