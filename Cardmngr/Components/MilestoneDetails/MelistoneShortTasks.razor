@@ -1,0 +1,31 @@
+﻿@if (Milestone.Tasks.Any())
+{
+    <Card>
+        <CardBody class="p-1 overflow-auto d-flex flex-column task-container" style="max-height: 500px;">
+            @foreach (var task in Milestone.Tasks.OrderedByProperties())
+            {
+                <span class="py-1" style="z-index: 99;" >
+                    <ShortTaskView Task="task" />
+                </span>
+            }
+        </CardBody>
+        <CardFooter class="d-flex justify-content-end bg-main">
+            <span>@($"{Milestone.ClosedTaskCount} / {Milestone.Tasks.Count()}")</span>
+            <Icon class="ms-2" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
+        </CardFooter>
+    </Card>
+}
+else
+{
+    <Card>
+        <CardBody>
+            <span class="text-secondary">Веха не содержит задач</span>
+        </CardBody>
+    </Card>
+}
+
+@code {
+    [Parameter, EditorRequired] public MilestoneModel Milestone { get; set; } = null!;
+
+
+}

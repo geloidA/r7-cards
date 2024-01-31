@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Cardmngr.Extensions;
 using Onlyoffice.Api.Common;
 using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
 
@@ -66,17 +67,10 @@ public class TaskStatusColumn : ModelBase, IEnumerable<TaskModel>
 
     public IEnumerator<TaskModel> GetEnumerator() 
     {
-        foreach (var task in OrderedTasks())
+        foreach (var task in tasks.OrderedByProperties())
         {
             yield return task;
         }
-    }
-
-    private IEnumerable<TaskModel> OrderedTasks()
-    {
-        return tasks
-            .OrderBy(x => (-(int)x.Priority, x.Deadline ?? DateTime.MaxValue))
-            .ThenByDescending(x => x.Updated);
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

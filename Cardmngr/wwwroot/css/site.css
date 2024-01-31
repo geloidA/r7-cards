@@ -65,6 +65,10 @@ ul {
     right: 0.75rem;
     top: 0.5rem;}
 
+.bg-main {
+    background-color: var(--main-col-bg);
+}
+
 .bg-shadow {
     background-color: var(--main-col-bg);
     border-radius: 10px;

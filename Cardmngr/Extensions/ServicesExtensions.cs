@@ -19,7 +19,8 @@ public static class ServicesExtensions
                     { 
                         Position = ModalPosition.Middle,
                         Size = ModalSize.ExtraLarge,
-                        DisableBackgroundCancel = true 
+                        DisableBackgroundCancel = true,
+                        UseCustomLayout = true
                     }, 
                     true));
     }

@@ -22,6 +22,8 @@ public class StatusColumnsModel(List<MyTask> tasks, List<MyTaskStatus> statuses,
         LastDraggedTask = task;
     }
 
+    public void ClearDraggedTask() => LastDraggedTask = null;
+
     public IEnumerator<TaskStatusColumn> GetEnumerator() => statusColumns.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

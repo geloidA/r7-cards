@@ -16,8 +16,8 @@
         </a>
     </HeaderTemplate> 
     <BodyTemplate>
-        <div class="container">
-            <Card class="row bg-shadow p-1">
+        <div class="container h-100">
+            <Card class="row bg-shadow h-75 p-1">
                 <CardTitle class="mt-1"><h6>Мои проекты</h6></CardTitle>
                 <CardBody class="m-0">
                     @if (userProjects is { } && userProjects.Any())
@@ -50,7 +50,7 @@
 </Offcanvas>
 
 <div class="bb-top-row px-4 d-flex" style="background-color: var(--main-col-bg);">
-    <div class="col-md-1 d-flex justify-content-center">
+    <div class="col-md-1 d-flex justify-content-start">
         <Button class="py-0" Color="ButtonColor.Dark" Outline="true" @onclick="OpenSidebar" >
             <Icon Name="IconName.List" />
         </Button>

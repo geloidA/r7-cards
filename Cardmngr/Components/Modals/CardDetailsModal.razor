@@ -2,45 +2,43 @@
 
 @if (changingState is { })
 {
-    <div class="container">
-        <div class="m-2">
+    <div class="offcanvas @DelayedShow offcanvas-end" tabindex="-1" id="offcanvasWithBackdrop" >
+        <div class="offcanvas-header">
             <TitleChanger @bind-Title="changingState.Title" Disabled="!IsCanEdit" />
         </div>
-        <div class="d-flex flex-row">
-            <div class="col px-2 d-flex flex-column" >
-                <CardInfoHeader Task="changingState" Disabled="!IsCanEdit" />
-                <div class="pt-2">
-                    <DescriptionChanger @bind-Description="changingState.Description" Disabled="!IsCanEdit" />
-                </div>
+        <div class="offcanvas-body d-flex flex-column">
+            <CardInfoHeader Task="changingState" Disabled="!IsCanEdit" />
+            <div class="pt-2">
+                <DescriptionChanger @bind-Description="changingState.Description" Disabled="!IsCanEdit" />
             </div>
-            <div class="col d-flex flex-column">
-                <div class="pb-2">                 
-                    <CardResponsibles Task="changingState" Disabled="!IsCanEdit" />
-                </div>
-                <div class="pb-2">
-                    <CardMilestone Task="changingState" Disabled="!IsCanEdit" />
-                </div>
-                <CardSubtasks Task="changingState" Disabled="!IsCanEdit" />
-                <div class="row pt-2 d-flex justify-content-end">
-                    <div class="d-flex flex-row">
-                        <Button Loading="saveLoading" Color="ButtonColor.Success" Outline="true" @onclick="ConfirmSaving"
-                            Disabled="!IsCanEdit" >
-                            Сохранить
-                        </Button>
-                        <Button class="ms-2" @onclick="ShowDeleteConfirmModal" Color="ButtonColor.Danger" Outline="true"
-                            Disabled="!IsCanEdit" >
-                            Удалить
-                        </Button>
-                    </div>
+            <div class="pb-2 pt-2">                 
+                <CardResponsibles Task="changingState" Disabled="!IsCanEdit" />
+            </div>
+            <div class="pb-2">
+                <CardMilestone Task="changingState" Disabled="!IsCanEdit" />
+            </div>
+            <CardSubtasks Task="changingState" Disabled="!IsCanEdit" />
+            <div class="row pt-2 d-flex justify-content-end">
+                <div class="d-flex flex-row">
+                    <Button Loading="saveLoading" Color="ButtonColor.Success" Outline="true" @onclick="ConfirmSaving"
+                        Disabled="!IsCanEdit" >
+                        Сохранить
+                    </Button>
+                    <Button class="ms-2" @onclick="ShowDeleteConfirmModal" Color="ButtonColor.Danger" Outline="true"
+                        Disabled="!IsCanEdit" >
+                        Удалить
+                    </Button>
                 </div>
             </div>
         </div>
     </div>
+    <div class="offcanvas-backdrop fade @DelayedShow" style="z-index: 2;" @onclick="Cancel"></div>
 }
 
 @code {
     private bool saveLoading;
     private TaskModel? changingState;
+    private string DelayedShow = "";
 
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] BlazoredModalInstance CurrentModel { get; set; } = null!;
@@ -49,9 +47,10 @@
     [Parameter] public TaskModel Task { get; set; } = null!;
     [Parameter] public bool IsCanEdit { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         changingState = Task.Clone(false);
+        await ToggleDelayShowAsync();
     }
 
     private async Task ConfirmSaving()
@@ -61,6 +60,7 @@
         var updatedTask = await ProjectApi.UpdateTaskAsync(changingState!.Id, changingState.GetUpdateState());
         Task.Update(updatedTask);
 
+        await ToggleDelayShowAsync();
         await CurrentModel.CloseAsync(ModalResult.Ok());
     }
 
@@ -72,7 +72,21 @@
         {
             await ProjectApi.DeleteTaskAsync(Task.Id);
             Task.StatusColumn.Remove(Task);
+
+            await ToggleDelayShowAsync();
             await CurrentModel.CloseAsync(ModalResult.Ok());
         }
+    }
+
+    private async Task Cancel() // TODO: refactor - DRY
+    {
+        await ToggleDelayShowAsync();
+        await CurrentModel.CloseAsync(ModalResult.Cancel());
+    }
+
+    private async Task ToggleDelayShowAsync() // need for correct animation showing
+    {
+        await System.Threading.Tasks.Task.Delay(1);
+        DelayedShow = string.IsNullOrEmpty(DelayedShow) ? "show" : "";
     }
 }

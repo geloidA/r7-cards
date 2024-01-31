@@ -46,9 +46,7 @@
         @if (model is { })
         {
             <CascadingValue Value="model.Milestones" IsFixed="true" >
-                <CascadingValue Value="menuCanvas" Name="Offcanvas" IsFixed="true">
-                    <StatusColumnsView Model="model.StatusColumns" />
-                </CascadingValue>
+                <StatusColumnsView Model="model.StatusColumns" />
             </CascadingValue>
         }
     </div>

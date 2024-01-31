@@ -81,6 +81,7 @@
             
             await ProjectApi.UpdateTaskStatusAsync(dropped.Id, TaskStatusModel.StatusType, TaskStatusModel.Id);
             dropped.StatusColumn = TaskStatusModel;
+            StatusColumnsModel.ClearDraggedTask();
         }
     }
 

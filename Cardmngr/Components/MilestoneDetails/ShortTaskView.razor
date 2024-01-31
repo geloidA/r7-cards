@@ -1,0 +1,56 @@
+﻿
+<div class="short-task w-100 h-100">
+    <div class="info-container">
+        <div class="d-flex w-100 h-100">
+            @if(Task.Responsibles.Any())
+            {
+                <UserAvatar ShowTooltip="true" User="Task.Responsibles.First()" />
+            }
+            <span class="ms-2 align-self-center">@Task.Title</span>
+        </div>
+        <div class="col d-flex flex-column w-100 h-100" style="margin-right: 5px;">
+            <div class="d-flex info-text">
+                @if (Task.Priority == TaskPriority.High)
+                {
+                    <Icon Name="IconName.ArrowUpCircleFill" Color="IconColor.Primary" />
+                }
+            </div>
+            <div class="info-text align-items-end">
+                @if (Task.IsDeadlineOut)
+                {
+                    <Icon Name="IconName.Fire" Color="IconColor.Danger" />
+                    <span class="text-danger ms-1" style="font-size: 14px;">@Task.Deadline?.ToShortDateString()</span>
+                }
+                else
+                {
+                    <span style="font-size: 14px;">@Task.Deadline?.ToShortDateString()</span>
+                }
+                @if (Task.StatusColumn.StatusType == Status.Open)
+                {
+                    <Icon class="ms-1" Name="IconName.XCircleFill" Color="IconColor.Danger" />
+                }
+                else
+                {
+                    <Icon class="ms-1" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
+                }
+            </div>
+        </div>
+        <div class="bg-progress" style="@CompleteProgress"></div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter, EditorRequired] public TaskModel Task { get; set; } = null!;
+
+    private string CompleteProgress
+    {
+        get
+        {
+            if (Task.StatusColumn.StatusType == Status.Closed) return "width: 100%;";
+            if (!Task.Subtasks.Any()) return "width: 0%;";
+            var completeProcentage = (Task.Subtasks.Count(x => x.Status == Status.Closed) * 100.0) / Task.Subtasks.Count;
+            return $"width: {completeProcentage}%;";
+        }
+    }
+}

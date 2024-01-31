@@ -30,7 +30,7 @@ public class MilestoneModel : ModelBase
 
     public bool IsSelected { get; private set; }
 
-    public IEnumerable<TaskModel> Tasks => Project.Tasks.Where(x => x.Milestone == this);
+    public IEnumerable<TaskModel> Tasks => Project.Tasks.Where(x => x.Milestone?.Id == Id);
 
     public void Update(Milestone milestone)
     {
@@ -41,12 +41,17 @@ public class MilestoneModel : ModelBase
         Project.OnModelChanged();
     }
 
-    public DateTime Start 
+    public bool IsDateBetween(DateTime date)
+    {
+        return date >= Start && date <= Deadline;
+    }
+
+    public DateTime Start // TODO: O(n) complexity
     {
         get
         {
             return Project.Tasks
-                .Where(x => x.Milestone == this && x.StartDate.HasValue)
+                .Where(x => x.Milestone?.Id == Id && x.StartDate.HasValue)
                 .Select(x => x.StartDate!.Value)
                 .Concat([Deadline!.Value.AddDays(-7)])
                 .Min();
@@ -59,7 +64,7 @@ public class MilestoneModel : ModelBase
         Title = milestone.Title;
         Description = milestone.Description;
         Project = project;
-        Deadline = milestone.Deadline;
+        Deadline = milestone.Deadline ?? throw new ArgumentNullException("Milestone deadline cannot be null");
         IsKey = milestone.IsKey;
         IsNotify = milestone.IsNotify;
         Status = (Status)milestone.Status;

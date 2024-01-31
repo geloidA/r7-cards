@@ -1,9 +1,11 @@
 ﻿@inject AuthenticationStateProvider AuthenticationState
 
 <Badge class="p-0 w-100 overflow-hidden" @onclick="Toggle" Color="BadgeColor">
-    <div class="@CssSelected p-1 timeline-milestone">
-        @Milestone.Title
-    </div>
+    <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Right">
+        <div class="@CssSelected p-1 timeline-milestone">
+            @Milestone.Title
+        </div>
+    </Tooltip>
 </Badge>
 
 <div class="tool-bar d-flex justify-content-center" style="margin-top: -8px;">
@@ -14,6 +16,7 @@
     private bool canEdit;
     private string CssSelected => Milestone.IsSelected ? "selected" : "";
 
+    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
     [Parameter] public MilestoneModel Milestone { get; set; } = null!;
 
@@ -41,8 +44,8 @@
         {
             if (Milestone.Status == Status.Closed) return BadgeColor.Success;
 
-            return DateTime.Now > Milestone.Deadline!.Value
-                ? BadgeColor.Danger
+            return DateTime.Now > Milestone.Deadline
+                ? BadgeColor.Secondary
                 : BadgeColor.Warning;
         }
     }
@@ -60,13 +63,6 @@
             { "Disabled", !canEdit }
         };
 
-        var options = new ModalOptions 
-        { 
-            Position = ModalPosition.Middle,
-            Size = Blazored.Modal.ModalSize.Medium,
-            DisableBackgroundCancel = true 
-        };
-
-        await Modal.Show<MilestoneDetailsModal>("", paramerters, options).Result;
+        await Modal.Show<MilestoneDetailsModal>("", paramerters, Options).Result;
     }
 }

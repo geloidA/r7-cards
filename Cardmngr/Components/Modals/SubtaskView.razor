@@ -1,7 +1,7 @@
 ﻿@inject IProjectApi ProjectApi
 
 <div class="row d-flex align-items-center mt-2">
-    <div class="col-md-7 d-flex flex-row align-items-center">
+    <div class="col-md-6 d-flex flex-row align-items-center overflow-hidden">
         @if (Subtask.Status == Status.Open)
         {
             <Tool IconName="IconName.ClockFill" IconColor="IconColor.Info" 
@@ -10,11 +10,11 @@
                 OnClick="SwitchSubtaskStatus" />
             @if (isEditMode)
             {
-                <InputText class="ms-2" @bind-Value="subtaskTitle" />
+                <InputText class="ms-2 w-100" @bind-Value="subtaskTitle" />
             }
             else
             {
-                <span class="ms-2">@Subtask.Title</span>
+                <span class="ms-2" style="font-size: 15px;">@Subtask.Title</span>
             }
         }
         else
@@ -31,7 +31,7 @@
     <div class="col-md-4 d-flex justify-content-center">
         <ResponsibleSelection @bind-Responsible="Subtask.Responsible" EditMode="isEditMode" Project="Task.ProjectOwner" />
     </div>
-    <div class="col-md-1 d-flex justify-content-end">
+    <div class="col-md-2 d-flex justify-content-end">
         @if (Subtask.Status != Status.Closed && CanEdit)
         {
             @if (isEditMode)

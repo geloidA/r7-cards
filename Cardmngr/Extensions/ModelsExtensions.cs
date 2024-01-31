@@ -45,4 +45,11 @@ public static class ModelsExtensions
             NotifyResponsible = val.IsNotify
         };
     }
+
+    public static IEnumerable<TaskModel> OrderedByProperties(this IEnumerable<TaskModel> tasks)
+    {
+        return tasks
+            .OrderByDescending(x => x.IsDeadlineOut)
+            .ThenBy(x => (x.StatusColumn.StatusType, -(int)x.Priority, x.Deadline ?? DateTime.MaxValue));
+    }
 }

@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Layout/Attributes/" />
     <Folder Include="wwwroot/images/" />
   </ItemGroup>
 

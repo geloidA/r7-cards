@@ -1,0 +1,17 @@
+﻿
+<div class="d-flex flex-column clickable" @onclick="OnClick" >
+    <Badge class="py-0" Color="BadgeColor" IndicatorType="BadgeIndicatorType.RoundedPill">
+    <UserAvatar ShowName="true" Size="25" User="User" />
+    </Badge>
+    <span style="font-size: 11px; margin-right: 8px;" class="d-flex justify-content-end">@Title</span>
+</div>
+
+@code {
+
+    [Parameter] public Onlyoffice.Api.Models.IUser User { get; set; } = null!;
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public BadgeColor BadgeColor { get; set; } = BadgeColor.Success;
+
+    [Parameter] public EventCallback OnClick { get; set; }
+
+}
