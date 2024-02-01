@@ -5,8 +5,10 @@
         <Progress Class="user-select-none">
             @if (Milestone.IsDateBetween(DateTime.Now))
             {
-                <ProgressBar Width="GetDaysBetween(Milestone.Start, DateTime.Now) * DayProcentage" Type="ProgressType.StripedAndAnimated" Label="@Milestone.ClosedTaskCount.ToString()" />
-                <ProgressBar Width="GetDaysBetween(DateTime.Now, Milestone.Deadline!.Value) * DayProcentage" Label="@Milestone.ActiveTaskCount.ToString()" Color="ProgressColor.Info" />
+                <ProgressBar Width="Milestone.Start.CountDaysTo(DateTime.Now) * DayProcentage" 
+                    Type="ProgressType.StripedAndAnimated" Label="@Milestone.ClosedTaskCount.ToString()" />
+                <ProgressBar Width="DateTime.Now.CountDaysTo(Milestone.Deadline!.Value) * DayProcentage" 
+                    Label="@Milestone.ActiveTaskCount.ToString()" Color="ProgressColor.Info" />
             }
         </Progress>
         <div class="d-flex justify-content-center w-100 small">
@@ -23,11 +25,4 @@
     private double DayProcentage => 100 / (Milestone.Deadline!.Value - Milestone.Start).TotalDays;
 
     [Parameter, EditorRequired] public MilestoneModel Milestone { get; set; } = null!;
-
-    private static double GetDaysBetween(DateTime start, DateTime end)
-    {
-        if (start > end) throw new ArgumentException("start can'be bigger than end");
-        return Math.Round((end - start).TotalDays);
-    }
-
 }

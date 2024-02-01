@@ -10,24 +10,24 @@
 <Offcanvas @ref="offcanvas" Placement="Placement.Start" Size="OffcanvasSize.Small" ShowCloseButton="false"
     Style="background-color: var(--main-board-bg); border-radius: 0px 7px 7px 0px;">
     <HeaderTemplate >
-        <a class="text-dark fw-bold fs-4" href="/">
+        <a class="text-dark fw-bold fs-4 ms-3" href="/">
             <Icon Name="IconName.Stack" />
             Карточки
         </a>
     </HeaderTemplate> 
     <BodyTemplate>
         <div class="container h-100">
-            <Card class="row bg-shadow h-75 p-1">
-                <CardTitle class="mt-1"><h6>Мои проекты</h6></CardTitle>
-                <CardBody class="m-0">
+            <CardTitle class="ms-1"><h6>Мои проекты</h6></CardTitle>
+            <Card class="bg-shadow h-75 p-1 overflow-auto" >
+                <CardBody>
                     @if (userProjects is { } && userProjects.Any())
                     {
-                        <div class="list-group box">
-                            @foreach (var proj in userProjects)
-                            {
+                        @foreach (var proj in userProjects)
+                        {
+                            <div class="p-1">
                                 <ProjectReference Project="proj" />
-                            }
-                        </div>
+                            </div>
+                        }
                     }
                     else
                     {
@@ -36,12 +36,11 @@
                 </CardBody>
             </Card>
             <footer class="footer d-flex gradient-bg-vertical" >
-                <div class="mx-3 my-4">
+                <div class="mx-4 my-4">
                     <div @onmouseenter="() => logoutHover = true" @onmouseout="() => logoutHover = false">
                         <Tool IconName="@(logoutHover ? IconName.DoorOpenFill : IconName.DoorClosedFill)" 
                             TooltipTitle="Выйти" IconColor="IconColor.Dark" IconSize="IconSize.x5"
-                            OnClick="LogoutAsync"
-                            />
+                            OnClick="LogoutAsync" />
                     </div>
                 </div>
             </footer>

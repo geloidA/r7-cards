@@ -119,6 +119,11 @@ public class ProjectApiMock : IProjectApi
         throw new NotImplementedException();
     }
 
+    Task<Milestone> IProjectApi.UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
+    {
+        throw new NotImplementedException();
+    }
+
     Task<Onlyoffice.Api.Models.Task> IProjectApi.UpdateTaskAsync(int taskId, UpdatedStateTask state)
     {
         throw new NotImplementedException();
