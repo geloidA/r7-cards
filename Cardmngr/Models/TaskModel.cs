@@ -5,7 +5,7 @@ using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Models;
 
-public class TaskModel : ModelBase
+public class TaskModel : ModelBase, IWork
 {
     public TaskModel(Onlyoffice.Api.Models.Task task, TaskStatusColumn statusColumn)
     {
@@ -134,16 +134,6 @@ public class TaskModel : ModelBase
         }
     }
 
-    public bool IsDeadlineOut
-    {
-        get
-        {
-            return Deadline.HasValue && 
-                statusColumn.StatusType != Status.Closed && 
-                DateTime.Now.Date > Deadline;
-        }
-    }
-
     public bool CanMarkClosed
     {
         get
@@ -152,6 +142,8 @@ public class TaskModel : ModelBase
                 || (Subtasks?.All(x => x.Status == Status.Closed) ?? false);
         }
     }
+
+    public bool IsClosed() => statusColumn.StatusType == Status.Closed;
 
     public void CloseAllSubtasks()
     {

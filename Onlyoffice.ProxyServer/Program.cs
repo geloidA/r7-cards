@@ -44,6 +44,7 @@ internal class Program
         }
         else
         {
+            app.UseResponseCompression();
             app.UseHsts();
         }
 

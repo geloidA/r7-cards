@@ -46,10 +46,27 @@ public static class ModelsExtensions
         };
     }
 
-    public static IEnumerable<TaskModel> OrderedByProperties(this IEnumerable<TaskModel> tasks)
+    public static IEnumerable<TaskModel> OrderByProperties(this IEnumerable<TaskModel> tasks) // TODO: TEST
     {
         return tasks
-            .OrderByDescending(x => x.IsDeadlineOut)
+            .OrderByDescending(x => x.IsDeadlineOut())
             .ThenBy(x => (x.StatusColumn.StatusType, -(int)x.Priority, x.Deadline ?? DateTime.MaxValue));
+    }
+
+    public static IEnumerable<MilestoneModel> OrderByProperties(this IEnumerable<MilestoneModel> milestones) // TODO: TEST
+    {
+        return milestones
+            .OrderByDescending(x => x.IsDeadlineOut())
+            .ThenBy(x => x.Deadline ?? DateTime.MaxValue);
+    }
+
+    public static DateTime CheckStart(this IWork work)
+    {
+        return work.StartDate ?? throw new NullReferenceException("Work's StartDate is null");
+    }
+
+    public static DateTime CheckDeadline(this IWork work)
+    {
+        return work.Deadline ?? throw new NullReferenceException("Work's Deadline is null");
     }
 }

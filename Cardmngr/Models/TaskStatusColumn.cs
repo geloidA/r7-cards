@@ -67,7 +67,7 @@ public class TaskStatusColumn : ModelBase, IEnumerable<TaskModel>
 
     public IEnumerator<TaskModel> GetEnumerator() 
     {
-        foreach (var task in tasks.OrderedByProperties())
+        foreach (var task in tasks.OrderByProperties())
         {
             yield return task;
         }

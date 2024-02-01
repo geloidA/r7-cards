@@ -10,9 +10,6 @@
 
 @inject IProjectApi ProjectApi
 
-
-<Offcanvas @ref="menuCanvas" ShowCloseButton="false" />
-
 <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
     <div class="row mb-2" style="margin-left: 20px;">
         <div class="col-md-11 d-flex flex-column overflow-scroll scrollbar-none" >            
@@ -22,7 +19,7 @@
                     {
                         foreach (var milestone in model.Milestones)
                         {
-                            <KolTimelineItem @key="milestone.Id" End="milestone.Deadline!.Value" Start="milestone.Start">
+                            <KolTimelineItem @key="milestone.Id" End="milestone.CheckDeadline()" Start="milestone.CheckStart()">
                                 <TimelineMilestone Milestone="milestone" />
                             </KolTimelineItem>
                         }
@@ -54,11 +51,13 @@
 
 @code {
     private int timelineScale;
-    private Offcanvas menuCanvas = null!;
     private ProjectModel? model;
 
     [Parameter] public int? ProjectId { get; set; }
     [CascadingParameter] HeaderTitle HeaderTitle { get; set; } = null!;
+
+    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
+    [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -85,18 +84,13 @@
 
     private async Task ShowMenu()
     {
-        await menuCanvas.ShowAsync<ProjectMenuModal>("", new Dictionary<string, object>
-        {
-            { "ProjectModel", model! },
-            { "Close", EventCallback.Factory.Create(this, async () => await menuCanvas.HideAsync()) }
-        });
+        await Modal.Show<ProjectDetailsModal>("", new ModalParameters { { "ProjectModel", model! } }, Options).Result;
     }
     
     private void Refresh() => StateHasChanged();
 
     public void Dispose()
     {
-        menuCanvas.Dispose();
         HeaderTitle.Content = null;
     }
 }

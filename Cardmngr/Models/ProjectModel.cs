@@ -1,4 +1,5 @@
-﻿using Cardmngr.Models;
+﻿using System.Collections;
+using Cardmngr.Models;
 using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Models;
 using MyTask = Onlyoffice.Api.Models.Task;
@@ -6,7 +7,7 @@ using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
 
 namespace Cardmngr;
 
-public class ProjectModel : ModelBase
+public class ProjectModel : ModelBase, IWorkContainer
 {
     private readonly MilestoneTimelineModel milestoneTimeline;
     private readonly StatusColumnsModel statusColumns;
@@ -34,7 +35,7 @@ public class ProjectModel : ModelBase
     public int Id { get; }
     public string Title { get; set; }
     public string? Description { get; set; } 
-    public ProjectStatus Status { get; set; } 
+    public ProjectStatus Status { get; set; }
     public IUser Responsible { get; set; } 
     public bool CanEdit { get; } 
     public bool IsPrivate { get; set; }
@@ -61,6 +62,10 @@ public class ProjectModel : ModelBase
     public MilestoneTimelineModel Milestones => milestoneTimeline;
     public StatusColumnsModel StatusColumns => statusColumns;
 
+    public DateTime? StartDate => Tasks.Select(x => x.StartDate).Min();
+
+    public DateTime? Deadline => Tasks.Select(x => x.Deadline).Max();
+
     public bool DeleteMilestone(MilestoneModel milestone)
     {
         foreach (var task in Tasks.Where(x => x.Milestone == milestone))
@@ -80,4 +85,14 @@ public class ProjectModel : ModelBase
     public event Action? ModelChanged;
 
     internal void OnModelChanged() => ModelChanged?.Invoke();
+
+    public IEnumerator<IWork> GetEnumerator()
+    {
+        foreach (var task in Tasks)
+            yield return task;
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public bool IsClosed() => Status == ProjectStatus.Closed;
 }

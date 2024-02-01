@@ -1,0 +1,49 @@
+﻿
+@if (Work is { })
+{
+    <div class="d-flex flex-column w-100">
+        <Progress Class="user-select-none">
+            @if (Work.IsDateBetween(DateTime.Now))
+            {
+                <ProgressBar Width="Work.CheckStart().CountDaysTo(DateTime.Now) * DayProcentage" 
+                    Type="ProgressType.StripedAndAnimated" Label="@Work.ClosedWorkCount().ToString()" />
+                <ProgressBar Width="DateTime.Now.CountDaysTo(Work.CheckDeadline()) * DayProcentage" 
+                    Label="@Work.ActiveWorkCount().ToString()" Color="ProgressColor.Info" />
+            }
+            else if (Work.IsDeadlineOut())
+            {
+                <ProgressBar Width="100" Type="ProgressType.StripedAndAnimated" Color="ProgressColor.Danger"
+                    Label="@Work.ActiveWorkCount().ToString()" />
+            } else if (Work.IsClosed())
+            {
+                <ProgressBar Width="100" Type="ProgressType.StripedAndAnimated" Color="ProgressColor.Success"
+                    Label="Закрыта" />
+            }
+        </Progress>
+        <div class="d-flex justify-content-center w-100 small">
+            @RenderDate(Work.StartDate)
+            <div class="col d-flex justify-content-end">
+                @RenderDate(Work.Deadline)
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    private double DayProcentage => 100 / (Work.CheckDeadline() - Work.CheckStart()).TotalDays;
+
+    [Parameter, EditorRequired] public IWorkContainer Work { get; set; } = null!;
+
+    private static RenderFragment<DateTime?> RenderDate = date =>
+        @<span>
+            @if (date is { })
+            {
+                @date.Value.ToShortDateString()
+            }
+            else
+            {
+                <i>???</i>
+            }
+        </span>;
+}

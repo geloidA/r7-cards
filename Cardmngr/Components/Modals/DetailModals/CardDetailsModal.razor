@@ -1,12 +1,14 @@
 ﻿@inject IProjectApi ProjectApi
 
+@using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas
+
 @if (changingState is { })
 {
-    <div class="offcanvas @DelayedShow offcanvas-end" tabindex="-1" id="offcanvasWithBackdrop" >
-        <div class="offcanvas-header">
+    <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right" @ref="currentModal">
+        <OffcanvasHeader>
             <TitleChanger @bind-Title="changingState.Title" Disabled="!IsCanEdit" />
-        </div>
-        <div class="offcanvas-body d-flex flex-column">
+        </OffcanvasHeader>
+        <OffcanvasBody Class="d-flex flex-column">
             <CardInfoHeader Task="changingState" Disabled="!IsCanEdit" />
             <div class="pt-2">
                 <DescriptionChanger @bind-Description="changingState.Description" Disabled="!IsCanEdit" />
@@ -30,27 +32,24 @@
                     </Button>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="offcanvas-backdrop fade @DelayedShow" style="z-index: 2;" @onclick="Cancel"></div>
+        </OffcanvasBody>
+    </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
 }
 
 @code {
     private bool saveLoading;
+    private Offcanvas currentModal = null!;
     private TaskModel? changingState;
-    private string DelayedShow = "";
 
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
-    [CascadingParameter] BlazoredModalInstance CurrentModel { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
     [Parameter] public TaskModel Task { get; set; } = null!;
     [Parameter] public bool IsCanEdit { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         changingState = Task.Clone(false);
-        await ToggleDelayShowAsync();
     }
 
     private async Task ConfirmSaving()
@@ -60,8 +59,7 @@
         var updatedTask = await ProjectApi.UpdateTaskAsync(changingState!.Id, changingState.GetUpdateState());
         Task.Update(updatedTask);
 
-        await ToggleDelayShowAsync();
-        await CurrentModel.CloseAsync(ModalResult.Ok());
+        await currentModal.CloseAsync(ModalResult.Ok());
     }
 
     private async Task ShowDeleteConfirmModal()
@@ -73,20 +71,7 @@
             await ProjectApi.DeleteTaskAsync(Task.Id);
             Task.StatusColumn.Remove(Task);
 
-            await ToggleDelayShowAsync();
-            await CurrentModel.CloseAsync(ModalResult.Ok());
+            await currentModal.CloseAsync(ModalResult.Ok());
         }
-    }
-
-    private async Task Cancel() // TODO: refactor - DRY
-    {
-        await ToggleDelayShowAsync();
-        await CurrentModel.CloseAsync(ModalResult.Cancel());
-    }
-
-    private async Task ToggleDelayShowAsync() // need for correct animation showing
-    {
-        await System.Threading.Tasks.Task.Delay(1);
-        DelayedShow = string.IsNullOrEmpty(DelayedShow) ? "show" : "";
     }
 }

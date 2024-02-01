@@ -1,8 +1,8 @@
-﻿@if (Milestone.Tasks.Any())
+﻿@if (Milestone.Any())
 {
     <Card>
         <CardBody class="p-1 overflow-auto d-flex flex-column task-container" style="max-height: 500px;">
-            @foreach (var task in Milestone.Tasks.OrderedByProperties())
+            @foreach (var task in Milestone.Tasks.OrderByProperties())
             {
                 <span class="py-1" style="z-index: 99;" >
                     <ShortTaskView Task="task" />
@@ -10,7 +10,7 @@
             }
         </CardBody>
         <CardFooter class="d-flex justify-content-end bg-main">
-            <span>@($"{Milestone.ClosedTaskCount} / {Milestone.Tasks.Count()}")</span>
+            <span>@($"{Milestone.ClosedWorkCount()} / {Milestone.Tasks.Count()}")</span>
             <Icon class="ms-2" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
         </CardFooter>
     </Card>

@@ -133,3 +133,15 @@ ul {
     width: 0px;
     height: 0px;
 }
+
+.my-offcanvas {
+    background-color: var(--main-board-bg);
+}
+
+.my-offcanvas-right {
+    border-radius: 7px 0px 0px 7px;
+}
+
+.my-offcanvas-left {
+    border-radius: 0px 7px 7px 0px;
+}

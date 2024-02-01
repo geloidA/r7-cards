@@ -1,0 +1,77 @@
+﻿@inject ToastService ToastService
+
+
+<div class="container d-flex flex-column">
+    <Card>
+        <CardBody>
+            <textarea placeholder="Что хотели бы добавить или изменить в приложении..." @bind="Text" @bind:event="oninput" 
+                class="w-100 @InvalidInputCss" style="height: 250px; border: 0px;" />
+        </CardBody>
+        <CardFooter class="d-flex justify-content-end small">
+            <span>@(Text?.Length ?? 0)</span>
+            <span>/</span>
+            <span>@MaxLength</span>
+        </CardFooter>
+    </Card>
+    <div class="mt-2 d-flex w-100">
+        <Button Loading="sending" LoadingText="Отправка" @onclick="SendFeedback" Color="ButtonColor.Success" >
+            <Icon Name="IconName.Send"></Icon>
+            Отправить
+        </Button>
+        <div class="col d-flex justify-content-end">
+            <Button Color="ButtonColor.Danger" class="ms-2"
+                @onclick="async () => await CurrentModal.CloseAsync()" >
+                <Icon Name="IconName.XCircle"></Icon>
+                Отмена
+            </Button>
+        </div>
+    </div>
+</div>
+
+@code {    
+    private string InvalidInputCss => isInvalidInput ? "h-text-area" : "";
+
+    bool isInvalidInput;
+    bool sending;
+
+    private const int MaxLength = 300;
+
+    private string? text;
+    private string? Text 
+    {
+        get => text;
+        set
+        {
+            if (value?.Length > MaxLength) return;
+            text = value;
+        }
+    }
+
+    
+    [CascadingParameter] protected BlazoredModalInstance CurrentModal { get; set; } = default!;
+
+    private async Task SendFeedback()
+    {
+        sending = true;
+
+        if (string.IsNullOrWhiteSpace(Text))
+        {
+            await HighliteTextArea();
+            sending = false;
+            return;
+        }
+
+        await Task.Delay(1000);
+
+        ToastService.Notify(new ToastMessage(ToastType.Success, IconName.CheckCircleFill, "Обратная связь отправлена!", "Спасибо за обратную связь!"));
+
+        await CurrentModal.CloseAsync();
+    }
+
+    private async Task HighliteTextArea()
+    {
+        isInvalidInput = true;
+        await Task.Delay(1500);
+        isInvalidInput = false;
+    }
+}

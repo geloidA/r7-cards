@@ -53,7 +53,7 @@
         {
             <div class="row py-1">
                 <div class="d-flex p-0 justify-content-end align-items-center">
-                    @if (Task.IsDeadlineOut)
+                    @if (Task.IsDeadlineOut())
                     {
                         <Tool IconName="IconName.Fire" IconColor="IconColor.Danger" 
                             TooltipTitle="@(GetDeadlineString())" TooltipPlacement="TooltipPlacement.Left" />
@@ -83,7 +83,7 @@
     [CascadingParameter] StatusColumnsModel StatusColumnsModel { get; set; } = null!;
     
     string CssDragStart => isDragged ? "dragged" : "";
-    string CssDeadline => Task.IsDeadlineOut ? "red-border" : "";
+    string CssDeadline => Task.IsDeadlineOut() ? "red-border" : "";
 
     private bool isDragged;
     [Parameter] public TaskModel Task { get; set; } = null!;
@@ -105,7 +105,7 @@
             { "IsCanEdit", canEdit }
         };
 
-        await Modal.Show<Modals.CardDetailsModal>("", parameters, DetailsModal).Result;
+        await Modal.Show<CardDetailsModal>("", parameters, DetailsModal).Result;
     }
 
     private bool IsCanEdit(CookieStateProvider provider)

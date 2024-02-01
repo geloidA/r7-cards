@@ -1,11 +1,12 @@
-﻿using Cardmngr.Models;
+﻿using System.Collections;
+using Cardmngr.Models;
 using Cardmngr.Models.Attributes;
 using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Models;
 
 namespace Cardmngr;
 
-public class MilestoneModel : ModelBase
+public class MilestoneModel : ModelBase, IWorkContainer
 {
     public int Id { get; }
     [Updatable]
@@ -19,9 +20,6 @@ public class MilestoneModel : ModelBase
     public bool IsKey { get; set; }
     [Updatable]
     public bool IsNotify { get; set; }
-    
-    public int ActiveTaskCount => Tasks.Where(x => x.StatusColumn.StatusType == Status.Open).Count();
-    public int ClosedTaskCount => Tasks.Where(x => x.StatusColumn.StatusType == Status.Closed).Count();
 
     [Updatable]
     public Status Status { get; set; }
@@ -41,19 +39,14 @@ public class MilestoneModel : ModelBase
         Project.OnModelChanged();
     }
 
-    public bool IsDateBetween(DateTime date)
-    {
-        return date >= Start && date <= Deadline;
-    }
-
-    public DateTime Start // TODO: O(n) complexity
+    public DateTime? StartDate // TODO: O(n) complexity
     {
         get
         {
             return Project.Tasks
                 .Where(x => x.Milestone?.Id == Id && x.StartDate.HasValue)
-                .Select(x => x.StartDate!.Value)
-                .Concat([Deadline!.Value.AddDays(-7)])
+                .Select(x => x.StartDate)
+                .Concat([Deadline is { } ? Deadline.Value.AddDays(-7) : null])
                 .Min();
         }
     }
@@ -67,7 +60,7 @@ public class MilestoneModel : ModelBase
         Deadline = milestone.Deadline ?? throw new ArgumentNullException("Milestone deadline cannot be null");
         IsKey = milestone.IsKey;
         IsNotify = milestone.IsNotify;
-        Status = (Status)milestone.Status;
+        Status = milestone.Status == 0 ? Status.Open : Status.Closed;
         Responsible = milestone.Responsible != null ? new User(milestone.Responsible) : null;
         Created = milestone.Created;
         CreatedBy = milestone.CreatedBy != null ? new User(milestone.CreatedBy) : null;
@@ -93,4 +86,14 @@ public class MilestoneModel : ModelBase
     public MilestoneModel Clone() => new(this);
 
     public void ToggleSelection() => IsSelected = !IsSelected;
+
+    public IEnumerator<IWork> GetEnumerator()
+    {
+        foreach (var task in Tasks)
+            yield return task;
+    }
+    
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public bool IsClosed() => Status == Status.Closed;
 }

@@ -43,10 +43,7 @@
         get
         {
             if (Milestone.Status == Status.Closed) return BadgeColor.Success;
-
-            return DateTime.Now > Milestone.Deadline
-                ? BadgeColor.Secondary
-                : BadgeColor.Warning;
+            return Milestone.IsDeadlineOut() ? BadgeColor.Secondary : BadgeColor.Warning;
         }
     }
 

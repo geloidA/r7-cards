@@ -1,8 +1,9 @@
-﻿
+﻿@inherits KolComponentBase
+
 @if (TooltipTitle is { })
 {
     <Tooltip Title="@(Disabled ? DisabledTitle : TooltipTitle)" Placement="TooltipPlacement" >
-        <div class="d-flex align-items-center tool @СssDisabled" @onclick="OnClickHandler">
+        <div class="d-flex align-items-center tool @Class @СssDisabled" style="@Style" @onclick="OnClickHandler">
             <Icon Name="IconName" Size="IconSize" Color="IconColor"/>
             @if (Text is { })
             {
@@ -13,7 +14,7 @@
 }
 else
 {
-    <div class="d-flex justify-content-center align-items-center tool @СssDisabled" @onclick="OnClickHandler">
+    <div class="d-flex justify-content-center align-items-center tool @Class @СssDisabled" style="@Style" @onclick="OnClickHandler">
         <Icon Name="IconName" Size="IconSize" Color="IconColor"/>
         @if (Text is { })
         {

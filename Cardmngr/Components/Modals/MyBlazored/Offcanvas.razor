@@ -1,0 +1,58 @@
+﻿
+@inherits OffcanvasBase
+
+<div class="offcanvas @DelayedShow @CssPlacement @Class" style="@Style" tabindex="-1" id="offcanvasWithBackdrop" >
+    <div style="overflow-y: auto; overflow-x: hidden;">
+        @ChildContent
+    </div>
+</div>
+<div class="offcanvas-backdrop fade @DelayedShow" style="z-index: 2;" @onclick="Cancel"></div>
+
+@code {
+    private string DelayedShow = "";
+
+    [CascadingParameter] BlazoredModalInstance CurrentModel { get; set; } = null!;
+
+    [Parameter] public MyOffcanvasPlacement Placement { get; set; } 
+
+
+    public async Task CloseAsync() => await CloseAsync(ModalResult.Ok());
+
+    public async Task CloseAsync(ModalResult result)
+    {
+        await ToggleDelayShowAsync();
+        await CurrentModel.CloseAsync(result);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ToggleDelayShowAsync();
+    }
+
+    private async Task Cancel()
+    {
+        await ToggleDelayShowAsync();
+        await CurrentModel.CloseAsync(ModalResult.Cancel());
+    }
+
+    private async Task ToggleDelayShowAsync() // need for correct animation showing
+    {
+        await System.Threading.Tasks.Task.Delay(1);
+        DelayedShow = string.IsNullOrEmpty(DelayedShow) ? "show" : "";
+    }
+
+    private string CssPlacement
+    {
+        get
+        {
+            return Placement switch
+            {
+                MyOffcanvasPlacement.Start => "offcanvas-start",
+                MyOffcanvasPlacement.End => "offcanvas-end",
+                MyOffcanvasPlacement.Top => "offcanvas-top",
+                MyOffcanvasPlacement.Bottom => "offcanvas-bottom",
+                _ => throw new NotImplementedException()
+            };
+        }
+    }
+}

@@ -16,7 +16,7 @@
                 }
             </div>
             <div class="info-text align-items-end">
-                @if (Task.IsDeadlineOut)
+                @if (Task.IsDeadlineOut())
                 {
                     <Icon Name="IconName.Fire" Color="IconColor.Danger" />
                     <span class="text-danger ms-1" style="font-size: 14px;">@Task.Deadline?.ToShortDateString()</span>
