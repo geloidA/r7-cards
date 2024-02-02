@@ -17,13 +17,13 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 var config = builder.Configuration;
 
 builder.Services
-    .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
     .AddScoped<DragModule>()
     .AddScoped<DragEventModule>()
     .AddScoped<AuthenticationStateProvider, CookieStateProvider>()
     .AddScoped<CookieHandler>()
     .AddScoped<IAuthApiLogic, AuthApiLogic>()
     .AddScoped<IProjectApi, ProjectApi>()
+    .AddScoped<IFeedbackService, FeedbackService>()
     .AddScoped<TeamMemberSelectionDialog>()
     .AddBlazoredModal()
     .AddKolBlazor()
@@ -35,8 +35,10 @@ builder.Services
 builder.Services.AddMyCascadingValues();
 
 builder.Services
-    .AddHttpClient("api", opt => opt.BaseAddress = new Uri(config["proxy-url"] 
+    .AddHttpClient("onlyoffice", opt => opt.BaseAddress = new Uri(config["proxy-url"] 
         ?? throw new NullReferenceException("proxy-url config is null")))
     .AddHttpMessageHandler<CookieHandler>();
+
+builder.Services.AddHttpClient("self-api", opt => opt.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
 await builder.Build().RunAsync();

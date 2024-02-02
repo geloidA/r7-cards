@@ -10,7 +10,7 @@ public class AuthApiLogic(IHttpClientFactory httpClientFactory) : ApiLogicBase(h
 {
     public async Task<UserProfileDao?> GetSelfProfileAsync()
     {
-        using var client = httpClientFactory.CreateClient("api");
+        using var client = httpClientFactory.CreateClient("onlyoffice");
         
         HttpResponseMessage response;
 
@@ -28,7 +28,7 @@ public class AuthApiLogic(IHttpClientFactory httpClientFactory) : ApiLogicBase(h
 
     public async Task<AuthenticationResponseType> LoginAsync(LoginModel login)
     {
-        using var client = httpClientFactory.CreateClient("api");
+        using var client = httpClientFactory.CreateClient("onlyoffice");
         string payload = JsonSerializer.Serialize(login);
         var content = new StringContent(payload, Encoding.UTF8, "application/json");
         

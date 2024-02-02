@@ -7,10 +7,8 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Onlyoffice.ProxyServer.Controllers;
 
-public class ProjectController(IConfiguration conf, IHttpClientFactory factory) : ApiController(conf)
+public class ProjectController(IConfiguration conf) : ApiController(conf)
 {
-    private readonly IHttpClientFactory httpClientFactory = factory;
-
     #region Project Proxy
     [Route("api/[controller]")]
     public Task ProxyProject() => ProxyRequestAsync($"{apiUrl}/project");

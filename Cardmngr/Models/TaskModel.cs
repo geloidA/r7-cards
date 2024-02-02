@@ -44,8 +44,8 @@ public class TaskModel : ModelBase, IWork
         Title = source.Title;
         Description = source.Description;
         Priority = source.Priority;
-        Milestone = source.Milestone; // Не используем новый объект, а ссылку на существующий
-        ProjectOwner = source.ProjectOwner; // То же самое
+        Milestone = source.Milestone; // Use the same milestone
+        ProjectOwner = source.ProjectOwner; // Use the same project
         Subtasks = copySubtasks ? new ObservableCollection<SubtaskModel>(source.Subtasks?.Select(s => s.Clone()) ?? []) : source.Subtasks;
         Progress = source.Progress;
         UpdatedBy = source.UpdatedBy;
@@ -138,8 +138,7 @@ public class TaskModel : ModelBase, IWork
     {
         get
         {
-            return statusColumn.StatusType == Status.Closed
-                || (Subtasks?.All(x => x.Status == Status.Closed) ?? false);
+            return IsClosed() || (Subtasks?.All(x => x.Status == Status.Closed) ?? false);
         }
     }
 

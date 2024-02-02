@@ -14,36 +14,51 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         return project?.Response ?? throw new NullReferenceException("Project was not found");
     }
 
-    public async Task<List<Project>> GetProjectsAsync()
+    public async IAsyncEnumerable<Project> GetProjectsAsync()
     {
         var projectDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<ProjectDao>("api/project"));
-        return projectDao?.Response ?? [];
+        await foreach (var project in projectDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Project>())
+        {
+            yield return project;
+        }
     }
 
-    public async Task<List<Project>> GetUserProjectsAsync()
+    public async IAsyncEnumerable<Project> GetUserProjectsAsync()
     {
         var projectDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<ProjectDao>("api/project/@self"));
-        return projectDao?.Response ?? [];
+        await foreach (var project in projectDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Project>())
+        {
+            yield return project;
+        }
     }
 
-    public async Task<List<UserProfile>> GetProjectTeamAsync(int projectId)
+    public async IAsyncEnumerable<UserProfile> GetProjectTeamAsync(int projectId)
     {
         var projectTeamDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<UserProfilesDao>($"api/project/{projectId}/team"));
-        return projectTeamDao?.Response ?? [];
+        await foreach (var userProfile in projectTeamDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<UserProfile>())
+        {
+            yield return userProfile;
+        }
     }
     #endregion
 
     #region CRUD Task
-    public async Task<List<TaskStatus>> GetAllTaskStatusesAsync()
+    public async IAsyncEnumerable<TaskStatus> GetAllTaskStatusesAsync()
     {
         var taskStatusDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<TaskStatusDao>("api/project/status"));
-        return taskStatusDao?.Response ?? [];
+        await foreach (var taskStatus in taskStatusDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<TaskStatus>())
+        {
+            yield return taskStatus;
+        }
     }
 
-    public async Task<List<Models.Task>> GetTasksByProjectIdAsync(int projectId)
+    public async IAsyncEnumerable<Models.Task> GetTasksByProjectIdAsync(int projectId)
     {
         var taskDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<TaskDao>($"api/project/{projectId}/task"));
-        return taskDao?.Response ?? [];
+        await foreach (var task in taskDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Models.Task>())
+        {
+            yield return task;
+        }
     }
 
     public async System.Threading.Tasks.Task UpdateTaskStatusAsync(int taskId, Status status, int? statusId = null)
@@ -51,10 +66,13 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}/status", new { status, statusId }));
     }
 
-    public async Task<List<Models.Task>> GetFiltredTasksAsync(FilterTasksBuilder builder)
+    public async IAsyncEnumerable<Models.Task> GetFiltredTasksAsync(FilterTasksBuilder builder)
     {
         var filterTasksDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<FilterTasksDao>($"api/project/task/{builder.Build()}"));
-        return filterTasksDao?.Response ?? [];
+        await foreach (var task in filterTasksDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Models.Task>())
+        {
+            yield return task;
+        }
     }
 
     public async Task<Models.Task> CreateTaskAsync(int projectId, string title)
@@ -111,10 +129,13 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
     #endregion
 
     #region CRUD Milestone
-    public async Task<List<Milestone>> GetMilestonesByProjectIdAsync(int projectId)
+    public async IAsyncEnumerable<Milestone> GetMilestonesByProjectIdAsync(int projectId)
     {
         var milestoneDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<MilestoneDao>($"api/project/{projectId}/milestone"));
-        return milestoneDao?.Response ?? throw new NullReferenceException("Milestones were not found");
+        await foreach (var milestone in milestoneDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Milestone>())
+        {
+            yield return milestone;
+        }
     }
 
     public async Task<Milestone> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
@@ -135,16 +156,4 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}/status", new { status }));
     }
     #endregion
-
-    private async Task<T> InvokeHttpClientAsync<T>(Func<HttpClient, Task<T>> func)
-    {
-        using var client = httpClientFactory.CreateClient("api");
-        return await func(client);
-    }
-
-    private async System.Threading.Tasks.Task InvokeHttpClientAsync<T>(Func<HttpClient, System.Threading.Tasks.Task> func)
-    {
-        using var client = httpClientFactory.CreateClient("api");
-        await func(client);
-    }
 }

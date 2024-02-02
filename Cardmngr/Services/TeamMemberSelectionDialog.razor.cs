@@ -6,11 +6,11 @@ namespace Cardmngr.Services;
 
 public partial class TeamMemberSelectionDialog(IModalService modal)
 {
-    public async Task<Onlyoffice.Api.Models.IUser?> ShowAsync(ProjectModel project, ModalOptions options)
+    public async Task<Onlyoffice.Api.Models.IUser?> ShowAsync(IEnumerable<Onlyoffice.Api.Models.IUser> team, ModalOptions options)
     {
         var parameters = new ModalParameters
         {
-            { "Items", project.Team.ToList() },
+            { "Items", team.ToList() },
             { "ItemRender", RenderUser }
         };
 

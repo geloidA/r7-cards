@@ -36,7 +36,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        projects = await ProjectApi.GetUserProjectsAsync();
+        projects = await ProjectApi.GetUserProjectsAsync().ToListAsync();
 
     }
 }

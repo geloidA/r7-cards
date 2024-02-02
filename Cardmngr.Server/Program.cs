@@ -1,10 +1,13 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using Cardmngr.Server.Extensions;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
+
+DirectoryWrapper.CreateIfDoesntExists(Path.GetFullPath(config["FeedbackDirectory"] ?? throw new Exception("FeedbackDirectory config is null")));
 
 builder.Services.AddRazorPages();
 builder.Services.AddResponseCompression(opts =>
@@ -12,6 +15,8 @@ builder.Services.AddResponseCompression(opts =>
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         ["application/octet-stream"]);
 });
+
+builder.Services.AddControllers();
 
 builder.WebHost.UseKestrel(opt => 
 {
@@ -40,6 +45,7 @@ if (app.Environment.IsProduction())
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
+app.MapControllers();
 app.MapRazorPages();
 
 app.MapFallbackToFile("index.html");

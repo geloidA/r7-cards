@@ -29,7 +29,7 @@
         }
     </div>
     <div class="col-md-4 d-flex justify-content-center">
-        <ResponsibleSelection @bind-Responsible="Subtask.Responsible" EditMode="isEditMode" Project="Task.ProjectOwner" />
+        <ResponsibleSelection @bind-Responsible="Subtask.Responsible" EditMode="isEditMode" Responsibles="Task.ProjectOwner.Team" />
     </div>
     <div class="col-md-2 d-flex justify-content-end">
         @if (Subtask.Status != Status.Closed && CanEdit)

@@ -1,5 +1,5 @@
 ﻿
-<div class="d-flex flex-column clickable" @onclick="OnClick" >
+<div class="d-flex flex-column @(OnClick.HasDelegate ? "clickable" : "")" @onclick="OnClick" >
     <Badge class="py-0" Color="BadgeColor" IndicatorType="BadgeIndicatorType.RoundedPill">
     <UserAvatar ShowName="true" Size="25" User="User" />
     </Badge>

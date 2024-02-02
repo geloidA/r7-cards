@@ -22,11 +22,11 @@
             <CardSubtasks Task="changingState" Disabled="!IsCanEdit" />
             <div class="row pt-2 d-flex justify-content-end">
                 <div class="d-flex flex-row">
-                    <Button Loading="saveLoading" Color="ButtonColor.Success" Outline="true" @onclick="ConfirmSaving"
+                    <Button Loading="saveLoading" Size="Size.Small" Color="ButtonColor.Success" Outline="true" @onclick="ConfirmSaving"
                         Disabled="!IsCanEdit" >
                         Сохранить
                     </Button>
-                    <Button class="ms-2" @onclick="ShowDeleteConfirmModal" Color="ButtonColor.Danger" Outline="true"
+                    <Button class="ms-2" Size="Size.Small" @onclick="ShowDeleteConfirmModal" Color="ButtonColor.Danger" Outline="true"
                         Disabled="!IsCanEdit" >
                         Удалить
                     </Button>
@@ -64,7 +64,12 @@
 
     private async Task ShowDeleteConfirmModal()
     {
-        var result = await Modal.Show<DefaultConfirmModal>("Удалить?", ModalOptions).Result;
+        var parameters = new ModalParameters
+        {
+            { "AdditionalText", "Действие необратимо. Вы действительно хотите удалить задачу?"}
+        };
+
+        var result = await Modal.Show<DefaultConfirmModal>("Удаление", parameters, ModalOptions).Result;
 
         if (result.Confirmed)
         {

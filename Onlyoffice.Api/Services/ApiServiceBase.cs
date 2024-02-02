@@ -8,7 +8,7 @@ public abstract class ApiServiceBase : IDisposable
     public ApiServiceBase(HttpClient httpClient, string apiUrl)
     {
         if (string.IsNullOrWhiteSpace(apiUrl)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(apiUrl));
-        this.apiUrl = apiUrl;        
+        this.apiUrl = apiUrl;
         this.httpClient = httpClient;
     }
 

@@ -36,7 +36,8 @@
     protected override async Task OnInitializedAsync()
     {
         HeaderTitle.ContentChanged += StateHasChanged;
-        userProjects = await ProjectApi.GetUserProjectsAsync();
+        
+        userProjects = await ProjectApi.GetUserProjectsAsync().ToListAsync();
 
         if (AuthenticationState is { })
         {

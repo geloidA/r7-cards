@@ -25,10 +25,10 @@
                 <MelistoneShortTasks Milestone="Milestone" />
             </div>
             <div class="d-flex mt-2 flex-row">
-                <Button Loading="saving" Disabled="Disabled" Type="ButtonType.Submit" Color="ButtonColor.Success" Outline="true" @onclick="Save" >
+                <Button Loading="saving" Size="Size.Small" Disabled="Disabled" Type="ButtonType.Submit" Color="ButtonColor.Success" Outline="true" @onclick="Save" >
                     Сохранить
                 </Button>
-                <Button class="ms-2" Disabled="Disabled" Color="ButtonColor.Danger" @onclick="Delete" Outline="true" >
+                <Button class="ms-2" Size="Size.Small" Disabled="Disabled" Color="ButtonColor.Danger" @onclick="Delete" Outline="true" >
                     Удалить
                 </Button>
             </div>
@@ -55,7 +55,7 @@
     private async Task ShowSelectionDialog()
     {
         if (Disabled) return;
-        var selected = await SelectionDialog.ShowAsync(Milestone.Project, ModalOptions);
+        var selected = await SelectionDialog.ShowAsync(Milestone.Project.Team, ModalOptions);
 
         if (selected is { })
         {
@@ -81,7 +81,12 @@
 
     private async Task Delete()
     {
-        var result = await Modal.Show<DefaultConfirmModal>("Удалить?", ModalOptions).Result;
+        var parameters = new ModalParameters
+        {
+            { "AdditionalText", "Действие необратимо. Вы действительно хотите удалить веху?"}
+        };
+
+        var result = await Modal.Show<DefaultConfirmModal>("Удаление", parameters, ModalOptions).Result;
 
         if (result.Confirmed)
         {

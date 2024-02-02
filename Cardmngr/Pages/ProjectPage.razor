@@ -64,10 +64,10 @@
         if (ProjectId.HasValue && ProjectId != null && ProjectId != model?.Id)
         {
             var project = ProjectApi.GetProjectByIdAsync(ProjectId.Value);
-            var tasks = ProjectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(ProjectId.Value));
-            var statuses = ProjectApi.GetAllTaskStatusesAsync();
-            var milestones = ProjectApi.GetMilestonesByProjectIdAsync(ProjectId.Value);
-            var team = ProjectApi.GetProjectTeamAsync(ProjectId.Value);
+            var tasks = ProjectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(ProjectId.Value)).ToListAsync();
+            var statuses = ProjectApi.GetAllTaskStatusesAsync().ToListAsync();
+            var milestones = ProjectApi.GetMilestonesByProjectIdAsync(ProjectId.Value).ToListAsync();
+            var team = ProjectApi.GetProjectTeamAsync(ProjectId.Value).ToListAsync();
 
             model = new ProjectModel(await project, await tasks, await statuses, await milestones, await team);
 

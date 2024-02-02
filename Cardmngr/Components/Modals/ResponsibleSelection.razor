@@ -41,11 +41,11 @@ else
     public bool EditMode { get; set; }
 
     [Parameter]
-    public ProjectModel Project { get; set; } = null!; // TODO: Change on Team enumerable
+    public IEnumerable<Onlyoffice.Api.Models.IUser> Responsibles { get; set; } = null!;
 
     private async Task ShowResponsibleSelectionModal()
     {
-        var selected = await SelectionDialog.ShowAsync(Project, ModalOptions);
+        var selected = await SelectionDialog.ShowAsync(Responsibles, ModalOptions);
 
         if (selected is { })
         {

@@ -15,7 +15,7 @@ public interface IProjectApi
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/@self"/>
     /// </remarks>
     /// <returns>Projects that belongs to current user</returns>
-    Task<List<Project>> GetUserProjectsAsync();
+    IAsyncEnumerable<Project> GetUserProjectsAsync();
 
     /// <summary>
     /// Returns a list of all the portal projects with the base information about them.
@@ -24,7 +24,7 @@ public interface IProjectApi
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project"/> 
     /// </remarks>
     /// <returns>List of projects</returns>
-    Task<List<Project>> GetProjectsAsync();
+    IAsyncEnumerable<Project> GetProjectsAsync();
 
     /// <summary>
     /// Returns the detailed information about a project with the specified ID.
@@ -43,7 +43,7 @@ public interface IProjectApi
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/status"/>
     /// </remarks>
     /// <returns>Task statuses</returns>
-    Task<List<MyTaskStatus>> GetAllTaskStatusesAsync();
+    IAsyncEnumerable<MyTaskStatus> GetAllTaskStatusesAsync();
 
     /// <summary>
     /// Returns a list of all the tasks from a project with the ID specified in the request.
@@ -53,7 +53,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="projectId">Project ID</param>
     /// <returns>List of tasks</returns>
-    Task<List<MyTask>> GetTasksByProjectIdAsync(int projectId);
+    IAsyncEnumerable<MyTask> GetTasksByProjectIdAsync(int projectId);
 
     /// <summary>
     /// Returns a list with the detailed information about all the tasks matching the parameters specified in the request.
@@ -63,7 +63,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="builder">Builder for parameters in request</param>
     /// <returns>List of tasks</returns>
-    Task<List<MyTask>> GetFiltredTasksAsync(FilterTasksBuilder builder);
+    IAsyncEnumerable<MyTask> GetFiltredTasksAsync(FilterTasksBuilder builder);
 
     /// <summary>
     /// Adds a task to the selected project with the title.
@@ -84,7 +84,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="projectId">Project ID</param>
     /// <returns>List of team members</returns>
-    Task<List<UserProfile>> GetProjectTeamAsync(int projectId);
+    IAsyncEnumerable<UserProfile> GetProjectTeamAsync(int projectId);
 
     /// <summary>
     /// Deletes a task with the ID specified in the request from the project.
@@ -184,7 +184,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="projectId">Project ID</param>
     /// <returns>List of milestones</returns>
-    Task<List<Milestone>> GetMilestonesByProjectIdAsync(int projectId);
+    IAsyncEnumerable<Milestone> GetMilestonesByProjectIdAsync(int projectId);
 
     /// <summary>
     /// Updates the selected milestone changing the milestone updated state.
@@ -216,24 +216,4 @@ public interface IProjectApi
     /// <param name="status">New milestone status</param>
     /// <returns>Updated milestone</returns>
     Task UpdateMilestoneStatusAsync(int milestoneId, Status status);
-}
-
-public static class ProjectApiExtensions
-{
-    /// <summary>
-    /// Get tasks for projects
-    /// </summary>
-    /// <remarks>
-    /// Invokes <see cref="IProjectApi.GetFiltredTasksAsync"/> for each project
-    /// </remarks>
-    /// <param name="projectIds">Project IDs</param>
-    /// <returns>List of list of tasks</returns>
-    public static async Task<List<List<MyTask>>> GetTasksForProjectsAsync(this IProjectApi api, params int[] projectIds)
-    {
-        var tasks = projectIds.Select(x => api.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(x)));
-
-        var taskResults = await Task.WhenAll(tasks);
-
-        return [.. taskResults];
-    }
 }

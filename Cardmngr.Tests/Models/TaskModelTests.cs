@@ -120,7 +120,9 @@ public class TaskModelTests
 
         foreach (var prop in unupdatableProps)
         {
-            if (prop.Name == nameof(TaskModel.Subtasks) || prop.Name == nameof(TaskModel.Responsibles) || prop.Name == nameof(TaskModel.Milestone)) continue; // TODO: refactor
+            if (prop.Name == nameof(TaskModel.Subtasks) || 
+                prop.Name == nameof(TaskModel.Responsibles) || 
+                prop.Name == nameof(TaskModel.Milestone)) continue; // TODO: refactor
             Assert.Equal(prop.GetValue(copy), prop.GetValue(task));
         }
     }

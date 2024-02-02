@@ -1,6 +1,7 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using AspNetCore.Proxy;
+using Microsoft.AspNetCore.ResponseCompression;
 
 internal class Program
 {
@@ -11,9 +12,13 @@ internal class Program
         builder.Configuration.AddJsonFile("appsettings.json");
         var config = builder.Configuration;
 
-        builder.Services
-            .AddProxies()
-            .AddHttpClient();
+        builder.Services.AddProxies();
+
+        builder.Services.AddResponseCompression(opts =>
+        {
+            opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                ["application/octet-stream"]);
+        });
 
         builder.Services
             .AddHttpClient("NoCookie")

@@ -1,17 +1,16 @@
+@keyframes redFlash {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgb(226, 85, 85);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
 .h-text-area {
-    background-color: rgb(170, 30, 30);
-    border-radius: 5px;
-    animation: fadeOut 0.5s ease-in-out;
-  }
-  
-  @keyframes fadeOut {
-    0% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
+  border-radius: 5px;
+  animation: redFlash 0.4s linear;
+}

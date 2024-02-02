@@ -1,6 +1,4 @@
-﻿using Onlyoffice.Api.Common;
-
-namespace Cardmngr.Models;
+﻿namespace Cardmngr.Models;
 
 public interface IWork
 {

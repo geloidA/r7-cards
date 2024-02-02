@@ -5,6 +5,7 @@ using Cardmngr.Models;
 using Cardmngr.Pages;
 using Cardmngr.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Onlyoffice.Api.Logics;
 
 namespace Cardmngr.Tests.Component.ProjectPageTests;
@@ -14,10 +15,11 @@ public class ProjectPageTests : TestContext
     public ProjectPageTests()
     {
         JSInterop.Mode = JSRuntimeMode.Loose;
+        var projectApiMock = new Mock<IProjectApi>();
         Services
             .AddBlazoredModal()
             .AddBlazorBootstrap()
-            .AddScoped<IProjectApi, ProjectApiMock>();
+            .AddScoped(_ => projectApiMock.Object);
     }
 
     [Fact]
