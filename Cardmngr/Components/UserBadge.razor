@@ -1,5 +1,7 @@
 ﻿
-<div class="d-flex flex-column @(OnClick.HasDelegate ? "clickable" : "")" @onclick="OnClick" >
+@inherits KolComponentBase
+
+<div class="d-flex flex-column @(OnClick.HasDelegate ? "clickable" : "") @Class" style="@Style" @onclick="OnClick" >
     <Badge class="py-0" Color="BadgeColor" IndicatorType="BadgeIndicatorType.RoundedPill">
     <UserAvatar ShowName="true" Size="25" User="User" />
     </Badge>

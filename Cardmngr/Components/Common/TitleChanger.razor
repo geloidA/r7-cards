@@ -4,8 +4,8 @@
     <div class="col-md-11">
         @if (isEditMode)
         {
-            <InputText style="font-size: 20px; font-weight: 500; border: 1px solid var(--boarder-color); border-radius: 6px;" 
-                @bind-Value:get="Title" class="p-0 w-100" @bind-Value:set="SetTitle" />
+            <InputText style="font-size: 20px; font-weight: 500;" 
+                @bind-Value:get="Title" class="p-0 w-100 form-control" @bind-Value:set="SetTitle" id="Title" />
         }
         else
         {

@@ -1,38 +1,46 @@
 ﻿@inject TeamMemberSelectionDialog SelectionDialog
 @inject IProjectApi ProjectApi
-@inject ToastService ToastService
+
+@inherits ValidationComponent
 
 @using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas;
 
 @if (changingState is { })
 {
     <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right" @ref="currentModal">
-        <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
-            <TitleChanger Disabled="Disabled" @bind-Title="changingState.Title" />
-        </OffcanvasHeader>
-        <OffcanvasBody Class="d-flex flex-column">
-            <div class="mb-2" >
-                <WorkContainerDateProgress Work="changingState" />
-            </div>
-            <div class="d-flex justify-content-end">
-                <UserBadge User="changingState.Responsible"Title="Ответственный" OnClick="ShowSelectionDialog" />
-            </div>
-            <Card class="p-1 mt-3">
-                <DateChanger Title="Крайний срок" Disabled="Disabled" EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
-            </Card>
-            <DescriptionChanger Disabled="Disabled" Class="mt-2" @bind-Description="changingState.Description" />
-            <div class="mt-2">
-                <MelistoneShortTasks Milestone="Milestone" />
-            </div>
-            <div class="d-flex mt-2 flex-row">
-                <Button Loading="saving" Size="Size.Small" Disabled="Disabled" Type="ButtonType.Submit" Color="ButtonColor.Success" Outline="true" @onclick="Save" >
-                    Сохранить
-                </Button>
-                <Button class="ms-2" Size="Size.Small" Disabled="Disabled" Color="ButtonColor.Danger" @onclick="Delete" Outline="true" >
-                    Удалить
-                </Button>
-            </div>
-        </OffcanvasBody>
+        <EditForm Model="changingState" OnValidSubmit="Save" OnInvalidSubmit="NotifyInvalidInput" >
+            <DataAnnotationsValidator/>
+            <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
+                <TitleChanger Disabled="Disabled" @bind-Title="changingState.Title" />
+            </OffcanvasHeader>
+            <ValidationMessage For="() => changingState.Title" class="ms-3 validation-msg" />
+            <OffcanvasBody Class="d-flex flex-column">
+                <div class="mb-2" >
+                    <WorkContainerDateProgress Work="changingState" />
+                </div>
+                <div class="d-flex justify-content-end">
+                    <UserBadge User="changingState.Responsible"Title="Ответственный" OnClick="ShowSelectionDialog" />
+                </div>
+                <Card class="p-1 mt-3">
+                    <DateChanger Title="Крайний срок:" InputId="Deadline" Disabled="Disabled" EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
+                    <ValidationMessage For="() => changingState.Deadline" class="validation-msg" />
+                </Card>
+                <DescriptionChanger Disabled="Disabled" Class="mt-2" @bind-Description="changingState.Description" />
+                <div class="mt-4">
+                    <MelistoneShortTasks Milestone="Milestone" />
+                </div>
+                <div class="d-flex mt-2 flex-row">
+                    <Button Loading="saving" Size="Size.Small" Disabled="Disabled" Type="ButtonType.Submit" 
+                        Color="ButtonColor.Success" Outline="true" >
+                        Сохранить
+                    </Button>
+                    <Button class="ms-2" Size="Size.Small" Disabled="Disabled" Color="ButtonColor.Danger" @onclick="Delete" 
+                        Outline="true" >
+                        Удалить
+                    </Button>
+                </div>
+            </OffcanvasBody>
+        </EditForm>
     </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
 }
 
@@ -65,12 +73,6 @@
 
     private async Task Save()
     {
-        if (changingState.Deadline is null)
-        {
-            ToastService.Notify(new(ToastType.Danger, "Крайний срок должен быть указан."));
-            return;
-        }
-
         saving = true;
 
         var milestone = await ProjectApi.UpdateMilestoneAsync(Milestone.Id, changingState.GetUpdatedState());

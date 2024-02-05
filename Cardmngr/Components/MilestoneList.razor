@@ -49,7 +49,7 @@ else
 
         if (AuthenticationStateProvider is { })
         {
-            var canEdit = IsCanEdit((CookieStateProvider)AuthenticationStateProvider, milestone);
+            var canEdit = AuthenticationStateProvider.ToCookieProvider().IsCanEdit(milestone);
             var parameters = new ModalParameters
             {
                 { "Milestone", milestone },
@@ -59,16 +59,5 @@ else
             await Modal.Show<MilestoneDetailsModal>("", parameters, Options).Result;
         }
         else throw new NullReferenceException("Authentication state was null, while trying open milestone details modal");
-
-    }
-
-    private bool IsCanEdit(CookieStateProvider provider, MilestoneModel milestone)
-    {
-        var userId = provider["UserId"];
-
-        return 
-            bool.Parse(provider["IsAdmin"]) ||
-            milestone.CreatedBy?.Id == userId || 
-            milestone.Responsible?.Id == userId;
     }
 }

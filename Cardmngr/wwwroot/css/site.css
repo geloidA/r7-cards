@@ -145,3 +145,13 @@ ul {
 .my-offcanvas-left {
     border-radius: 0px 7px 7px 0px;
 }
+
+.bordered {
+    border: 1px solid var(--boarder-color); 
+    border-radius: 6px;
+}
+
+.validation-msg {
+    color: red;
+    font-size: 14px;
+}

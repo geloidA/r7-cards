@@ -41,7 +41,7 @@
 
         if (AuthenticationState is { })
         {
-            var provider = (CookieStateProvider)AuthenticationState;
+            var provider = AuthenticationState.ToCookieProvider();
             currentUser = JsonSerializer.Deserialize<Onlyoffice.Api.Models.UserProfile>(provider["Data"]);
         }
     }

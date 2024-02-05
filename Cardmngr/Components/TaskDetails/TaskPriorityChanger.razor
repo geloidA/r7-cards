@@ -1,0 +1,23 @@
+﻿
+    <div class="p-1 d-flex flex-row align-items-center" style="font-size: 15px;">
+        Приоритет -
+        @if (Task.Priority == TaskPriority.High)
+        {
+            <i class="ms-1 text-primary">Высокий</i>
+            <Icon class="ms-1" Name="IconName.ArrowUpCircleFill" Color="IconColor.Primary"/>
+        }
+        else
+        {
+            <i class="ms-1 text-secondary">Обычный</i>
+        }
+        <div class="col d-flex justify-content-end">
+            <Tool IconName="IconName.ArrowDownUp" TooltipPlacement="TooltipPlacement.Top"
+                Disabled="Disabled" TooltipTitle="Изменить" 
+                OnClick="() => Task.Priority = Task.Priority == TaskPriority.High ? TaskPriority.Regular : TaskPriority.High"/>
+        </div>
+    </div>
+
+@code {
+    [Parameter] public TaskModel Task { get; set; } = null!;
+    [Parameter] public bool Disabled { get; set; }
+}

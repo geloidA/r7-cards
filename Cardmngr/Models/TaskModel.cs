@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using Cardmngr.Models.Attributes;
 using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Models;
@@ -16,7 +17,7 @@ public class TaskModel : ModelBase, IWork
         CanDelete = task.CanDelete;
         CanReadFiles = task.CanReadFiles;
         Id = task.Id;
-        Title = task.Title;
+        Title = task.Title ?? task.Id.ToString();
         Description = task.Description;
         Priority = (TaskPriority)task.Priority;
         Milestone = statusColumn.Project.Milestones.FirstOrDefault(m => m.Id == task.MilestoneId);
@@ -66,7 +67,8 @@ public class TaskModel : ModelBase, IWork
     public int Id { get; }
 
     [Updatable]
-    public string? Title { get; set; }
+    [Required(ErrorMessage = "Название обязательно для заполнения")]
+    public string Title { get; set; }
 
     [Updatable]
     public string? Description { get; set; }
@@ -87,6 +89,7 @@ public class TaskModel : ModelBase, IWork
     public ObservableCollection<IUser> Responsibles { get; set; }
 
     [Updatable]
+    [CustomValidation(typeof(DeadlineValidation), nameof(DeadlineValidation.CheckDeadline))]
     public DateTime? Deadline { get; set; }
 
     [Updatable]

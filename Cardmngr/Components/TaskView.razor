@@ -92,7 +92,7 @@
     {        
         if (AuthenticationState is { })
         {
-            canEdit = IsCanEdit((CookieStateProvider)AuthenticationState);
+            canEdit = AuthenticationState.ToCookieProvider().IsCanEdit(Task);
 
         } else throw new NullReferenceException("Card auth state is null");
     }
@@ -105,17 +105,7 @@
             { "IsCanEdit", canEdit }
         };
 
-        await Modal.Show<CardDetailsModal>("", parameters, DetailsModal).Result;
-    }
-
-    private bool IsCanEdit(CookieStateProvider provider)
-    {
-        var userId = provider["UserId"];
-
-        return 
-            bool.Parse(provider["IsAdmin"]) ||
-            Task.CreatedBy?.Id == userId || 
-            Task.Responsibles.Any(x => x.Id == userId);
+        await Modal.Show<TaskDetailsModal>("", parameters, DetailsModal).Result;
     }
 
     private string GetDeadlineString()

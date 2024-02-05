@@ -22,7 +22,7 @@ public class TaskStatusColumn : ModelBase, IEnumerable<TaskModel>
         Id = taskStatus.Id;
         Image = taskStatus.Image;
         ImageType = taskStatus.ImageType;
-        Title = taskStatus.Title;
+        Title = taskStatus.Title ?? taskStatus.Id.ToString();
         Description = taskStatus.Description;
         Color = taskStatus.Color;
         Order = taskStatus.Order;
@@ -35,7 +35,7 @@ public class TaskStatusColumn : ModelBase, IEnumerable<TaskModel>
     public int Id { get; }
     public string? Image { get; }
     public string? ImageType { get; }
-    public string? Title { get; }
+    public string Title { get; }
     public string? Description { get; }
     public string? Color { get; }
     public int Order { get; }

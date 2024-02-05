@@ -4,7 +4,7 @@
 @if (OnClick.HasDelegate)
 {
     <div style="max-width: 135px;" @onclick:stopPropagation @ondblclick:stopPropagation >
-        @if (Milestone.Title!.Length > 20)
+        @if (Milestone.Title.Length > 20)
         {
             <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Bottom">
                 @Badge
@@ -18,7 +18,7 @@
 }
 else
 {
-    @if (Milestone.Title!.Length > 20)
+    @if (Milestone.Title.Length > 20)
     {
         <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Bottom">
             @Badge

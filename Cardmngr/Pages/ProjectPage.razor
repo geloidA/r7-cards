@@ -3,7 +3,6 @@
 @implements IDisposable
 
 @using Onlyoffice.Api.Models
-@using KolBlazor.Components.Timeline
 @using Task = System.Threading.Tasks.Task
 
 @inherits AuthorizedPage
@@ -11,34 +10,10 @@
 @inject IProjectApi ProjectApi
 
 <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
-    <div class="row mb-2" style="margin-left: 20px;">
-        <div class="col-md-11 d-flex flex-column overflow-scroll scrollbar-none" >            
-            <div class="timeline-animation scrollbar-none" style=@($"width: {@timelineScale}px;")>
-                <KolTimeline ShowTodayLine="true" Class="scrollbar-none" >
-                    @if (model is { })
-                    {
-                        foreach (var milestone in model.Milestones)
-                        {
-                            <KolTimelineItem @key="milestone.Id" End="milestone.CheckDeadline()" Start="milestone.CheckStart()">
-                                <TimelineMilestone Milestone="milestone" />
-                            </KolTimelineItem>
-                        }
-                    }
-                </KolTimeline>
-            </div>
-        </div>
-        <div class="col-md-1 align-self-center d-flex justify-content-end">
-            <div class="row">
-                <div class="col">
-                    <KolScaleSwitcher MinValue="1685" MaxValue="5000" Step="500" @bind-CurrentValue="timelineScale" />
-                </div>
-                <div class="col d-flex justify-content-center">
-                    <Tool IconName="IconName.List" IconSize="IconSize.x5" Text="Меню"
-                        OnClick="ShowMenu" />
-                </div>
-            </div>
-        </div>
-    </div>
+    @if (model is { })
+    {
+        <ProjectMilestones Project="model" Style="margin-left: 20px;" Class="mb-2" />
+    }
     <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
         @if (model is { })
         {
@@ -50,14 +25,10 @@
 </div>
 
 @code {
-    private int timelineScale;
     private ProjectModel? model;
 
     [Parameter] public int? ProjectId { get; set; }
     [CascadingParameter] HeaderTitle HeaderTitle { get; set; } = null!;
-
-    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
-    [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -82,11 +53,6 @@
             @title
         </div>;
 
-    private async Task ShowMenu()
-    {
-        await Modal.Show<ProjectDetailsModal>("", new ModalParameters { { "ProjectModel", model! } }, Options).Result;
-    }
-    
     private void Refresh() => StateHasChanged();
 
     public void Dispose()

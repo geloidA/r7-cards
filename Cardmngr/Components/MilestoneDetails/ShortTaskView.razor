@@ -1,5 +1,6 @@
-﻿
-<div class="short-task w-100 h-100">
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="short-task w-100 h-100 clickable" @onclick="ShowTaskDetails" >
     <div class="info-container">
         <div class="d-flex w-100 h-100">
             @if(Task.Responsibles.Any())
@@ -40,8 +41,21 @@
 </div>
 
 @code {
+    private bool canEdit;
+
+    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
+    [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     [Parameter, EditorRequired] public TaskModel Task { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        if (AuthenticationStateProvider is { })
+        {
+            canEdit = AuthenticationStateProvider.ToCookieProvider().IsCanEdit(Task);
+        } 
+        else throw new NullReferenceException("Authentication state is null");
+    }
 
     private string CompleteProgress
     {
@@ -52,5 +66,16 @@
             var completeProcentage = (Task.Subtasks.Count(x => x.Status == Status.Closed) * 100.0) / Task.Subtasks.Count;
             return $"width: {completeProcentage}%;";
         }
+    }
+
+    private async Task ShowTaskDetails()
+    {
+        var paramerters = new ModalParameters
+        {
+            { "Task", Task },
+            { "IsCanEdit", canEdit }
+        };
+
+        await Modal.Show<TaskDetailsModal>("", paramerters, Options).Result;
     }
 }

@@ -2,7 +2,3 @@
     background-color: var(--boarder-color);
     border-radius: 10px;
 }
-
-.timeline-animation {
-    transition: width 0.3s ease;
-}

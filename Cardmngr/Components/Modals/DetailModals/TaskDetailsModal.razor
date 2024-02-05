@@ -1,0 +1,97 @@
+﻿@inject IProjectApi ProjectApi
+
+@inherits ValidationComponent
+
+@using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas
+
+@if (changingState is { })
+{
+    <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right" @ref="currentModal">
+        <EditForm Model="changingState" OnValidSubmit="ConfirmSaving" OnInvalidSubmit="NotifyInvalidInput">
+            <DataAnnotationsValidator/>
+            <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
+                <TitleChanger @bind-Title="changingState.Title" Disabled="!IsCanEdit" />
+            </OffcanvasHeader>
+            <ValidationMessage For="() => changingState.Title" class="ms-3 validation-msg" />
+            <OffcanvasBody Class="d-flex flex-column form-group">
+                <TaskPriorityChanger Task="changingState" Disabled="!IsCanEdit" />
+                <Card class="p-1 mt-2">
+                    <DateChanger Title="Дата начала:" Disabled="!IsCanEdit" 
+                        EmptyText="Не установлен" @bind-Date="changingState.StartDate" />
+                </Card>
+                <Card class="p-1 mt-2">
+                    <DateChanger Title="Крайний срок" InputId="Deadline" Disabled="!IsCanEdit" 
+                        EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
+                    <ValidationMessage For="() => changingState.Deadline" class="validation-msg" />
+                </Card>
+                <div class="pt-2">
+                    <DescriptionChanger @bind-Description="changingState.Description" Disabled="!IsCanEdit" />
+                </div>
+                <div class="pb-2 pt-2">                 
+                    <TaskResponsibles Task="changingState" Disabled="!IsCanEdit" />
+                </div>
+                <div class="pb-2">
+                    <TaskMilestone Task="changingState" Disabled="!IsCanEdit" />
+                </div>
+                <TaskSubtasks Task="changingState" Disabled="!IsCanEdit" />
+                <div class="row pt-2 d-flex justify-content-end">
+                    <div class="d-flex flex-row">
+                        <Button Loading="saveLoading" Type="ButtonType.Submit" Size="Size.Small" Color="ButtonColor.Success" Outline="true"
+                            Disabled="!IsCanEdit" >
+                            Сохранить
+                        </Button>
+                        <Button class="ms-2" Size="Size.Small" @onclick="ShowDeleteConfirmModal" Color="ButtonColor.Danger" Outline="true"
+                            Disabled="!IsCanEdit" >
+                            Удалить
+                        </Button>
+                    </div>
+                </div>
+            </OffcanvasBody>
+        </EditForm>
+    </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
+}
+
+@code {
+    private bool saveLoading;
+    private Offcanvas currentModal = null!;
+    private TaskModel? changingState;
+
+    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
+    [CascadingParameter] IModalService Modal { get; set; } = default!;
+
+    [Parameter] public TaskModel Task { get; set; } = null!;
+    [Parameter] public bool IsCanEdit { get; set; }
+
+    protected override void OnInitialized()
+    {
+        changingState = Task.Clone(false);
+    }
+
+    private async Task ConfirmSaving()
+    {
+        saveLoading = true;
+
+        var updatedTask = await ProjectApi.UpdateTaskAsync(changingState!.Id, changingState.GetUpdateState());
+        Task.Update(updatedTask);
+
+        await currentModal.CloseAsync(ModalResult.Ok());
+    }
+
+    private async Task ShowDeleteConfirmModal()
+    {
+        var parameters = new ModalParameters
+        {
+            { "AdditionalText", "Действие необратимо. Вы действительно хотите удалить задачу?"}
+        };
+
+        var result = await Modal.Show<DefaultConfirmModal>("Удаление", parameters, ModalOptions).Result;
+
+        if (result.Confirmed)
+        {
+            await ProjectApi.DeleteTaskAsync(Task.Id);
+            Task.StatusColumn.Remove(Task);
+
+            await currentModal.CloseAsync(ModalResult.Ok());
+        }
+    }
+}

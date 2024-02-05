@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using Cardmngr.Models;
 using Cardmngr.Models.Attributes;
 using Onlyoffice.Api.Common;
@@ -10,18 +11,19 @@ public class MilestoneModel : ModelBase, IWorkContainer
 {
     public int Id { get; }
     [Updatable]
-    public string? Title { get; set; }
+    [Required(ErrorMessage = "Название обязательное для заполнения")]
+    public string Title { get; set; }
     [Updatable]
     public string? Description { get; set; }
     public ProjectModel Project { get; }
     [Updatable]
+    [Required(ErrorMessage = "Крайний срок обязательный для заполнения")]
     public DateTime? Deadline { get; set; }
     [Updatable]
     public bool IsKey { get; set; }
     [Updatable]
     public bool IsNotify { get; set; }
 
-    [Updatable]
     public Status Status { get; set; }
     [Updatable]
     public IUser? Responsible { get; set; }
@@ -35,6 +37,8 @@ public class MilestoneModel : ModelBase, IWorkContainer
         ArgumentNullException.ThrowIfNull(milestone);
 
         UpdateProperties(milestone);
+
+        GetMilestoneStatus(milestone.Status);
 
         Project.OnModelChanged();
     }
@@ -54,13 +58,13 @@ public class MilestoneModel : ModelBase, IWorkContainer
     public MilestoneModel(Milestone milestone, ProjectModel project)
     {
         Id = milestone.Id;
-        Title = milestone.Title;
+        Title = milestone.Title ?? milestone.Id.ToString();
         Description = milestone.Description;
         Project = project;
         Deadline = milestone.Deadline ?? throw new ArgumentNullException("Milestone deadline cannot be null");
         IsKey = milestone.IsKey;
         IsNotify = milestone.IsNotify;
-        Status = milestone.Status == 0 ? Status.Open : Status.Closed;
+        Status = GetMilestoneStatus(milestone.Status);
         Responsible = milestone.Responsible != null ? new User(milestone.Responsible) : null;
         Created = milestone.Created;
         CreatedBy = milestone.CreatedBy != null ? new User(milestone.CreatedBy) : null;
@@ -96,4 +100,6 @@ public class MilestoneModel : ModelBase, IWorkContainer
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public bool IsClosed() => Status == Status.Closed;
+
+    private static Status GetMilestoneStatus(int status) => status == 0 ? Status.Open : Status.Closed;
 }

@@ -10,7 +10,7 @@ public class SubtaskModel : ModelBase
         CanEdit = subtask.CanEdit;
         TaskId = subtask.TaskId;
         Id = subtask.Id;
-        Title = subtask.Title;
+        Title = subtask.Title ?? subtask.Id.ToString();
         Description = subtask.Description;
         Status = (Status)subtask.Status;
         Created = subtask.Created;
@@ -34,7 +34,7 @@ public class SubtaskModel : ModelBase
     public bool CanEdit { get; }
     public int TaskId { get; }
     public int Id { get; }
-    public string? Title { get; set; }
+    public string Title { get; set; }
     public string? Description { get; set; }
     public Status Status { get; set; }
     public IUser? Responsible { get; set; }

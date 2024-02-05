@@ -1,0 +1,48 @@
+﻿@inject KolTimelineJsInterop TimelineInterop
+
+@inherits KolComponentBase
+@implements IAsyncDisposable
+
+<div class="row @Class" style="@Style">
+    <div @ref="element" class="col-md-11 d-flex flex-column overflow-scroll scrollbar-none" >
+        <MilestoneTimeline Style=@($"width: {@timelineScale}px;") Milestones="Project.Milestones" />
+    </div>
+    <div class="col-md-1 align-self-center d-flex justify-content-end">
+        <div class="row">
+            <div class="col">
+                <KolScaleSwitcher MinValue="1685" MaxValue="5000" Step="500" @bind-CurrentValue="timelineScale" />
+            </div>
+            <div class="col d-flex justify-content-center">
+                <Tool IconName="IconName.List" IconSize="IconSize.x5" Text="Меню"
+                    OnClick="ShowMenu" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int timelineScale;
+    private ElementReference element;
+
+    [Parameter] public ProjectModel Project { get; set; } = null!;
+    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
+    [CascadingParameter] IModalService Modal { get; set; } = null!;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await TimelineInterop.RegisterScrollHandler(element);
+        }
+    }
+
+    private async Task ShowMenu()
+    {
+        await Modal.Show<ProjectDetailsModal>("", new ModalParameters { { "ProjectModel", Project } }, Options).Result;
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        return TimelineInterop.DisposeAsync();
+    }
+}

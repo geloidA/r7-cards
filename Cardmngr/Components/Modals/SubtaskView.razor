@@ -121,7 +121,7 @@
 
     private async Task UpdateSubtaskAsync()
     {
-        subtaskTitle = string.IsNullOrEmpty(subtaskTitle) ? Subtask.Title! : subtaskTitle;
+        subtaskTitle = string.IsNullOrEmpty(subtaskTitle) ? Subtask.Title : subtaskTitle;
         Subtask.Title = subtaskTitle;
         await ProjectApi.UpdateSubtaskAsync(Subtask.TaskId, Subtask.Id, Subtask.GetUpdatedState());
     }

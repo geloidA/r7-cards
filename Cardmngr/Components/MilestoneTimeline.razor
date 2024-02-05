@@ -1,0 +1,21 @@
+﻿@using KolBlazor.Components.Timeline
+
+@inherits KolComponentBase
+
+<div class="timeline-animation scrollbar-none" style="@Style">
+    <KolTimeline ShowTodayLine="true" Class="scrollbar-none" >
+        @if (Milestones is { })
+        {
+            foreach (var milestone in Milestones)
+            {
+                <KolTimelineItem @key="milestone.Id" End="milestone.CheckDeadline()" Start="milestone.CheckStart()">
+                    <TimelineMilestone Milestone="milestone" />
+                </KolTimelineItem>
+            }
+        }
+    </KolTimeline>
+</div>
+
+@code {
+    [Parameter] public MilestoneTimelineModel Milestones { get; set; } = null!;
+}

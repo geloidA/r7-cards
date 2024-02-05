@@ -15,4 +15,6 @@ public static class AuthenticationStateProviderExtensions
 
         return null;
     }
+
+    public static CookieStateProvider ToCookieProvider(this AuthenticationStateProvider provider) => (CookieStateProvider)provider;
 }

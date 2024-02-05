@@ -24,25 +24,16 @@
     {
         if (AuthenticationState is { })
         {
-            canEdit = IsCanEdit((CookieStateProvider)AuthenticationState);
+            canEdit = AuthenticationState.ToCookieProvider().IsCanEdit(Milestone);
 
         } else throw new NullReferenceException("Card auth state is null");
-    }
-
-    private bool IsCanEdit(CookieStateProvider provider)
-    {
-        var userId = provider["UserId"];
-
-        return bool.Parse(provider["IsAdmin"]) ||
-            Milestone.CreatedBy?.Id == userId || 
-            Milestone.Responsible?.Id == userId;
     }
 
     private BadgeColor BadgeColor
     {
         get
         {
-            if (Milestone.Status == Status.Closed) return BadgeColor.Success;
+            if (Milestone.IsClosed()) return BadgeColor.Success;
             return Milestone.IsDeadlineOut() ? BadgeColor.Secondary : BadgeColor.Warning;
         }
     }

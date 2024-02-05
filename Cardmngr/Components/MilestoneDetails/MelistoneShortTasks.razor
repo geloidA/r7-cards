@@ -10,6 +10,10 @@
             }
         </CardBody>
         <CardFooter class="d-flex justify-content-end bg-main">
+            <h6 class="col">
+                <Icon Name="IconName.UiChecks" />
+                Задачи
+            </h6>
             <span>@($"{Milestone.ClosedWorkCount()} / {Milestone.Tasks.Count()}")</span>
             <Icon class="ms-2" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
         </CardFooter>

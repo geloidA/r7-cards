@@ -10,15 +10,20 @@
         </a>
     </OffcanvasHeader>
     <OffcanvasBody Class="d-flex flex-column">
-        <div class="container h-100">
-            <CardTitle class="ms-1"><h6>Мои проекты</h6></CardTitle>
-            <Card class="bg-shadow h-75 p-1 overflow-auto" >
-                <CardBody>
+        <div class="container h-100">            
+            <Card class="bg-shadow" >
+                <CardTitle>
+                    <h6>
+                        <Icon Name="IconName.JournalBookmarkFill" />
+                        Мои проекты
+                    </h6>
+                </CardTitle>
+                <CardBody class="p-1 overflow-auto" style="max-height: 600px;">
                     @if (UserProjects is { } && UserProjects.Any())
                     {
                         @foreach (var proj in UserProjects)
                         {
-                            <div class="p-1">
+                            <div class="py-1">
                                 <ProjectReference Project="proj" />
                             </div>
                         }
@@ -54,8 +59,7 @@
     {
         if (AuthenticationState is { })
         {            
-            var provider = (CookieStateProvider)AuthenticationState;
-            provider.ClearAuthInfo();
+            AuthenticationState.ToCookieProvider().ClearAuthInfo();
             await LocalStorage.RemoveItemAsync("isauthenticated");
             NavigationManager.NavigateTo("login");
         }
