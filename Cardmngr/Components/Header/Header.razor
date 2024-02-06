@@ -16,12 +16,10 @@
     </div>
     <div class="col-md-2 d-flex justify-content-end">
         <Toolbar />
-        <div class="ms-3">
-            @if (currentUser is { })
-            {
-                <ProfileTool UserProfile="currentUser" />
-            }
-        </div>
+        @if (currentUser is { })
+        {
+            <ProfileTool Class="ms-3" UserProfile="currentUser" />
+        }
     </div>
 </div>
 

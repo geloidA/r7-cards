@@ -14,7 +14,7 @@
                 @foreach (var subtask in Task.Subtasks)
                 {
                     <SubtaskView Subtask="subtask" Task="Task" EditModeChanged="next => lastEditingSubtask = next" 
-                        CanEdit="!Disabled" @key="subtask.Id" />
+                        @key="subtask.Id" />
                 }
             </CascadingValue>
         }
@@ -25,7 +25,7 @@
     </CardBody>
     <CardFooter class="d-flex justify-content-end bg-main">
         <Tool IconName="IconName.Plus" IconSize="IconSize.x5" TooltipTitle="Добавить"
-            Disabled="Disabled || Task.StatusColumn.StatusType == Status.Closed" @onclick="ShowCreationModal" />
+            Disabled="!Task.CanEdit || Task.StatusColumn.StatusType == Status.Closed" @onclick="ShowCreationModal" />
     </CardFooter>
 </Card>
 
@@ -37,7 +37,6 @@
     [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
     [CascadingParameter] IModalService Modal { get; set; } = default!;
     [Parameter] public TaskModel Task { get; set; } = null!;
-    [Parameter] public bool Disabled { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

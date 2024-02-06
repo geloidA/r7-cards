@@ -69,6 +69,8 @@ public class MilestoneModel : ModelBase, IWorkContainer
         Created = milestone.Created;
         CreatedBy = milestone.CreatedBy != null ? new User(milestone.CreatedBy) : null;
         Updated = milestone.Updated;
+        CanEdit = milestone.CanEdit;
+        CanDelete = milestone.CanDelete;
     }
 
     private MilestoneModel(MilestoneModel source)
@@ -85,6 +87,8 @@ public class MilestoneModel : ModelBase, IWorkContainer
         Created = source.Created;
         CreatedBy = source.CreatedBy != null ? new User(source.CreatedBy) : null;;
         Updated = source.Updated;
+        CanEdit = source.CanEdit;
+        CanDelete = source.CanDelete;
     }
 
     public MilestoneModel Clone() => new(this);

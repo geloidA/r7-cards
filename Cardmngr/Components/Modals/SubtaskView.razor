@@ -6,7 +6,7 @@
         {
             <Tool IconName="IconName.ClockFill" IconColor="IconColor.Info" 
                 IconSize="IconSize.x5" TooltipPlacement="TooltipPlacement.Left"
-                TooltipTitle="Отметить выполненым" Disabled="isDisableChangeStatus"
+                TooltipTitle="Отметить выполненым" Disabled="!Subtask.CanEdit"
                 OnClick="SwitchSubtaskStatus" />
             @if (isEditMode)
             {
@@ -21,7 +21,7 @@
         {
             <Tool IconName="IconName.CheckCircleFill" IconColor="IconColor.Success" 
                 IconSize="IconSize.x5" TooltipPlacement="TooltipPlacement.Left"
-                TooltipTitle="Отметить невыполненым" Disabled="Task.StatusColumn.StatusType == Status.Closed || isDisableChangeStatus"
+                TooltipTitle="Отметить невыполненым" Disabled="Task.StatusColumn.StatusType == Status.Closed || !Subtask.CanEdit"
                 OnClick="SwitchSubtaskStatus" DisabledTitle="@(Task.StatusColumn.StatusType == Status.Closed ? "Задача закрыта" : "Недоступно")"/>
             <s class="ms-2 text-secondary">
                 <i>@Subtask.Title</i>
@@ -32,7 +32,7 @@
         <ResponsibleSelection @bind-Responsible="Subtask.Responsible" EditMode="isEditMode" Responsibles="Task.ProjectOwner.Team" />
     </div>
     <div class="col-md-2 d-flex justify-content-end">
-        @if (Subtask.Status != Status.Closed && CanEdit)
+        @if (Subtask.Status != Status.Closed && Subtask.CanEdit)
         {
             @if (isEditMode)
             {
@@ -59,7 +59,7 @@
             }
         }
         
-        @if (Subtask.Status == Status.Closed && CanEdit)
+        @if (Subtask.Status == Status.Closed && Subtask.CanEdit)
         {
             <Tool IconName="IconName.X" IconColor="IconColor.Danger" TooltipTitle="Удалить" 
                 OnClick="DeleteSubtask" />
@@ -69,13 +69,11 @@
 
 @code {
     private bool isEditMode;
-    private bool isDisableChangeStatus;
     private string subtaskTitle = null!;
 
     [CascadingParameter] SubtaskView? LastEditingSubtask { get; set; }
     [Parameter] public SubtaskModel Subtask { get; set; } = null!;
     [Parameter] public TaskModel Task { get; set; } = null!;
-    [Parameter] public bool CanEdit { get; set; }
     [Parameter] public string UserId { get; set; } = null!;
 
     [Parameter] public EventCallback<SubtaskView> EditModeChanged { get; set; }
@@ -83,7 +81,6 @@
     protected override void OnInitialized()
     {
         subtaskTitle = Subtask.Title!;
-        isDisableChangeStatus = UserId != Subtask.Responsible?.Id && !CanEdit;
     }
 
     private async Task SwitchSubtaskStatus()

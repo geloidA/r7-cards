@@ -13,21 +13,11 @@
 </div>
 
 @code {
-    private bool canEdit;
     private string CssSelected => Milestone.IsSelected ? "selected" : "";
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
     [Parameter] public MilestoneModel Milestone { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        if (AuthenticationState is { })
-        {
-            canEdit = AuthenticationState.ToCookieProvider().IsCanEdit(Milestone);
-
-        } else throw new NullReferenceException("Card auth state is null");
-    }
 
     private BadgeColor BadgeColor
     {
@@ -47,8 +37,7 @@
     {
         var paramerters = new ModalParameters
         {
-            { "Milestone", Milestone },
-            { "Disabled", !canEdit }
+            { "Milestone", Milestone }
         };
 
         await Modal.Show<MilestoneDetailsModal>("", paramerters, Options).Result;

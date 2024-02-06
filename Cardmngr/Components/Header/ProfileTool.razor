@@ -1,0 +1,12 @@
+﻿@inherits KolComponentBase
+
+@if (UserProfile is { })
+{
+    <div class="@Class" style="@Style">
+        <UserAvatar User="UserProfile" ShowTooltip="true" />
+    </div>
+}
+
+@code {
+    [Parameter] public Onlyoffice.Api.Models.UserProfile UserProfile { get; set; } = null!;
+}

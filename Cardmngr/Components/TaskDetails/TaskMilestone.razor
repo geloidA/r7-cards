@@ -7,10 +7,10 @@
                     Веха
                 </div>
                 <div class="col d-flex justify-content-end">
-                    <Tool Disabled="Disabled" IconName="IconName.Pencil" IconSize="IconSize.x6"
+                    <Tool Disabled="!Task.CanEdit" IconName="IconName.Pencil" IconSize="IconSize.x6"
                         TooltipTitle="Изменить" OnClick="ShowSelectionModalAsync" />
                     <div class="ms-3">
-                        <Tool Disabled="Disabled || Task.Milestone == null" IconName="IconName.X" IconSize="IconSize.x6"
+                        <Tool Disabled="!Task.CanEdit || Task.Milestone == null" IconName="IconName.X" IconSize="IconSize.x6"
                             TooltipTitle="Удалить" OnClick="DeleteMilestone" />
                     </div>
                 </div>
@@ -35,8 +35,6 @@
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     [Parameter] public TaskModel Task { get; set; } = null!;
-
-    [Parameter] public bool Disabled { get; set; }
 
     private async Task ShowSelectionModalAsync()
     {

@@ -10,38 +10,38 @@
         <EditForm Model="changingState" OnValidSubmit="ConfirmSaving" OnInvalidSubmit="NotifyInvalidInput">
             <DataAnnotationsValidator/>
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
-                <TitleChanger @bind-Title="changingState.Title" Disabled="!IsCanEdit" />
+                <TitleChanger @bind-Title="changingState.Title" Disabled="!Task.CanEdit" />
             </OffcanvasHeader>
             <ValidationMessage For="() => changingState.Title" class="ms-3 validation-msg" />
             <OffcanvasBody Class="d-flex flex-column form-group">
-                <TaskPriorityChanger Task="changingState" Disabled="!IsCanEdit" />
+                <TaskPriorityChanger Task="changingState" />
                 <Card class="p-1 mt-2">
-                    <DateChanger Title="Дата начала:" Disabled="!IsCanEdit" 
+                    <DateChanger Title="Дата начала:" Disabled="!Task.CanEdit" 
                         EmptyText="Не установлен" @bind-Date="changingState.StartDate" />
                 </Card>
                 <Card class="p-1 mt-2">
-                    <DateChanger Title="Крайний срок" InputId="Deadline" Disabled="!IsCanEdit" 
+                    <DateChanger Title="Крайний срок" InputId="Deadline" Disabled="!Task.CanEdit" 
                         EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
                     <ValidationMessage For="() => changingState.Deadline" class="validation-msg" />
                 </Card>
                 <div class="pt-2">
-                    <DescriptionChanger @bind-Description="changingState.Description" Disabled="!IsCanEdit" />
+                    <DescriptionChanger @bind-Description="changingState.Description" Disabled="!Task.CanEdit" />
                 </div>
                 <div class="pb-2 pt-2">                 
-                    <TaskResponsibles Task="changingState" Disabled="!IsCanEdit" />
+                    <TaskResponsibles Task="changingState" />
                 </div>
                 <div class="pb-2">
-                    <TaskMilestone Task="changingState" Disabled="!IsCanEdit" />
+                    <TaskMilestone Task="changingState" />
                 </div>
-                <TaskSubtasks Task="changingState" Disabled="!IsCanEdit" />
+                <TaskSubtasks Task="changingState" />
                 <div class="row pt-2 d-flex justify-content-end">
                     <div class="d-flex flex-row">
                         <Button Loading="saveLoading" Type="ButtonType.Submit" Size="Size.Small" Color="ButtonColor.Success" Outline="true"
-                            Disabled="!IsCanEdit" >
+                            Disabled="!Task.CanEdit" >
                             Сохранить
                         </Button>
                         <Button class="ms-2" Size="Size.Small" @onclick="ShowDeleteConfirmModal" Color="ButtonColor.Danger" Outline="true"
-                            Disabled="!IsCanEdit" >
+                            Disabled="!Task.CanDelete" >
                             Удалить
                         </Button>
                     </div>
@@ -60,7 +60,6 @@
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
     [Parameter] public TaskModel Task { get; set; } = null!;
-    [Parameter] public bool IsCanEdit { get; set; }
 
     protected override void OnInitialized()
     {

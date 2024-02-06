@@ -11,7 +11,7 @@
         <EditForm Model="changingState" OnValidSubmit="Save" OnInvalidSubmit="NotifyInvalidInput" >
             <DataAnnotationsValidator/>
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
-                <TitleChanger Disabled="Disabled" @bind-Title="changingState.Title" />
+                <TitleChanger Disabled="!Milestone.CanEdit" @bind-Title="changingState.Title" />
             </OffcanvasHeader>
             <ValidationMessage For="() => changingState.Title" class="ms-3 validation-msg" />
             <OffcanvasBody Class="d-flex flex-column">
@@ -19,22 +19,22 @@
                     <WorkContainerDateProgress Work="changingState" />
                 </div>
                 <div class="d-flex justify-content-end">
-                    <UserBadge User="changingState.Responsible"Title="Ответственный" OnClick="ShowSelectionDialog" />
+                    <UserBadge User="changingState.Responsible"Title="Ответственный" OnClick="ShowResponsibleSelectionDialog" />
                 </div>
                 <Card class="p-1 mt-3">
-                    <DateChanger Title="Крайний срок:" InputId="Deadline" Disabled="Disabled" EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
+                    <DateChanger Title="Крайний срок:" InputId="Deadline" Disabled="!Milestone.CanEdit" EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
                     <ValidationMessage For="() => changingState.Deadline" class="validation-msg" />
                 </Card>
-                <DescriptionChanger Disabled="Disabled" Class="mt-2" @bind-Description="changingState.Description" />
+                <DescriptionChanger Disabled="!Milestone.CanEdit" Class="mt-2" @bind-Description="changingState.Description" />
                 <div class="mt-4">
                     <MelistoneShortTasks Milestone="Milestone" />
                 </div>
                 <div class="d-flex mt-2 flex-row">
-                    <Button Loading="saving" Size="Size.Small" Disabled="Disabled" Type="ButtonType.Submit" 
+                    <Button Loading="saving" Size="Size.Small" Disabled="!Milestone.CanEdit" Type="ButtonType.Submit" 
                         Color="ButtonColor.Success" Outline="true" >
                         Сохранить
                     </Button>
-                    <Button class="ms-2" Size="Size.Small" Disabled="Disabled" Color="ButtonColor.Danger" @onclick="Delete" 
+                    <Button class="ms-2" Size="Size.Small" Disabled="!Milestone.CanDelete" Color="ButtonColor.Danger" @onclick="Delete" 
                         Outline="true" >
                         Удалить
                     </Button>
@@ -53,16 +53,15 @@
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     [Parameter] public MilestoneModel Milestone { get; set; } = null!;
-    [Parameter] public bool Disabled { get; set; }
 
     protected override void OnInitialized()
     {
         changingState = Milestone.Clone();
     }
 
-    private async Task ShowSelectionDialog()
+    private async Task ShowResponsibleSelectionDialog()
     {
-        if (Disabled) return;
+        if (!Milestone.CanDelete) return;
         var selected = await SelectionDialog.ShowAsync(Milestone.Project.Team, ModalOptions);
 
         if (selected is { })

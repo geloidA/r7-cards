@@ -41,21 +41,10 @@
 </div>
 
 @code {
-    private bool canEdit;
-
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     [Parameter, EditorRequired] public TaskModel Task { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        if (AuthenticationStateProvider is { })
-        {
-            canEdit = AuthenticationStateProvider.ToCookieProvider().IsCanEdit(Task);
-        } 
-        else throw new NullReferenceException("Authentication state is null");
-    }
 
     private string CompleteProgress
     {
@@ -72,8 +61,7 @@
     {
         var paramerters = new ModalParameters
         {
-            { "Task", Task },
-            { "IsCanEdit", canEdit }
+            { "Task", Task }
         };
 
         await Modal.Show<TaskDetailsModal>("", paramerters, Options).Result;

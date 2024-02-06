@@ -3,6 +3,7 @@ using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Models;
 
+#warning Doen't have CanDelete property
 public class SubtaskModel : ModelBase
 {
     public SubtaskModel(Subtask subtask)
@@ -30,8 +31,7 @@ public class SubtaskModel : ModelBase
         Created = source.Created;
         CreatedBy = source.CreatedBy;
     }
-
-    public bool CanEdit { get; }
+    
     public int TaskId { get; }
     public int Id { get; }
     public string Title { get; set; }

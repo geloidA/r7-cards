@@ -18,6 +18,7 @@ public class Project
     public int Status { get; set; }
     public Responsible? Responsible { get; set; }
     public bool CanEdit { get; set; }
+    public bool CanDelete { get; set; }
     public bool IsPrivate { get; set; }
     public DateTime Updated { get; set; }
     public CreatedBy? CreatedBy { get; set; }

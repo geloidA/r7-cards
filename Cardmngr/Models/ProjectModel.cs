@@ -30,6 +30,7 @@ public class ProjectModel : ModelBase, IWorkContainer
         Updated = project.Updated;
         CreatedBy = new User(project.CreatedBy!);
         Created = project.Created;
+        CanDelete = project.CanDelete;
     }
 
     public int Id { get; }
@@ -37,7 +38,6 @@ public class ProjectModel : ModelBase, IWorkContainer
     public string? Description { get; set; } 
     public ProjectStatus Status { get; set; }
     public IUser Responsible { get; set; } 
-    public bool CanEdit { get; } 
     public bool IsPrivate { get; set; }
     
     public IEnumerable<IUser> Team

@@ -47,17 +47,11 @@ else
     {
         if (!ShowMilestoneModal) return;
 
-        if (AuthenticationStateProvider is { })
+        var parameters = new ModalParameters
         {
-            var canEdit = AuthenticationStateProvider.ToCookieProvider().IsCanEdit(milestone);
-            var parameters = new ModalParameters
-            {
-                { "Milestone", milestone },
-                { "Disabled", !canEdit }
-            };
+            { "Milestone", milestone },
+        };
 
-            await Modal.Show<MilestoneDetailsModal>("", parameters, Options).Result;
-        }
-        else throw new NullReferenceException("Authentication state was null, while trying open milestone details modal");
+        await Modal.Show<MilestoneDetailsModal>("", parameters, Options).Result;
     }
 }

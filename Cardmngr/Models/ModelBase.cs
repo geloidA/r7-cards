@@ -14,6 +14,12 @@ public abstract class ModelBase
     [Updatable]
     public DateTime Updated { get; protected set;}
 
+    [Updatable]
+    public bool CanEdit { get; protected set; }
+
+    [Updatable]
+    public bool CanDelete { get; protected set; }
+
     /// <summary>
     /// Update properties that marked with <see cref="UpdatableAttribute"/>
     /// </summary>

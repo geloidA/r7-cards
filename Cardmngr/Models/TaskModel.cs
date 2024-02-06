@@ -59,10 +59,8 @@ public class TaskModel : ModelBase, IWork
     }
 
     #region Properties
-    public bool CanEdit { get; }
     public bool CanCreateSubtask { get; }
     public bool CanCreateTimeSpend { get; }
-    public bool CanDelete { get; }
     public bool CanReadFiles { get; }
     public int Id { get; }
 

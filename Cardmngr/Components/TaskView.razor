@@ -4,7 +4,7 @@
 @inject IProjectApi ProjectApi
 @inject AuthenticationStateProvider AuthenticationState
 
-<li class="my-card @CssDragStart @CssDeadline" @onclick="OpenModal" draggable="@canEdit.ToString()"
+<li class="my-card @CssDragStart @CssDeadline" @onclick="OpenModal" draggable="@Task.CanEdit.ToString()"
     @ondragstart="OnDragStart" @ondragend="() => isDragged = false" >
     <div class="container py-1 px-4 default-text" style="min-height: 100px;">
         <div class="row py-1">
@@ -74,7 +74,6 @@
 </li>
 
 @code {
-    private bool canEdit;
     
     [CascadingParameter(Name = "DetailsModal")]
     private ModalOptions DetailsModal { get; set; } = null!;
@@ -88,21 +87,11 @@
     private bool isDragged;
     [Parameter] public TaskModel Task { get; set; } = null!;
 
-    protected override void OnInitialized()
-    {        
-        if (AuthenticationState is { })
-        {
-            canEdit = AuthenticationState.ToCookieProvider().IsCanEdit(Task);
-
-        } else throw new NullReferenceException("Card auth state is null");
-    }
-
     private async Task OpenModal()
     {
         var parameters = new ModalParameters
         {
             { "Task", Task },
-            { "IsCanEdit", canEdit }
         };
 
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsModal).Result;

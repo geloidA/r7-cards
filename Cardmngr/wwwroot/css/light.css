@@ -4,9 +4,11 @@
     --main-board-bg: #ffffff;
     --main-board-bg-dark: #303436;
     --main-board-bg-light: #667a8d;
-    --col-title-color: #2a2f35;
-    --boarder-color: #75868a;
-    --main-col-bg: #f6f8fa;
+    --col-title-color: #000000;
+    --boarder-color: #a1bcc2;
+    --main-col-bg: #e5f8e0;
+    --main-card-bg: #e5fffc;
+    --main-responsibles-bg: #dff8f5;
     --highlight-col: #441f1f;
-    --drop-highlight-col: #ecd052;
+    --drop-highlight-col: #b13b6c;
 }
