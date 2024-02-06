@@ -1,4 +1,6 @@
-﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+﻿@using System.Globalization
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="short-task w-100 h-100 clickable" @onclick="ShowTaskDetails" >
     <div class="info-container">
@@ -53,7 +55,7 @@
             if (Task.StatusColumn.StatusType == Status.Closed) return "width: 100%;";
             if (!Task.Subtasks.Any()) return "width: 0%;";
             var completeProcentage = (Task.Subtasks.Count(x => x.Status == Status.Closed) * 100.0) / Task.Subtasks.Count;
-            return $"width: {completeProcentage}%;";
+            return $"width: {completeProcentage.ToString(CultureInfo.InvariantCulture)}%;";
         }
     }
 

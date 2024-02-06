@@ -9,7 +9,8 @@ namespace Cardmngr;
 
 public class MilestoneModel : ModelBase, IWorkContainer
 {
-    public int Id { get; }
+    [Updatable]
+    public int Id { get; private set; }
     [Updatable]
     [Required(ErrorMessage = "Название обязательное для заполнения")]
     public string Title { get; set; }
@@ -26,6 +27,7 @@ public class MilestoneModel : ModelBase, IWorkContainer
 
     public Status Status { get; set; }
     [Updatable]
+    [Required(ErrorMessage = "Ответственный обязателен для заполнения")]
     public IUser? Responsible { get; set; }
 
     public bool IsSelected { get; private set; }
@@ -89,6 +91,16 @@ public class MilestoneModel : ModelBase, IWorkContainer
         Updated = source.Updated;
         CanEdit = source.CanEdit;
         CanDelete = source.CanDelete;
+    }
+
+    public static MilestoneModel Create(ProjectModel project, bool canManipulate = false) => new(project, canManipulate);
+
+    private MilestoneModel(ProjectModel project, bool canManipulate)
+    {
+        Project = project;
+        Title = string.Empty;
+        CanEdit = canManipulate;
+        CanDelete = canManipulate;
     }
 
     public MilestoneModel Clone() => new(this);

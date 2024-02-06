@@ -17,6 +17,11 @@ public static class ModelCreator
         return new ProjectModel(project, tasks, statuses, milestones, team);
     }
 
+    public static MilestoneModel GetMilestone()
+    {
+        return new MilestoneModel(CreateMilestone(), ProjectModel.Empty);
+    }
+
     private static Project CreateProject()
     {
         return new Project

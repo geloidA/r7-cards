@@ -10,7 +10,7 @@ public class TaskModel : ModelBase, IWork
 {
     public TaskModel(Onlyoffice.Api.Models.Task task, TaskStatusColumn statusColumn)
     {
-        this.statusColumn = statusColumn;        
+        this.statusColumn = statusColumn;
         CanEdit = task.CanEdit;
         CanCreateSubtask = task.CanCreateSubtask;
         CanCreateTimeSpend = task.CanCreateTimeSpend;

@@ -142,7 +142,7 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
     {
         var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}", state));
         var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
-        return milestoneDao?.Response ?? throw new NullReferenceException("Milestone was not updated");
+        return milestoneDao?.Response ?? throw new NullReferenceException("Milestone was not updated " + response.ReasonPhrase);
     }
 
     public async Task<Milestone> DeleteMilestoneAsync(int milestoneId)
@@ -154,6 +154,13 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
     public System.Threading.Tasks.Task UpdateMilestoneStatusAsync(int milestoneId, Status status)
     {
         return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}/status", new { status }));
+    }
+
+    public async Task<Milestone> CreateMilestoneAsync(int projectId, UpdatedStateMilestone state)
+    {
+        var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/milestone", state));
+        var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
+        return milestoneDao?.Response ?? throw new NullReferenceException("Milestone was not created " + response.ReasonPhrase);
     }
     #endregion
 }

@@ -19,8 +19,9 @@
                     <WorkContainerDateProgress Work="changingState" />
                 </div>
                 <div class="d-flex justify-content-end">
-                    <UserBadge User="changingState.Responsible"Title="Ответственный" OnClick="ShowResponsibleSelectionDialog" />
+                    <UserBadge User="changingState.Responsible" Title="Ответственный" OnClick="ShowResponsibleSelectionDialog" />
                 </div>
+                <ValidationMessage For="() => changingState.Responsible" class="validation-msg" />
                 <Card class="p-1 mt-3">
                     <DateChanger Title="Крайний срок:" InputId="Deadline" Disabled="!Milestone.CanEdit" EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
                     <ValidationMessage For="() => changingState.Deadline" class="validation-msg" />
@@ -30,14 +31,18 @@
                     <MelistoneShortTasks Milestone="Milestone" />
                 </div>
                 <div class="d-flex mt-2 flex-row">
-                    <Button Loading="saving" Size="Size.Small" Disabled="!Milestone.CanEdit" Type="ButtonType.Submit" 
+                    <Button Loading="saving" LoadingText="@(IsCreation ? "Создание" : "Сохранение")" 
+                        Size="Size.Small" Disabled="!Milestone.CanEdit" Type="ButtonType.Submit" 
                         Color="ButtonColor.Success" Outline="true" >
-                        Сохранить
+                        <span>@(IsCreation ? "Создать" : "Сохранить")</span>
                     </Button>
-                    <Button class="ms-2" Size="Size.Small" Disabled="!Milestone.CanDelete" Color="ButtonColor.Danger" @onclick="Delete" 
-                        Outline="true" >
-                        Удалить
-                    </Button>
+                    @if (!IsCreation)
+                    {
+                        <Button class="ms-2" Size="Size.Small" Disabled="!Milestone.CanDelete" Color="ButtonColor.Danger" @onclick="Delete" 
+                            Outline="true" >
+                            Удалить
+                        </Button>
+                    }
                 </div>
             </OffcanvasBody>
         </EditForm>
@@ -53,6 +58,7 @@
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     [Parameter] public MilestoneModel Milestone { get; set; } = null!;
+    [Parameter] public bool IsCreation { get; set; }
 
     protected override void OnInitialized()
     {
@@ -74,10 +80,25 @@
     {
         saving = true;
 
-        var milestone = await ProjectApi.UpdateMilestoneAsync(Milestone.Id, changingState.GetUpdatedState());
+        var milestone = IsCreation 
+            ? await Create(Milestone.Project.Id, changingState.GetUpdatedState())
+            : await Edit(Milestone.Id, changingState.GetUpdatedState());
+
         Milestone.Update(milestone);
 
+        if (IsCreation) Milestone.Project.AddMilestone(Milestone);
+
         await currentModal.CloseAsync(ModalResult.Ok());
+    }
+
+    private Task<Onlyoffice.Api.Models.Milestone> Edit(int milestoneId, Onlyoffice.Api.Models.UpdatedStateMilestone state)
+    {
+        return ProjectApi.UpdateMilestoneAsync(milestoneId, state);
+    }
+
+    private Task<Onlyoffice.Api.Models.Milestone> Create(int projectId, Onlyoffice.Api.Models.UpdatedStateMilestone state)
+    {
+        return ProjectApi.CreateMilestoneAsync(projectId, state);
     }
 
     private async Task Delete()

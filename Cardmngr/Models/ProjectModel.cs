@@ -33,6 +33,13 @@ public class ProjectModel : ModelBase, IWorkContainer
         CanDelete = project.CanDelete;
     }
 
+    public static ProjectModel Empty => new();
+
+    private ProjectModel()
+    {
+        statusColumns = new StatusColumnsModel(Enumerable.Empty<MyTask>().ToList(), Enumerable.Empty<MyTaskStatus>().ToList(), this);
+    }
+
     public int Id { get; }
     public string Title { get; set; }
     public string? Description { get; set; } 
@@ -80,6 +87,13 @@ public class ProjectModel : ModelBase, IWorkContainer
         }
 
         return false;
+    }
+
+    public void AddMilestone(MilestoneModel milestone)
+    {
+        if (milestone.Project != this)
+            throw new ArgumentException("Milestone already belongs to another project");
+        milestoneTimeline.AddMilestone(milestone);
     }
 
     public event Action? ModelChanged;

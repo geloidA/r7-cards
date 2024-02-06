@@ -72,6 +72,10 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
     [Route("api/[controller]/{projectId}/milestone")]
     public Task ProxyMilestones(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/milestone");
 
+    [HttpPost]
+    [Route("api/[controller]/{projectId}/milestone")]
+    public Task ProxyCreateMilestone(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/milestone");
+
     [HttpDelete]
     [Route("api/[controller]/milestone/{milestoneId}")]
     public Task ProxyDeleteMilestone(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}");

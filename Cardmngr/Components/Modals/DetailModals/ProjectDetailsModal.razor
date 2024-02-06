@@ -45,7 +45,8 @@
                                 </h6>
                             </div>
                             <div class="col-md-2">                                
-                                <Tool Class="d-flex justify-content-center ms-2" IconName="IconName.Plus" TooltipTitle="Не работает 😭" />
+                                <Tool Class="d-flex justify-content-center ms-2" Disabled="!ProjectModel.CanEdit"
+                                    IconName="IconName.Plus" OnClick="ShowMilestoneCreation" TooltipTitle="Добавить веху" />
                             </div>
                         </div>
                     </CardTitle>
@@ -80,6 +81,20 @@
 @code {
 
     [Parameter] public ProjectModel ProjectModel { get; set; } = null!;
+
+    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
+    [CascadingParameter] IModalService Modal { get; set; } = null!;
+
+    private async Task ShowMilestoneCreation()
+    {
+        var parameters = new ModalParameters
+        {
+            { "Milestone", MilestoneModel.Create(ProjectModel, true) },
+            { "IsCreation", true }
+        };
+
+        await Modal.Show<MilestoneDetailsModal>("", parameters, Options).Result;
+    }
 
     private static StatusData GetDataByStatus(ProjectStatus status)
     {

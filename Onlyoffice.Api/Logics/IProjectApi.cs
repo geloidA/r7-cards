@@ -197,6 +197,17 @@ public interface IProjectApi
     Task<Milestone> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state);
 
     /// <summary>
+    /// Adds a new milestone using the parameters (project ID, milestone title, deadline, etc) specified in the request.
+    /// </summary>
+    /// <remarks>
+    /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/post/api/2.0/project/%7bid%7d/milestone"/>
+    /// </remarks>
+    /// <param name="projectId"></param>
+    /// <param name="state"></param>
+    /// <returns>Added milestone</returns>
+    Task<Milestone> CreateMilestoneAsync(int projectId, UpdatedStateMilestone state);
+
+    /// <summary>
     /// Deletes a milestone with the ID specified in the request.
     /// </summary>
     /// <remarks>
