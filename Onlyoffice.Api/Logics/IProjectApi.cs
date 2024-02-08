@@ -66,17 +66,6 @@ public interface IProjectApi
     IAsyncEnumerable<MyTask> GetFiltredTasksAsync(FilterTasksBuilder builder);
 
     /// <summary>
-    /// Adds a task to the selected project with the title.
-    /// </summary>
-    /// <remarks>
-    /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/post/api/2.0/project/%7bprojectid%7d/task"/>
-    /// </remarks>
-    /// <param name="projectId">Project ID</param>
-    /// <param name="title">Task title</param>
-    /// <returns></returns>
-    Task<MyTask> CreateTaskAsync(int projectId, string title);
-
-    /// <summary>
     /// Returns a list of all the users participating in the project with the ID specified in the request.
     /// </summary>
     /// <remarks>
@@ -103,11 +92,11 @@ public interface IProjectApi
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/post/api/2.0/project/%7bprojectid%7d/task"/>
     /// </remarks>
     /// <param name="projectId">Project ID</param>
-    /// <param name="title">Task title</param>
+    /// <param name="state">responsible user ID, task description, deadline time, etc</param>
     /// <param name="status">New task status</param>
     /// <param name="statusId">Custom status ID</param>
     /// <returns>Added task</returns>
-    Task<MyTask> CreateTaskAsync(int projectId, string title, Status status, int? statusId = null);
+    Task<MyTask> CreateTaskAsync(int projectId, UpdatedStateTask state, Status status, int? statusId = null);
 
     /// <summary>
     /// Updates the selected task.

@@ -3,7 +3,7 @@ using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Models;
 
-public abstract class ModelBase
+public abstract class ModelBase<TApiModel> : IModel<TApiModel>, ICloneable
 {
     [Updatable]
     public DateTime Created { get; protected set; }
@@ -20,6 +20,13 @@ public abstract class ModelBase
     [Updatable]
     public bool CanDelete { get; protected set; }
 
+    public void Update(TApiModel source)
+    {
+        ArgumentNullException.ThrowIfNull(source, nameof(source));
+        UpdateProperties(source);
+        HookUpdate(source);
+    }
+
     /// <summary>
     /// Update properties that marked with <see cref="UpdatableAttribute"/>
     /// </summary>
@@ -28,12 +35,10 @@ public abstract class ModelBase
     /// </remarks>
     /// <param name="source">Source model</param>
     /// <exception cref="ArgumentException">Invalid TApiModel type</exception>
-    protected void UpdateProperties<TApiModel>(TApiModel source)
+    private void UpdateProperties(TApiModel source)
     {
-        ArgumentNullException.ThrowIfNull(source);
-
         var selfType = GetType();
-        var sourceType = source.GetType();
+        var sourceType = source!.GetType();
 
         var properties = selfType.GetProperties().Where(
                 prop => Attribute.IsDefined(prop, typeof(UpdatableAttribute)));
@@ -48,4 +53,11 @@ public abstract class ModelBase
             }
         }
     }
+
+    /// <summary>
+    /// Invokes after <see cref="Update"/>
+    /// </summary>
+    protected virtual void HookUpdate(TApiModel source) { }
+
+    public abstract object Clone();
 }

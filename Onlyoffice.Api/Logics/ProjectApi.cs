@@ -75,16 +75,9 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         }
     }
 
-    public async Task<Models.Task> CreateTaskAsync(int projectId, string title)
+    public async Task<Models.Task> CreateTaskAsync(int projectId, UpdatedStateTask state, Status status, int? statusId = null)
     {
-        var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/task", new { title }));
-        var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
-        return taskDao?.Response ?? throw new NullReferenceException("Task was not created");
-    }
-
-    public async Task<Models.Task> CreateTaskAsync(int projectId, string title, Status status, int? statusId = null)
-    {
-        var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/task/status", new { title, status, statusId }));
+        var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/task/status", new { state, status, statusId }));
         var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
         return taskDao?.Response ?? throw new NullReferenceException("Task was not created");
     }

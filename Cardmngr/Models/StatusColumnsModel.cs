@@ -5,7 +5,7 @@ using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
 
 namespace Cardmngr.Models;
 
-public class StatusColumnsModel(List<MyTask> tasks, List<MyTaskStatus> statuses, ProjectModel project) : ModelBase, IEnumerable<TaskStatusColumn>
+public class StatusColumnsModel(List<MyTask> tasks, List<MyTaskStatus> statuses, ProjectModel project) : IEnumerable<TaskStatusColumn>
 {
     private readonly List<TaskStatusColumn> statusColumns = statuses
         .OrderBy(x => (x.StatusType, x.Order))

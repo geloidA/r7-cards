@@ -1,17 +1,17 @@
 ﻿@inject TeamMemberSelectionDialog SelectionDialog
 @inject IProjectApi ProjectApi
 
-@inherits ValidationComponent
+@inherits ModelFormComponent<MilestoneModel, Onlyoffice.Api.Models.Milestone>
 
 @using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas;
 
 @if (changingState is { })
 {
     <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right" @ref="currentModal">
-        <EditForm Model="changingState" OnValidSubmit="Save" OnInvalidSubmit="NotifyInvalidInput" >
+        <EditForm Model="changingState" OnValidSubmit="Submit" OnInvalidSubmit="NotifyInvalidInput" >
             <DataAnnotationsValidator/>
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
-                <TitleChanger Disabled="!Milestone.CanEdit" @bind-Title="changingState.Title" />
+                <TitleChanger Disabled="!Model.CanEdit" @bind-Title="changingState.Title" />
             </OffcanvasHeader>
             <ValidationMessage For="() => changingState.Title" class="ms-3 validation-msg" />
             <OffcanvasBody Class="d-flex flex-column">
@@ -23,22 +23,23 @@
                 </div>
                 <ValidationMessage For="() => changingState.Responsible" class="validation-msg" />
                 <Card class="p-1 mt-3">
-                    <DateChanger Title="Крайний срок:" InputId="Deadline" Disabled="!Milestone.CanEdit" EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
+                    <DateChanger Title="Крайний срок:" InputId="Deadline" Disabled="!Model.CanEdit" EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
                     <ValidationMessage For="() => changingState.Deadline" class="validation-msg" />
                 </Card>
-                <DescriptionChanger Disabled="!Milestone.CanEdit" Class="mt-2" @bind-Description="changingState.Description" />
+                <DescriptionChanger Disabled="!Model.CanEdit" Class="mt-2" @bind-Description="changingState.Description" />
                 <div class="mt-4">
-                    <MelistoneShortTasks Milestone="Milestone" />
+                    <MelistoneShortTasks Milestone="Model" />
                 </div>
                 <div class="d-flex mt-2 flex-row">
-                    <Button Loading="saving" LoadingText="@(IsCreation ? "Создание" : "Сохранение")" 
-                        Size="Size.Small" Disabled="!Milestone.CanEdit" Type="ButtonType.Submit" 
+                    <Button Loading="submiting" LoadingText="@LoadingText" 
+                        Size="Size.Small" Disabled="!Model.CanEdit" Type="ButtonType.Submit" 
                         Color="ButtonColor.Success" Outline="true" >
-                        <span>@(IsCreation ? "Создать" : "Сохранить")</span>
+                        @SubmitText
                     </Button>
                     @if (!IsCreation)
                     {
-                        <Button class="ms-2" Size="Size.Small" Disabled="!Milestone.CanDelete" Color="ButtonColor.Danger" @onclick="Delete" 
+                        <Button class="ms-2" Size="Size.Small" Disabled="!Model.CanDelete" Color="ButtonColor.Danger" 
+                            @onclick=@(async () => await DeleteAsync(true, "Действие необратимо. Вы действительно хотите удалить веху?"))
                             Outline="true" >
                             Удалить
                         </Button>
@@ -50,25 +51,12 @@
 }
 
 @code {
-    private bool saving;
-    private MilestoneModel changingState = null!;
     private Offcanvas currentModal = null!;
-
-    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
-    [CascadingParameter] IModalService Modal { get; set; } = null!;
-
-    [Parameter] public MilestoneModel Milestone { get; set; } = null!;
-    [Parameter] public bool IsCreation { get; set; }
-
-    protected override void OnInitialized()
-    {
-        changingState = Milestone.Clone();
-    }
 
     private async Task ShowResponsibleSelectionDialog()
     {
-        if (!Milestone.CanDelete) return;
-        var selected = await SelectionDialog.ShowAsync(Milestone.Project.Team, ModalOptions);
+        if (!Model.CanDelete) return;
+        var selected = await SelectionDialog.ShowAsync(Model.Project.Team, ModalOptions);
 
         if (selected is { })
         {
@@ -76,46 +64,20 @@
         }
     }
 
-    private async Task Save()
+    protected override Task CloseAsync() => currentModal.CloseAsync(ModalResult.Ok());
+
+    protected override Task<Onlyoffice.Api.Models.Milestone> OnCreateAsync() 
+        => ProjectApi.CreateMilestoneAsync(Model.Project.Id, changingState.GetUpdatedState());
+
+    protected override Task<Onlyoffice.Api.Models.Milestone> OnUpdateAsync() 
+        => ProjectApi.UpdateMilestoneAsync(Model.Id, changingState.GetUpdatedState());
+
+    protected override async Task OnDeleteAsync()
     {
-        saving = true;
-
-        var milestone = IsCreation 
-            ? await Create(Milestone.Project.Id, changingState.GetUpdatedState())
-            : await Edit(Milestone.Id, changingState.GetUpdatedState());
-
-        Milestone.Update(milestone);
-
-        if (IsCreation) Milestone.Project.AddMilestone(Milestone);
-
-        await currentModal.CloseAsync(ModalResult.Ok());
+        await ProjectApi.DeleteMilestoneAsync(Model.Id);
+        Model.Project.DeleteMilestone(Model);
     }
 
-    private Task<Onlyoffice.Api.Models.Milestone> Edit(int milestoneId, Onlyoffice.Api.Models.UpdatedStateMilestone state)
-    {
-        return ProjectApi.UpdateMilestoneAsync(milestoneId, state);
-    }
-
-    private Task<Onlyoffice.Api.Models.Milestone> Create(int projectId, Onlyoffice.Api.Models.UpdatedStateMilestone state)
-    {
-        return ProjectApi.CreateMilestoneAsync(projectId, state);
-    }
-
-    private async Task Delete()
-    {
-        var parameters = new ModalParameters
-        {
-            { "AdditionalText", "Действие необратимо. Вы действительно хотите удалить веху?"}
-        };
-
-        var result = await Modal.Show<DefaultConfirmModal>("Удаление", parameters, ModalOptions).Result;
-
-        if (result.Confirmed)
-        {
-            await ProjectApi.DeleteMilestoneAsync(Milestone.Id);
-            Milestone.Project.DeleteMilestone(Milestone);
-            
-            await currentModal.CloseAsync(ModalResult.Ok());
-        }        
-    }
+    protected override void HookCreateSubmit(MilestoneModel updatedModel)
+        => Model.Project.AddMilestone(updatedModel);
 }

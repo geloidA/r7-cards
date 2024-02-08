@@ -1,4 +1,6 @@
-﻿@inject IProjectApi ProjectApi
+﻿@using Milestone = Onlyoffice.Api.Models.Milestone
+
+@inject IProjectApi ProjectApi
 
 @if (ProjectModel is { })
 {
@@ -89,7 +91,7 @@
     {
         var parameters = new ModalParameters
         {
-            { "Milestone", MilestoneModel.Create(ProjectModel, true) },
+            { "Model", new MilestoneModel(new Milestone { CanEdit = true, CanDelete = true }, ProjectModel) },
             { "IsCreation", true }
         };
 

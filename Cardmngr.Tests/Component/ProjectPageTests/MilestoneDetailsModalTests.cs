@@ -4,11 +4,13 @@ using Cardmngr.Components;
 using Cardmngr.Components.Modals.DetailModals;
 using Cardmngr.Services;
 using Cardmngr.Tests.Models;
+using Cardmngr.Tests.Utils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Onlyoffice.Api.Logics;
 using Onlyoffice.Api.Models;
+using STask = System.Threading.Tasks.Task;
 
 namespace Cardmngr.Tests;
 
@@ -48,15 +50,18 @@ public class MilestoneDetailsModalTests : TestContext
     [Fact]
     public void Save_ShouldPreventSavingMilestoneWithEmptyTitle()
     {
+        var project = new ProjectModelBuilder().Build();
+
+        var milestone = project.Milestones.First();
+
+        milestone.Title = "";
+        milestone.Deadline = null;
+
         var cut = RenderComponent<MilestoneDetailsModal>(p => p
             .Add(p => p.IsCreation, true)
-            .Add(p => p.Milestone, ModelCreator.GetMilestone()));
+            .Add(p => p.Milestone, milestone));
 
-        // cut.FindComponent<Tool>().Find("tool[b-6lybjbzqvq]").Click();
-
-        cut.Find("input").Input("");
-
-        cut.Find("button").Click();
+        cut.Find("form").Submit();
 
         projectApiMock.Verify(x => x.CreateMilestoneAsync(It.IsAny<int>(), It.IsAny<UpdatedStateMilestone>()), Times.Never());
     }

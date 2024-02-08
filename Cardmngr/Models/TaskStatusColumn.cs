@@ -5,7 +5,7 @@ using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
 
 namespace Cardmngr.Models;
 
-public class TaskStatusColumn : ModelBase, IEnumerable<TaskModel>
+public class TaskStatusColumn : ModelBase<MyTaskStatus>, IEnumerable<TaskModel>
 {
     private readonly List<TaskModel> tasks;
 
@@ -83,4 +83,9 @@ public class TaskStatusColumn : ModelBase, IEnumerable<TaskModel>
     }
 
     public override int GetHashCode() => Id.GetHashCode();
+
+    public override object Clone()
+    {
+        throw new NotImplementedException();
+    }
 }

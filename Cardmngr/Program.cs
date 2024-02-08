@@ -23,6 +23,7 @@ builder.Services
     .AddScoped<CookieHandler>()
     .AddScoped<IAuthApiLogic, AuthApiLogic>()
     .AddScoped<IProjectApi, ProjectApi>()
+    .AddKeyedScoped<IProjectApi, ProjectFileService>("file")
     .AddScoped<IFeedbackService, FeedbackService>()
     .AddScoped<TeamMemberSelectionDialog>()
     .AddBlazoredModal()

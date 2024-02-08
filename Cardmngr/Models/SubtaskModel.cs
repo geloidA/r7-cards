@@ -4,7 +4,7 @@ using Onlyoffice.Api.Models;
 namespace Cardmngr.Models;
 
 #warning Doen't have CanDelete property
-public class SubtaskModel : ModelBase
+public class SubtaskModel : ModelBase<Subtask>
 {
     public SubtaskModel(Subtask subtask)
     {
@@ -38,6 +38,6 @@ public class SubtaskModel : ModelBase
     public string? Description { get; set; }
     public Status Status { get; set; }
     public IUser? Responsible { get; set; }
-    
-    public SubtaskModel Clone() => new(this);
+
+    public override object Clone() => new SubtaskModel(this);
 }

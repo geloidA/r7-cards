@@ -1,6 +1,7 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using Cardmngr.Server.Extensions;
+using Cardmngr.Server.Services;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,10 @@ var config = builder.Configuration;
 
 DirectoryWrapper.CreateIfDoesntExists(Path.GetFullPath(config["FeedbackDirectory"] ?? throw new Exception("FeedbackDirectory config is null")));
 
-builder.Services.AddRazorPages();
+builder.Services
+    .AddScoped<IProjectFileService, ProjectFileService>()
+    .AddRazorPages();
+
 builder.Services.AddResponseCompression(opts =>
 {
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(

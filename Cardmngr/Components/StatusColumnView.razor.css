@@ -60,8 +60,3 @@
         padding: 0px;
         list-style: none;
     }
-
-.text-vertical {
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-}

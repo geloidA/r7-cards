@@ -1,0 +1,30 @@
+﻿@inherits KolComponentBase
+
+<Card class="@Class" style="@Style" >
+    <CardTitle>
+        <h6>
+            <Icon Name="IconName.JournalBookmarkFill" />
+            Мои проекты
+        </h6>
+    </CardTitle>
+    <CardBody class="p-1 overflow-auto" style=@($"max-height: {MaxHeight}px;")>
+        @if (UserProjects is { } && UserProjects.Any())
+        { 
+            @foreach (var proj in UserProjects)
+            {
+                <div class="py-1">
+                    <ProjectReference Project="proj" />
+                </div>
+            }
+        }
+        else
+        {
+            <span>Вы не состоите ни в одном из проектов</span>
+        }
+    </CardBody>
+</Card>
+
+@code {
+    [Parameter] public List<Onlyoffice.Api.Models.Project>? UserProjects { get; set; }
+    [Parameter] public int MaxHeight { get; set; }
+}

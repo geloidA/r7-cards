@@ -16,7 +16,6 @@ public static class ModelsExtensions
             Title = val.Title,
             MilestoneId = val.Milestone?.Id ?? 0,
             Responsibles = val.Responsibles?.Select(x => x.Id).ToList(),
-            ProjectId = val.ProjectOwner.Id,
             Progress = val.Progress
         };
     }

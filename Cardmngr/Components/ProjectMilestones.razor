@@ -4,7 +4,10 @@
 @implements IAsyncDisposable
 
 <div class="row @Class" style="@Style">
-    <div @ref="element" class="col-md-11 d-flex flex-column overflow-scroll scrollbar-none" >
+    <div class="d-flex col-md-1 p-0" style="max-width: 30px;">
+        <span class="text-vertical-1 user-select-none" style="font-size: small; font-weight: bold;">вехи</span>
+    </div>
+    <div @ref="element" class="col d-flex flex-column overflow-scroll scrollbar-none" >
         <MilestoneTimeline Style=@($"width: {@timelineScale}px;") Milestones="Project.Milestones" />
     </div>
     <div class="col-md-1 align-self-center d-flex justify-content-end">
@@ -13,7 +16,7 @@
                 <KolScaleSwitcher MinValue="1685" MaxValue="5000" Step="500" @bind-CurrentValue="timelineScale" />
             </div>
             <div class="col d-flex justify-content-center">
-                <Tool IconName="IconName.List" IconSize="IconSize.x5" Text="Меню"
+                <Tool IconName="IconName.List" IconSize="IconSize.x5" Text="Проект"
                     OnClick="ShowMenu" />
             </div>
         </div>

@@ -8,7 +8,7 @@
             var count = 0;
             foreach (var user in Responsibles)
             {
-                if (count > MaxCount) break;
+                if (count >= MaxCount) break;
 
                 <UserAvatar User="user" ShowTooltip="@ShowTooltip" Size="ImageSize"
                     ShowName="ShowName" />
@@ -24,15 +24,10 @@
 </Card>
 
 @code {
-    private int totalCount;
+    private int totalCount => Responsibles.Count();
 
     [Parameter]
     public IEnumerable<Onlyoffice.Api.Models.IUser> Responsibles { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        totalCount = Responsibles.Count();
-    }
 
     [Parameter]
     public int ImageSize { get; set; } = 32;

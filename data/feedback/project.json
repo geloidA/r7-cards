@@ -1,0 +1,25 @@
+{
+	"Id": 1,
+	"Title": "Развитие",
+	"Description": "Описание проекта 1",
+	"Status": 1,
+	"Responsible": {
+	    "Id": "1",
+	    "DisplayName": "Ответственный за проект 1",
+	    "AvatarSmall": "avatar1.jpg",
+	    "ProfileUrl": "profile_url_1"
+	},
+	"CanEdit": true,
+	"CanDelete": false,
+	"IsPrivate": false,
+	"Updated": "2024-02-07T10:00:00",
+	"CreatedBy": {
+	    "Id": "2",
+	    "DisplayName": "Создатель проекта 1",
+	    "AvatarSmall": "avatar2.jpg",
+	    "ProfileUrl": "profile_url_2"
+	},
+	"Created": "2024-02-01T08:00:00",
+	"TaskCount": 5,
+	"TaskCountTotal": 10
+}

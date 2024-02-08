@@ -3,7 +3,7 @@ using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Models;
 
-public class MilestoneTimelineModel(IEnumerable<Milestone> milestones, ProjectModel project) : ModelBase, IEnumerable<MilestoneModel>
+public class MilestoneTimelineModel(IEnumerable<Milestone> milestones, ProjectModel project) : IEnumerable<MilestoneModel>
 {
     private readonly ProjectModel project = project;
     private readonly HashSet<MilestoneModel> milestones = milestones

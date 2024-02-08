@@ -1,4 +1,5 @@
 ﻿@using TypeStatus = Onlyoffice.Api.Models.TaskStatus
+@using MyTask = Onlyoffice.Api.Models.Task
 
 @inject IProjectApi ProjectApi
 
@@ -13,9 +14,12 @@
             <span class="mt-2 text-vertical ">
                 @TaskStatusModel.Title
             </span>
-            <div class="mt-2 align-self-center" >
-                <img src=@($"data:{TaskStatusModel.ImageType};base64, {TaskStatusModel.Image}")
-                    style="max-width: 18px;">
+            <div class="mt-2 align-self-center">
+                @if (TaskStatusModel.Image is { })
+                {
+                    <img src=@($"data:{TaskStatusModel.ImageType};base64, {TaskStatusModel.Image}")
+                        style="max-width: 18px;">
+                }
             </div>
         </div>
     }
@@ -29,8 +33,11 @@
                         <span class="ms-1 user-select-none">
                             @TaskStatusModel.Title
                         </span>
-                        <img src=@($"data:{TaskStatusModel.ImageType};base64, {TaskStatusModel.Image}")
-                            style="max-width: 18px;" alt="SVG Icon">                        
+                        @if (TaskStatusModel.Image is { })
+                        {
+                            <img src=@($"data:{TaskStatusModel.ImageType};base64, {TaskStatusModel.Image}")
+                                style="max-width: 18px;">
+                        }
                     </div>
                 </div>
             </div>
@@ -38,7 +45,7 @@
                 @DropDown
             </div>
         </div>
-        @if (MilestoneTimelineModel.SelectedMilestones.Any())
+        @if (MilestoneTimelineModel?.SelectedMilestones.Any() ?? false)
         {
             <div class="mb-1 d-flex justify-content-center fw-light" style="font-size: small;">
                 @TaskStatusModel.Where(FilterByMilestones).Count() результатов
@@ -60,6 +67,7 @@
     bool isCollapsed;
 
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
+    [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
     [CascadingParameter] StatusColumnsModel StatusColumnsModel { get; set; } = null!;
@@ -93,20 +101,13 @@
     
     private async Task ShowCreateCardModal()
     {
-        var res = await Modal.Show<CardCreationModal>("Сформулируйте задачу 🤔💭", ModalOptions).Result;
-
-        if (res.Confirmed)
+        var parameters = new ModalParameters
         {
-            var title = res.Data!.ToString()!;
-            
-            var task = await ProjectApi.CreateTaskAsync(
-                TaskStatusModel.Project.Id, 
-                title, 
-                TaskStatusModel.StatusType, 
-                TaskStatusModel.Id);
+            { "Model", new TaskModel(new MyTask { CanEdit = true }, TaskStatusModel) },
+            { "IsCreation", true }
+        };
 
-            TaskStatusModel.Add(new TaskModel(task, TaskStatusModel));
-        }
+        await Modal.Show<TaskDetailsModal>("", parameters, DetailsOptions).Result;
     }
 
     private bool FilterByMilestones(TaskModel task)

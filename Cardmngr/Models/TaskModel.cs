@@ -6,7 +6,7 @@ using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Models;
 
-public class TaskModel : ModelBase, IWork
+public class TaskModel : ModelBase<Onlyoffice.Api.Models.Task>, IWork
 {
     public TaskModel(Onlyoffice.Api.Models.Task task, TaskStatusColumn statusColumn)
     {
@@ -17,7 +17,7 @@ public class TaskModel : ModelBase, IWork
         CanDelete = task.CanDelete;
         CanReadFiles = task.CanReadFiles;
         Id = task.Id;
-        Title = task.Title ?? task.Id.ToString();
+        Title = task.Title ?? "";
         Description = task.Description;
         Priority = (TaskPriority)task.Priority;
         Milestone = statusColumn.Project.Milestones.FirstOrDefault(m => m.Id == task.MilestoneId);
@@ -26,7 +26,7 @@ public class TaskModel : ModelBase, IWork
         Progress = task.Progress;
         UpdatedBy = task.UpdatedBy == null ? null : new User(task.UpdatedBy);
         Created = task.Created;
-        CreatedBy = new User(task.CreatedBy!);
+        CreatedBy = task.CreatedBy == null ? null : new User(task.CreatedBy);
         Updated = task.Updated;
         Responsibles = new ObservableCollection<IUser>(task.Responsibles?.Select(u => new User(u)) ?? []);
         Deadline = task.Deadline;
@@ -47,7 +47,7 @@ public class TaskModel : ModelBase, IWork
         Priority = source.Priority;
         Milestone = source.Milestone; // Use the same milestone
         ProjectOwner = source.ProjectOwner; // Use the same project
-        Subtasks = copySubtasks ? new ObservableCollection<SubtaskModel>(source.Subtasks?.Select(s => s.Clone()) ?? []) : source.Subtasks;
+        Subtasks = copySubtasks ? new ObservableCollection<SubtaskModel>(source.Subtasks?.Select(s => (SubtaskModel)s.Clone()) ?? []) : source.Subtasks;
         Progress = source.Progress;
         UpdatedBy = source.UpdatedBy;
         Created = source.Created;
@@ -59,10 +59,18 @@ public class TaskModel : ModelBase, IWork
     }
 
     #region Properties
-    public bool CanCreateSubtask { get; }
-    public bool CanCreateTimeSpend { get; }
-    public bool CanReadFiles { get; }
-    public int Id { get; }
+
+    [Updatable]
+    public bool CanCreateSubtask { get; private set; }
+
+    [Updatable]
+    public bool CanCreateTimeSpend { get; private set; }
+
+    [Updatable]
+    public bool CanReadFiles { get; private set; }
+
+    [Updatable]
+    public int Id { get; private set; }
 
     [Updatable]
     [Required(ErrorMessage = "Название обязательно для заполнения")]
@@ -75,7 +83,6 @@ public class TaskModel : ModelBase, IWork
     public TaskPriority Priority { get; set; }
 
     public MilestoneModel? Milestone { get; set; }
-
     public ProjectModel ProjectOwner { get; }
     public ObservableCollection<SubtaskModel> Subtasks { get; set; }
 
@@ -94,23 +101,12 @@ public class TaskModel : ModelBase, IWork
     public DateTime? StartDate { get; set; }
     #endregion
 
-    /// <summary>
-    /// Updates the task model with only changeble properties
-    /// </summary>
-    /// <remarks>
-    /// Use this method if you need change several properties with one invoke OnModelChanged method
-    /// </remarks>
-    /// <param name="task"></param>
-    public void Update(Onlyoffice.Api.Models.Task task)
+
+    protected override void HookUpdate(Onlyoffice.Api.Models.Task source)
     {
-        ArgumentNullException.ThrowIfNull(task);
-
-        UpdateProperties(task);
-
-        Milestone = ProjectOwner.Milestones.FirstOrDefault(m => m.Id == task.MilestoneId);
-        Subtasks = new ObservableCollection<SubtaskModel>(task.Subtasks?.Select(s => new SubtaskModel(s)) ?? []);
-        Responsibles = new ObservableCollection<IUser>(task.Responsibles?.Select(u => new User(u)) ?? []);
-
+        Milestone = ProjectOwner.Milestones.FirstOrDefault(m => m.Id == source.MilestoneId);
+        Subtasks = new ObservableCollection<SubtaskModel>(source.Subtasks?.Select(s => new SubtaskModel(s)) ?? []);
+        Responsibles = new ObservableCollection<IUser>(source.Responsibles?.Select(u => new User(u)) ?? []);
         ProjectOwner.OnModelChanged();
     }
 
@@ -118,7 +114,7 @@ public class TaskModel : ModelBase, IWork
     /// <b>Warning</b>: not copy ProjectOwner, Milestone
     /// </summary>
     /// <returns></returns>
-    public TaskModel Clone(bool copySubtasks) => new(this, copySubtasks);
+    public override object Clone() => new TaskModel(this, false);
     
     private TaskStatusColumn statusColumn;
     public TaskStatusColumn StatusColumn 

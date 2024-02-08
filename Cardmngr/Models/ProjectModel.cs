@@ -7,7 +7,7 @@ using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
 
 namespace Cardmngr;
 
-public class ProjectModel : ModelBase, IWorkContainer
+public class ProjectModel : ModelBase<Project>, IWorkContainer
 {
     private readonly MilestoneTimelineModel milestoneTimeline;
     private readonly StatusColumnsModel statusColumns;
@@ -37,7 +37,11 @@ public class ProjectModel : ModelBase, IWorkContainer
 
     private ProjectModel()
     {
+        milestoneTimeline = new MilestoneTimelineModel(Enumerable.Empty<Milestone>().ToList(), this);
+        team = [];
         statusColumns = new StatusColumnsModel(Enumerable.Empty<MyTask>().ToList(), Enumerable.Empty<MyTaskStatus>().ToList(), this);
+        Title = string.Empty;
+        Responsible = new User("null");
     }
 
     public int Id { get; }
@@ -109,4 +113,9 @@ public class ProjectModel : ModelBase, IWorkContainer
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     public bool IsClosed() => Status == ProjectStatus.Closed;
+
+    public override object Clone()
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -95,7 +95,7 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
     {
         var body = await ConvertStreamToDynamicAsync(HttpContext.Request.Body);
         var cookieCollection = HttpContext.Request.Cookies;
-        var task = await CreateTaskAsync(projectId, (string)body.title, cookieCollection);
+        var task = await CreateTaskAsync(projectId, body.state.ToObject<UpdatedStateTask>(), cookieCollection); // TODO: refactor
         var response = await UpdateTaskStatus(task.Id, (int)body.status, (int?)body.statusId, cookieCollection);
         var str = await response.Content.ReadAsStringAsync();
 
@@ -109,10 +109,10 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
         return JsonConvert.DeserializeObject(requestBody) ?? throw new NullReferenceException("Request body is null");
     }
 
-    private async Task<Api.Models.Task> CreateTaskAsync(int projectId, string title, IRequestCookieCollection cookie)
+    private async Task<Api.Models.Task> CreateTaskAsync(int projectId, UpdatedStateTask state, IRequestCookieCollection cookie)
     {
         using var client = cookie.GetClientFor(apiUrl);
-        var httpContent = new StringContent(JsonConvert.SerializeObject(new { title }), Encoding.UTF8, "application/json");
+        var httpContent = new StringContent(JsonConvert.SerializeObject(state), Encoding.UTF8, "application/json");
         var request = new HttpRequestMessage(HttpMethod.Post, $"{apiUrl}/project/{projectId}/task")
         {
             Content = httpContent

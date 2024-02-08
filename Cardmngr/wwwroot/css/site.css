@@ -155,3 +155,14 @@ ul {
     color: red;
     font-size: 14px;
 }
+
+.text-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+}
+
+.text-vertical-1 {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    letter-spacing: -1.75px;
+}

@@ -7,41 +7,45 @@ using Onlyoffice.Api.Models;
 
 namespace Cardmngr;
 
-public class MilestoneModel : ModelBase, IWorkContainer
+public class MilestoneModel : ModelBase<Milestone>, IWorkContainer
 {
+    #region Props
     [Updatable]
     public int Id { get; private set; }
+
     [Updatable]
     [Required(ErrorMessage = "Название обязательное для заполнения")]
     public string Title { get; set; }
+
     [Updatable]
     public string? Description { get; set; }
+
     public ProjectModel Project { get; }
+
     [Updatable]
     [Required(ErrorMessage = "Крайний срок обязательный для заполнения")]
     public DateTime? Deadline { get; set; }
+
     [Updatable]
     public bool IsKey { get; set; }
+
     [Updatable]
     public bool IsNotify { get; set; }
 
     public Status Status { get; set; }
+
     [Updatable]
     [Required(ErrorMessage = "Ответственный обязателен для заполнения")]
     public IUser? Responsible { get; set; }
 
     public bool IsSelected { get; private set; }
+    #endregion
 
     public IEnumerable<TaskModel> Tasks => Project.Tasks.Where(x => x.Milestone?.Id == Id);
 
-    public void Update(Milestone milestone)
+    protected override void HookUpdate(Milestone milestone)
     {
-        ArgumentNullException.ThrowIfNull(milestone);
-
-        UpdateProperties(milestone);
-
-        GetMilestoneStatus(milestone.Status);
-
+        Status = GetMilestoneStatus(milestone.Status);
         Project.OnModelChanged();
     }
 
@@ -57,13 +61,14 @@ public class MilestoneModel : ModelBase, IWorkContainer
         }
     }
 
+    #region ctors
     public MilestoneModel(Milestone milestone, ProjectModel project)
     {
         Id = milestone.Id;
-        Title = milestone.Title ?? milestone.Id.ToString();
+        Title = milestone.Title ?? "";
         Description = milestone.Description;
         Project = project;
-        Deadline = milestone.Deadline ?? throw new ArgumentNullException("Milestone deadline cannot be null");
+        Deadline = milestone.Deadline ?? DateTime.Now;
         IsKey = milestone.IsKey;
         IsNotify = milestone.IsNotify;
         Status = GetMilestoneStatus(milestone.Status);
@@ -92,18 +97,9 @@ public class MilestoneModel : ModelBase, IWorkContainer
         CanEdit = source.CanEdit;
         CanDelete = source.CanDelete;
     }
+    #endregion
 
-    public static MilestoneModel Create(ProjectModel project, bool canManipulate = false) => new(project, canManipulate);
-
-    private MilestoneModel(ProjectModel project, bool canManipulate)
-    {
-        Project = project;
-        Title = string.Empty;
-        CanEdit = canManipulate;
-        CanDelete = canManipulate;
-    }
-
-    public MilestoneModel Clone() => new(this);
+    public override object Clone() => new MilestoneModel(this);
 
     public void ToggleSelection() => IsSelected = !IsSelected;
 

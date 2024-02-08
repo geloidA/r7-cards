@@ -1,0 +1,28 @@
+﻿@page "/feedback-board"
+
+@if (model is { })
+{
+    <div class="d-flex position-relative mb-5" style="flex: auto !important;">        
+        <div class="d-flex flex-column">
+            <StatusColumnsView Model="model.StatusColumns" />
+        </div>
+        <div>
+            Убедительная 
+        </div>
+    </div>
+}
+
+@code {
+
+    private ProjectModel? model;
+
+    [Inject(Key = "file")] IProjectApi ProjectApi { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var project = ProjectApi.GetProjectByIdAsync(-1);
+        var tasks = ProjectApi.GetTasksByProjectIdAsync(-1).ToListAsync();
+        var statuses = ProjectApi.GetAllTaskStatusesAsync().ToListAsync();
+        model = new ProjectModel(await project, await tasks, await statuses, [], Enumerable.Empty<Onlyoffice.Api.Models.IUser>());
+    }
+}

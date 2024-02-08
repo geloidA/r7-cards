@@ -91,7 +91,7 @@
     {
         var parameters = new ModalParameters
         {
-            { "Task", Task },
+            { "Model", Task }
         };
 
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsModal).Result;

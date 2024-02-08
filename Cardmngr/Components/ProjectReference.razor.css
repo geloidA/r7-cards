@@ -6,7 +6,7 @@ a:hover {
     text-decoration: underline;
 }
 
-.container {
+.ref-container {
     max-width: 250px; /* Ширина контейнера */
     display: -webkit-box; /* Установка элемента как flex-контейнера */
     overflow: hidden; /* Скрытие содержимого, выходящего за пределы контейнера */
@@ -14,4 +14,5 @@ a:hover {
     -webkit-line-clamp: 2; /* Ограничение количества строк до 2 */
     text-overflow: ellipsis; /* Вывод многоточия, если текст обрезан */
     padding-left: 0;
+    padding-right: 0;
 }
