@@ -1,12 +1,12 @@
 ﻿
-@if (Model is { })
+@if (Board is { })
 {
     <div class="d-flex position-relative overflow-hidden pb-2 flex-row board" >
         <div class="d-flex flex-row" style="flex: auto !important; width: 100% !important;">
-            <CascadingValue Value="Model" IsFixed="true">
-                @foreach (var column in Model)
+            <CascadingValue Value="Board" IsFixed="true">
+                @foreach (var column in Board)
                 {
-                    <StatusColumnView TaskStatusModel="column" @key="column" />
+                    <StatusColumnView StatusColumn="column" @key="column" />
                 }
             </CascadingValue>
         </div>
@@ -14,5 +14,5 @@
 }
 
 @code {
-    [Parameter] public StatusColumnsModel? Model { get; set; }
+    [Parameter] public IStatusColumnBoard? Board { get; set; }
 }

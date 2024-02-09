@@ -36,14 +36,14 @@ else
 }
 
 @code {
-    [Parameter] public IEnumerable<MilestoneModel> Milestones { get; set; } = null!;
+    [Parameter] public IEnumerable<IMilestoneModel> Milestones { get; set; } = null!;
     [Parameter] public bool ShowTaskCounts { get; set; }
     [Parameter] public bool ShowMilestoneModal { get; set; }
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    private async Task ShowModalAsync(MilestoneModel milestone)
+    private async Task ShowModalAsync(IMilestoneModel milestone)
     {
         if (!ShowMilestoneModal) return;
 

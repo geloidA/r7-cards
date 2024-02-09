@@ -17,9 +17,9 @@ public static class ModelCreator
         return new ProjectModel(project, tasks, statuses, milestones, team);
     }
 
-    public static MilestoneModel GetMilestone()
+    public static IMilestoneModel GetMilestone()
     {
-        return new MilestoneModel(CreateMilestone(), ProjectModel.Empty);
+        return new IMilestoneModel(CreateMilestone(), ProjectModel.Empty);
     }
 
     private static Project CreateProject()
@@ -56,7 +56,7 @@ public static class ModelCreator
             Priority = 1,
             MilestoneId = 1,
             Milestone = CreateMilestone(),
-            ProjectOwner = CreateProjectOwner(),
+            Project = CreateProjectOwner(),
             Subtasks = [],
             Status = 1,
             Progress = 50,
@@ -83,7 +83,7 @@ public static class ModelCreator
             Priority = 2,
             MilestoneId = 1,
             Milestone = CreateMilestone(),
-            ProjectOwner = CreateProjectOwner(),
+            Project = CreateProjectOwner(),
             Subtasks = [],
             Status = 1,
             Progress = 25,
@@ -144,7 +144,7 @@ public static class ModelCreator
             Id = 1,
             Title = "Milestone 1",
             Description = "Description for Milestone 1",
-            ProjectOwner = CreateProjectOwner(),
+            Project = CreateProjectOwner(),
             Deadline = DateTime.Now.AddDays(30),
             IsKey = true,
             IsNotify = false,
@@ -234,9 +234,9 @@ public static class ModelCreator
         };
     }
 
-    private static ProjectOwner CreateProjectOwner()
+    private static Project CreateProjectOwner()
     {
-        return new ProjectOwner
+        return new Project
         {
             Id = 1,
             Title = "Project Owner",
@@ -276,7 +276,7 @@ public static class ModelCreator
             Id = 1,
             Title = "Test Milestone",
             Description = "This is a test milestone",
-            ProjectOwner = CreateProjectOwner(),
+            Project = CreateProjectOwner(),
             Deadline = DateTime.Now.AddDays(15),
             IsKey = false,
             IsNotify = true,

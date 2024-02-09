@@ -17,8 +17,8 @@
     <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
         @if (model is { })
         {
-            <CascadingValue Value="model.Milestones" IsFixed="true" >
-                <StatusColumnsView Model="model.StatusColumns" />
+            <CascadingValue Value="model" IsFixed="true" >
+                <StatusColumnsView Board="model.StatusBoard" />
             </CascadingValue>
         }
     </div>
@@ -44,7 +44,7 @@
 
             model.ModelChanged += Refresh;
 
-            HeaderTitle.Content = GetTitleContent(model.Title);
+            HeaderTitle.Content = GetTitleContent(model.Title!);
         }
     }
 

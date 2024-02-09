@@ -24,21 +24,23 @@
 
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
-    [Parameter] public TaskModel Task { get; set; } = null!;
+    [Parameter] public ITaskModel Task { get; set; } = null!;
 
     private async Task ShowResponsibleSelectionModal()
     {
         var parameters = new ModalParameters
         {
             { "SelectedIds", Task.Responsibles!.Select(x => x.Id).ToList() },
-            { "Project", Task.ProjectOwner }
+            { "Project", Task.Project }
         };
 
         var result = await Modal.Show<ResponsiblesSelectionModal>("Выберите ответственных", parameters, ModalOptions).Result;
 
         if (result.Confirmed)
         {
-            Task.Responsibles = new ObservableCollection<Onlyoffice.Api.Models.IUser>((IEnumerable<Onlyoffice.Api.Models.IUser>)result.Data!);
+            var users = (IEnumerable<Onlyoffice.Api.Models.IUser>)result.Data!;
+            Task.ClearResponsibles();
+            Task.AddRangeResponsibles(users.ToArray());
         }
     }
 }

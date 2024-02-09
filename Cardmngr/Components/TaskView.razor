@@ -29,7 +29,7 @@
         {
             <div class="row py-1">
                 <div class="d-flex justify-content-end">
-                    + @Task.Subtasks.Count подзадачи
+                    + @Task.Subtasks.Count() подзадачи
                 </div>
             </div>
         }
@@ -79,13 +79,18 @@
     private ModalOptions DetailsModal { get; set; } = null!;
 
     [CascadingParameter] IModalService Modal { get; set; } = null!;
-    [CascadingParameter] StatusColumnsModel StatusColumnsModel { get; set; } = null!;
+    [CascadingParameter] IStatusColumnBoard StatusColumnsModel { get; set; } = null!;
+    [Parameter] public ITaskModel Task { get; set; } = null!;
     
     string CssDragStart => isDragged ? "dragged" : "";
     string CssDeadline => Task.IsDeadlineOut() ? "red-border" : "";
 
     private bool isDragged;
-    [Parameter] public TaskModel Task { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        Task.ModelChanged += StateHasChanged;
+    }
 
     private async Task OpenModal()
     {

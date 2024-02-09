@@ -1,6 +1,6 @@
 ﻿@inject AuthenticationStateProvider AuthenticationState
 
-<Badge class="p-0 w-100 overflow-hidden" @onclick="Toggle" Color="BadgeColor">
+<Badge class="p-0 w-100 overflow-hidden" @onclick="() => Project.ToggleMilestone(Milestone)" Color="BadgeColor">
     <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Right">
         <div class="@CssSelected p-1 timeline-milestone">
             @Milestone.Title
@@ -13,11 +13,12 @@
 </div>
 
 @code {
-    private string CssSelected => Milestone.IsSelected ? "selected" : "";
+    private string CssSelected => Project.IsSelected(Milestone) ? "selected" : "";
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
-    [Parameter] public MilestoneModel Milestone { get; set; } = null!;
+    [Parameter] public IMilestoneModel Milestone { get; set; } = null!;
+    [Parameter] public ProjectModel Project { get; set; } = null!;
 
     private BadgeColor BadgeColor
     {
@@ -26,11 +27,6 @@
             if (Milestone.IsClosed()) return BadgeColor.Success;
             return Milestone.IsDeadlineOut() ? BadgeColor.Secondary : BadgeColor.Warning;
         }
-    }
-
-    private void Toggle()
-    {
-        Milestone.Project.Milestones.ToggleMilestone(Milestone);
     }
 
     private async Task ShowDetailsModal()

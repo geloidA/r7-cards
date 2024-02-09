@@ -23,7 +23,7 @@
         "Color": "#00FF00",
         "Order": 2,
         "IsDefault": false,
-        "Available": true
+        "Available": false
     },
     {
         "StatusType": 3,
@@ -36,6 +36,6 @@
         "Color": "#0000FF",
         "Order": 3,
         "IsDefault": false,
-        "Available": true
+        "Available": false
     }
 ]

@@ -28,7 +28,7 @@
                 {
                     <span style="font-size: 14px;">@Task.Deadline?.ToShortDateString()</span>
                 }
-                @if (Task.StatusColumn.StatusType == Status.Open)
+                @if (Task.StatusColumn.Status == Status.Open)
                 {
                     <Icon class="ms-1" Name="IconName.XCircleFill" Color="IconColor.Danger" />
                 }
@@ -46,15 +46,15 @@
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    [Parameter, EditorRequired] public TaskModel Task { get; set; } = null!;
+    [Parameter, EditorRequired] public ITaskModel Task { get; set; } = null!;
 
     private string CompleteProgress
     {
         get
         {
-            if (Task.StatusColumn.StatusType == Status.Closed) return "width: 100%;";
+            if (Task.StatusColumn.Status == Status.Closed) return "width: 100%;";
             if (!Task.Subtasks.Any()) return "width: 0%;";
-            var completeProcentage = (Task.Subtasks.Count(x => x.Status == Status.Closed) * 100.0) / Task.Subtasks.Count;
+            var completeProcentage = (Task.Subtasks.Count(x => x.Status == Status.Closed) * 100.0) / Task.Subtasks.Count();
             return $"width: {completeProcentage.ToString(CultureInfo.InvariantCulture)}%;";
         }
     }

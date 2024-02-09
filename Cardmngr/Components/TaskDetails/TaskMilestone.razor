@@ -34,21 +34,21 @@
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    [Parameter] public TaskModel Task { get; set; } = null!;
+    [Parameter] public ITaskModel Task { get; set; } = null!;
 
     private async Task ShowSelectionModalAsync()
     {
         var parameters = new ModalParameters
         {
-            { "Items", Task.ProjectOwner.Milestones },
+            { "Items", Task.Project.Milestones },
             { "ItemRender", RenderMilestone }
         };
 
-        var res = await Modal.Show<SelectionModal<MilestoneModel>>("Выберите веху", parameters, ModalOptions).Result;
+        var res = await Modal.Show<SelectionModal<IMilestoneModel>>("Выберите веху", parameters, ModalOptions).Result;
 
         if (res.Confirmed)
         {
-            var milestone = (MilestoneModel)res.Data!;
+            var milestone = (IMilestoneModel)res.Data!;
             Task.Milestone = milestone;
         }
     }
@@ -58,7 +58,7 @@
         Task.Milestone = null;
     }
 
-    private static RenderFragment<MilestoneModel> RenderMilestone = milestone =>
+    private static RenderFragment<IMilestoneModel> RenderMilestone = milestone =>
         @<div class="py-1 px-1 d-flex align-items-center">
             <Badge Color="BadgeColor.Warning" IndicatorType="BadgeIndicatorType.RoundedPill"
                 style="max-width: 425px; overflow: hidden;">

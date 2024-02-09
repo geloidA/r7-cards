@@ -1,11 +1,13 @@
 ﻿using Cardmngr.Models;
+using Cardmngr.Models.Interfaces;
+using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Extensions;
 
 public static class ModelsExtensions
 {
-    public static UpdatedStateTask GetUpdateState(this TaskModel val)
+    public static UpdatedStateTask GetUpdateState(this ITaskModel val)
     {
         return new UpdatedStateTask
         {
@@ -20,7 +22,7 @@ public static class ModelsExtensions
         };
     }
 
-    public static UpdatedStateSubtask GetUpdatedState(this SubtaskModel val)
+    public static UpdatedStateSubtask GetUpdatedState(this ISubtaskModel val)
     {
         return new UpdatedStateSubtask
         {
@@ -29,7 +31,7 @@ public static class ModelsExtensions
         };
     }
 
-    public static UpdatedStateMilestone GetUpdatedState(this MilestoneModel val)
+    public static UpdatedStateMilestone GetUpdatedState(this IMilestoneModel val)
     {
         return new UpdatedStateMilestone
         {
@@ -45,14 +47,14 @@ public static class ModelsExtensions
         };
     }
 
-    public static IEnumerable<TaskModel> OrderByProperties(this IEnumerable<TaskModel> tasks) // TODO: TEST
+    public static IEnumerable<ITaskModel> OrderByProperties(this IEnumerable<ITaskModel> tasks) // TODO: TEST
     {
         return tasks
             .OrderByDescending(x => x.IsDeadlineOut())
-            .ThenBy(x => (x.StatusColumn.StatusType, -(int)x.Priority, x.Deadline ?? DateTime.MaxValue));
+            .ThenBy(x => (x.StatusColumn.Status, -(int)x.Priority, x.Deadline ?? DateTime.MaxValue));
     }
 
-    public static IEnumerable<MilestoneModel> OrderByProperties(this IEnumerable<MilestoneModel> milestones) // TODO: TEST
+    public static IEnumerable<IMilestoneModel> OrderByProperties(this IEnumerable<IMilestoneModel> milestones) // TODO: TEST
     {
         return milestones
             .OrderByDescending(x => x.IsDeadlineOut())
@@ -67,5 +69,20 @@ public static class ModelsExtensions
     public static DateTime CheckDeadline(this IWork work)
     {
         return work.Deadline ?? throw new NullReferenceException("Work's Deadline is null");
+    }
+
+    public static Status ToMilestoneStatus(this int statusVal) => statusVal == 0 ? Status.Open : Status.Closed;
+
+    public static bool CanMarkClosed(this ITaskModel task) => task.IsClosed() || task.Subtasks.All(x => x.Status == Status.Closed);
+
+    public static void CloseAllSubtasks(this ITaskModel task)
+    {
+        if (!task.Subtasks.Any())
+            throw new InvalidOperationException("No subtasks found");
+
+        foreach (var subtask in task.Subtasks)
+        {
+            subtask.Close();
+        }
     }
 }

@@ -10,7 +10,7 @@
                 <span>@ProjectModel.Title</span>
                 <Tooltip Title="Кол-во открытых задач">
                     <Badge class="p-1 ms-1 user-select-none" Color="BadgeColor.Info">
-                        @ProjectModel.TaskCount
+                        @ProjectModel.TaskCount()
                     </Badge>
                 </Tooltip>
                 @if (ProjectModel.IsPrivate)
@@ -61,7 +61,7 @@
                         <h6>
                             <Icon Name="IconName.PeopleFill" />
                             Команда 
-                            <Badge class="p-1" Color="BadgeColor.Info">@ProjectModel.TeamCount</Badge>
+                            <Badge class="p-1" Color="BadgeColor.Info">@ProjectModel.Team.Count()</Badge>
                         </h6>
                     </CardTitle>
                     <CardBody class="m-0" style="max-height: 255px; overflow: auto;">

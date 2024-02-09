@@ -27,9 +27,12 @@
                     <ValidationMessage For="() => changingState.Deadline" class="validation-msg" />
                 </Card>
                 <DescriptionChanger Disabled="!Model.CanEdit" Class="mt-2" @bind-Description="changingState.Description" />
-                <div class="mt-4">
-                    <MelistoneShortTasks Milestone="Model" />
-                </div>
+                @if (!IsCreation)
+                {
+                    <div class="mt-4">
+                        <MelistoneShortTasks Milestone="Model" />
+                    </div>
+                }
                 <div class="d-flex mt-2 flex-row">
                     <Button Loading="submiting" LoadingText="@LoadingText" 
                         Size="Size.Small" Disabled="!Model.CanEdit" Type="ButtonType.Submit" 
@@ -75,9 +78,9 @@
     protected override async Task OnDeleteAsync()
     {
         await ProjectApi.DeleteMilestoneAsync(Model.Id);
-        Model.Project.DeleteMilestone(Model);
+        Model.Project.Milestones.Remove(Model);
     }
 
     protected override void HookCreateSubmit(MilestoneModel updatedModel)
-        => Model.Project.AddMilestone(updatedModel);
+        => Model.Project.Milestones.Add(updatedModel);
 }

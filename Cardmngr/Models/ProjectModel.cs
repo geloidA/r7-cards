@@ -1,57 +1,31 @@
-﻿using System.Collections;
-using Cardmngr.Models;
-using Onlyoffice.Api.Common;
+﻿using Cardmngr.Models;
+using Cardmngr.Models.Base;
+using Cardmngr.Models.Interfaces;
 using Onlyoffice.Api.Models;
 using MyTask = Onlyoffice.Api.Models.Task;
 using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
 
 namespace Cardmngr;
 
-public class ProjectModel : ModelBase<Project>, IWorkContainer
+public class ProjectModel : ProjectModelBase
 {
     private readonly MilestoneTimelineModel milestoneTimeline;
     private readonly StatusColumnsModel statusColumns;
     private readonly List<IUser> team;
 
     public ProjectModel(Project project, List<MyTask> tasks, List<MyTaskStatus> statuses, List<Milestone> milestones, IEnumerable<IUser> team)
+        : base(project)
     {
-        milestoneTimeline = new MilestoneTimelineModel(milestones, this);
-        this.team = team.ToList();
-        
-        statusColumns = new StatusColumnsModel(tasks, statuses, this);
+        milestoneTimeline = new MilestoneTimelineModel(milestones, this);        
+        milestoneTimeline.SelectedMilestonesChanged += OnModelChanged;
 
-        Id = project.Id;
-        Title = project.Title ?? string.Empty;
-        Description = project.Description;
-        Status = (ProjectStatus)project.Status;
-        Responsible = new User(project.Responsible!);
-        CanEdit = project.CanEdit;
-        IsPrivate = project.IsPrivate;
-        Updated = project.Updated;
-        CreatedBy = new User(project.CreatedBy!);
-        Created = project.Created;
-        CanDelete = project.CanDelete;
+        this.team = team.ToList();        
+        statusColumns = new StatusColumnsModel(statuses, tasks, this);
     }
 
-    public static ProjectModel Empty => new();
+    public override IStatusColumnBoard StatusBoard => statusColumns;
 
-    private ProjectModel()
-    {
-        milestoneTimeline = new MilestoneTimelineModel(Enumerable.Empty<Milestone>().ToList(), this);
-        team = [];
-        statusColumns = new StatusColumnsModel(Enumerable.Empty<MyTask>().ToList(), Enumerable.Empty<MyTaskStatus>().ToList(), this);
-        Title = string.Empty;
-        Responsible = new User("null");
-    }
-
-    public int Id { get; }
-    public string Title { get; set; }
-    public string? Description { get; set; } 
-    public ProjectStatus Status { get; set; }
-    public IUser Responsible { get; set; } 
-    public bool IsPrivate { get; set; }
-    
-    public IEnumerable<IUser> Team
+    public override IEnumerable<IUser> Team
     {
         get
         {
@@ -60,62 +34,11 @@ public class ProjectModel : ModelBase<Project>, IWorkContainer
         }
     }
 
-    public int TeamCount => team.Count;
+    public override IObservableCollection<IMilestoneModel> Milestones => milestoneTimeline;
 
-    public int TaskCount => statusColumns
-        .Where(x => x.StatusType == Onlyoffice.Api.Common.Status.Open)
-        .Sum(x => x.Count);
+    public bool IsSelected(IMilestoneModel milestone) => milestoneTimeline.IsSelected(milestone);
 
-    public int TaskCountTotal => statusColumns.Sum(x => x.Count);
+    public void ToggleMilestone(IMilestoneModel milestone) => milestoneTimeline.ToggleMilestone(milestone);
 
-    public IEnumerable<TaskModel> Tasks => statusColumns.SelectMany(x => x);
-
-    public MilestoneTimelineModel Milestones => milestoneTimeline;
-    public StatusColumnsModel StatusColumns => statusColumns;
-
-    public DateTime? StartDate => Tasks.Select(x => x.StartDate).Min();
-
-    public DateTime? Deadline => Tasks.Select(x => x.Deadline).Max();
-
-    public bool DeleteMilestone(MilestoneModel milestone)
-    {
-        foreach (var task in Tasks.Where(x => x.Milestone == milestone))
-        {
-            task.Milestone = null;
-        }
-
-        if (milestoneTimeline.DeleteMilestone(milestone))
-        {
-            OnModelChanged();
-            return true;
-        }
-
-        return false;
-    }
-
-    public void AddMilestone(MilestoneModel milestone)
-    {
-        if (milestone.Project != this)
-            throw new ArgumentException("Milestone already belongs to another project");
-        milestoneTimeline.AddMilestone(milestone);
-    }
-
-    public event Action? ModelChanged;
-
-    internal void OnModelChanged() => ModelChanged?.Invoke();
-
-    public IEnumerator<IWork> GetEnumerator()
-    {
-        foreach (var task in Tasks)
-            yield return task;
-    }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-    public bool IsClosed() => Status == ProjectStatus.Closed;
-
-    public override object Clone()
-    {
-        throw new NotImplementedException();
-    }
+    public IEnumerable<IMilestoneModel> SelectedMilestones => milestoneTimeline.SelectedMilestones;
 }

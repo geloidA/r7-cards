@@ -63,13 +63,13 @@
 
     protected override Task<Onlyoffice.Api.Models.Task> OnCreateAsync()
     {
-        return ProjectApi.CreateTaskAsync(Model.ProjectOwner.Id, changingState.GetUpdateState(), 
-            Model.StatusColumn.StatusType, 
+        return ProjectApi.CreateTaskAsync(Model.Project.Id, changingState.GetUpdateState(), 
+            Model.StatusColumn.Status, 
             Model.StatusColumn.Id);
     }
 
     protected override Task<Onlyoffice.Api.Models.Task> OnUpdateAsync()
-        => ProjectApi.UpdateTaskAsync(changingState!.Id, changingState.GetUpdateState());
+        => ProjectApi.UpdateTaskAsync(Model.Id, changingState.GetUpdateState());
 
     protected override async Task OnDeleteAsync()
     {

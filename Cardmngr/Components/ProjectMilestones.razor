@@ -8,7 +8,7 @@
         <span class="text-vertical-1 user-select-none" style="font-size: small; font-weight: bold;">вехи</span>
     </div>
     <div @ref="element" class="col d-flex flex-column overflow-scroll scrollbar-none" >
-        <MilestoneTimeline Style=@($"width: {@timelineScale}px;") Milestones="Project.Milestones" />
+        <MilestoneTimeline Style=@($"width: {@timelineScale}px;") Project="Project" />
     </div>
     <div class="col-md-1 align-self-center d-flex justify-content-end">
         <div class="row">

@@ -1,15 +1,16 @@
 ﻿@using KolBlazor.Components.Timeline
+@using Cardmngr.Models.EventArgs
 
 @inherits KolComponentBase
 
 <div class="timeline-animation scrollbar-none" style="@Style">
     <KolTimeline ShowTodayLine="true" Class="scrollbar-none" >
-        @if (Milestones is { })
+        @if (Project.Milestones is { })
         {
-            foreach (var milestone in Milestones)
+            foreach (var milestone in Project.Milestones)
             {
                 <KolTimelineItem @key="milestone.Id" End="milestone.CheckDeadline()" Start="milestone.CheckStart()">
-                    <TimelineMilestone Milestone="milestone" />
+                    <TimelineMilestone Milestone="milestone" Project="Project" />
                 </KolTimelineItem>
             }
         }
@@ -17,5 +18,32 @@
 </div>
 
 @code {
-    [Parameter] public MilestoneTimelineModel Milestones { get; set; } = null!;
+    [Parameter] public ProjectModel Project { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        foreach (var task in Project.Tasks())
+            task.ModelChanged += Refresh;
+
+        Project.Milestones.CollectionChanged += _ => Refresh();
+
+        foreach (var statusColumn in Project.StatusBoard)
+        {
+            statusColumn.CollectionChanged += SubscribeRefreshHandler;
+        }
+    }
+
+    void Refresh() => StateHasChanged();
+
+    private void SubscribeRefreshHandler(CollectionEventArgs<ITaskModel> args)
+    {
+        if (args.Item.Milestone != null) Refresh();
+
+        if (args.Action == CollectionAction.Add)
+        {
+            args.Item.ModelChanged += Refresh;
+        }
+    }
 }

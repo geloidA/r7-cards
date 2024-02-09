@@ -1,4 +1,4 @@
-﻿namespace Cardmngr.Models;
+﻿namespace Cardmngr.Models.Interfaces;
 
 public interface IWorkContainer : IWork, IEnumerable<IWork>
 {

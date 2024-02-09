@@ -10,14 +10,14 @@
     @if (isCollapsed)
     {
         <div class="d-flex flex-column mt-1">            
-            <Badge class="align-self-center" Color="BadgeColor.Success">@TaskStatusModel.Count</Badge>
+            <Badge class="align-self-center" Color="BadgeColor.Success">@StatusColumn.Count</Badge>
             <span class="mt-2 text-vertical ">
-                @TaskStatusModel.Title
+                @StatusColumn.Title
             </span>
             <div class="mt-2 align-self-center">
-                @if (TaskStatusModel.Image is { })
+                @if (StatusColumn.Image is { })
                 {
-                    <img src=@($"data:{TaskStatusModel.ImageType};base64, {TaskStatusModel.Image}")
+                    <img src=@($"data:{StatusColumn.ImageType};base64, {StatusColumn.Image}")
                         style="max-width: 18px;">
                 }
             </div>
@@ -29,30 +29,33 @@
             <div class="col-md-10 align-self-baseline" >
                 <div class="row">
                     <div class="col-md-10">
-                        <Badge Color="BadgeColor.Success">@TaskStatusModel.Count</Badge>
+                        <Badge Color="BadgeColor.Success">@StatusColumn.Count</Badge>
                         <span class="ms-1 user-select-none">
-                            @TaskStatusModel.Title
+                            @StatusColumn.Title
                         </span>
-                        @if (TaskStatusModel.Image is { })
+                        @if (StatusColumn.Image is { })
                         {
-                            <img src=@($"data:{TaskStatusModel.ImageType};base64, {TaskStatusModel.Image}")
+                            <img src=@($"data:{StatusColumn.ImageType};base64, {StatusColumn.Image}")
                                 style="max-width: 18px;">
                         }
                     </div>
                 </div>
             </div>
-            <div class="col-md-2 hidden">
-                @DropDown
-            </div>
+            @if (StatusColumn.Available)
+            {
+                <div class="col-md-2 hidden">
+                    @DropDown
+                </div>
+            }
         </div>
-        @if (MilestoneTimelineModel?.SelectedMilestones.Any() ?? false)
+        @if (Project?.SelectedMilestones.Any() ?? false)
         {
             <div class="mb-1 d-flex justify-content-center fw-light" style="font-size: small;">
-                @TaskStatusModel.Where(FilterByMilestones).Count() результатов
+                @StatusColumn.Where(FilterByMilestones).Count() результатов
             </div>
         }
         <ul class="card-container scrollbar-none">
-            @foreach (var task in TaskStatusModel.Where(FilterByMilestones))
+            @foreach (var task in StatusColumn.Where(FilterByMilestones))
             {
                 <TaskView Task="task" @key="task.Id" />
             }
@@ -70,26 +73,31 @@
     [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
-    [CascadingParameter] StatusColumnsModel StatusColumnsModel { get; set; } = null!;
-    [CascadingParameter] MilestoneTimelineModel MilestoneTimelineModel { get; set; } = null!;
-    [Parameter] public TaskStatusColumn TaskStatusModel { get; set; } = null!;
+    [CascadingParameter] IStatusColumnBoard StatusColumnBoard { get; set; } = null!;
+    [CascadingParameter] ProjectModel Project { get; set; } = null!;
+    [Parameter] public IStatusColumnModel StatusColumn { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        StatusColumn.ModelChanged += StateHasChanged;
+    }
 
     private async Task OnDrop()
     {
         highlighted = false;
-        var dropped = StatusColumnsModel.LastDraggedTask;
-        if (dropped is { } && !ReferenceEquals(dropped.StatusColumn, TaskStatusModel))
+        var dropped = StatusColumnBoard.LastDraggedTask;
+        if (dropped is { } && !ReferenceEquals(dropped.StatusColumn, StatusColumn))
         {
-            if (TaskStatusModel.StatusType == Status.Closed && !dropped.CanMarkClosed)
+            if (StatusColumn.Status == Status.Closed && !dropped.CanMarkClosed())
             {
                 var modalRes = await ShowCloseCardConfirmModal();
                 if (modalRes.Cancelled) return;
                 dropped.CloseAllSubtasks();
             }
             
-            await ProjectApi.UpdateTaskStatusAsync(dropped.Id, TaskStatusModel.StatusType, TaskStatusModel.Id);
-            dropped.StatusColumn = TaskStatusModel;
-            StatusColumnsModel.ClearDraggedTask();
+            await ProjectApi.UpdateTaskStatusAsync(dropped.Id, StatusColumn.Status, StatusColumn.Id);
+            dropped.StatusColumn = StatusColumn;
+            StatusColumnBoard.UnsetDraggedTask();
         }
     }
 
@@ -103,17 +111,17 @@
     {
         var parameters = new ModalParameters
         {
-            { "Model", new TaskModel(new MyTask { CanEdit = true }, TaskStatusModel) },
+            { "Model", new TaskModel(new MyTask { CanEdit = true }, StatusColumn) },
             { "IsCreation", true }
         };
 
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsOptions).Result;
     }
 
-    private bool FilterByMilestones(TaskModel task)
+    private bool FilterByMilestones(ITaskModel task)
     {
-        return !MilestoneTimelineModel.SelectedMilestones.Any() || 
-            MilestoneTimelineModel.SelectedMilestones.Any(x => x.Id == task.Milestone?.Id);
+        return !Project.SelectedMilestones.Any() || 
+            Project.SelectedMilestones.Any(x => x.Id == task.Milestone?.Id);
     }
 
     private RenderFragment DropDown => 

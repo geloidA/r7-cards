@@ -1,9 +1,9 @@
-﻿namespace Cardmngr.Models;
+﻿namespace Cardmngr.Models.Interfaces;
 
 public interface IWork
 {
-    public DateTime? StartDate { get; }
-    public DateTime? Deadline { get; }
+    DateTime? StartDate { get; }
+    DateTime? Deadline { get; }
     bool IsClosed();
 }
 

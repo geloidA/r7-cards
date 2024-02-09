@@ -1,13 +1,13 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using Cardmngr.Components.Modals.ConfirmModals;
-using Cardmngr.Models;
+using Cardmngr.Models.Interfaces;
 using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.Modals.DetailModals;
 
 public abstract class ModelFormComponent<TModel, TApiModel> : ValidationComponent
-    where TModel : ModelBase<TApiModel>
+    where TModel : class, IEditableModel<TApiModel>
 {
     protected bool submiting;
     protected TModel changingState = null!;
@@ -20,14 +20,20 @@ public abstract class ModelFormComponent<TModel, TApiModel> : ValidationComponen
 
     protected override void OnInitialized()
     {
-        changingState = (TModel)Model.Clone();
+        changingState = (TModel)Model.EditableModel;
     }
 
     protected async Task Submit()
     {
         submiting = true;
 
-        var source = IsCreation ? await OnCreateAsync() : await OnUpdateAsync();        
+        var source = IsCreation ? await OnCreateAsync() : await OnUpdateAsync();
+
+        if (source is not { })
+        {
+            throw new NullReferenceException("Source is null");
+        }
+
         Model.Update(source);
 
         if (IsCreation) HookCreateSubmit(Model);

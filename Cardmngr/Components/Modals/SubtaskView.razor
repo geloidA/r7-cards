@@ -21,15 +21,15 @@
         {
             <Tool IconName="IconName.CheckCircleFill" IconColor="IconColor.Success" 
                 IconSize="IconSize.x5" TooltipPlacement="TooltipPlacement.Left"
-                TooltipTitle="Отметить невыполненым" Disabled="Task.StatusColumn.StatusType == Status.Closed || !Subtask.CanEdit"
-                OnClick="SwitchSubtaskStatus" DisabledTitle="@(Task.StatusColumn.StatusType == Status.Closed ? "Задача закрыта" : "Недоступно")"/>
+                TooltipTitle="Отметить невыполненым" Disabled="Task.StatusColumn.Status == Status.Closed || !Subtask.CanEdit"
+                OnClick="SwitchSubtaskStatus" DisabledTitle="@(Task.StatusColumn.Status == Status.Closed ? "Задача закрыта" : "Недоступно")"/>
             <s class="ms-2 text-secondary">
                 <i>@Subtask.Title</i>
             </s>
         }
     </div>
     <div class="col-md-4 d-flex justify-content-center">
-        <ResponsibleSelection @bind-Responsible="Subtask.Responsible" EditMode="isEditMode" Responsibles="Task.ProjectOwner.Team" />
+        <ResponsibleSelection @bind-Responsible="Subtask.Responsible" EditMode="isEditMode" Responsibles="Task.Project.Team" />
     </div>
     <div class="col-md-2 d-flex justify-content-end">
         @if (Subtask.Status != Status.Closed && Subtask.CanEdit)
@@ -69,23 +69,25 @@
 
 @code {
     private bool isEditMode;
-    private string subtaskTitle = null!;
+    private string? subtaskTitle;
 
     [CascadingParameter] SubtaskView? LastEditingSubtask { get; set; }
-    [Parameter] public SubtaskModel Subtask { get; set; } = null!;
-    [Parameter] public TaskModel Task { get; set; } = null!;
+    [Parameter] public ISubtaskModel Subtask { get; set; } = null!;
+    [Parameter] public ITaskModel Task { get; set; } = null!;
     [Parameter] public string UserId { get; set; } = null!;
 
     [Parameter] public EventCallback<SubtaskView> EditModeChanged { get; set; }
 
     protected override void OnInitialized()
     {
-        subtaskTitle = Subtask.Title!;
+        subtaskTitle = Subtask.Title;
     }
 
     private async Task SwitchSubtaskStatus()
     {
-        Subtask.Status = Subtask.Status == Status.Open ? Status.Closed : Status.Open;
+        if(Subtask.Status == Status.Open) Subtask.Close();
+        else Subtask.Open();
+
         if (isEditMode) isEditMode = false;
         await ProjectApi.UpdateSubtaskStatusAsync(Subtask.TaskId, Subtask.Id, Subtask.Status);
     }
@@ -93,7 +95,7 @@
     private async Task DeleteSubtask()
     {
         await ProjectApi.DeleteSubtaskAsync(Subtask.TaskId, Subtask.Id);
-        Task.Subtasks!.Remove(Subtask);
+        Task.RemoveSubtask(Subtask);
     }
 
     private async Task ChangeEditMode(bool notify)

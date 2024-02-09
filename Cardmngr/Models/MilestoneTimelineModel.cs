@@ -1,53 +1,61 @@
 ﻿using System.Collections;
+using Cardmngr.Models.EventArgs;
+using Cardmngr.Models.Interfaces;
 using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Models;
 
-public class MilestoneTimelineModel(IEnumerable<Milestone> milestones, ProjectModel project) : IEnumerable<MilestoneModel>
+internal class MilestoneTimelineModel(IEnumerable<Milestone> milestones, IProjectModel project) : IObservableCollection<IMilestoneModel>
 {
-    private readonly ProjectModel project = project;
-    private readonly HashSet<MilestoneModel> milestones = milestones
-        .Select(m => new MilestoneModel(m, project))
-        .ToHashSet();
+    private readonly Dictionary<IMilestoneModel, bool> timelineItems = milestones
+        .Select(m => new KeyValuePair<IMilestoneModel, bool>(new MilestoneModel(m, project), false))
+        .ToDictionary();
 
-    public void AddMilestone(MilestoneModel milestone) 
+    public void ToggleMilestone(IMilestoneModel milestone)
     {
-        if (milestones.Contains(milestone))
-            throw new InvalidOperationException("Milestone already exists");
-        
-        milestones.Add(milestone);
+        if (!timelineItems.TryGetValue(milestone, out bool value)) throw new InvalidOperationException("Milestone does not exist");
 
-        project.OnModelChanged();
+        timelineItems[milestone] = !value;
+
+        OnSelectedMilestonesChanged();
     }
 
-    public bool DeleteMilestone(MilestoneModel milestone)
-    {
-        if (milestones.Remove(milestone))
-        {
-            project.OnModelChanged();
-            return true;
-        }
+    public IEnumerable<IMilestoneModel> SelectedMilestones => timelineItems.Where(x => x.Value).Select(x => x.Key);
 
-        return false;
-    }
+    public bool IsSelected(IMilestoneModel milestone) => timelineItems[milestone];
 
-    public void ToggleMilestone(MilestoneModel milestone)
-    {
-        if (!milestones.Contains(milestone)) throw new InvalidOperationException("Milestone does not exist");
-
-        milestone.ToggleSelection(); // TODO: fix
-
-        project.OnModelChanged();
-        SelectedMilestonesChanged?.Invoke();
-    }
-
-    public int Count => milestones.Count;
+    public int Count => timelineItems.Count;
     
     public event Action? SelectedMilestonesChanged;
+    public event Action<CollectionEventArgs<IMilestoneModel>>? CollectionChanged;
+    
+    private void OnCollectionChanged(IMilestoneModel item, CollectionAction action) 
+        => CollectionChanged?.Invoke(new CollectionEventArgs<IMilestoneModel>(this, item, action));
 
-    public IEnumerable<MilestoneModel> SelectedMilestones => milestones.Where(x => x.IsSelected);
+    private void OnSelectedMilestonesChanged() => SelectedMilestonesChanged?.Invoke();
 
-    public IEnumerator<MilestoneModel> GetEnumerator() => milestones.GetEnumerator();
+
+    public IEnumerator<IMilestoneModel> GetEnumerator() 
+    {
+        foreach (var item in timelineItems.Keys)
+            yield return item;
+    }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public void Add(IMilestoneModel item)
+    {
+        timelineItems[item] = false;
+        OnCollectionChanged(item, CollectionAction.Add);
+    }
+
+    public bool Remove(IMilestoneModel item)
+    {
+        if (timelineItems.Remove(item))
+        {
+            OnCollectionChanged(item, CollectionAction.Remove);
+            return true;
+        }
+        return false;
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Cardmngr.Models;
+using Cardmngr.Models.Interfaces;
 
 namespace Cardmngr;
 
