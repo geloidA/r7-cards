@@ -15,7 +15,7 @@ public interface IProjectApi
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/@self"/>
     /// </remarks>
     /// <returns>Projects that belongs to current user</returns>
-    IAsyncEnumerable<Project> GetUserProjectsAsync();
+    IAsyncEnumerable<ProjectInfo> GetUserProjectsAsync();
 
     /// <summary>
     /// Returns a list of all the portal projects with the base information about them.

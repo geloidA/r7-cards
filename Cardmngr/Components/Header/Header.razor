@@ -12,7 +12,10 @@
         </Button>
     </div>
     <div class="col-md-9">
-        @HeaderTitle.Content
+        @if (userProjects is { })
+        {
+            <ProjectNavigator Projects="userProjects" />
+        }
     </div>
     <div class="col-md-2 d-flex justify-content-end">
         <Toolbar />
@@ -24,8 +27,8 @@
 </div>
 
 @code {
-    private List<Onlyoffice.Api.Models.Project> userProjects = null!;
-    private Onlyoffice.Api.Models.UserProfile? currentUser;
+    private List<ProjectInfo> userProjects = null!;
+    private UserProfile? currentUser;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
@@ -40,7 +43,7 @@
         if (AuthenticationState is { })
         {
             var provider = AuthenticationState.ToCookieProvider();
-            currentUser = JsonSerializer.Deserialize<Onlyoffice.Api.Models.UserProfile>(provider["Data"]);
+            currentUser = JsonSerializer.Deserialize<UserProfile>(provider["Data"]);
         }
     }
 

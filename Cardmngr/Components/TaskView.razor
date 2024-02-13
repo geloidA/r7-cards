@@ -1,10 +1,7 @@
 ﻿@using Onlyoffice.Api.Common
 @using System.Security.Claims
 
-@inject IProjectApi ProjectApi
-@inject AuthenticationStateProvider AuthenticationState
-
-<li class="my-card @CssDragStart @CssDeadline" @onclick="OpenModal" draggable="@Task.CanEdit.ToString()"
+<li class="my-card @CssDragStart @CssDeadline" @onclick="OpenModal" draggable="@((!IsFeedback && Task.CanEdit).ToString())"
     @ondragstart="OnDragStart" @ondragend="() => isDragged = false" >
     <div class="container py-1 px-4 default-text" style="min-height: 100px;">
         <div class="row py-1">
@@ -80,7 +77,9 @@
 
     [CascadingParameter] IModalService Modal { get; set; } = null!;
     [CascadingParameter] IStatusColumnBoard StatusColumnsModel { get; set; } = null!;
+    [CascadingParameter] IProjectApi ProjectApi { get; set; } = null!;
     [Parameter] public ITaskModel Task { get; set; } = null!;
+    [Parameter] public bool IsFeedback { get; set; }
     
     string CssDragStart => isDragged ? "dragged" : "";
     string CssDeadline => Task.IsDeadlineOut() ? "red-border" : "";
@@ -96,7 +95,9 @@
     {
         var parameters = new ModalParameters
         {
-            { "Model", Task }
+            { "Model", Task },
+            { "IsFeedback", IsFeedback },
+            { "ProjectApi", ProjectApi }
         };
 
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsModal).Result;

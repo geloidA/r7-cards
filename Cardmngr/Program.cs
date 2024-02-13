@@ -14,8 +14,6 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-var config = builder.Configuration;
-
 builder.Services
     .AddScoped<DragModule>()
     .AddScoped<DragEventModule>()
@@ -34,6 +32,8 @@ builder.Services
     .AddOptions();
 
 builder.Services.AddMyCascadingValues();
+
+var config = builder.Configuration;
 
 builder.Services
     .AddHttpClient("onlyoffice", opt => opt.BaseAddress = new Uri(config["proxy-url"] 

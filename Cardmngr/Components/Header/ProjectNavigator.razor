@@ -1,0 +1,62 @@
+﻿@inject NavigationManager NavigationManager
+
+@inherits KolComponentBase
+
+@if (showTitle && Projects is { })
+{
+    <Dropdown class="@Class" style="@Style" Size="Size.None">
+        <DropdownToggleButton class="fw-bold" Color="ButtonColor.None">
+            @selectedProjectTitle
+        </DropdownToggleButton>
+        <DropdownMenu class="overflow-scroll scroll-hidden" style="max-height: 500px;">
+            @foreach (var project in Projects)
+            {
+                <DropdownItem @onclick="() => NavigateTo(project)"
+                    Type="ButtonType.Link">@project.Title</DropdownItem>
+            }
+        </DropdownMenu>
+    </Dropdown>
+}
+
+@code {
+    Dictionary<int, ProjectInfo> projectsByIds = [];
+    bool showTitle;
+    string? selectedProjectTitle;
+    [Parameter] public IEnumerable<ProjectInfo> Projects { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        projectsByIds = Projects.ToDictionary(x => x.Id, x => x);
+
+        UpdateStateByLocation(NavigationManager.Uri);
+        NavigationManager.LocationChanged += (_, args) => UpdateStateByLocation(args.Location);
+    }
+
+    private void UpdateStateByLocation(string uri)
+    {
+        showTitle = IsProjectUri(uri);
+        if (showTitle)
+        {
+            var projectInfo = projectsByIds[GetIdByUrl(uri)];
+            selectedProjectTitle = projectInfo.Title;
+        }
+        StateHasChanged();
+    }
+
+    private void NavigateTo(ProjectInfo project)
+    {
+        selectedProjectTitle = project.Title;
+        NavigationManager.NavigateTo($"/project/{project.Id}");
+    }
+
+    private static bool IsProjectUri(string uri)
+    {
+        return uri.Contains("/project/");
+    }
+
+    private static int GetIdByUrl(string uri)
+    {
+        var lastSlashIndex = uri.LastIndexOf('/');
+        return int.Parse(uri.Substring(lastSlashIndex + 1));
+    }
+}

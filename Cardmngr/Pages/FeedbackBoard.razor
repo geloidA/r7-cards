@@ -4,10 +4,18 @@
 {
     <div class="d-flex position-relative mb-5" style="flex: auto !important;">        
         <div class="d-flex flex-column">
-            <StatusColumnsView Board="model.StatusBoard" />
+            <CascadingValue Value="ProjectApi" IsFixed="true">                
+                <StatusColumnsView IsFeedback="true" Board="model.StatusBoard" />
+            </CascadingValue>
         </div>
         <div>
-            Убедительная 
+            <p>Эта доска предназначена для сбора предложений по улучшению <br> 
+            или созданию новых возможностей программы.</p>
+            <p>Также, если Вы нашли ошибку в программе, опишите ее здесь: укажите, что <br>
+            произошло, где она возникла, и какие Ваши действия ее вызвавали.</p>
+            <Callout Heading="Примечание">
+                Перед созданием предложения убедитесь нет ли похожей карточки.
+            </Callout>
         </div>
     </div>
 }

@@ -17,10 +17,10 @@ public static class ModelCreator
         return new ProjectModel(project, tasks, statuses, milestones, team);
     }
 
-    public static IMilestoneModel GetMilestone()
-    {
-        return new IMilestoneModel(CreateMilestone(), ProjectModel.Empty);
-    }
+    // public static IMilestoneModel GetMilestone()
+    // {
+    //     return new IMilestoneModel(CreateMilestone(), ProjectModel.Empty);
+    // }
 
     private static Project CreateProject()
     {
@@ -56,7 +56,6 @@ public static class ModelCreator
             Priority = 1,
             MilestoneId = 1,
             Milestone = CreateMilestone(),
-            Project = CreateProjectOwner(),
             Subtasks = [],
             Status = 1,
             Progress = 50,
@@ -83,7 +82,6 @@ public static class ModelCreator
             Priority = 2,
             MilestoneId = 1,
             Milestone = CreateMilestone(),
-            Project = CreateProjectOwner(),
             Subtasks = [],
             Status = 1,
             Progress = 25,

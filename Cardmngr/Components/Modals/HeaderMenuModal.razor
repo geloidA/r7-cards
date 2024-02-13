@@ -2,7 +2,8 @@
 @inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthenticationState
 
-<Cardmngr.Components.Modals.MyBlazored.Offcanvas @ref="currentModal" Class="my-offcanvas my-offcanvas-left" Style="max-width: 300px;">
+<Cardmngr.Components.Modals.MyBlazored.Offcanvas @ref="currentModal" ShowCloseBtn="false"
+    Class="my-offcanvas my-offcanvas-left" Style="max-width: 300px;">
     <OffcanvasHeader>
         <a class="text-dark fw-bold fs-4 ms-3" href="/">
             <Icon Name="IconName.Stack" />
@@ -65,5 +66,5 @@
         }
     }
 
-    [Parameter] public List<Onlyoffice.Api.Models.Project> UserProjects { get; set; } = null!;
+    [Parameter] public List<ProjectInfo> UserProjects { get; set; } = null!;
 }

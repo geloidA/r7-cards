@@ -23,10 +23,10 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         }
     }
 
-    public async IAsyncEnumerable<Project> GetUserProjectsAsync()
+    public async IAsyncEnumerable<ProjectInfo> GetUserProjectsAsync()
     {
-        var projectDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<ProjectDao>("api/project/@self"));
-        await foreach (var project in projectDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Project>())
+        var projectDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<ProjectInfoDao>("api/project/@self"));
+        await foreach (var project in projectDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<ProjectInfo>())
         {
             yield return project;
         }

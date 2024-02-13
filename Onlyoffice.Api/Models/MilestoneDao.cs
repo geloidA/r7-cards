@@ -53,11 +53,3 @@ public class UpdatedStateMilestone
     public string? Responsible { get; set; }
     public bool NotifyResponsible { get; set; }
 }
-
-public class ProjectOwner
-{
-    public int Id { get; set; }
-    public string? Title { get; set; }
-    public int Status { get; set; }
-    public bool IsPrivate { get; set; }
-}

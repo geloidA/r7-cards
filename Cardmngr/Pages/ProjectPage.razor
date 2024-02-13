@@ -1,10 +1,5 @@
 ﻿@page "/project/{ProjectId:int}"
 
-@implements IDisposable
-
-@using Onlyoffice.Api.Models
-@using Task = System.Threading.Tasks.Task
-
 @inherits AuthorizedPage
 
 @inject IProjectApi ProjectApi
@@ -17,7 +12,7 @@
     <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
         @if (model is { })
         {
-            <CascadingValue Value="model" IsFixed="true" >
+            <CascadingValue Value="ProjectApi" IsFixed="true">
                 <StatusColumnsView Board="model.StatusBoard" />
             </CascadingValue>
         }
@@ -28,7 +23,6 @@
     private ProjectModel? model;
 
     [Parameter] public int? ProjectId { get; set; }
-    [CascadingParameter] HeaderTitle HeaderTitle { get; set; } = null!;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -43,20 +37,7 @@
             model = new ProjectModel(await project, await tasks, await statuses, await milestones, await team);
 
             model.ModelChanged += Refresh;
-
-            HeaderTitle.Content = GetTitleContent(model.Title!);
         }
     }
-
-    private RenderFragment<string> GetTitleContent = title => 
-        @<div class="fw-bold">
-            @title
-        </div>;
-
     private void Refresh() => StateHasChanged();
-
-    public void Dispose()
-    {
-        HeaderTitle.Content = null;
-    }
 }

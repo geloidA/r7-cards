@@ -27,7 +27,7 @@
     private int totalCount => Responsibles.Count();
 
     [Parameter]
-    public IEnumerable<Onlyoffice.Api.Models.IUser> Responsibles { get; set; } = null!;
+    public IEnumerable<IUser> Responsibles { get; set; } = null!;
 
     [Parameter]
     public int ImageSize { get; set; } = 32;

@@ -1,6 +1,4 @@
-﻿@inject IProjectApi ProjectApi
-
-@inherits ModelFormComponent<TaskModel, Onlyoffice.Api.Models.Task>
+﻿@inherits ModalFormComponent<TaskModel, MyTask>
 
 @using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas
 
@@ -14,28 +12,34 @@
             </OffcanvasHeader>
             <ValidationMessage For="() => changingState.Title" class="ms-3 validation-msg" />
             <OffcanvasBody Class="d-flex flex-column form-group">
-                <TaskPriorityChanger Task="changingState" />
-                <Card class="p-1 mt-2">
-                    <DateChanger Title="Дата начала:" Disabled="!Model.CanEdit" 
-                        EmptyText="Не установлен" @bind-Date="changingState.StartDate" />
-                </Card>
-                <Card class="p-1 mt-2">
-                    <DateChanger Title="Крайний срок" InputId="Deadline" Disabled="!Model.CanEdit" 
-                        EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
-                    <ValidationMessage For="() => changingState.Deadline" class="validation-msg" />
-                </Card>
+                @if (!IsFeedback)
+                {
+                    <TaskPriorityChanger Task="changingState" />
+                    <Card class="p-1 mt-2">
+                        <DateChanger Title="Дата начала:" Disabled="!Model.CanEdit" 
+                            EmptyText="Не установлен" @bind-Date="changingState.StartDate" />
+                    </Card>
+                    <Card class="p-1 mt-2">
+                        <DateChanger Title="Крайний срок" InputId="Deadline" Disabled="!Model.CanEdit" 
+                            EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
+                        <ValidationMessage For="() => changingState.Deadline" class="validation-msg" />
+                    </Card>
+                }
                 <div class="pt-2">
                     <DescriptionChanger @bind-Description="changingState.Description" Disabled="!Model.CanEdit" />
                 </div>
-                <div class="pb-2 pt-2">                 
-                    <TaskResponsibles Task="changingState" />
-                </div>
-                <div class="pb-2">
-                    <TaskMilestone Task="changingState" />
-                </div>
-                @if (!IsCreation)
+                @if (!IsFeedback)
                 {
-                    <TaskSubtasks Task="changingState" />
+                    <div class="pb-2 pt-2">
+                        <TaskResponsibles Task="changingState" />
+                    </div>
+                    <div class="pb-2">
+                        <TaskMilestone Task="changingState" />
+                    </div>
+                    @if (!IsCreation)
+                    {
+                        <TaskSubtasks Task="changingState" />
+                    }
                 }
                 <div class="row pt-2 d-flex justify-content-end">
                     <div class="d-flex flex-row">
@@ -60,6 +64,9 @@
 
 @code {
     private Offcanvas currentModal = null!;
+
+    [Parameter] public bool IsFeedback { get; set; }
+    [Parameter] public IProjectApi ProjectApi { get; set; } = null!;
 
     protected override Task<Onlyoffice.Api.Models.Task> OnCreateAsync()
     {

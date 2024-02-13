@@ -3,6 +3,7 @@ using FluentAssertions;
 
 using MyTask = Onlyoffice.Api.Models.Task;
 using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
+using Cardmngr.Extensions;
 
 namespace Cardmngr.Tests.Utils;
 
@@ -61,7 +62,7 @@ public class ProjectModelBuilderTests
         var result = builder.WithTask(task);
 
         // Assert
-        Assert.NotNull(result.Build().Tasks.Single(x => x.Id == 3));
+        Assert.NotNull(result.Build().Tasks().Single(x => x.Id == 3));
     }
 
     [Fact]
@@ -75,7 +76,7 @@ public class ProjectModelBuilderTests
         var result = builder.WithStatus(status);
 
         // Assert
-        Assert.NotNull(result.Build().StatusColumns.Single(x => x.Id == 3));
+        Assert.NotNull(result.Build().StatusBoard.Single(x => x.Id == 3));
     }
 
     [Fact]
@@ -146,7 +147,7 @@ public class ProjectModelBuilderTests
         var result = builder.WithTasks(tasks);
 
         // Assert
-        Assert.NotNull(result.Build().Tasks.Single(x => x.Id == 3));
+        Assert.NotNull(result.Build().Tasks().Single(x => x.Id == 3));
     }
 
     [Fact]
@@ -160,7 +161,7 @@ public class ProjectModelBuilderTests
         var result = builder.WithStatuses(statuses);
 
         // Assert
-        var columns = result.Build().StatusColumns;
+        var columns = result.Build().StatusBoard;
         Assert.NotNull(columns.Single(x => x.Id == 3));
     }
 

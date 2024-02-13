@@ -10,7 +10,7 @@ namespace Cardmngr;
 public class ProjectModel : ProjectModelBase
 {
     private readonly MilestoneTimelineModel milestoneTimeline;
-    private readonly StatusColumnsModel statusColumns;
+    private readonly StatusColumnBoard statusColumns;
     private readonly List<IUser> team;
 
     public ProjectModel(Project project, List<MyTask> tasks, List<MyTaskStatus> statuses, List<Milestone> milestones, IEnumerable<IUser> team)
@@ -19,8 +19,8 @@ public class ProjectModel : ProjectModelBase
         milestoneTimeline = new MilestoneTimelineModel(milestones, this);        
         milestoneTimeline.SelectedMilestonesChanged += OnModelChanged;
 
-        this.team = team.ToList();        
-        statusColumns = new StatusColumnsModel(statuses, tasks, this);
+        this.team = team.ToList();
+        statusColumns = new StatusColumnBoard(statuses, tasks, this);
     }
 
     public override IStatusColumnBoard StatusBoard => statusColumns;

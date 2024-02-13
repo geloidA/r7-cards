@@ -28,7 +28,7 @@ public class Task
     public int Priority { get; set; }
     public int? MilestoneId { get; set; }
     public Milestone? Milestone { get; set; }
-    public ProjectOwner? ProjectOwner { get; set; }
+    public ProjectInfo? ProjectOwner { get; set; }
     public List<Subtask>? Subtasks { get; set; }
     public int Status { get; set; }
     public int? Progress { get; set; }

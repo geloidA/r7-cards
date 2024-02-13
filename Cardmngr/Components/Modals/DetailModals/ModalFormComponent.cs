@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.Modals.DetailModals;
 
-public abstract class ModelFormComponent<TModel, TApiModel> : ValidationComponent
+public abstract class ModalFormComponent<TModel, TApiModel> : ValidationComponent
     where TModel : class, IEditableModel<TApiModel>
 {
     protected bool submiting;

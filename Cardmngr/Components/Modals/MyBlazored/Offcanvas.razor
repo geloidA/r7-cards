@@ -2,7 +2,13 @@
 @inherits OffcanvasBase
 
 <div class="offcanvas @DelayedShow @CssPlacement @Class" style="@Style" tabindex="-1" id="offcanvasWithBackdrop" >
-    <div style="overflow-y: auto; overflow-x: hidden;">
+    @if (ShowCloseBtn) 
+    {
+        <div class="position-absolute clickable w-100 closer" @onclick="CloseAsync" >
+            <Icon class="ms-1" Name="IconName.ArrowLeftCircle" />
+        </div>;
+    }
+    <div style="overflow-y: auto; overflow-x: hidden;" class="mt-2">
         @ChildContent
     </div>
 </div>
@@ -13,8 +19,8 @@
 
     [CascadingParameter] BlazoredModalInstance CurrentModel { get; set; } = null!;
 
-    [Parameter] public MyOffcanvasPlacement Placement { get; set; } 
-
+    [Parameter] public MyOffcanvasPlacement Placement { get; set; }
+    [Parameter] public bool ShowCloseBtn { get; set; } = true;
 
     public async Task CloseAsync() => await CloseAsync(ModalResult.Ok());
 
@@ -35,7 +41,7 @@
         await CurrentModel.CloseAsync(ModalResult.Cancel());
     }
 
-    private async Task ToggleDelayShowAsync() // need for correct animation showing
+    private async Task ToggleDelayShowAsync() // need for animation showing
     {
         await System.Threading.Tasks.Task.Delay(1);
         DelayedShow = string.IsNullOrEmpty(DelayedShow) ? "show" : "";

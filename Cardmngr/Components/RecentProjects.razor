@@ -1,8 +1,4 @@
-﻿@using Onlyoffice.Api.Models
-@using Task = System.Threading.Tasks.Task
-@using TaskStatus = Onlyoffice.Api.Models.TaskStatus
-
-@inject IProjectApi ProjectApi
+﻿@inject IProjectApi ProjectApi
 
 <h5 class="text-dark fw-lighter mb-4">Последние проекты</h5>
 
@@ -29,7 +25,7 @@
 }
 
 @code {
-    IEnumerable<Project> projects = null!;
+    IEnumerable<ProjectInfo> projects = null!;
 
     [Parameter] public int MaxCount { get; set; } = 1;
 

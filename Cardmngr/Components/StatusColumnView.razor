@@ -1,15 +1,10 @@
-﻿@using TypeStatus = Onlyoffice.Api.Models.TaskStatus
-@using MyTask = Onlyoffice.Api.Models.Task
-
-@inject IProjectApi ProjectApi
-
-<div class="board-column @CssDragOver @CssCollapsed user-select-none" @ondrop="OnDrop"
+﻿<div class="board-column @CssDragOver @CssCollapsed user-select-none" @ondrop="OnDrop"
     @ondragover:preventDefault @ondragenter:preventDefault @ondblclick="() => isCollapsed = !isCollapsed"
     @ondragover="@(() => { if (!highlighted) highlighted = true; })"
     @ondragleave="() => highlighted = false">
     @if (isCollapsed)
     {
-        <div class="d-flex flex-column mt-1">            
+        <div class="d-flex flex-column mt-1">
             <Badge class="align-self-center" Color="BadgeColor.Success">@StatusColumn.Count</Badge>
             <span class="mt-2 text-vertical ">
                 @StatusColumn.Title
@@ -57,13 +52,15 @@
         <ul class="card-container scrollbar-none">
             @foreach (var task in StatusColumn.Where(FilterByMilestones))
             {
-                <TaskView Task="task" @key="task.Id" />
+                <TaskView IsFeedback="IsFeedback" Task="task" @key="task.Id" />
             }
         </ul>
     }
 </div>
 
 @code {
+    private int? lastProjectId;
+    private ProjectModel Project => (ProjectModel)StatusColumn.Project;
     string CssDragOver => highlighted ? "dragover" : "";
     string CssCollapsed => isCollapsed ? "collapsed" : "";
     bool highlighted;
@@ -73,13 +70,18 @@
     [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
+    [CascadingParameter] IProjectApi ProjectApi { get; set; } = null!;
     [CascadingParameter] IStatusColumnBoard StatusColumnBoard { get; set; } = null!;
-    [CascadingParameter] ProjectModel Project { get; set; } = null!;
     [Parameter] public IStatusColumnModel StatusColumn { get; set; } = null!;
+    [Parameter] public bool IsFeedback { get; set; }
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
-        StatusColumn.ModelChanged += StateHasChanged;
+        if (lastProjectId == null || StatusColumn.Project.Id != lastProjectId)
+        {
+            lastProjectId = StatusColumn.Project.Id;
+            StatusColumn.ModelChanged += StateHasChanged;
+        }
     }
 
     private async Task OnDrop()
@@ -107,12 +109,14 @@
         return await modal.Result;
     }
     
-    private async Task ShowCreateCardModal()
+    private async Task ShowCreateTaskModal()
     {
         var parameters = new ModalParameters
         {
             { "Model", new TaskModel(new MyTask { CanEdit = true }, StatusColumn) },
-            { "IsCreation", true }
+            { "IsCreation", true },
+            { "IsFeedback", IsFeedback },
+            { "ProjectApi", ProjectApi }
         };
 
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsOptions).Result;
@@ -130,7 +134,7 @@
                 <Icon Name="IconName.ThreeDots" />
             </DropdownToggleButton>
             <DropdownMenu>
-                <DropdownItem @onclick="ShowCreateCardModal"
+                <DropdownItem @onclick="ShowCreateTaskModal"
                     >Добавить карточку</DropdownItem>
             </DropdownMenu>
         </Dropdown>;

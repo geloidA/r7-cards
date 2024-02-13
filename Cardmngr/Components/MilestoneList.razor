@@ -20,7 +20,8 @@
                 {
                     <div class="col-md-1 d-flex justify-content-end">
                         <Tooltip Title="@(milestone.IsDeadlineOut() ? "Веха просрочена" : "Открытых задач")">
-                            <Badge Color="@(milestone.IsDeadlineOut() ? BadgeColor.Danger : BadgeColor.Info)" class="p-1" style="margin-right: 2px; font-size: 11px;" >
+                            <Badge Color="@(milestone.IsDeadlineOut() ? BadgeColor.Danger : BadgeColor.Info)" 
+                                class="p-1" style="margin-right: 2px; font-size: 11px;" >
                                 @milestone.ActiveWorkCount()
                                 </Badge>
                         </Tooltip>

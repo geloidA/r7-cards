@@ -6,7 +6,7 @@ using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
 
 namespace Cardmngr.Models;
 
-public class StatusColumnsModel(IEnumerable<MyTaskStatus> statuses, 
+public class StatusColumnBoard(IEnumerable<MyTaskStatus> statuses, 
     IEnumerable<MyTask> tasks,
     IProjectModel project) : IStatusColumnBoard
 {
