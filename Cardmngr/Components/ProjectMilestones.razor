@@ -1,13 +1,13 @@
 ﻿@inherits KolComponentBase
 
 <div class="d-flex @Class" style="@Style">
-    <div class="d-flex col-md-1 align-self-center p-0" style="max-width: 22px;">
+    <div class="d-flex col-md-1 align-self-center" style="max-width: 22px;">
         <span class="text-vertical-1 user-select-none" style="font-size: small; font-weight: bold;">вехи</span>
     </div>
     <div class="col d-flex flex-column" >
         <MilestoneTimeline Project="Project" />
     </div>
-    <div class="align-self-center d-flex justify-content-end">
+    <div class="d-flex px-3">
         <Tool IconName="IconName.List" IconSize="IconSize.x5" Text="Проект"
             OnClick="ShowMenu" />
     </div>

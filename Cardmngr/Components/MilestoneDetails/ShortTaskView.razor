@@ -1,5 +1,6 @@
 ﻿@using System.Globalization
 
+@inject IProjectApi ProjectApi
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="short-task w-100 h-100 clickable" @onclick="ShowTaskDetails" >
@@ -63,7 +64,8 @@
     {
         var paramerters = new ModalParameters
         {
-            { "Model", Task }
+            { "Model", Task },
+            { "ProjectApi", ProjectApi }
         };
 
         await Modal.Show<TaskDetailsModal>("", paramerters, Options).Result;
