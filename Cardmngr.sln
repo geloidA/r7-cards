@@ -5,13 +5,13 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardmngr.Tests", "Cardmngr.Tests\Cardmngr.Tests.csproj", "{A8F68AB6-9C34-450E-A0A7-2E9CCEFE3FA6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardmngr", "Cardmngr\Cardmngr.csproj", "{2ABB4487-B4AD-442A-8376-F6252AE20155}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardmngr", "WebUI\Cardmngr\Cardmngr.csproj", "{2ABB4487-B4AD-442A-8376-F6252AE20155}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onlyoffice.Api", "Onlyoffice.Api\Onlyoffice.Api.csproj", "{EE919612-372B-4EE2-B81F-94245A347D65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onlyoffice.Api", "Onlyoffice\Onlyoffice.Api\Onlyoffice.Api.csproj", "{EE919612-372B-4EE2-B81F-94245A347D65}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onlyoffice.ProxyServer", "Onlyoffice.ProxyServer\Onlyoffice.ProxyServer.csproj", "{E075E512-23B5-4FD5-8A21-6E8DAD146F4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onlyoffice.ProxyServer", "Onlyoffice\Onlyoffice.ProxyServer\Onlyoffice.ProxyServer.csproj", "{E075E512-23B5-4FD5-8A21-6E8DAD146F4A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardmngr.Server", "Cardmngr.Server\Cardmngr.Server.csproj", "{686A156F-C1FB-49C3-A481-8D93AE20E706}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardmngr.Server", "WebUI\Cardmngr.Server\Cardmngr.Server.csproj", "{686A156F-C1FB-49C3-A481-8D93AE20E706}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Domain", "Cardmngr.Domain\Cardmngr.Domain.csproj", "{5DD1E038-1BF7-4EA5-8E36-D1D4A13E23CD}"
 EndProject
