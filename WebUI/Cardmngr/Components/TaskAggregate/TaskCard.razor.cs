@@ -22,7 +22,7 @@ public partial class TaskCard
     {
         var parameters = new ModalParameters
         {
-            { "Task", Task },
+            { "Model", Task },
             { "State", State }
         };
 

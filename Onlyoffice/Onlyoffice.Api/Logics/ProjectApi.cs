@@ -155,5 +155,11 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
         return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not created " + response.ReasonPhrase);
     }
+
+    public async Task<Models.Task> GetTaskByIdAsync(int taskId)
+    {
+        var taskDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<SingleTaskDao>($"api/project/task/{taskId}"));
+        return taskDao?.Response ?? throw new NullReferenceException("Task was not found");
+    }
     #endregion
 }

@@ -14,10 +14,10 @@ namespace Cardmngr.Domain.Entities
         public bool CanDelete { get; set; }
         public bool CanReadFiles { get; set; }
         public int? MilestoneId { get; set; }
-        public List<Subtask> Subtasks { get; set; }
+        public List<Subtask> Subtasks { get; set; } = [];
         public UserInfo UpdatedBy { get; set; }
         public int? Progress { get; set; }
-        public List<UserInfo> Responsibles { get; set; }
+        public List<UserInfo> Responsibles { get; set; } = [];
         public DateTime? Deadline { get; set; }
         public DateTime? StartDate { get; set; }
         public int? TaskStatusId { get; set; }

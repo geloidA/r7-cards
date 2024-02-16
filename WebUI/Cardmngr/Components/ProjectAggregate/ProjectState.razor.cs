@@ -16,6 +16,7 @@ public partial class ProjectState : ComponentBase
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     [Inject] public IProjectClient ProjectClient { get; set; } = null!;
+    [Inject] public ITaskClient TaskClient { get; set; } = null!;
 
     public ProjectStateVm? Model { get; set; }
 
@@ -76,10 +77,29 @@ public partial class ProjectState : ComponentBase
     {
         if (!task.HasStatus(status))
         {
-            await ProjectClient.UpdateTaskStatusAsync(task.Id, status);
+            await TaskClient.UpdateTaskStatusAsync(task.Id, status);
 
             task.TaskStatusId = status.Id;
             task.Status = status.StatusType.ToStatus();
         }
+    }
+
+    internal async Task AddTaskAsync(OnlyofficeTask task)
+    {
+        var created = await TaskClient.CreateTaskAsync(Model!.Project.Id, task);
+        Model.Tasks.Add(created);
+    }
+
+    internal async Task RemoveTaskAsync(int taskId)
+    {
+        await TaskClient.RemoveTaskAsync(taskId);
+        Model!.Tasks.RemoveAll(x => x.Id == taskId);
+    }
+
+    internal async Task UpdateTaskAsync(OnlyofficeTask task)
+    {
+        var updated = await TaskClient.UpdateTaskAsync(Model!.Project.Id, task);
+        Model.Tasks.RemoveAll(x => x.Id == task.Id);
+        Model.Tasks.Add(updated);
     }
 }

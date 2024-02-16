@@ -1,51 +1,47 @@
-﻿@inject IProjectApi ProjectApi
+﻿@inherits AddEditModalBase<OnlyofficeTask>
 
 @using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas
 
-@if (changingState is { })
+@if (buffer is { })
 {
     <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right" @ref="currentModal">
-        <EditForm Model="changingState" >
+        <EditForm Model="buffer" OnValidSubmit="Submit" >
             <DataAnnotationsValidator/>
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
-                <TitleChanger @bind-Title="changingState.Title" />
+                <TitleChanger @bind-Title="buffer.Title" />
             </OffcanvasHeader>
-            <ValidationMessage For="() => changingState.Title" class="ms-3 validation-msg" />
+            <ValidationMessage For="() => buffer.Title" class="ms-3 validation-msg" />
             <OffcanvasBody Class="d-flex flex-column form-group">
-                @* <TaskPriorityChanger Task="changingState" /> *@
+                <TaskPriorityChanger Task="buffer" />
                 <Card class="p-1 mt-2">
                     <DateChanger Title="Дата начала:"
-                        EmptyText="Не установлен" @bind-Date="changingState.StartDate" />
+                        EmptyText="Не установлен" @bind-Date="buffer.StartDate" />
                 </Card>
                 <Card class="p-1 mt-2">
                     <DateChanger Title="Крайний срок" InputId="Deadline"
-                        EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
-                    <ValidationMessage For="() => changingState.Deadline" class="validation-msg" />
+                        EmptyText="Не установлен" @bind-Date="buffer.Deadline" />
+                    <ValidationMessage For="() => buffer.Deadline" class="validation-msg" />
                 </Card>
                 <div class="pt-2">
-                    <DescriptionChanger @bind-Description="changingState.Description" />
+                    <DescriptionChanger @bind-Description="buffer.Description" />
                 </div>                
                 <CascadingValue Value="State" IsFixed="true">
                     <div class="pb-2 pt-2">
-                        <TaskResponsibles Task="changingState" />
+                        <TaskResponsibles Task="buffer" />
                     </div>
                     <div class="pb-2">
-                        <TaskMilestone Task="changingState" />
+                        <TaskMilestone Task="buffer" />
                     </div>
-                    @if (!IsCreation)
-                    {
-                        <TaskSubtasks Task="changingState" />
-                    }
+                    <TaskSubtasks Task="buffer" />
                 </CascadingValue>
                 <div class="row pt-2 d-flex justify-content-end">
                     <div class="d-flex flex-row">
-                        <Button Type="ButtonType.Submit" Size="Size.Small" Color="ButtonColor.Success" Outline="true"
-                             >
-                             ,f,f
+                        <Button Type="ButtonType.Submit" Size="Size.Small" Color="ButtonColor.Success" Outline="true">
+                            @SubmitText
                         </Button>
-                        @if(!IsCreation)
+                        @if(!IsAdd)
                         {
-                            <Button class="ms-2" Size="Size.Small" Color="ButtonColor.Danger" Outline="true" >
+                            <Button class="ms-2" @onclick="@(async () => await State.RemoveTaskAsync(Model.Id))" Size="Size.Small" Color="ButtonColor.Danger" Outline="true" >
                                 Удалить
                             </Button>
                         }
@@ -57,15 +53,19 @@
 }
 
 @code {
-    private OnlyofficeTask? changingState;
     private Offcanvas currentModal = null!;
 
-    protected override void OnInitialized()
-    {
-        changingState = Task.CloneJson();
-    }
-
     [Parameter] public ProjectState State { get; set; } = null!;
-    [Parameter] public OnlyofficeTask Task { get; set; } = null!;
-    [Parameter] public bool IsCreation { get; set; }
+
+    private async Task Submit()
+    {
+        if (IsAdd)
+        {
+            await State.AddTaskAsync(buffer);
+        }
+        else
+        {
+            await State.UpdateTaskAsync(buffer);
+        }
+    }
 }

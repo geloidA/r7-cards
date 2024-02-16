@@ -56,6 +56,13 @@ public interface IProjectApi
     IAsyncEnumerable<MyTask> GetTasksByProjectIdAsync(int projectId);
 
     /// <summary>
+    /// Returns the detailed information about a task with the specified ID.
+    /// </summary>
+    /// <param name="taskId"></param>
+    /// <returns></returns>
+    Task<MyTask> GetTaskByIdAsync(int taskId);
+
+    /// <summary>
     /// Returns a list with the detailed information about all the tasks matching the parameters specified in the request.
     /// </summary>
     /// <remarks>

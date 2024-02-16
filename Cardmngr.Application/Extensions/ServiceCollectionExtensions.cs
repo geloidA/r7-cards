@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
         return services
             .AddAutoMapper(typeof(EntityMappingProfile), typeof(EnumMappingProfile))
             .AddScoped<IProjectApi, ProjectApi>()
-            .AddScoped<IProjectClient, ProjectClient>();
+            .AddScoped<IProjectClient, ProjectClient>()
+            .AddScoped<ITaskClient, TaskClient>();
     }
 }

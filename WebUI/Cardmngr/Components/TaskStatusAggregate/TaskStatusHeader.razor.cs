@@ -25,10 +25,9 @@ public partial class TaskStatusHeader
     {
         var parameters = new ModalParameters
         {
-            // { "Model", new TaskModel(new MyTask { CanEdit = true }, StatusColumn) },
-            // { "IsCreation", true },
-            // { "IsFeedback", IsFeedback },
-            // { "ProjectApi", ProjectApi }
+            { "Model", new OnlyofficeTask { CanEdit = true, Title="Новая задача" } },
+            { "State", State },
+            { "IsAdd", true }
         };
 
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsOptions).Result;

@@ -29,9 +29,4 @@ public class ProjectClient(IProjectApi projectApi, IMapper mapper) : IProjectCli
             Team = mapper.Map<List<UserProfile>>(await team)
         };
     }
-
-    public async Task UpdateTaskStatusAsync(int taskId, OnlyofficeTaskStatus status)
-    {
-        await projectApi.UpdateTaskStatusAsync(taskId, mapper.Map<Status>(status.StatusType), status.Id);
-    }
 }
