@@ -1,0 +1,13 @@
+.btn-hide {
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+}
+
+.board .board-column:hover .btn-hide {
+    opacity: 1;
+}
+
+.title {
+    font-weight: bold;
+    color: var(--col-title-color);
+}

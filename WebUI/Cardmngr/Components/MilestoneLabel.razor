@@ -31,7 +31,7 @@ else
 }
 
 @code {
-    [Parameter] public IMilestoneModel Milestone { get; set; } = null!;
+    [Parameter] public Milestone Milestone { get; set; } = null!;
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     private RenderFragment Badge =>

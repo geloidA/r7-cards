@@ -13,13 +13,14 @@ namespace Cardmngr.Domain.Entities
         public bool CanCreateTimeSpend { get; set; }
         public bool CanDelete { get; set; }
         public bool CanReadFiles { get; set; }
-        public Milestone Milestone { get; set; }
+        public int? MilestoneId { get; set; }
         public List<Subtask> Subtasks { get; set; }
         public UserInfo UpdatedBy { get; set; }
-        public Project Project { get; set; }
         public int? Progress { get; set; }
         public List<UserInfo> Responsibles { get; set; }
         public DateTime? Deadline { get; set; }
         public DateTime? StartDate { get; set; }
+        public int? TaskStatusId { get; set; }
+        public Status Status { get; set; }
     }
 }

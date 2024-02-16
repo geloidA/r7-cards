@@ -13,7 +13,7 @@ public class ProjectModel : ProjectModelBase
     private readonly StatusColumnBoard statusColumns;
     private readonly List<IUser> team;
 
-    public ProjectModel(Project project, List<MyTask> tasks, List<MyTaskStatus> statuses, List<Milestone> milestones, IEnumerable<IUser> team)
+    public ProjectModel(Project project, List<MyTask> tasks, List<MyTaskStatus> statuses, List<MilestoneDto> milestones, IEnumerable<IUser> team)
         : base(project)
     {
         milestoneTimeline = new MilestoneTimelineModel(milestones, this);        

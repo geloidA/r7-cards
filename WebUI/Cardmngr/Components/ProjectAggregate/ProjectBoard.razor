@@ -1,0 +1,22 @@
+﻿<KolBoard TValue="OnlyofficeTask" CanItemDrag="@(x => x.CanEdit)">
+    <Columns>
+        @if (State.Initialized)
+        {
+            foreach (var status in State.Model!.Statuses.InLogicalOrder())
+            {
+                <div class="status-column">
+                    <KolBoardColumn TValue="OnlyofficeTask" CanCollapse="true" 
+                        OnDropItem="@(async task => await OnChangeTaskStatus(task, status))"
+                        Items="State.Model.Tasks.FilterByStatus(status)">
+                        <HeaderTemplate Context="isCollapsed">
+                            <TaskStatusHeader IsCollapsed="isCollapsed" TaskStatus="status" />
+                        </HeaderTemplate>
+                    </KolBoardColumn>
+                </div>
+            }
+        }
+    </Columns>
+    <ItemTemplate Context="task">
+        <TaskCard Task="task" />
+    </ItemTemplate>
+</KolBoard>

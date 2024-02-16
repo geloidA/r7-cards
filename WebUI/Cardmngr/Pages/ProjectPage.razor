@@ -4,40 +4,17 @@
 
 @inject IProjectApi ProjectApi
 
-<div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
-    @if (model is { })
-    {
-        <ProjectMilestones Project="model" Class="mb-2" />
-    }
-    <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
-        @if (model is { })
-        {
-            <CascadingValue Value="ProjectApi" IsFixed="true">
-                <StatusColumnsView Board="model.StatusBoard" />
-            </CascadingValue>
-        }
+<ProjectState Id="ProjectId ?? 0" >
+    <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
+        <div class="mb-2">
+            <ProjectBoardHeader></ProjectBoardHeader>
+        </div>
+        <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
+            <ProjectBoard></ProjectBoard>
+        </div>
     </div>
-</div>
+</ProjectState>
 
 @code {
-    private ProjectModel? model;
-
     [Parameter] public int? ProjectId { get; set; }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (ProjectId.HasValue && ProjectId != null && ProjectId != model?.Id)
-        {
-            var project = ProjectApi.GetProjectByIdAsync(ProjectId.Value);
-            var tasks = ProjectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(ProjectId.Value)).ToListAsync();
-            var statuses = ProjectApi.GetAllTaskStatusesAsync().ToListAsync();
-            var milestones = ProjectApi.GetMilestonesByProjectIdAsync(ProjectId.Value).ToListAsync();
-            var team = ProjectApi.GetProjectTeamAsync(ProjectId.Value).ToListAsync();
-
-            model = new ProjectModel(await project, await tasks, await statuses, await milestones, await team);
-
-            model.ModelChanged += Refresh;
-        }
-    }
-    private void Refresh() => StateHasChanged();
 }

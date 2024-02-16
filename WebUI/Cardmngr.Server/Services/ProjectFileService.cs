@@ -22,7 +22,7 @@ public class ProjectFileService(IConfiguration conf) : IProjectFileService
             CustomTaskStatus = (int)Status.Todo,
             Status = 1,
             Id = id,
-            CreatedBy = new CreatedBy { Id = guid },
+            CreatedBy = new UserDto { Id = guid },
             CanEdit = true,
             CanDelete = true
         };

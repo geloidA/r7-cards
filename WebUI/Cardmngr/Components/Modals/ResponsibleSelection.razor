@@ -32,16 +32,16 @@ else
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
 
     [Parameter]
-    public Onlyoffice.Api.Models.IUser? Responsible { get; set; }
+    public UserInfo? Responsible { get; set; }
 
     [Parameter]
-    public EventCallback<Onlyoffice.Api.Models.IUser> ResponsibleChanged { get; set; }
+    public EventCallback<UserInfo> ResponsibleChanged { get; set; }
 
     [Parameter]
     public bool EditMode { get; set; }
 
     [Parameter]
-    public IEnumerable<Onlyoffice.Api.Models.IUser> Responsibles { get; set; } = null!;
+    public IEnumerable<UserInfo> Responsibles { get; set; } = null!;
 
     private async Task ShowResponsibleSelectionModal()
     {

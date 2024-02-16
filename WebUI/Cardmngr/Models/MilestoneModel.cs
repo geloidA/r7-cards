@@ -6,9 +6,9 @@ using Onlyoffice.Api.Models;
 
 namespace Cardmngr;
 
-public class MilestoneModel : MilestoneModelBase<Milestone>
+public class MilestoneModel : MilestoneModelBase<MilestoneDto>
 {
-    public MilestoneModel(Milestone milestone, IProjectModel project) : base(milestone, project) 
+    public MilestoneModel(MilestoneDto milestone, IProjectModel project) : base(milestone, project) 
     {
         
     }
@@ -30,9 +30,9 @@ public class MilestoneModel : MilestoneModelBase<Milestone>
         CanDelete = source.CanDelete;
     }
 
-    public override IEditableModel<Milestone> EditableModel => new MilestoneModel(this);
+    public override IEditableModel<MilestoneDto> EditableModel => new MilestoneModel(this);
 
-    public override void Update(Milestone source)
+    public override void Update(MilestoneDto source)
     {
         Status = source.Status.ToMilestoneStatus();
         base.Update(source);
@@ -50,5 +50,5 @@ public class MilestoneModel : MilestoneModelBase<Milestone>
         return Id;
     }
 
-    protected override Status GetStatusFromApiModel(Milestone apiModel) => apiModel.Status.ToMilestoneStatus();
+    protected override Status GetStatusFromApiModel(MilestoneDto apiModel) => apiModel.Status.ToMilestoneStatus();
 }

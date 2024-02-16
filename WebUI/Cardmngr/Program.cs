@@ -8,6 +8,7 @@ using Onlyoffice.Api.Logics;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using Cardmngr.Services;
+using Cardmngr.Application.Extensions;
 using KolBlazor.Extensions;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -15,12 +16,10 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services
-    .AddScoped<DragModule>()
-    .AddScoped<DragEventModule>()
     .AddScoped<AuthenticationStateProvider, CookieStateProvider>()
     .AddScoped<CookieHandler>()
     .AddScoped<IAuthApiLogic, AuthApiLogic>()
-    .AddScoped<IProjectApi, ProjectApi>()
+    .AddProjectClient()
     .AddKeyedScoped<IProjectApi, ProjectFileService>("file")
     .AddScoped<IFeedbackService, FeedbackService>()
     .AddScoped<TeamMemberSelectionDialog>()

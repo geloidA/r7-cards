@@ -10,12 +10,12 @@
     <div @ref="element" style="max-width: 1700px;" class="overflow-scroll scrollbar-none" >
         <div @onwheel="ScaleTimeline" class="timeline-animation scrollbar-none" style=@($"width: {Width}px; min-width: 1700px; {@Style}") >
             <KolTimeline ShowTodayLine="true" Class="scrollbar-none py-0" >
-                @if (Project.Milestones is { })
+                @if (State.Initialized)
                 {
-                    foreach (var milestone in Project.Milestones)
+                    foreach (var milestone in State.Model!.Milestones)
                     {
-                        <KolTimelineItem @key="milestone.Id" End="milestone.CheckDeadline()" Start="milestone.CheckStart()">
-                            <TimelineMilestone Milestone="milestone" Project="Project" />
+                        <KolTimelineItem @key="milestone.Id" End="milestone.Deadline" Start="State.GetMilestoneStart(milestone)">
+                            <TimelineMilestone Milestone="milestone" />
                         </KolTimelineItem>
                     }
                 }
@@ -27,7 +27,6 @@
 </div>
 
 @code {
-    private int? lastProjectId;
     private ElementReference element;
     public const int MinScale = 1685;
     public const int MaxScale = 10000;
@@ -35,35 +34,13 @@
 
     public int Width { get; set; }
     
-    [Parameter] public ProjectModel Project { get; set; } = null!;
+    [CascadingParameter] ProjectState State { get; set; } = null!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await TimelineInterop.RegisterScrollHandler(element);
-        }
-    }
-
-    protected override void OnParametersSet()
-    {
-        if (lastProjectId == null || Project.Id != lastProjectId)
-        {
-            InitializeEventHandlers(Project);
-            lastProjectId = Project.Id;
-        }
-    }
-
-    private void InitializeEventHandlers(ProjectModel project)
-    {
-        foreach (var task in project.Tasks())
-            task.ModelChanged += Refresh;
-
-        project.Milestones.CollectionChanged += _ => Refresh();
-
-        foreach (var statusColumn in project.StatusBoard)
-        {
-            statusColumn.CollectionChanged += SubscribeRefreshHandler;
         }
     }
 
@@ -78,18 +55,6 @@
         else
         {
             Width = Width <= MinScale ? Width + Step : Width;
-        }
-    }
-
-    void Refresh() => StateHasChanged();
-
-    private void SubscribeRefreshHandler(CollectionEventArgs<ITaskModel> args)
-    {
-        if (args.Item.Milestone != null) Refresh();
-
-        if (args.Action == CollectionAction.Add)
-        {
-            args.Item.ModelChanged += Refresh;
         }
     }
     

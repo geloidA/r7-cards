@@ -4,7 +4,7 @@
     @foreach (var user in Users)
     {
         <div @key="user.Id" class="d-flex align-items-center mt-2">
-            <UserAvatar User="user" ShowTooltip="false" />
+            @* <UserAvatar User="user" ShowTooltip="false" /> *@
             <span class="ms-2" style="font-size: 15px;">@user.DisplayName</span>
         </div>
     }

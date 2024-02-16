@@ -173,7 +173,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="projectId">Project ID</param>
     /// <returns>List of milestones</returns>
-    IAsyncEnumerable<Milestone> GetMilestonesByProjectIdAsync(int projectId);
+    IAsyncEnumerable<MilestoneDto> GetMilestonesByProjectIdAsync(int projectId);
 
     /// <summary>
     /// Updates the selected milestone changing the milestone updated state.
@@ -181,9 +181,9 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/put/api/2.0/project/milestone/%7bid%7d"/>
     /// </remarks>
-    /// <param name="milestoneId">Milestone ID</param>
+    /// <param name="milestoneId">MilestoneDto ID</param>
     /// <param name="state">Updated state</param>
-    Task<Milestone> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state);
+    Task<MilestoneDto> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state);
 
     /// <summary>
     /// Adds a new milestone using the parameters (project ID, milestone title, deadline, etc) specified in the request.
@@ -194,7 +194,7 @@ public interface IProjectApi
     /// <param name="projectId"></param>
     /// <param name="state"></param>
     /// <returns>Added milestone</returns>
-    Task<Milestone> CreateMilestoneAsync(int projectId, UpdatedStateMilestone state);
+    Task<MilestoneDto> CreateMilestoneAsync(int projectId, UpdatedStateMilestone state);
 
     /// <summary>
     /// Deletes a milestone with the ID specified in the request.
@@ -204,7 +204,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="milestoneId"></param>
     /// <returns>Deleted milestone</returns>
-    Task<Milestone> DeleteMilestoneAsync(int milestoneId);
+    Task<MilestoneDto> DeleteMilestoneAsync(int milestoneId);
 
     /// <summary>
     /// Updates a status of a milestone with the ID specified in the request.
@@ -212,7 +212,7 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/put/api/2.0/project/milestone/%7bid%7d/status"/>
     /// </remarks>
-    /// <param name="milestoneId">Milestone ID</param>
+    /// <param name="milestoneId">MilestoneDto ID</param>
     /// <param name="status">New milestone status</param>
     /// <returns>Updated milestone</returns>
     Task UpdateMilestoneStatusAsync(int milestoneId, Status status);

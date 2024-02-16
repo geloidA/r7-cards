@@ -1,0 +1,51 @@
+﻿@if (IsCollapsed)
+{
+    <div class="d-flex flex-column" style="margin-top: 1.75px;">
+        <Badge class="align-self-center" Color="BadgeColor.Success">@TaskCount</Badge>
+        <span class="title text-vertical align-self-center mt-1">
+            @TaskStatus.Title
+        </span>
+        <div class="align-self-center">
+            @if (TaskStatus.Image is { })
+            {
+                <img src=@($"data:{TaskStatus.ImageType};base64, {TaskStatus.Image}")>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col d-flex justify-content-start">
+            <Badge class="align-self-center" Color="BadgeColor.Success">
+                @TaskCount
+            </Badge>
+            <span class="title ms-1 user-select-none">
+                @TaskStatus.Title
+            </span>
+            @if (TaskStatus.Image is { })
+            {
+                <img src=@($"data:{TaskStatus.ImageType};base64, {TaskStatus.Image}") class="ms-1">
+            }
+        </div>
+        @if (TaskStatus.Available)
+        {
+            <div class="col d-flex justify-content-end btn-hide">
+                @DropDown
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private RenderFragment DropDown => 
+        @<Dropdown Size="Size.ExtraSmall" AutoClose="true" >
+            <DropdownToggleButton Color="ButtonColor.Light">
+                <Icon Name="IconName.ThreeDots" />
+            </DropdownToggleButton>
+            <DropdownMenu>
+                <DropdownItem @onclick="ShowCreateTaskModal"
+                    >Добавить карточку</DropdownItem>
+            </DropdownMenu>
+        </Dropdown>;
+}

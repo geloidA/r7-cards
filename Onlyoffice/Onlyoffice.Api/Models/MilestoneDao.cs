@@ -2,15 +2,15 @@
 
 public class SingleMilestoneDao : HttpResponseDaoBase
 {
-    public Milestone? Response { get; set; }
+    public MilestoneDto? Response { get; set; }
 }
 
 public class MilestoneDao : HttpResponseDaoBase
 {
-    public List<Milestone>? Response { get; set; }
+    public List<MilestoneDto>? Response { get; set; }
 }
 
-public class Milestone
+public class MilestoneDto
 {
     public bool CanEdit { get; set; }
     public bool CanDelete { get; set; }
@@ -24,9 +24,9 @@ public class Milestone
     public int ActiveTaskCount { get; set; }
     public int ClosedTaskCount { get; set; }
     public int Status { get; set; }
-    public Responsible? Responsible { get; set; }
+    public UserDto? Responsible { get; set; }
     public DateTime Created { get; set; }
-    public CreatedBy? CreatedBy { get; set; }
+    public UserDto? CreatedBy { get; set; }
     public DateTime Updated { get; set; }
 
     public override int GetHashCode()
@@ -36,7 +36,7 @@ public class Milestone
 
     public override bool Equals(object? obj)
     {
-        if (obj is not Milestone other) return false;
+        if (obj is not MilestoneDto other) return false;
         return other.Id == Id;
     }
 }

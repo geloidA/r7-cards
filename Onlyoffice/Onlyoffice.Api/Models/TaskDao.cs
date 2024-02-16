@@ -27,16 +27,16 @@ public class Task
     public string? Description { get; set; }
     public int Priority { get; set; }
     public int? MilestoneId { get; set; }
-    public Milestone? Milestone { get; set; }
+    public MilestoneDto? Milestone { get; set; }
     public ProjectInfo? ProjectOwner { get; set; }
     public List<Subtask>? Subtasks { get; set; }
     public int Status { get; set; }
     public int? Progress { get; set; }
-    public UpdatedBy? UpdatedBy { get; set; }
+    public UserDto? UpdatedBy { get; set; }
     public DateTime Created { get; set; }
-    public CreatedBy? CreatedBy { get; set; }
+    public UserDto? CreatedBy { get; set; }
     public DateTime Updated { get; set; }
-    public List<Responsible>? Responsibles { get; set; }
+    public List<UserDto>? Responsibles { get; set; }
     public int? CustomTaskStatus { get; set; }
     public DateTime? Deadline { get; set; }
     public DateTime? StartDate { get; set; }
@@ -66,9 +66,9 @@ public class Subtask
     public string? Description { get; set; }
     public int Status { get; set; }
     public DateTime Created { get; set; }
-    public CreatedBy? CreatedBy { get; set; }
+    public UserDto? CreatedBy { get; set; }
     public DateTime Updated { get; set; }
-    public Responsible? Responsible { get; set; }
+    public UserDto? Responsible { get; set; }
 
     public override bool Equals(object? obj)
     {
@@ -88,15 +88,7 @@ public class UpdatedStateSubtask
     public string? Title { get; set; }
 }
 
-public class CreatedBy : IUser
-{
-    public string? Id { get; set; }
-    public string? DisplayName { get; set; }
-    public string? AvatarSmall { get; set; }
-    public string? ProfileUrl { get; set; }
-}
-
-public class UpdatedBy : IUser
+public class UserDto : IUser
 {
     public string? Id { get; set; }
     public string? DisplayName { get; set; }

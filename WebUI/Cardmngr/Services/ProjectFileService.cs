@@ -13,7 +13,7 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
     private readonly CookieStateProvider provider = provider.ToCookieProvider();
 
     #region Other
-    public Task<Milestone> CreateMilestoneAsync(int projectId, UpdatedStateMilestone state)
+    public Task<MilestoneDto> CreateMilestoneAsync(int projectId, UpdatedStateMilestone state)
     {
         throw new NotImplementedException();
     }
@@ -23,7 +23,7 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         throw new NotImplementedException();
     }
 
-    public Task<Milestone> DeleteMilestoneAsync(int milestoneId)
+    public Task<MilestoneDto> DeleteMilestoneAsync(int milestoneId)
     {
         throw new NotImplementedException();
     }
@@ -38,7 +38,7 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         throw new NotImplementedException();
     }
 
-    public IAsyncEnumerable<Milestone> GetMilestonesByProjectIdAsync(int projectId)
+    public IAsyncEnumerable<MilestoneDto> GetMilestonesByProjectIdAsync(int projectId)
     {
         throw new NotImplementedException();
     }
@@ -53,7 +53,7 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         throw new NotImplementedException();
     }
 
-    public Task<Milestone> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
+    public Task<MilestoneDto> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
     {
         throw new NotImplementedException();
     }

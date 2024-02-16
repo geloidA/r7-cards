@@ -1,7 +1,7 @@
 ﻿@inject TeamMemberSelectionDialog SelectionDialog
 @inject IProjectApi ProjectApi
 
-@inherits ModalFormComponent<MilestoneModel, Onlyoffice.Api.Models.Milestone>
+@inherits ModalFormComponent<MilestoneModel, Onlyoffice.Api.Models.MilestoneDto>
 
 @using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas;
 
@@ -59,20 +59,20 @@
     private async Task ShowResponsibleSelectionDialog()
     {
         if (!Model.CanDelete) return;
-        var selected = await SelectionDialog.ShowAsync(Model.Project.Team, ModalOptions);
+        @* var selected = await SelectionDialog.ShowAsync(Model.Project.Team, ModalOptions);
 
         if (selected is { })
         {
             changingState.Responsible = selected;
-        }
+        } *@
     }
 
     protected override Task CloseAsync() => currentModal.CloseAsync(ModalResult.Ok());
 
-    protected override Task<Onlyoffice.Api.Models.Milestone> OnCreateAsync() 
+    protected override Task<Onlyoffice.Api.Models.MilestoneDto> OnCreateAsync() 
         => ProjectApi.CreateMilestoneAsync(Model.Project.Id, changingState.GetUpdatedState());
 
-    protected override Task<Onlyoffice.Api.Models.Milestone> OnUpdateAsync() 
+    protected override Task<Onlyoffice.Api.Models.MilestoneDto> OnUpdateAsync() 
         => ProjectApi.UpdateMilestoneAsync(Model.Id, changingState.GetUpdatedState());
 
     protected override async Task OnDeleteAsync()

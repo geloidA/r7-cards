@@ -121,27 +121,27 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
     }
     #endregion
 
-    #region CRUD Milestone
-    public async IAsyncEnumerable<Milestone> GetMilestonesByProjectIdAsync(int projectId)
+    #region CRUD MilestoneDto
+    public async IAsyncEnumerable<MilestoneDto> GetMilestonesByProjectIdAsync(int projectId)
     {
         var milestoneDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<MilestoneDao>($"api/project/{projectId}/milestone"));
-        await foreach (var milestone in milestoneDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Milestone>())
+        await foreach (var milestone in milestoneDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<MilestoneDto>())
         {
             yield return milestone;
         }
     }
 
-    public async Task<Milestone> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
+    public async Task<MilestoneDto> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
     {
         var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}", state));
         var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
-        return milestoneDao?.Response ?? throw new NullReferenceException("Milestone was not updated " + response.ReasonPhrase);
+        return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not updated " + response.ReasonPhrase);
     }
 
-    public async Task<Milestone> DeleteMilestoneAsync(int milestoneId)
+    public async Task<MilestoneDto> DeleteMilestoneAsync(int milestoneId)
     {
         var milestoneDao = await InvokeHttpClientAsync(c => c.DeleteFromJsonAsync<SingleMilestoneDao>($"api/project/milestone/{milestoneId}"));
-        return milestoneDao?.Response ?? throw new NullReferenceException("Milestone was not deleted");
+        return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not deleted");
     }
 
     public System.Threading.Tasks.Task UpdateMilestoneStatusAsync(int milestoneId, Status status)
@@ -149,11 +149,11 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}/status", new { status }));
     }
 
-    public async Task<Milestone> CreateMilestoneAsync(int projectId, UpdatedStateMilestone state)
+    public async Task<MilestoneDto> CreateMilestoneAsync(int projectId, UpdatedStateMilestone state)
     {
         var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/milestone", state));
         var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
-        return milestoneDao?.Response ?? throw new NullReferenceException("Milestone was not created " + response.ReasonPhrase);
+        return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not created " + response.ReasonPhrase);
     }
     #endregion
 }

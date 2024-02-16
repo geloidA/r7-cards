@@ -1,19 +1,17 @@
-﻿@using Onlyoffice.Api.Common
-@using System.Security.Claims
+﻿@using Domain.Enums
 
-<li class="my-card @CssDragStart @CssDeadline" @onclick="OpenModal" draggable="@((!IsFeedback && Task.CanEdit).ToString())"
-    @ondragstart="OnDragStart" @ondragend="() => isDragged = false" >
+<li class="task-card @CssDeadline" @onclick="OpenModal" >
     <div class="container py-1 px-4 default-text" style="min-height: 100px;">
         <div class="row py-1">
             <div class="px-0 d-flex flex-row">
-                @if (Task.Priority == TaskPriority.High)
+                @if (Task.Priority == Priority.High)
                 {
                     <div style="margin-right: 5px;">
                         <Tool IconName="IconName.ArrowUpCircleFill" IconColor="IconColor.Primary" 
                             TooltipTitle="Приоритет - Высокий" TooltipPlacement="TooltipPlacement.Bottom" />
                     </div>
                 }
-                <div style="overflow: hidden;">@Task.Title</div>
+                <div style="overflow: hidden;" class="fw-bold">@Task.Title</div>
             </div>
         </div>
         @if (Task.Description is { })
@@ -22,7 +20,7 @@
                 @Task.Description
             </div>
         }
-        @if (Task.Subtasks?.Any() ?? false)
+        @if (Task.Subtasks.Any())
         {
             <div class="row py-1">
                 <div class="d-flex justify-content-end">
@@ -30,15 +28,15 @@
                 </div>
             </div>
         }
-        @if (Task.Milestone is { })
+        @if (Task.MilestoneId is { })
         {
             <div class="row py-1">
                 <div class="px-0">
-                    <MilestoneLabel Milestone="Task.Milestone" />
+                    <MilestoneLabel Milestone="State.TaskMilestone(Task)" />
                 </div>
             </div>
         }
-        @if (Task.Responsibles?.Any() ?? false)
+        @if (Task.Responsibles.Any())
         {
             <div class="row py-1">
                 <div class="px-0">
@@ -69,52 +67,3 @@
         }
     </div>
 </li>
-
-@code {
-    
-    [CascadingParameter(Name = "DetailsModal")]
-    private ModalOptions DetailsModal { get; set; } = null!;
-
-    [CascadingParameter] IModalService Modal { get; set; } = null!;
-    [CascadingParameter] IStatusColumnBoard StatusColumnsModel { get; set; } = null!;
-    [CascadingParameter] IProjectApi ProjectApi { get; set; } = null!;
-    [Parameter] public ITaskModel Task { get; set; } = null!;
-    [Parameter] public bool IsFeedback { get; set; }
-    
-    string CssDragStart => isDragged ? "dragged" : "";
-    string CssDeadline => Task.IsDeadlineOut() ? "red-border" : "";
-
-    private bool isDragged;
-
-    protected override void OnInitialized()
-    {
-        Task.ModelChanged += StateHasChanged;
-    }
-
-    private async Task OpenModal()
-    {
-        var parameters = new ModalParameters
-        {
-            { "Model", Task },
-            { "IsFeedback", IsFeedback },
-            { "ProjectApi", ProjectApi }
-        };
-
-        await Modal.Show<TaskDetailsModal>("", parameters, DetailsModal).Result;
-    }
-
-    private string GetDeadlineString()
-    {
-        if (Task.Deadline is not { }) throw new InvalidOperationException("Task deadline is null");
-        var diff = DateTime.Now.Date - Task.Deadline.Value.Date;
-        return diff.TotalDays == 0
-            ? "Срок истек - Сегодня"
-            : $"Срок истек - {diff.TotalDays} {Utils.Common.GetDayNameByDayCount(diff.TotalDays)} назад";
-    }
-
-    void OnDragStart()
-    {
-        isDragged = true;
-        StatusColumnsModel.StartDrag(Task);
-    }
-}

@@ -38,13 +38,12 @@ else
     List<SelectionUser>? Responsibles;
 
     [Parameter] public List<string>? SelectedIds { get; set; }
-    [Parameter] public ProjectModel Project { get; set; } = null!;
 
     protected override void OnInitialized()
     {
-        Responsibles = Project.Team
+        @* Responsibles = Project.Team
             .Select(x => new SelectionUser(SelectedIds?.Contains(x.Id!) ?? false, x))
-            .ToList();
+            .ToList(); *@
     }
 
     private async System.Threading.Tasks.Task Confirm()
@@ -58,9 +57,9 @@ else
 
     private async System.Threading.Tasks.Task Cancel() => await Modal.CancelAsync();
 
-    private class SelectionUser(bool isChecked, IUser value)
+    private class SelectionUser(bool isChecked, UserInfo value)
     {
         public bool Checked { get; set; } = isChecked;
-        public IUser Value = value;
+        public UserInfo Value = value;
     }
 }

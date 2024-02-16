@@ -1,0 +1,11 @@
+﻿using Cardmngr.Domain.Entities;
+
+namespace Cardmngr.Shared.Extensions;
+
+public static class OnlyofficeTaskStatusExtensions
+{
+    public static IEnumerable<OnlyofficeTaskStatus> InLogicalOrder(this IEnumerable<OnlyofficeTaskStatus> statuses)
+    {
+        return statuses.OrderBy(x => (x.StatusType, x.Order));
+    }
+}

@@ -5,7 +5,7 @@ using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Models;
 
-internal class MilestoneTimelineModel(IEnumerable<Milestone> milestones, IProjectModel project) : IObservableCollection<IMilestoneModel>
+internal class MilestoneTimelineModel(IEnumerable<MilestoneDto> milestones, IProjectModel project) : IObservableCollection<IMilestoneModel>
 {
     private readonly Dictionary<IMilestoneModel, bool> timelineItems = milestones
         .Select(m => new KeyValuePair<IMilestoneModel, bool>(new MilestoneModel(m, project), false))
@@ -13,7 +13,7 @@ internal class MilestoneTimelineModel(IEnumerable<Milestone> milestones, IProjec
 
     public void ToggleMilestone(IMilestoneModel milestone)
     {
-        if (!timelineItems.TryGetValue(milestone, out bool value)) throw new InvalidOperationException("Milestone does not exist");
+        if (!timelineItems.TryGetValue(milestone, out bool value)) throw new InvalidOperationException("MilestoneDto does not exist");
 
         timelineItems[milestone] = !value;
 

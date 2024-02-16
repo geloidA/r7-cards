@@ -13,7 +13,7 @@
         </div>
         <div class="col d-flex flex-column w-100 h-100" style="margin-right: 5px;">
             <div class="d-flex info-text">
-                @if (Task.Priority == TaskPriority.High)
+                @if (Task.Priority == Domain.Enums.Priority.High)
                 {
                     <Icon Name="IconName.ArrowUpCircleFill" Color="IconColor.Primary" />
                 }
@@ -28,7 +28,7 @@
                 {
                     <span style="font-size: 14px;">@Task.Deadline?.ToShortDateString()</span>
                 }
-                @if (Task.StatusColumn.Status == Status.Open)
+                @if (Task.Status == Domain.Enums.Status.Open)
                 {
                     <Icon class="ms-1" Name="IconName.XCircleFill" Color="IconColor.Danger" />
                 }
@@ -46,15 +46,15 @@
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    [Parameter, EditorRequired] public ITaskModel Task { get; set; } = null!;
+    [Parameter, EditorRequired] public OnlyofficeTask Task { get; set; } = null!;
 
     private string CompleteProgress
     {
         get
         {
-            if (Task.StatusColumn.Status == Status.Closed) return "width: 100%;";
+            if (Task.IsClosed()) return "width: 100%;";
             if (!Task.Subtasks.Any()) return "width: 0%;";
-            var completeProcentage = (Task.Subtasks.Count(x => x.Status == Status.Closed) * 100.0) / Task.Subtasks.Count();
+            var completeProcentage = (Task.Subtasks.Count(x => x.Status == Domain.Enums.Status.Closed) * 100.0) / Task.Subtasks.Count;
             return $"width: {completeProcentage.ToString(CultureInfo.InvariantCulture)}%;";
         }
     }
