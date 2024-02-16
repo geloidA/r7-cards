@@ -27,14 +27,14 @@
 </div>
 
 @code {
-    private List<ProjectInfo>? userProjects;
+    private List<Project>? userProjects;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         if (IsAuthenticated)
         {
-            userProjects = await ProjectApi.GetUserProjectsAsync().ToListAsync();
+            @* userProjects = await ProjectApi.GetUserProjectsAsync().ToListAsync(); *@
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Cardmngr.Application.Clients;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Domain.Extensions;
+using Cardmngr.Shared.Extensions;
 using Cardmngr.Shared.Project;
 using Microsoft.AspNetCore.Components;
 
@@ -16,6 +18,15 @@ public partial class ProjectState : ComponentBase
     [Inject] public IProjectClient ProjectClient { get; set; } = null!;
 
     public ProjectStateVm? Model { get; set; }
+
+    public IEnumerable<OnlyofficeTask>? OutputTasks
+    {
+        get
+        {
+            return selectedMilestones.Count != 0 ? Model?.Tasks.FilterByMilestones(selectedMilestones) : Model?.Tasks;
+        }
+    }
+
     public bool Initialized { get; private set; }
 
     protected override async Task OnParametersSetAsync()
@@ -24,12 +35,13 @@ public partial class ProjectState : ComponentBase
         if (previousId != Id)
         {
             Model = await ProjectClient.GetProjectAsync(Id);
+            selectedMilestones = [];
             previousId = Id;
         }
         Initialized = true;
     }
 
-    private readonly List<Milestone> selectedMilestones = [];
+    private List<Milestone> selectedMilestones = [];
     public IReadOnlyList<Milestone> SelectedMilestones => selectedMilestones;
 
     public void ToggleMilestone(Milestone milestone)
@@ -62,6 +74,12 @@ public partial class ProjectState : ComponentBase
 
     internal async Task UpdateTaskStatusAsync(OnlyofficeTask task, OnlyofficeTaskStatus status)
     {
-        
+        if (!task.HasStatus(status))
+        {
+            await ProjectClient.UpdateTaskStatusAsync(task.Id, status);
+
+            task.TaskStatusId = status.Id;
+            task.Status = status.StatusType.ToStatus();
+        }
     }
 }

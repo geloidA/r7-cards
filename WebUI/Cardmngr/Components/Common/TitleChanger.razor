@@ -1,33 +1,44 @@
-﻿@inherits KolComponentBase
+﻿@using System.ComponentModel.DataAnnotations
 
-<div class="d-flex flex-row w-100 align-items-center @Class">
-    <div class="col-md-11">
-        @if (isEditMode)
+@inherits SingleValueChangerBase
+
+<div class="d-flex flex-row w-100 align-items-center @Class" style="@Style">
+    <div class="col">
+        @if (EditMode)
         {
-            <InputText style="font-size: 20px; font-weight: 500;" 
-                @bind-Value:get="Title" class="p-0 w-100 form-control" @bind-Value:set="SetTitle" id="Title" />
+            <input @ref="Input" style="font-size: 20px; font-weight: 500;" @onfocusout="ToggleEditMode"
+                @bind="Title" class="p-0 w-100 form-control" id="Title" />
         }
         else
         {
-            <span style="font-size: 20px; font-weight: 500;" class="py-1">@Title</span>
+            <span style="font-size: 20px; font-weight: 500;" @onclick="ToggleEditMode" class="py-1">@Title</span>
         }
-    </div>
-    <div class="col-md-1 d-flex justify-content-end">
-        <Tool IconName="@(isEditMode ? IconName.PencilFill : IconName.Pencil)" 
-            Disabled="Disabled"
-            TooltipTitle="@(isEditMode ? "Прекратить" : "Изменить")" 
-            OnClick="() => isEditMode = !isEditMode"/>
     </div>
 </div>
 
 @code {
-    private bool isEditMode;
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public EventCallback<string?> TitleChanged { get; set; }
-    [Parameter] public bool Disabled { get; set; }
+    private string title = string.Empty;
 
-    private async Task SetTitle(string? value)
+    [Parameter]
+#pragma warning disable BL0007
+    public string Title
+#pragma warning restore BL0007
     {
-        await TitleChanged.InvokeAsync(value);
+        get => title;
+        set
+        {
+            if (title != value)
+            {
+                title = value;
+                TitleChanged.InvokeAsync(value).Forget();
+            }
+        }
+    }
+
+    [Parameter] public EventCallback<string?> TitleChanged { get; set; }
+
+    protected override bool PreventToggling()
+    {
+        return string.IsNullOrEmpty(Title);
     }
 }

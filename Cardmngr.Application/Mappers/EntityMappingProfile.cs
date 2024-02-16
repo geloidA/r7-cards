@@ -15,5 +15,6 @@ public class EntityMappingProfile : Profile
             .ForMember(dest => dest.TaskStatusId, opt => opt.MapFrom(src => src.CustomTaskStatus));
         CreateMap<Onlyoffice.Api.Models.TaskStatus, OnlyofficeTaskStatus>();
         CreateMap<UserDto, UserInfo>();
+        CreateMap<UserProfileDto, UserProfile>();
     }
 }

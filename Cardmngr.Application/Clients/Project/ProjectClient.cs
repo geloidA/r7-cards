@@ -18,17 +18,19 @@ public class ProjectClient(IProjectApi projectApi, IMapper mapper) : IProjectCli
         var tasks = projectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(projectId)).ToListAsync();
         var statuses = projectApi.GetAllTaskStatusesAsync().ToListAsync();
         var milestones = projectApi.GetMilestonesByProjectIdAsync(projectId).ToListAsync();
+        var team = projectApi.GetProjectTeamAsync(projectId).ToListAsync();
 
         return new ProjectStateVm
         {
             Project = mapper.Map<Project>(await project),
             Tasks = mapper.Map<List<OnlyofficeTask>>(await tasks),
             Statuses = mapper.Map<List<OnlyofficeTaskStatus>>(await statuses),
-            Milestones = mapper.Map<List<Milestone>>(await milestones)
+            Milestones = mapper.Map<List<Milestone>>(await milestones),
+            Team = mapper.Map<List<UserProfile>>(await team)
         };
     }
 
-    public async Task<Result> UpdateTaskStatusAsync(int taskId, OnlyofficeTaskStatus status)
+    public async Task UpdateTaskStatusAsync(int taskId, OnlyofficeTaskStatus status)
     {
         await projectApi.UpdateTaskStatusAsync(taskId, mapper.Map<Status>(status.StatusType), status.Id);
     }

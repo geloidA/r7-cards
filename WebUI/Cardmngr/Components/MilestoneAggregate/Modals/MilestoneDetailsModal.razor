@@ -1,0 +1,84 @@
+﻿@* @inject TeamMemberSelectionDialog SelectionDialog
+@inject IProjectApi ProjectApi
+
+@using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas;
+
+@if (changingState is { })
+{
+    <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right" @ref="currentModal">
+        <EditForm Model="changingState" OnValidSubmit="Submit" OnInvalidSubmit="NotifyInvalidInput" >
+            <DataAnnotationsValidator/>
+            <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
+                <TitleChanger Disabled="!Model.CanEdit" @bind-Title="changingState.Title" />
+            </OffcanvasHeader>
+            <ValidationMessage For="() => changingState.Title" class="ms-3 validation-msg" />
+            <OffcanvasBody Class="d-flex flex-column">
+                <div class="mb-2" >
+                    <WorkContainerDateProgress Work="changingState" />
+                </div>
+                <div class="d-flex justify-content-end">
+                    <UserBadge User="changingState.Responsible" Title="Ответственный" OnClick="ShowResponsibleSelectionDialog" />
+                </div>
+                <ValidationMessage For="() => changingState.Responsible" class="validation-msg" />
+                <Card class="p-1 mt-3">
+                    <DateChanger Title="Крайний срок:" InputId="Deadline" Disabled="!Model.CanEdit" EmptyText="Не установлен" @bind-Date="changingState.Deadline" />
+                    <ValidationMessage For="() => changingState.Deadline" class="validation-msg" />
+                </Card>
+                <DescriptionChanger Disabled="!Model.CanEdit" Class="mt-2" @bind-Description="changingState.Description" />
+                @if (!IsCreation)
+                {
+                    <div class="mt-4">
+                        <MelistoneShortTasks Milestone="Model" />
+                    </div>
+                }
+                <div class="d-flex mt-2 flex-row">
+                    <Button Loading="submiting" LoadingText="@LoadingText" 
+                        Size="Size.Small" Disabled="!Model.CanEdit" Type="ButtonType.Submit" 
+                        Color="ButtonColor.Success" Outline="true" >
+                        @SubmitText
+                    </Button>
+                    @if (!IsCreation)
+                    {
+                        <Button class="ms-2" Size="Size.Small" Disabled="!Model.CanDelete" Color="ButtonColor.Danger" 
+                            @onclick=@(async () => await DeleteAsync(true, "Действие необратимо. Вы действительно хотите удалить веху?"))
+                            Outline="true" >
+                            Удалить
+                        </Button>
+                    }
+                </div>
+            </OffcanvasBody>
+        </EditForm>
+    </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
+}
+
+@code {
+    private Offcanvas currentModal = null!;
+
+    private async Task ShowResponsibleSelectionDialog()
+    {
+        if (!Model.CanDelete) return;
+        var selected = await SelectionDialog.ShowAsync(Model.Project.Team, ModalOptions);
+
+        if (selected is { })
+        {
+            changingState.Responsible = selected;
+        }
+    }
+
+    protected override Task CloseAsync() => currentModal.CloseAsync(ModalResult.Ok());
+
+    protected override Task<Onlyoffice.Api.Models.MilestoneDto> OnCreateAsync() 
+        => ProjectApi.CreateMilestoneAsync(Model.Project.Id, changingState.GetUpdatedState());
+
+    protected override Task<Onlyoffice.Api.Models.MilestoneDto> OnUpdateAsync() 
+        => ProjectApi.UpdateMilestoneAsync(Model.Id, changingState.GetUpdatedState());
+
+    protected override async Task OnDeleteAsync()
+    {
+        await ProjectApi.DeleteMilestoneAsync(Model.Id);
+        Model.Project.Milestones.Remove(Model);
+    }
+
+    protected override void HookCreateSubmit(MilestoneModel updatedModel)
+        => Model.Project.Milestones.Add(updatedModel);
+} *@

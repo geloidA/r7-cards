@@ -1,0 +1,64 @@
+﻿@using KolBlazor.Components.Timeline
+
+@inject KolTimelineJsInterop TimelineInterop
+
+@inherits KolComponentBase
+@implements IAsyncDisposable
+
+<div class="d-flex">
+    <div @ref="element" style="max-width: 1700px;" class="overflow-scroll scrollbar-none" >
+        <div @onwheel="ScaleTimeline" class="timeline-animation scrollbar-none" style=@($"width: {Width}px; min-width: 1700px; {@Style}") >
+            <KolTimeline ShowTodayLine="true" Class="scrollbar-none py-0" >
+                @if (State.Initialized)
+                {
+                    foreach (var milestone in State.Model!.Milestones)
+                    {
+                        <KolTimelineItem @key="milestone.Id" End="milestone.Deadline" Start="State.GetMilestoneStart(milestone)">
+                            <TimelineMilestone Milestone="milestone" />
+                        </KolTimelineItem>
+                    }
+                }
+            </KolTimeline>
+        </div>
+    </div>
+    <KolScaleSwitcher Class="ms-4" MinValue="MinScale" MaxValue="MaxScale" Step="Step" 
+        @bind-CurrentValue="Width" />
+</div>
+
+@code {
+    private ElementReference element;
+    public const int MinScale = 1685;
+    public const int MaxScale = 10000;
+    public const int Step = 500;
+
+    public int Width { get; set; }
+    
+    [CascadingParameter] ProjectState State { get; set; } = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await TimelineInterop.RegisterScrollHandler(element);
+        }
+    }
+
+    private void ScaleTimeline(WheelEventArgs args)
+    {
+        if (Width >= MinScale && Width <= MaxScale)
+            Width -= (int)(args.DeltaY * 1.5);
+        else if (args.DeltaY > 0)
+        {
+            Width = Width >= MaxScale ? Width - Step : Width;
+        }
+        else
+        {
+            Width = Width <= MinScale ? Width + Step : Width;
+        }
+    }
+    
+    public ValueTask DisposeAsync()
+    {
+        return TimelineInterop.DisposeAsync();
+    }
+}

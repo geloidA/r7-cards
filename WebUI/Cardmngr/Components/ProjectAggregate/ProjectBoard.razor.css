@@ -1,14 +1,5 @@
 .status-column {
     background-color: var(--main-col-bg);
     border-radius: 5px;
-    border: 1px solid var(--boarder-color);
-    
-}
-
-.status-column.dragover {
-    border: 1px solid var(--drop-highlight-col);
-}
-
-.bob {
-    background-color: black;
+    border: 1px solid var(--boarder-color);    
 }

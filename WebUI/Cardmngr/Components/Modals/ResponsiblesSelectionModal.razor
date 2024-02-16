@@ -1,10 +1,8 @@
-﻿@using Onlyoffice.Api.Models
-
-@if (Responsibles is { })
+﻿@if (responsibles is { })
 {
     <Card>
         <CardBody style="max-height: 250px; overflow-y: scroll;">
-            @foreach (var responsible in Responsibles)
+            @foreach (var responsible in responsibles)
             {
                 <div @key="responsible.Value.Id" class="d-flex flex-row py-2 align-items-center">
                     <InputCheckbox @bind-Value="responsible.Checked" />
@@ -35,27 +33,30 @@ else
 
 @code {
     [CascadingParameter] BlazoredModalInstance Modal { get; set; } = default!;
-    List<SelectionUser>? Responsibles;
+    List<SelectionUser>? responsibles;
 
     [Parameter] public List<string>? SelectedIds { get; set; }
 
+    [Parameter, EditorRequired] 
+    public IEnumerable<UserInfo> Responsibles { get; set; } = null!;
+
     protected override void OnInitialized()
     {
-        @* Responsibles = Project.Team
+        responsibles = Responsibles
             .Select(x => new SelectionUser(SelectedIds?.Contains(x.Id!) ?? false, x))
-            .ToList(); *@
+            .ToList();
     }
 
-    private async System.Threading.Tasks.Task Confirm()
+    private async Task Confirm()
     {
-        var selected = Responsibles!
+        var selected = responsibles!
             .Where(x => x.Checked)
             .Select(x => x.Value);
         
         await Modal.CloseAsync(ModalResult.Ok(selected));
     }
 
-    private async System.Threading.Tasks.Task Cancel() => await Modal.CancelAsync();
+    private async Task Cancel() => await Modal.CancelAsync();
 
     private class SelectionUser(bool isChecked, UserInfo value)
     {

@@ -73,7 +73,7 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         throw new NotImplementedException();
     }
 
-    public IAsyncEnumerable<UserProfile> GetProjectTeamAsync(int projectId)
+    public IAsyncEnumerable<UserProfileDto> GetProjectTeamAsync(int projectId)
     {
         throw new NotImplementedException();
     }

@@ -1,0 +1,58 @@
+﻿@* @inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (Milestones.Any())
+{
+    @foreach (var milestone in Milestones.OrderByProperties())
+    {
+        <div @key="milestone.Id" class="mt-2 w-100">
+            <div class="row">
+                <div class="col-md-6 d-flex flex-row">
+                    <MilestoneLabel OnClick="async () => await ShowModalAsync(milestone)" Milestone="milestone" />
+                </div>
+                <div class="col-md-5 align-self-center">
+                    <i class="d-flex flex-row" style="font-size: 11px;">
+                        <span>@milestone.CheckStart().ToShortDateString()</span>
+                        <span class="ms-1">-</span>
+                        <span class="ms-1 @(milestone.IsDeadlineOut() ? "text-danger fw-bolder" : "")">@milestone.CheckDeadline().ToShortDateString()</span>
+                    </i>
+                </div>
+                @if (ShowTaskCounts)
+                {
+                    <div class="col-md-1 d-flex justify-content-end">
+                        <Tooltip Title="@(milestone.IsDeadlineOut() ? "Веха просрочена" : "Открытых задач")">
+                            <Badge Color="@(milestone.IsDeadlineOut() ? BadgeColor.Danger : BadgeColor.Info)" 
+                                class="p-1" style="margin-right: 2px; font-size: 11px;" >
+                                @milestone.ActiveWorkCount()
+                                </Badge>
+                        </Tooltip>
+                    </div>
+                }
+            </div>
+        </div>        
+    }
+}
+else
+{
+    <span class="text-secondary">Список пуст</span>
+}
+
+@code {
+    [Parameter] public IEnumerable<Milestone> Milestones { get; set; } = null!;
+    [Parameter] public bool ShowTaskCounts { get; set; }
+    [Parameter] public bool ShowMilestoneModal { get; set; }
+
+    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
+    [CascadingParameter] IModalService Modal { get; set; } = null!;
+
+    private async Task ShowModalAsync(Milestone milestone)
+    {
+        if (!ShowMilestoneModal) return;
+
+        var parameters = new ModalParameters
+        {
+            { "Model", milestone },
+        };
+
+        await Modal.Show<MilestoneDetailsModal>("", parameters, Options).Result;
+    }
+} *@

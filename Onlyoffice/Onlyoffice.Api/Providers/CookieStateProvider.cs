@@ -14,7 +14,7 @@ public class CookieStateProvider : AuthenticationStateProvider
         return Task.FromResult(new AuthenticationState(claimsPrincipal));
     }
 
-    public void SetAuthInfo(UserProfile userProfile)
+    public void SetAuthInfo(UserProfileDto userProfile)
     {
         var identity = new ClaimsIdentity([
             new Claim(ClaimTypes.Email, Check(userProfile.Email)),

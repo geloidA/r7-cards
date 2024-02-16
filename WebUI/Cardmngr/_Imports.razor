@@ -9,17 +9,10 @@
 @using Cardmngr
 @using Cardmngr.Extensions
 @using Cardmngr.Layout
-@using Cardmngr.Components.Header
-@using Cardmngr.Components
-@using Cardmngr.Components.Modals.ConfirmModals
+
 @using BlazorBootstrap
-@using Cardmngr.Components.Modals
-@using Cardmngr.Components.Modals.DetailModals
-@using Cardmngr.Components.TaskDetails
-@using Cardmngr.Models.Interfaces
 @using Cardmngr.Services
 @using Onlyoffice.Api.Logics
-@using Onlyoffice.Api.Common
 @using Onlyoffice.Api.Models.Extensions
 @using Onlyoffice.Api.Providers
 @using Cardmngr.Utils
@@ -30,22 +23,39 @@
 @using KolBlazor
 @using KolBlazor.Components
 @using Microsoft.AspNetCore.Components.Authorization
-@using Cardmngr.Components.Common
-@using Cardmngr.Models
-@using Cardmngr.Components.MilestoneDetails
-@using Cardmngr.Components.Modals.MyBlazored
-@using Onlyoffice.Api.Models
-@using MyTask = Onlyoffice.Api.Models.Task
-@using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus
-@using Task = System.Threading.Tasks.Task
 
-@* Component usings *@
+@* Components *@
+@using Cardmngr.Components
+@using Cardmngr.Components.Modals
+@using Cardmngr.Components.Modals.MyBlazored
+@using Cardmngr.Components.Modals.DetailModals
+@using Cardmngr.Components.Modals.ConfirmModals
+
+@using Cardmngr.Components.Header
+@using Cardmngr.Components.Header.Modals
+
+@using Cardmngr.Components.Common
+
 @using Cardmngr.Components.ProjectAggregate
+@using Cardmngr.Components.ProjectAggregate.Modals
+
 @using Cardmngr.Components.TaskAggregate
+@using Cardmngr.Components.TaskAggregate.Modals
+@using Cardmngr.Components.TaskAggregate.ModalComponents
+
 @using Cardmngr.Components.TaskStatusAggregate
+
+@using Cardmngr.Components.UserAggregate
+
+@using Cardmngr.Components.SubtaskAggregate
+
+@using Cardmngr.Components.MilestoneAggregate
+@using Cardmngr.Components.MilestoneAggregate.Modals
+@using Cardmngr.Components.MilestoneAggregate.ModalComponents
 
 @* Shared *@
 @using Cardmngr.Shared.Extensions
 
 @* Domain *@
 @using Domain.Entities
+@using Domain.Enums

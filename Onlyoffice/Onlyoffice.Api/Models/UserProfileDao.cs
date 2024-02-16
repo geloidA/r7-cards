@@ -2,15 +2,15 @@
 
 public class UserProfilesDao : HttpResponseDaoBase
 {
-    public List<UserProfile>? Response { get; set; }
+    public List<UserProfileDto>? Response { get; set; }
 }
 
 public class UserProfileDao : HttpResponseDaoBase
 {
-    public UserProfile? Response { get; set; }
+    public UserProfileDto? Response { get; set; }
 }
 
-public class UserProfile : IUser
+public class UserProfileDto : IUser
 {
     public string? Id { get; set; }
     public string? UserName { get; set; }

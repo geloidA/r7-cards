@@ -7,11 +7,6 @@ namespace Cardmngr.Services;
 
 public partial class TeamMemberSelectionDialog(IModalService modal)
 {
-    public TeamMemberSelectionDialog() : this(default!)
-    {
-        
-    }
-
     public async Task<UserInfo?> ShowAsync(IEnumerable<UserInfo> team, ModalOptions options)
     {
         var parameters = new ModalParameters

@@ -19,10 +19,10 @@
 }
 
 @code {
-    Dictionary<int, ProjectInfo> projectsByIds = [];
+    Dictionary<int, Project> projectsByIds = [];
     bool showTitle;
     string? selectedProjectTitle;
-    [Parameter] public IEnumerable<ProjectInfo> Projects { get; set; } = null!;
+    [Parameter] public IEnumerable<Project> Projects { get; set; } = null!;
 
     protected override void OnInitialized()
     {
@@ -43,7 +43,7 @@
         StateHasChanged();
     }
 
-    private void NavigateTo(ProjectInfo project)
+    private void NavigateTo(Project project)
     {
         selectedProjectTitle = project.Title;
         NavigationManager.NavigateTo($"/project/{project.Id}");

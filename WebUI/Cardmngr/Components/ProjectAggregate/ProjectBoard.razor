@@ -4,12 +4,18 @@
         {
             foreach (var status in State.Model!.Statuses.InLogicalOrder())
             {
-                <div class="status-column">
-                    <KolBoardColumn TValue="OnlyofficeTask" CanCollapse="true" 
+                <div class="status-column" @key="status" >
+                    <KolBoardColumn TValue="OnlyofficeTask" CanCollapse="true"
                         OnDropItem="@(async task => await OnChangeTaskStatus(task, status))"
-                        Items="State.Model.Tasks.FilterByStatus(status)">
-                        <HeaderTemplate Context="isCollapsed">
+                        Items="State.OutputTasks!.FilterByStatus(status)">
+                        <HeaderTemplate Context="isCollapsed">                            
                             <TaskStatusHeader IsCollapsed="isCollapsed" TaskStatus="status" />
+                            @if (State.SelectedMilestones.Count != 0)
+                            {
+                                <div class="mt-1 d-flex justify-content-center fw-light" style="font-size: small;">
+                                    @State.OutputTasks!.FilterByStatus(status).Count() результатов
+                                </div>
+                            }
                         </HeaderTemplate>
                     </KolBoardColumn>
                 </div>

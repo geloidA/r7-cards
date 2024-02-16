@@ -4,7 +4,7 @@ using Cardmngr.Components.ProjectAggregate;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
-using Cardmngr.Components.Modals.DetailModals;
+using Cardmngr.Components.TaskAggregate.Modals;
 
 namespace Cardmngr.Components.TaskStatusAggregate;
 

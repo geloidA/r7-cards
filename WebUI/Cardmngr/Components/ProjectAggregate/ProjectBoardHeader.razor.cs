@@ -1,7 +1,7 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
-using Cardmngr.Components.Modals.DetailModals;
+using Cardmngr.Components.ProjectAggregate.Modals;
 
 namespace Cardmngr.Components.ProjectAggregate;
 

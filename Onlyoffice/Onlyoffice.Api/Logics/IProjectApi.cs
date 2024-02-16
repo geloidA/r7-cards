@@ -73,7 +73,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="projectId">Project ID</param>
     /// <returns>List of team members</returns>
-    IAsyncEnumerable<UserProfile> GetProjectTeamAsync(int projectId);
+    IAsyncEnumerable<UserProfileDto> GetProjectTeamAsync(int projectId);
 
     /// <summary>
     /// Deletes a task with the ID specified in the request from the project.

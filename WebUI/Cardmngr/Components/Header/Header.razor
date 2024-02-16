@@ -3,8 +3,6 @@
 
 @using System.Text.Json
 
-@implements IDisposable
-
 <div class="bb-top-row px-4 d-flex" style="background-color: var(--main-col-bg);">
     <div class="col-md-1 d-flex justify-content-start">
         <Button class="py-0" Color="ButtonColor.Dark" Outline="true" @onclick="OpenSidebar" >
@@ -27,18 +25,15 @@
 </div>
 
 @code {
-    private List<ProjectInfo> userProjects = null!;
+    private List<Project> userProjects = null!;
     private UserProfile? currentUser;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
-    [CascadingParameter] HeaderTitle HeaderTitle { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
-    {
-        HeaderTitle.ContentChanged += StateHasChanged;
-        
-        userProjects = await ProjectApi.GetUserProjectsAsync().ToListAsync();
+    {        
+        @* userProjects = await ProjectApi.GetUserProjectsAsync().ToListAsync(); *@
 
         if (AuthenticationState is { })
         {
@@ -50,10 +45,5 @@
     private async Task OpenSidebar()
     {
         await Modal.Show<HeaderMenuModal>("", new ModalParameters { { "UserProjects", userProjects } }, Options).Result;
-    }
-
-    public void Dispose()
-    {
-        HeaderTitle.ContentChanged -= StateHasChanged;
     }
 }

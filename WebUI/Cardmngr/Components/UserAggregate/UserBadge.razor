@@ -1,0 +1,26 @@
+﻿
+@inherits KolComponentBase
+
+<div class="d-flex flex-column @(OnClick.HasDelegate ? "clickable" : "") @Class" style="@Style" @onclick="OnClick" >    
+    <Badge class="@(User is { } ? "py-0" : "")" Color="BadgeColor" IndicatorType="BadgeIndicatorType.RoundedPill">
+        @if (User is { })
+        {
+            @* <UserAvatar ShowName="true" Size="25" User="User" /> *@
+        }
+        else
+        {
+            <span class="user-select-none">Выберите ответственного</span>
+        }
+    </Badge>
+    <span style="font-size: 11px; margin-right: 8px;" class="d-flex justify-content-end">@Title</span>
+</div>
+
+@code {
+
+    [Parameter] public UserInfo? User { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public BadgeColor BadgeColor { get; set; } = BadgeColor.Success;
+
+    [Parameter] public EventCallback OnClick { get; set; }
+
+}

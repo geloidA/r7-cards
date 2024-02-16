@@ -2,10 +2,9 @@
 using Blazored.Modal.Services;
 using Cardmngr.Domain.Entities;
 using Microsoft.AspNetCore.Components;
-using Onlyoffice.Api.Logics;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Components.ProjectAggregate;
-using Cardmngr.Components.Modals.DetailModals;
+using Cardmngr.Components.TaskAggregate.Modals;
 
 namespace Cardmngr.Components.TaskAggregate;
 
@@ -15,7 +14,6 @@ public partial class TaskCard
     [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsModal { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    [CascadingParameter] IProjectApi ProjectApi { get; set; } = null!;
     [Parameter] public OnlyofficeTask Task { get; set; } = null!;
     
     string CssDeadline => Task.IsDeadlineOut() ? "red-border" : "";
@@ -24,8 +22,8 @@ public partial class TaskCard
     {
         var parameters = new ModalParameters
         {
-            { "Model", Task },
-            { "ProjectApi", ProjectApi }
+            { "Task", Task },
+            { "State", State }
         };
 
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsModal).Result;

@@ -21,10 +21,28 @@ public static class OnlyofficeTaskExtensions
         return tasks.Where(x => x.HasStatus(status));
     }
 
+    public static IEnumerable<OnlyofficeTask> FilterByMilestones(this IEnumerable<OnlyofficeTask> tasks, IEnumerable<Milestone> milestones)
+    {
+        return tasks.Where(x => milestones.Any(m => m.Id == x.MilestoneId));
+    }
+
     public static bool HasStatus(this OnlyofficeTask task, OnlyofficeTaskStatus status)
     {
         return task.TaskStatusId is null
             ? status.IsDefault && task.Status.ToStatusType() == status.StatusType
             : task.TaskStatusId == status.Id;
+    }
+
+    public static bool CanMarkClosed(this OnlyofficeTask task)
+    {
+        return task.IsClosed() || task.Subtasks.All(x => x.Status == Status.Closed);
+    }
+
+    public static void CloseAllSubtasks(this OnlyofficeTask task)
+    {
+        foreach (var subtask in task.Subtasks)
+        {
+            subtask.Status = Status.Closed;
+        }
     }
 }

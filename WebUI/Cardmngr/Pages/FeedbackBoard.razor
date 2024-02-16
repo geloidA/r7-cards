@@ -1,36 +1,26 @@
 ﻿@page "/feedback-board"
 
-@if (model is { })
-{
-    <div class="d-flex position-relative mb-5" style="flex: auto !important;">        
-        <div class="d-flex flex-column">
-            <CascadingValue Value="ProjectApi" IsFixed="true">                
-                <StatusColumnsView IsFeedback="true" Board="model.StatusBoard" />
-            </CascadingValue>
-        </div>
-        <div>
-            <p>Эта доска предназначена для сбора предложений по улучшению <br> 
-            или созданию новых возможностей программы.</p>
-            <p>Также, если Вы нашли ошибку в программе, опишите ее здесь: укажите, что <br>
-            произошло, где она возникла, и какие Ваши действия ее вызвавали.</p>
-            <Callout Heading="Примечание">
-                Перед созданием предложения убедитесь нет ли похожей карточки.
-            </Callout>
-        </div>
+<div class="d-flex position-relative mb-5" style="flex: auto !important;">        
+    <div class="d-flex flex-column">
+
     </div>
-}
+    <div>
+        <p>Эта доска предназначена для сбора предложений по улучшению <br> 
+        или созданию новых возможностей программы.</p>
+        <p>Также, если Вы нашли ошибку в программе, опишите ее здесь: укажите, что <br>
+        произошло, где она возникла, и какие Ваши действия ее вызвавали.</p>
+        <Callout Heading="Примечание">
+            Перед созданием предложения убедитесь нет ли похожей карточки.
+        </Callout>
+    </div>
+</div>
 
 @code {
 
-    private ProjectModel? model;
-
     [Inject(Key = "file")] IProjectApi ProjectApi { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        var project = ProjectApi.GetProjectByIdAsync(-1);
-        var tasks = ProjectApi.GetTasksByProjectIdAsync(-1).ToListAsync();
-        var statuses = ProjectApi.GetAllTaskStatusesAsync().ToListAsync();
-        model = new ProjectModel(await project, await tasks, await statuses, [], Enumerable.Empty<Onlyoffice.Api.Models.IUser>());
+        return Task.CompletedTask;
     }
 }

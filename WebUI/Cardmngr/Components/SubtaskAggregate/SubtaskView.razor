@@ -1,0 +1,124 @@
+﻿<div class="row d-flex align-items-center mt-2">
+    <div class="col-md-6 d-flex flex-row align-items-center overflow-hidden">
+        @if (Subtask.Status == Status.Open)
+        {
+            <Tool IconName="IconName.ClockFill" IconColor="IconColor.Info" 
+                IconSize="IconSize.x5" TooltipPlacement="TooltipPlacement.Left"
+                TooltipTitle="Отметить выполненым" Disabled="@(!Subtask.CanEdit)"
+                OnClick="@SwitchSubtaskStatus" />
+            @if (isEditMode)
+            {
+                <InputText class="ms-2 w-100" @bind-Value="subtaskTitle" />
+            }
+            else
+            {
+                <span class="ms-2" style="font-size: 15px;">@Subtask.Title</span>
+            }
+        }
+        else
+        {
+            <Tool IconName="IconName.CheckCircleFill" IconColor="IconColor.Success" 
+                IconSize="IconSize.x5" TooltipPlacement="TooltipPlacement.Left"
+                TooltipTitle="Отметить невыполненым" Disabled="@(Task.IsClosed() || !Subtask.CanEdit)"
+                OnClick="@SwitchSubtaskStatus" DisabledTitle="@(Task.IsClosed() ? "Задача закрыта" : "Недоступно")"/>
+            <s class="ms-2 text-secondary">
+                <i>@Subtask.Title</i>
+            </s>
+        }
+    </div>
+    <div class="col-md-4 d-flex justify-content-center">
+        @* <ResponsibleSelection @bind-Responsible="Subtask.Responsible" EditMode="isEditMode" Responsibles="Task.Project.Team" /> *@
+    </div>
+    <div class="col-md-2 d-flex justify-content-end">
+        @if (Subtask.Status != Status.Closed && Subtask.CanEdit)
+        {
+            @if (isEditMode)
+            {
+                <Button style="min-width: 31px;" Color="ButtonColor.Success" Outline="true" Size="Size.ExtraSmall"
+                    @onclick="() => ChangeEditMode(true)" >
+                    OK
+                </Button> 
+            }
+            else
+            {
+                <Dropdown Size="Size.ExtraSmall" AutoClose="true" >
+                    <DropdownToggleButton Color="ButtonColor.Light">
+                        <Icon Name="IconName.ThreeDots" />
+                    </DropdownToggleButton>
+                    <DropdownMenu>
+                        <DropdownItem @onclick="() => ChangeEditMode(true)">
+                            Редактировать
+                        </DropdownItem>
+                        <DropdownItem @onclick="DeleteSubtask">
+                            Удалить
+                        </DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
+            }
+        }
+        
+        @if (Subtask.Status == Status.Closed && Subtask.CanEdit)
+        {
+            <Tool IconName="IconName.X" IconColor="IconColor.Danger" TooltipTitle="Удалить" 
+                OnClick="DeleteSubtask" />
+        }
+    </div>
+</div>
+
+@code {
+    private bool isEditMode;
+    private string? subtaskTitle;
+
+    [CascadingParameter] SubtaskView? LastEditingSubtask { get; set; }
+    [Parameter] public Subtask Subtask { get; set; } = null!;
+    [Parameter] public OnlyofficeTask Task { get; set; } = null!;
+
+    [Parameter] public EventCallback<SubtaskView> EditModeChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        subtaskTitle = Subtask.Title;
+    }
+
+    private async Task SwitchSubtaskStatus()
+    {
+        @* if(Subtask.Status == Status.Open) Subtask.Close();
+        else Subtask.Open();
+
+        if (isEditMode) isEditMode = false;
+        await ProjectApi.UpdateSubtaskStatusAsync(Subtask.TaskId, Subtask.Id, Subtask.Status); *@
+    }
+
+    private async Task DeleteSubtask()
+    {
+        @* await ProjectApi.DeleteSubtaskAsync(Subtask.TaskId, Subtask.Id);
+        Task.RemoveSubtask(Subtask); *@
+    }
+
+    private async Task ChangeEditMode(bool notify)
+    {        
+        if (LastEditingSubtask is { } && LastEditingSubtask != this && LastEditingSubtask.isEditMode)
+        {
+            await LastEditingSubtask.ChangeEditMode(false);
+        }
+
+        isEditMode = !isEditMode;
+
+        if (notify)
+        {
+            await EditModeChanged.InvokeAsync(this);
+        }
+        
+        if (!isEditMode)
+        {
+            await UpdateSubtaskAsync();
+        }
+    }
+
+    private async Task UpdateSubtaskAsync()
+    {
+        @* subtaskTitle = string.IsNullOrEmpty(subtaskTitle) ? Subtask.Title : subtaskTitle;
+        Subtask.Title = subtaskTitle;
+        await ProjectApi.UpdateSubtaskAsync(Subtask.TaskId, Subtask.Id, Subtask.GetUpdatedState()); *@
+    }
+}

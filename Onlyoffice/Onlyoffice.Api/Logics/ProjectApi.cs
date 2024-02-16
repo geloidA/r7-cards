@@ -32,10 +32,10 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         }
     }
 
-    public async IAsyncEnumerable<UserProfile> GetProjectTeamAsync(int projectId)
+    public async IAsyncEnumerable<UserProfileDto> GetProjectTeamAsync(int projectId)
     {
         var projectTeamDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<UserProfilesDao>($"api/project/{projectId}/team"));
-        await foreach (var userProfile in projectTeamDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<UserProfile>())
+        await foreach (var userProfile in projectTeamDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<UserProfileDto>())
         {
             yield return userProfile;
         }

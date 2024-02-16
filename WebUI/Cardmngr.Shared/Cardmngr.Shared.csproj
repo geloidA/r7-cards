@@ -7,11 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Helpers/" />
     <Folder Include="Project/" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Cardmngr.Domain\Cardmngr.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 </Project>
