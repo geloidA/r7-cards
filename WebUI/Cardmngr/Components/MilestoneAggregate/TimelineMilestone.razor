@@ -3,7 +3,7 @@
 
 @inject AuthenticationStateProvider AuthenticationState
 
-<Badge class="p-0 w-100 overflow-hidden" @onclick="() => ProjectState.ToggleMilestone(Milestone)" Color="BadgeColor">
+<Badge class="p-0 w-100 overflow-hidden" @onclick="() => State.ToggleMilestone(Milestone)" Color="BadgeColor">
     <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Right">
         <div class="@CssSelected p-1 timeline-milestone">
             @Milestone.Title
@@ -16,11 +16,11 @@
 </div>
 
 @code {
-    private string CssSelected => ProjectState.SelectedMilestones.Contains(Milestone) ? "selected" : "";
+    private string CssSelected => State.SelectedMilestones.Contains(Milestone) ? "selected" : "";
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
-    [CascadingParameter] ProjectState ProjectState { get; set; } = null!;
+    [CascadingParameter] ProjectState State { get; set; } = null!;
 
     [Parameter] public Milestone Milestone { get; set; } = null!;
 
@@ -37,7 +37,8 @@
     {
         var paramerters = new ModalParameters
         {
-            { "Model", Milestone }
+            { "Model", Milestone },
+            { "State", State }
         };
 
         await Modal.Show<MilestoneDetailsModal>("", paramerters, Options).Result;

@@ -1,4 +1,7 @@
-﻿namespace Onlyoffice.Api.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using Onlyoffice.Api.Common;
+
+namespace Onlyoffice.Api.Models;
 
 public class SingleSubtaskDao : HttpResponseDaoBase
 {
@@ -50,10 +53,10 @@ public class TaskUpdateData
     public int Priority { get; set; }
     public string? Title { get; set; }
     public int? MilestoneId { get; set; }
-    public List<string?>? Responsibles { get; set; }
+    public List<string?> Responsibles { get; set; }= [];
     public int? ProjectId { get; set; }
     public bool? Notify { get; set; }
-    public int? Status { get; set; }
+    public int? Status { get; set; } = (int)Common.Status.Open;
     public int? Progress { get; set; }
     public int? CustomTaskStatus { get; set; }
 }
@@ -74,7 +77,10 @@ public class SubtaskDto
 
 public class SubtaskUpdateData
 {
+    public int Status { get; set; } = (int)Common.Status.Open;
     public string? Responsible { get; set; }
+
+    [Required(ErrorMessage = "Название не может быть пустым")]
     public string? Title { get; set; }
 }
 

@@ -1,4 +1,6 @@
 ﻿using Cardmngr.Application.Clients;
+using Cardmngr.Application.Clients.Milestone;
+using Cardmngr.Application.Clients.Subtask;
 using Cardmngr.Application.Mappers;
 using Microsoft.Extensions.DependencyInjection;
 using Onlyoffice.Api.Logics;
@@ -13,6 +15,8 @@ public static class ServiceCollectionExtensions
             .AddAutoMapper(typeof(EntityMappingProfile), typeof(EnumMappingProfile), typeof(UpdateStatesMappingProfile))
             .AddScoped<IProjectApi, ProjectApi>()
             .AddScoped<IProjectClient, ProjectClient>()
-            .AddScoped<ITaskClient, TaskClient>();
+            .AddScoped<ITaskClient, TaskClient>()
+            .AddScoped<ISubtaskClient, SubtaskClient>()
+            .AddScoped<IMilestoneClient, MilestoneClient>();
     }
 }

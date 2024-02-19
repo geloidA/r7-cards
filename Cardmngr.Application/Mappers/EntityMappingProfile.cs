@@ -9,6 +9,8 @@ public class EntityMappingProfile : Profile
     public EntityMappingProfile()
     {
         CreateMap<ProjectDto, Project>();
+        CreateMap<ProjectInfo, Project>();
+        
         CreateMap<MilestoneDto, Milestone>();
         CreateMap<SubtaskDto, Subtask>();
 

@@ -6,4 +6,5 @@ namespace Cardmngr.Application.Clients;
 public interface IProjectClient
 {
     Task<ProjectStateVm> GetProjectAsync(int projectId);
+    IAsyncEnumerable<Project> GetSelfProjectsAsync();
 }

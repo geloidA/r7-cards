@@ -7,7 +7,7 @@
                 <div class="status-column" @key="status" >
                     <KolBoardColumn TValue="OnlyofficeTask" CanCollapse="true"
                         OnDropItem="@(async task => await OnChangeTaskStatus(task, status))"
-                        Items="State.OutputTasks!.FilterByStatus(status)">
+                        Items="State.OutputTasks!.FilterByStatus(status).OrderByTaskCriteria()">
                         <HeaderTemplate Context="isCollapsed">                            
                             <TaskStatusHeader IsCollapsed="isCollapsed" TaskStatus="status" />
                             @if (State.SelectedMilestones.Count != 0)

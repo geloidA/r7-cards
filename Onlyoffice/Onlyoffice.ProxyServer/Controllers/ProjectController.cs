@@ -109,7 +109,7 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
         return JsonConvert.DeserializeObject(requestBody) ?? throw new NullReferenceException("Request body is null");
     }
 
-    private async Task<Api.Models.TaskDto> CreateTaskAsync(int projectId, TaskUpdateData state, IRequestCookieCollection cookie)
+    private async Task<TaskDto> CreateTaskAsync(int projectId, TaskUpdateData state, IRequestCookieCollection cookie)
     {
         using var client = cookie.GetClientFor(apiUrl);
         var httpContent = new StringContent(JsonConvert.SerializeObject(state), Encoding.UTF8, "application/json");
@@ -118,6 +118,7 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
             Content = httpContent
         };
         var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
         var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
         return taskDao?.Response ?? throw new NullReferenceException("Task was not created");
     }

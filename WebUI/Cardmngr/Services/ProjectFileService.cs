@@ -33,7 +33,7 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         throw new NotImplementedException();
     }
 
-    public IAsyncEnumerable<Onlyoffice.Api.Models.TaskDto> GetFiltredTasksAsync(FilterTasksBuilder builder)
+    public IAsyncEnumerable<TaskDto> GetFiltredTasksAsync(FilterTasksBuilder builder)
     {
         throw new NotImplementedException();
     }
@@ -58,17 +58,17 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         throw new NotImplementedException();
     }
 
-    public System.Threading.Tasks.Task UpdateMilestoneStatusAsync(int milestoneId, Status status)
+    public Task UpdateMilestoneStatusAsync(int milestoneId, Status status)
     {
         throw new NotImplementedException();
     }
 
-    public System.Threading.Tasks.Task UpdateSubtaskAsync(int taskId, int subtaskId, SubtaskUpdateData state)
+    public Task UpdateSubtaskAsync(int taskId, int subtaskId, SubtaskUpdateData state)
     {
         throw new NotImplementedException();
     }
 
-    public System.Threading.Tasks.Task UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status)
+    public Task<SubtaskDto> UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status)
     {
         throw new NotImplementedException();
     }
@@ -131,5 +131,20 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         {
             yield return item;
         }
+    }
+
+    public Task<TaskDto> GetTaskByIdAsync(int taskId)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<TaskDto> IProjectApi.UpdateTaskStatusAsync(int taskId, Status status, int? statusId)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<SubtaskDto> IProjectApi.UpdateSubtaskAsync(int taskId, int subtaskId, SubtaskUpdateData state)
+    {
+        throw new NotImplementedException();
     }
 }

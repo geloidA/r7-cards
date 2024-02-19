@@ -2,7 +2,7 @@
 
 @if (Milestones.Any())
 {
-    @foreach (var milestone in Milestones.OrderByProperties())
+    @foreach (var milestone in Milestones.OrderByMilestoneCriteria())
     {
         <div @key="milestone.Id" class="mt-2 w-100">
             <div class="row">

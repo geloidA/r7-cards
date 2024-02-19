@@ -155,7 +155,7 @@ public interface IProjectApi
     /// <param name="subtaskId">SubtaskDto ID</param>
     /// <param name="status">New subtask status</param>
     /// <returns></returns>
-    Task UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status);
+    Task<SubtaskDto> UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status);
 
     /// <summary>
     /// Creates a subtask with the title and responsible within the parent task specified in the request.

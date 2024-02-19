@@ -1,11 +1,11 @@
-﻿@* @if (Milestone.Any())
+﻿@if (MilestoneTasks.Any())
 {
     <Card>
         <CardBody class="p-1 overflow-auto d-flex flex-column task-container" style="max-height: 500px;">
-            @foreach (var task in Milestone.Tasks.OrderByProperties())
+            @foreach (var task in MilestoneTasks.OrderByTaskCriteria())
             {
                 <span class="py-1" style="z-index: 99;" >
-                    <ShortTaskView Task="task" />
+                    <ShortTaskCard Task="task" />
                 </span>
             }
         </CardBody>
@@ -14,7 +14,7 @@
                 <Icon Name="IconName.UiChecks" />
                 Задачи
             </h6>
-            <span>@($"{Milestone.ClosedWorkCount()} / {Milestone.Tasks.Count()}")</span>
+            <span>@($"{MilestoneTasks.Count(x => x.Status == Status.Closed)} / {MilestoneTasks.Count()}")</span>
             <Icon class="ms-2" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
         </CardFooter>
     </Card>
@@ -29,7 +29,5 @@ else
 }
 
 @code {
-    [Parameter, EditorRequired] public Milestone Milestone { get; set; } = null!;
-
-
-} *@
+    [Parameter, EditorRequired] public IEnumerable<OnlyofficeTask> MilestoneTasks { get; set; } = null!;
+}

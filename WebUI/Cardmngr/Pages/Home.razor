@@ -2,7 +2,7 @@
 
 @inherits AuthorizedPage
 
-@inject IProjectApi ProjectApi
+@inject IProjectClient ProjectClient
 
 <PageTitle>Главная</PageTitle>
 
@@ -34,7 +34,7 @@
         await base.OnInitializedAsync();
         if (IsAuthenticated)
         {
-            @* userProjects = await ProjectApi.GetUserProjectsAsync().ToListAsync(); *@
+            userProjects = await ProjectClient.GetSelfProjectsAsync().ToListAsync();
         }
     }
 }

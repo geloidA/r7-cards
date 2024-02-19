@@ -45,6 +45,7 @@
 @code {
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
+    [CascadingParameter] ProjectState State { get; set; } = null!;
 
     [Parameter, EditorRequired] public OnlyofficeTask Task { get; set; } = null!;
 
@@ -53,7 +54,7 @@
         get
         {
             if (Task.IsClosed()) return "width: 100%;";
-            if (!Task.Subtasks.Any()) return "width: 0%;";
+            if (Task.Subtasks.Count == 0) return "width: 0%;";
             var completeProcentage = (Task.Subtasks.Count(x => x.Status == Domain.Enums.Status.Closed) * 100.0) / Task.Subtasks.Count;
             return $"width: {completeProcentage.ToString(CultureInfo.InvariantCulture)}%;";
         }
@@ -63,7 +64,8 @@
     {
         var paramerters = new ModalParameters
         {
-            { "Model", Task }
+            { "Model", Task },
+            { "State", State }
         };
 
         await Modal.Show<TaskDetailsModal>("", paramerters, Options).Result;

@@ -14,7 +14,7 @@ public partial class ProjectBoardHeader : ComponentBase
 
     private async Task ShowProjectMenu()
     {
-        var parameters = new ModalParameters { { "ProjectState", State } };
+        var parameters = new ModalParameters { { "State", State } };
         await Modal.Show<ProjectDetailsModal>("",  parameters, Options).Result;
     }
 }

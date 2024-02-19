@@ -20,7 +20,6 @@ public partial class ProjectBoard
         {
             var confirmModal = await Modal.Show<CloseCardConfirmModal>("Закрытие задачи", ModalOptions).Result;
             if (confirmModal.Cancelled) return;
-            task.CloseAllSubtasks();
         }
 
         await State.UpdateTaskStatusAsync(task, status);

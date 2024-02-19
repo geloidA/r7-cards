@@ -1,5 +1,6 @@
 ﻿using Blazored.Modal;
 using Microsoft.AspNetCore.Components;
+using Onlyoffice.Api.Validations;
 
 namespace Cardmngr;
 
@@ -22,5 +23,12 @@ public static class ServicesExtensions
                         UseCustomLayout = true
                     }, 
                     true));
+    }
+
+    public static IServiceCollection AddValidators(this IServiceCollection services)
+    {
+        return services
+            .AddScoped<TaskUpdateDataValidator>()
+            .AddScoped<MilestoneUpdateDataValidator>();
     }
 }

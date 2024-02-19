@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Security.AccessControl;
+using AutoMapper;
+using Cardmngr.Domain.Enums;
 using Onlyoffice.Api.Logics;
 using Onlyoffice.Api.Models;
 
@@ -25,6 +27,12 @@ namespace Cardmngr.Application.Clients.Subtask
         public async Task<Domain.Entities.Subtask> UpdateAsync(int taskId, int subtaskId, SubtaskUpdateData updateData)
         {
             var subtaskDto = await projectApi.UpdateSubtaskAsync(taskId, subtaskId, updateData);
+            return mapper.Map<Domain.Entities.Subtask>(subtaskDto);
+        }
+
+        public async Task<Domain.Entities.Subtask> UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status)
+        {
+            var subtaskDto = await projectApi.UpdateSubtaskStatusAsync(taskId, subtaskId, mapper.Map<Onlyoffice.Api.Common.Status>(status));
             return mapper.Map<Domain.Entities.Subtask>(subtaskDto);
         }
     }

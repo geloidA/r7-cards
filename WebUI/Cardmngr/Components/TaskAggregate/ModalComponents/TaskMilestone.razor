@@ -32,36 +32,6 @@
 </Card>
 
 @code {
-
-    [CascadingParameter] ProjectState State { get; set; } = null!;
-    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
-    [CascadingParameter] IModalService Modal { get; set; } = null!;
-
-    [Parameter] public TaskUpdateData Task { get; set; } = null!;
-    [Parameter] public bool Disabled { get; set; }
-
-    private async Task ShowSelectionModalAsync()
-    {
-        var parameters = new ModalParameters
-        {
-            { "Items", State.Model!.Milestones },
-            { "ItemRender", RenderMilestone }
-        };
-
-        var res = await Modal.Show<SelectionModal<Milestone>>("Выберите веху", parameters, ModalOptions).Result;
-
-        if (res.Confirmed)
-        {
-            var milestone = (Milestone)res.Data!;
-            Task.MilestoneId = milestone.Id;
-        }
-    }
-
-    private void DeleteMilestone()
-    {
-        Task.MilestoneId = null;
-    }
-
     private static RenderFragment<Milestone> RenderMilestone = milestone =>
         @<div class="py-1 px-1 d-flex align-items-center">
             <Badge Color="BadgeColor.Warning" IndicatorType="BadgeIndicatorType.RoundedPill"

@@ -1,39 +1,56 @@
-﻿@* 
-@if (Work is { })
-{
-    <div class="d-flex flex-column w-100">
-        <Progress Class="user-select-none">            
-            @if (Work.IsClosed())
-            {
-                <ProgressBar Width="100" Type="ProgressType.StripedAndAnimated" Color="ProgressColor.Success"
-                    Label="Закрыта" />
-            } else if (Work.IsDateBetween(DateTime.Now))
-            {
-                <ProgressBar Width="Work.CheckStart().CountDaysTo(DateTime.Now) * DayProcentage" 
-                    Type="ProgressType.StripedAndAnimated" Label="@Work.ClosedWorkCount().ToString()" />
-                <ProgressBar Width="DateTime.Now.CountDaysTo(Work.CheckDeadline()) * DayProcentage" 
-                    Label="@Work.ActiveWorkCount().ToString()" Color="ProgressColor.Info" />
-            }
-            else if (Work.IsDeadlineOut())
-            {
-                <ProgressBar Width="100" Type="ProgressType.StripedAndAnimated" Color="ProgressColor.Danger"
-                    Label="@Work.ActiveWorkCount().ToString()" />
-            }
-        </Progress>
-        <div class="d-flex justify-content-center w-100 small">
-            @RenderDate(Work.StartDate)
-            <div class="col d-flex justify-content-end">
-                @RenderDate(Work.Deadline)
-            </div>
+﻿<div class="d-flex flex-column w-100">
+    <Progress Class="user-select-none">            
+        @if (Closed)
+        {
+            <ProgressBar Width="100" Type="ProgressType.StripedAndAnimated" Color="ProgressColor.Success"
+                Label="@ClosedText" />
+        } else if (IsNowBetween())
+        {
+            <ProgressBar Width="Start.CountDaysTo(DateTime.Now) * DayProcentage" 
+                Type="ProgressType.StripedAndAnimated" Label="@((TotalWorks - ActiveWorks).ToString())" />
+            <ProgressBar Width="DateTime.Now.CountDaysTo(Deadline) * DayProcentage" 
+                Label="@ActiveWorks.ToString()" Color="ProgressColor.Info" />
+        }
+        else if (DeadlineOut)
+        {
+            <ProgressBar Width="100" Type="ProgressType.StripedAndAnimated" Color="ProgressColor.Danger"
+                Label="@ActiveWorks.ToString()" />
+        }
+    </Progress>
+    <div class="d-flex justify-content-center w-100 small">
+        @RenderDate(Start)
+        <div class="col d-flex justify-content-end">
+            @RenderDate(Deadline)
         </div>
     </div>
-}
+</div>
 
 @code {
 
-    private double DayProcentage => 100 / (Work.CheckDeadline() - Work.CheckStart()).TotalDays;
+    private double DayProcentage => 100 / (Deadline - Start).Value.TotalDays;
 
-    [Parameter, EditorRequired] public IWorkContainer Work { get; set; } = null!;
+    [Parameter, EditorRequired] public DateTime? Start { get; set; }
+    [Parameter, EditorRequired] public DateTime? Deadline { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Start > Deadline)
+        {
+            throw new ArgumentException("Start can't be greater then Deadline");
+        }
+    }
+
+    [Parameter] public bool DeadlineOut { get; set; }
+    [Parameter] public bool Closed { get; set; }
+    [Parameter] public string ClosedText { get; set; } = "Закрыта";
+
+    [Parameter] public int ActiveWorks { get; set; }
+    [Parameter] public int TotalWorks { get; set; }
+
+    private bool IsNowBetween()
+    {
+        return DateTime.Now > Start && DateTime.Now < Deadline;
+    }
 
     private static RenderFragment<DateTime?> RenderDate = date =>
         @<span>
@@ -46,4 +63,4 @@
                 <i>???</i>
             }
         </span>;
-} *@
+}

@@ -29,4 +29,12 @@ public class ProjectClient(IProjectApi projectApi, IMapper mapper) : IProjectCli
             Team = mapper.Map<List<UserProfile>>(await team)
         };
     }
+
+    public async IAsyncEnumerable<Project> GetSelfProjectsAsync()
+    {
+        await foreach (var project in projectApi.GetUserProjectsAsync())
+        {
+            yield return mapper.Map<Project>(project);
+        }
+    }
 }

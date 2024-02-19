@@ -21,7 +21,6 @@ builder.Services
     .AddScoped<IAuthApiLogic, AuthApiLogic>()
     .AddProjectClient()
     .AddKeyedScoped<IProjectApi, ProjectFileService>("file")
-    .AddScoped<IFeedbackService, FeedbackService>()
     .AddScoped<TeamMemberSelectionDialog>()
     .AddBlazoredModal()
     .AddKolBlazor()
@@ -30,7 +29,9 @@ builder.Services
     .AddAuthorizationCore()
     .AddOptions();
 
-builder.Services.AddMyCascadingValues();
+builder.Services
+    .AddMyCascadingValues()
+    .AddValidators();
 
 var config = builder.Configuration;
 

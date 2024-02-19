@@ -9,9 +9,9 @@ namespace Cardmngr.Components.Modals.Base;
 public abstract class AddEditModalBase<TModel, TUpdateData> : ComponentBase
     where TUpdateData : new()
 {    
-    protected TUpdateData? buffer = new();
+    protected TUpdateData buffer = new();
 
-    [CascadingParameter(Name = "MiddleModal")] ModalOptions MiddleModal { get; set; } = null!;
+    [CascadingParameter(Name = "MiddleModal")] protected ModalOptions MiddleModal { get; set; } = null!;
     [CascadingParameter] protected IModalService Modal { get; set; } = null!;
 
     [Parameter] public TModel? Model { get; set; }
@@ -34,7 +34,6 @@ public abstract class AddEditModalBase<TModel, TUpdateData> : ComponentBase
         return Modal.Show<DefaultConfirmModal>(
             title, 
             new ModalParameters { { "AdditionalText", message } }, 
-            MiddleModal)
-            .Result;
+            MiddleModal).Result;
     }
 }

@@ -12,7 +12,7 @@
         @ChildContent
     </div>
 </div>
-<div class="offcanvas-backdrop fade @DelayedShow" style="z-index: 2;" @onclick="Cancel"></div>
+<div class="offcanvas-backdrop fade @DelayedShow" style="z-index: 2;" @onclick="CancelAsync"></div>
 
 @code {
     private string DelayedShow = "";
@@ -35,7 +35,7 @@
         await ToggleDelayShowAsync();
     }
 
-    private async Task Cancel()
+    private async Task CancelAsync()
     {
         await ToggleDelayShowAsync();
         await CurrentModel.CloseAsync(ModalResult.Cancel());

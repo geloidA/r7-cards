@@ -13,4 +13,9 @@ public static class MilestoneExtensions
     {
         return DateTime.Now > task.Deadline;
     }
+
+    public static IEnumerable<Milestone> OrderByMilestoneCriteria(this IEnumerable<Milestone> milestones)
+    {
+        return milestones.OrderBy(x => (x.IsKey, x.Deadline, x.Status));
+    }
 }

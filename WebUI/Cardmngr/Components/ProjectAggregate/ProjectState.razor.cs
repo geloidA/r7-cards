@@ -1,6 +1,8 @@
 ﻿using Cardmngr.Application.Clients;
 using Cardmngr.Application.Clients.Milestone;
+using Cardmngr.Application.Clients.Subtask;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Domain.Enums;
 using Cardmngr.Domain.Extensions;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Shared.Project;
@@ -24,8 +26,13 @@ public partial class ProjectState : ComponentBase
 
     [Inject] public IMilestoneClient MilestoneClient { get; set; } = null!;
 
+    [Inject] public ISubtaskClient SubtaskClient { get; set; } = null!;
+
     public ProjectStateVm? Model { get; set; }
 
+    /// <summary>
+    /// Tasks with selected milestones
+    /// </summary>
     public IEnumerable<OnlyofficeTask>? OutputTasks
     {
         get
@@ -63,7 +70,7 @@ public partial class ProjectState : ComponentBase
 
     public DateTime? Start => Model?.Tasks.Min(x => x.StartDate);
     
-    public DateTime? End => Model?.Tasks.Max(x => x.Deadline);
+    public DateTime? Deadline => Model?.Tasks.Max(x => x.Deadline);
 
     public DateTime GetMilestoneStart(Milestone milestone)
     {
@@ -81,6 +88,11 @@ public partial class ProjectState : ComponentBase
         return Model?.Milestones.FirstOrDefault(x => x.Id == milestoneId);
     }
 
+    public IEnumerable<OnlyofficeTask> GetMilestoneTasks(Milestone milestone)
+    {
+        return Model?.Tasks.Where(x => x.MilestoneId == milestone.Id) ?? [];
+    }
+
     internal async Task UpdateTaskStatusAsync(OnlyofficeTask task, OnlyofficeTaskStatus status)
     {
         if (!task.HasStatus(status))
@@ -96,12 +108,16 @@ public partial class ProjectState : ComponentBase
     {
         var created = await TaskClient.CreateAsync(Model!.Project.Id, task);
         Model.Tasks.Add(created);
+        
+        StateHasChanged();
     }
 
     internal async Task RemoveTaskAsync(int taskId)
     {
         await TaskClient.RemoveAsync(taskId);
         Model!.Tasks.RemoveAll(x => x.Id == taskId);
+
+        StateHasChanged();
     }
 
     internal async Task UpdateTaskAsync(int taskId, TaskUpdateData task)
@@ -109,20 +125,60 @@ public partial class ProjectState : ComponentBase
         var updated = await TaskClient.UpdateAsync(taskId, task);
         Model!.Tasks.RemoveAll(x => x.Id == taskId);
         Model.Tasks.Add(updated);
+
+        StateHasChanged();
     }
 
-    internal Task AddMilestoneAsync(Milestone milestone)
+    internal async Task AddMilestoneAsync(MilestoneUpdateData milestone)
     {
-        throw new NotImplementedException();
+        var added = await MilestoneClient.CreateAsync(Model!.Project.Id, milestone);
+        Model.Milestones.Add(added);
+        
+        StateHasChanged();
     }
 
-    internal Task RemoveMilestoneAsync(int milestoneId)
+    internal async Task RemoveMilestoneAsync(int milestoneId)
     {
-        throw new NotImplementedException();
+        await MilestoneClient.RemoveAsync(milestoneId);
+        Model!.Milestones.RemoveAll(x => x.Id == milestoneId);
+
+        StateHasChanged();
     }
 
-    internal Task UpdateMilestoneAsync(Milestone milestone)
+    internal async Task UpdateMilestoneAsync(int milestoneId, MilestoneUpdateData milestone)
     {
-        throw new NotImplementedException();
+        var updated = await MilestoneClient.UpdateAsync(milestoneId, milestone);
+        Model!.Milestones.RemoveAll(x => x.Id == milestoneId);
+        Model!.Milestones.Add(updated);
+
+        StateHasChanged();
+    }
+
+    internal async Task AddSubtaskAsync(int taskId, SubtaskUpdateData subtask)
+    {
+        var added = await SubtaskClient.CreateAsync(taskId, subtask);
+        Model!.Tasks.Single(x => x.Id == taskId).Subtasks.Add(added);
+    }
+
+    internal async Task RemoveSubtaskAsync(int taskId, int subtaskId)
+    {
+        await SubtaskClient.RemoveAsync(taskId, subtaskId);
+        Model!.Tasks.Single(x => x.Id == taskId).Subtasks.RemoveAll(x => x.Id == subtaskId);
+    }
+
+    internal async Task UpdateSubtaskAsync(int taskId, int subtaskId, SubtaskUpdateData updateData)
+    {
+        var updated = await SubtaskClient.UpdateAsync(taskId, subtaskId, updateData);
+        var task = Model!.Tasks.Single(x => x.Id == taskId);
+        task.Subtasks.RemoveAll(x => x.Id == subtaskId);
+        task.Subtasks.Add(updated);
+    }
+
+    internal async Task UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status)
+    {
+        var updated = await SubtaskClient.UpdateSubtaskStatusAsync(taskId, subtaskId, status);
+        var task = Model!.Tasks.Single(x => x.Id == taskId);
+        task.Subtasks.RemoveAll(x => x.Id == subtaskId);
+        task.Subtasks.Add(updated);
     }
 }

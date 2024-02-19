@@ -2,7 +2,7 @@
 @inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthenticationState
 
-<Cardmngr.Components.Modals.MyBlazored.Offcanvas @ref="currentModal" ShowCloseBtn="false"
+<Cardmngr.Components.Modals.MyBlazored.Offcanvas ShowCloseBtn="false"
     Class="my-offcanvas my-offcanvas-left" Style="max-width: 300px;">
     <OffcanvasHeader>
         <a class="text-dark fw-bold fs-4 ms-3" href="/">
@@ -11,30 +11,10 @@
         </a>
     </OffcanvasHeader>
     <OffcanvasBody Class="d-flex flex-column">
+        <Card class="bg-shadow">
+            <div class="align-self-center">🫧 Пусто 🫧</div>
+        </Card>
         <div class="container h-100">
-            <Card class="bg-shadow" >
-                <CardTitle>
-                    <h6>
-                        <Icon Name="IconName.JournalBookmarkFill" />
-                        Мои проекты
-                    </h6>
-                </CardTitle>
-                <CardBody class="p-1 overflow-auto" style="max-height: 600px;">
-                    @if (UserProjects is { } && UserProjects.Any())
-                    {
-                        @foreach (var proj in UserProjects)
-                        {
-                            <div class="py-1">
-                                <ProjectReference Project="proj" />
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <span>Вы не состоите ни в одном из проектов</span>
-                    }
-                </CardBody>
-            </Card>
             <footer class="footer d-flex gradient-bg-vertical" >
                 <div class="mx-4 my-4">
                     <Tool IconName="IconName.Send" TooltipTitle="Отправить обратную связь" OnClick=@(() => NavigationManager.NavigateTo("feedback-board")) />
@@ -50,11 +30,9 @@
 </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
 
 @code {
-    private Cardmngr.Components.Modals.MyBlazored.Offcanvas currentModal = null!;
-    private bool logoutHover;
+    [Parameter] public IEnumerable<Project>? UserProjects { get; set; }
 
-    [CascadingParameter(Name = "MiddleModal")] public ModalOptions Options { get; set; } = null!;
-    [CascadingParameter] public IModalService Modal { get; set; } = null!;
+    private bool logoutHover;
 
     private async Task LogoutAsync()
     {
@@ -65,6 +43,4 @@
             NavigationManager.NavigateTo("login");
         }
     }
-
-    [Parameter] public List<Project> UserProjects { get; set; } = null!;
 }

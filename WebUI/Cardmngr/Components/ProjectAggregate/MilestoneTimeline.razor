@@ -5,9 +5,9 @@
 @inherits KolComponentBase
 @implements IAsyncDisposable
 
-<div class="d-flex">
-    <div @ref="element" style="max-width: 1700px;" class="overflow-scroll scrollbar-none" >
-        <div @onwheel="ScaleTimeline" class="timeline-animation scrollbar-none" style=@($"width: {Width}px; min-width: 1700px; {@Style}") >
+<div class="d-flex @Class">
+    <div @ref="element" class="overflow-scroll scrollbar-none milestone-timeline" >
+        <div @onwheel="ScaleTimeline" class="timeline-animation scrollbar-none" style=@($"width: {Width}px; {@Style}") >
             <KolTimeline ShowTodayLine="true" Class="scrollbar-none py-0" >
                 @if (State.Initialized)
                 {
@@ -21,17 +21,17 @@
             </KolTimeline>
         </div>
     </div>
-    <KolScaleSwitcher Class="ms-4" MinValue="MinScale" MaxValue="MaxScale" Step="Step" 
+    <KolScaleSwitcher Class="ms-5" MinValue="MinScale" MaxValue="MaxScale" Step="Step" 
         @bind-CurrentValue="Width" />
 </div>
 
 @code {
     private ElementReference element;
-    public const int MinScale = 1685;
+    public const int MinScale = 1800;
     public const int MaxScale = 10000;
-    public const int Step = 500;
+    public const int Step = 300;
 
-    public int Width { get; set; }
+    public int Width { get; set; } = 1800;
     
     [CascadingParameter] ProjectState State { get; set; } = null!;
 

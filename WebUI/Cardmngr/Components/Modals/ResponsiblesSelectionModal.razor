@@ -51,7 +51,7 @@ else
     {
         var selected = responsibles!
             .Where(x => x.Checked)
-            .Select(x => x.Value);
+            .Select(x => x.Value.Id);
         
         await Modal.CloseAsync(ModalResult.Ok(selected));
     }

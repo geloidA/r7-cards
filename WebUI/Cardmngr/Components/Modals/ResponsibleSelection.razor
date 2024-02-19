@@ -1,16 +1,16 @@
 ﻿@inject TeamMemberSelectionDialog SelectionDialog
 
-@if (Responsible is { })
+@if (SelectedId is { })
 {
     @if (EditMode)
     {
         <a class="clickable" @onclick="ShowResponsibleSelectionModal">
-            <UserAvatar User="Responsible" ShowTooltip="true" />
+            <UserAvatar User="@SelectedResponsible" ShowTooltip="true" />
         </a>
     }
     else
     {
-        <UserAvatar User="Responsible" ShowTooltip="true" />
+        <UserAvatar User="@SelectedResponsible" ShowTooltip="true" />
     }
 }
 else
@@ -28,28 +28,24 @@ else
 }
 
 @code {
-
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
 
-    [Parameter]
-    public UserInfo? Responsible { get; set; }
+    [Parameter] public IEnumerable<UserInfo> Team { get; set; } = null!;
 
-    [Parameter]
-    public EventCallback<UserInfo> ResponsibleChanged { get; set; }
+    [Parameter] public string? SelectedId { get; set; }
+    [Parameter] public EventCallback<string?> SelectedIdChanged { get; set; }
 
-    [Parameter]
-    public bool EditMode { get; set; }
+    [Parameter] public bool EditMode { get; set; }
 
-    [Parameter]
-    public IEnumerable<UserInfo> Responsibles { get; set; } = null!;
+    private UserInfo? SelectedResponsible => Team.FirstOrDefault(x => x.Id == SelectedId);
 
     private async Task ShowResponsibleSelectionModal()
     {
-        var selected = await SelectionDialog.ShowAsync(Responsibles, ModalOptions);
+        var selected = await SelectionDialog.ShowAsync(Team, ModalOptions);
 
         if (selected is { })
         {
-            await ResponsibleChanged.InvokeAsync(selected);
+            await SelectedIdChanged.InvokeAsync(selected.Id);
         }
     }
 }

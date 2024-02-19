@@ -1,4 +1,4 @@
-﻿@inject IProjectApi ProjectApi
+﻿@inject IProjectClient ProjectClient
 @inject AuthenticationStateProvider AuthenticationState
 
 @using System.Text.Json
@@ -33,7 +33,7 @@
 
     protected override async Task OnInitializedAsync()
     {        
-        @* userProjects = await ProjectApi.GetUserProjectsAsync().ToListAsync(); *@
+        userProjects = await ProjectClient.GetSelfProjectsAsync().ToListAsync();
 
         if (AuthenticationState is { })
         {
@@ -45,5 +45,6 @@
     private async Task OpenSidebar()
     {
         await Modal.Show<HeaderMenuModal>("", new ModalParameters { { "UserProjects", userProjects } }, Options).Result;
+            // TODO: ??? close animation only with parameter ???
     }
 }

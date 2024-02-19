@@ -25,9 +25,9 @@ public partial class TaskStatusHeader
     {
         var parameters = new ModalParameters
         {
-            { "Model", new OnlyofficeTask { CanEdit = true, Title="Новая задача" } },
             { "State", State },
-            { "IsAdd", true }
+            { "IsAdd", true },
+            { "TaskStatusId", TaskStatus.Id }
         };
 
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsOptions).Result;

@@ -1,4 +1,6 @@
-﻿@inherits CreationModalBase
+﻿@using Onlyoffice.Api.Models
+
+@inherits CreationModalBase
 
 <div class="row-cols-1">
     <div class="row py-3">
@@ -14,7 +16,7 @@
             <span class="font-monospace">Ответственный</span>           
         </div>
         <div class="col d-flex justify-content-end">
-            <ResponsibleSelection @bind-Responsible="subtask.Responsible" EditMode="true" Responsibles="Team" />
+            <ResponsibleSelection @bind-SelectedId="subtask.Responsible" EditMode="true" Team="Team" />
         </div>
     </div>
 </div>
@@ -25,15 +27,9 @@
 </div>
 
 @code {
-    private SubtaskState subtask = new();
+    private SubtaskUpdateData subtask = new();
 
     [Parameter] public IEnumerable<UserInfo> Team { get; set; } = null!;
 
     protected override async Task SumbitCreate() => await BlazoredModal.CloseAsync(ModalResult.Ok(subtask));
-
-    public class SubtaskState
-    {
-        public string Title { get; set; } = null!;
-        public UserInfo? Responsible { get; set; }
-    }
 }

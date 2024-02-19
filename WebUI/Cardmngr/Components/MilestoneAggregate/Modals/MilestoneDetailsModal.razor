@@ -1,6 +1,7 @@
 ﻿@using Onlyoffice.Api.Models
+@using Onlyoffice.Api.Validations
 
-@inherits AddEditModalBase<MilestoneUpdateData>
+@inherits AddEditModalBase<Milestone, MilestoneUpdateData>
 
 @inject TeamMemberSelectionDialog SelectionDialog
 
@@ -10,40 +11,45 @@
 {
     <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right" @ref="currentModal">
         <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
-            <DataAnnotationsValidator/>
+            <FluentValidationValidator ValidatorType="@(typeof(MilestoneUpdateDataValidator))" />
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
-                <TitleChanger Disabled="!Model.CanEdit" @bind-Title="buffer.Title" />
+                <TitleChanger Disabled="@(!CanEdit)" @bind-Title="@buffer.Title" />
             </OffcanvasHeader>
             <ValidationMessage For="() => buffer.Title" class="ms-3 validation-msg" />
             <OffcanvasBody Class="d-flex flex-column">
                 <div class="mb-2" >
-                    <WorkContainerDateProgress Work="buffer" />
+                    <WorkContainerDateProgress Start="@Start" Deadline="@buffer.Deadline"
+                        Closed="@(Model?.IsClosed() ?? false)" 
+                        ActiveWorks="ActiveTasks" TotalWorks="TotalTasks"/>
                 </div>
                 <div class="d-flex justify-content-end">
-                    <UserBadge User="buffer.Responsible" Title="Ответственный" OnClick="ShowResponsibleSelectionDialog" />
+                    <UserBadge Title="Ответственный" User="State.Model!.Team.SingleOrDefault(x => x.Id == buffer.Responsible)"
+                        OnClick="@ShowResponsibleSelectionModal" />
                 </div>
                 <ValidationMessage For="() => buffer.Responsible" class="validation-msg" />
                 <Card class="p-1 mt-3">
-                    <DateChanger Title="Крайний срок:" InputId="Deadline" Disabled="!Model.CanEdit" EmptyText="Не установлен" @bind-Date="buffer.Deadline" />
+                    <DateChanger Title="Крайний срок:" InputId="Deadline" Disabled="!CanEdit" EmptyText="Не установлен" @bind-Date="@buffer.Deadline" />
                     <ValidationMessage For="() => buffer.Deadline" class="validation-msg" />
                 </Card>
-                <DescriptionChanger Disabled="!Model.CanEdit" Class="mt-2" @bind-Description="buffer.Description" />
+                <DescriptionChanger Disabled="!CanEdit" Class="mt-2" @bind-Description="@buffer.Description" />
                 @if (!IsAdd)
                 {
-                    <div class="mt-4">
-                        <MelistoneShortTasks Milestone="Model" />
+                    <div class="mt-2">
+                        <CascadingValue Value="State" IsFixed="true">
+                            <MelistoneShortTasks MilestoneTasks="milestoneTasks" />
+                        </CascadingValue>
                     </div>
                 }
                 <div class="d-flex mt-2 flex-row">
-                    <Button Loading="submiting" LoadingText="@LoadingText" 
-                        Size="Size.Small" Disabled="!Model.CanEdit" Type="ButtonType.Submit" 
+                    <Button
+                        Size="Size.Small" Disabled="!CanEdit" Type="ButtonType.Submit" 
                         Color="ButtonColor.Success" Outline="true" >
                         @SubmitText
                     </Button>
                     @if (!IsAdd)
                     {
                         <Button class="ms-2" Size="Size.Small" Disabled="!Model.CanDelete" Color="ButtonColor.Danger"
-                                @onclick="DeleteAsync" )
+                                @onclick="DeleteAsync"
                                 Outline="true" >
                                 Удалить
                         </Button>
@@ -54,23 +60,7 @@
     </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
 }
 
-@code {
-    private Offcanvas currentModal = null!;
-
-    [Parameter] public ProjectState State { get; set; } = null!;
-
-    private async Task SubmitAsync()
-    {
-
-    }
-
-    private async Task DeleteAsync()
-    {
-        var answer = await ShowDeleteConfirm("Удаление вехи");
-
-        if (answer.Confirmed)
-        {
-            
-        }
-    }
+@code{
+    private RenderFragment<UserInfo> UserInfoRenderFragment = u =>
+        @<UserAvatar ShowName="true" User="@u" />;
 }
