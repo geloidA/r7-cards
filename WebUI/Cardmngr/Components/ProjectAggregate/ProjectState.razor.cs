@@ -1,9 +1,12 @@
 ﻿using Cardmngr.Application.Clients;
+using Cardmngr.Application.Clients.Milestone;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Domain.Extensions;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Shared.Project;
 using Microsoft.AspNetCore.Components;
+using Onlyoffice.Api.Models;
+using System.Threading.Tasks;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
@@ -16,7 +19,10 @@ public partial class ProjectState : ComponentBase
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     [Inject] public IProjectClient ProjectClient { get; set; } = null!;
+
     [Inject] public ITaskClient TaskClient { get; set; } = null!;
+
+    [Inject] public IMilestoneClient MilestoneClient { get; set; } = null!;
 
     public ProjectStateVm? Model { get; set; }
 
@@ -68,38 +74,55 @@ public partial class ProjectState : ComponentBase
         return minStart ?? milestone.Deadline.AddDays(-7);
     }
 
-    public Milestone? TaskMilestone(OnlyofficeTask task)
+    public Milestone? GetMilestone(int? milestoneId)
     {
-        return Model?.Milestones.FirstOrDefault(x => x.Id == task.MilestoneId);
+        if (milestoneId == null) return null;
+
+        return Model?.Milestones.FirstOrDefault(x => x.Id == milestoneId);
     }
 
     internal async Task UpdateTaskStatusAsync(OnlyofficeTask task, OnlyofficeTaskStatus status)
     {
         if (!task.HasStatus(status))
         {
-            await TaskClient.UpdateTaskStatusAsync(task.Id, status);
+            var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, status);
 
-            task.TaskStatusId = status.Id;
-            task.Status = status.StatusType.ToStatus();
+            Model!.Tasks.RemoveAll(x => x.Id == task.Id);
+            Model.Tasks.Add(updated);
         }
     }
 
-    internal async Task AddTaskAsync(OnlyofficeTask task)
+    internal async Task AddTaskAsync(TaskUpdateData task)
     {
-        var created = await TaskClient.CreateTaskAsync(Model!.Project.Id, task);
+        var created = await TaskClient.CreateAsync(Model!.Project.Id, task);
         Model.Tasks.Add(created);
     }
 
     internal async Task RemoveTaskAsync(int taskId)
     {
-        await TaskClient.RemoveTaskAsync(taskId);
+        await TaskClient.RemoveAsync(taskId);
         Model!.Tasks.RemoveAll(x => x.Id == taskId);
     }
 
-    internal async Task UpdateTaskAsync(OnlyofficeTask task)
+    internal async Task UpdateTaskAsync(int taskId, TaskUpdateData task)
     {
-        var updated = await TaskClient.UpdateTaskAsync(Model!.Project.Id, task);
-        Model.Tasks.RemoveAll(x => x.Id == task.Id);
+        var updated = await TaskClient.UpdateAsync(taskId, task);
+        Model!.Tasks.RemoveAll(x => x.Id == taskId);
         Model.Tasks.Add(updated);
+    }
+
+    internal Task AddMilestoneAsync(Milestone milestone)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal Task RemoveMilestoneAsync(int milestoneId)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal Task UpdateMilestoneAsync(Milestone milestone)
+    {
+        throw new NotImplementedException();
     }
 }

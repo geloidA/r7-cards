@@ -1,11 +1,10 @@
-﻿using Cardmngr.Domain.Entities;
+﻿using Cardmngr.Application.Clients.Base;
+using Cardmngr.Domain.Entities;
+using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Application.Clients;
 
-public interface ITaskClient
+public interface ITaskClient : IEntityClient<OnlyofficeTask, TaskUpdateData>
 {
-    Task UpdateTaskStatusAsync(int taskId, OnlyofficeTaskStatus status);
-    Task<OnlyofficeTask> CreateTaskAsync(int projectId, OnlyofficeTask task);
-    Task<OnlyofficeTask> UpdateTaskAsync(int projectId, OnlyofficeTask task);
-    Task RemoveTaskAsync(int taskId);
+    Task<OnlyofficeTask> UpdateTaskStatusAsync(int taskId, OnlyofficeTaskStatus status);
 }

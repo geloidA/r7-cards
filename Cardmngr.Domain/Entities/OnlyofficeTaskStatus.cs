@@ -3,17 +3,17 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities
 {
-    public class OnlyofficeTaskStatus : EntityBase<int>
+    public record class OnlyofficeTaskStatus : EntityBase<int>
     {
-        public StatusType StatusType { get; set; }
-        public bool CanChangeAvailable { get; set; }
-        public string Image { get; set; }
-        public string ImageType { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Color { get; set; }
-        public int Order { get; set; }
-        public bool IsDefault { get; set; }
-        public bool Available { get; set; }
+        public StatusType StatusType { get; init; }
+        public bool CanChangeAvailable { get; init; }
+        public string Image { get; init; }
+        public string ImageType { get; init; }
+        public string Title { get; init; }
+        public string Description { get; init; }
+        public string Color { get; init; }
+        public int Order { get; init; }
+        public bool IsDefault { get; init; }
+        public bool Available { get; init; }
     }
 }

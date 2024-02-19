@@ -6,5 +6,5 @@ public class FilterTasksDao
     public int Total { get; set; }
     public int Status { get; set; }
     public int StatusCode { get; set; }
-    public List<Task>? Response { get; set; }
+    public List<TaskDto>? Response { get; set; }
 }

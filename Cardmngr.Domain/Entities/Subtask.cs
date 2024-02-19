@@ -3,13 +3,13 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities
 {
-    public class Subtask : AuditableEntityBase<int>
+    public record class Subtask : AuditableEntityBase<int>
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public int TaskId { get; set; }
-        public bool CanEdit { get; set; }
-        public UserInfo Responsible { get; set; }
-        public Status Status { get; set; }
+        public string Title { get; init; }
+        public string Description { get; init; }
+        public int TaskId { get; init; }
+        public bool CanEdit { get; init; }
+        public UserInfo Responsible { get; init; }
+        public Status Status { get; init; }
     }
 }

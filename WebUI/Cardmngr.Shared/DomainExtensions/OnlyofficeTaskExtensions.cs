@@ -33,9 +33,9 @@ public static class OnlyofficeTaskExtensions
             : task.TaskStatusId == status.Id;
     }
 
-    public static bool CanMarkClosed(this OnlyofficeTask task)
+    public static bool HasUnclosedSubtask(this OnlyofficeTask task)
     {
-        return task.IsClosed() || task.Subtasks.All(x => x.Status == Status.Closed);
+        return task.Subtasks.Any(x => x.Status == Status.Open);
     }
 
     public static void CloseAllSubtasks(this OnlyofficeTask task)

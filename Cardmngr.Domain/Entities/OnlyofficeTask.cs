@@ -3,24 +3,24 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities
 {
-    public class OnlyofficeTask : AuditableEntityBase<int>
+    public record class OnlyofficeTask : AuditableEntityBase<int>, IEquatable<OnlyofficeTask>
     {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public Priority Priority { get; set; }
-        public bool CanEdit { get; set; }
-        public bool CanCreateSubtask { get; set; }
-        public bool CanCreateTimeSpend { get; set; }
-        public bool CanDelete { get; set; }
-        public bool CanReadFiles { get; set; }
-        public int? MilestoneId { get; set; }
-        public List<Subtask> Subtasks { get; set; } = [];
-        public UserInfo UpdatedBy { get; set; }
-        public int? Progress { get; set; }
-        public List<UserInfo> Responsibles { get; set; } = [];
-        public DateTime? Deadline { get; set; }
-        public DateTime? StartDate { get; set; }
-        public int? TaskStatusId { get; set; }
-        public Status Status { get; set; }
+        public string Title { get; init; }
+        public string Description { get; init; }
+        public Priority Priority { get; init; }
+        public bool CanEdit { get; init; } 
+        public bool CanCreateSubtask { get; init; }
+        public bool CanCreateTimeSpend { get; init; }
+        public bool CanDelete { get; init; }
+        public bool CanReadFiles { get; init; }
+        public int? MilestoneId { get; init; }
+        public List<Subtask> Subtasks { get; init; } = [];
+        public UserInfo UpdatedBy { get; init; }
+        public int? Progress { get; init; }
+        public List<UserInfo> Responsibles { get; init; } = [];
+        public DateTime? Deadline { get; init; }
+        public DateTime? StartDate { get; init; }
+        public int? TaskStatusId { get; init; }
+        public Status Status { get; init; }
     }
 }

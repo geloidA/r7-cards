@@ -13,12 +13,12 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
     private readonly CookieStateProvider provider = provider.ToCookieProvider();
 
     #region Other
-    public Task<MilestoneDto> CreateMilestoneAsync(int projectId, UpdatedStateMilestone state)
+    public Task<MilestoneDto> CreateMilestoneAsync(int projectId, MilestoneUpdateData state)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Subtask> CreateSubtaskAsync(int taskId, string title, string? responsible = null)
+    public Task<SubtaskDto> CreateSubtaskAsync(int taskId, string title, string? responsible = null)
     {
         throw new NotImplementedException();
     }
@@ -28,12 +28,12 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         throw new NotImplementedException();
     }
 
-    public Task<Subtask> DeleteSubtaskAsync(int taskId, int subtaskId)
+    public Task<SubtaskDto> DeleteSubtaskAsync(int taskId, int subtaskId)
     {
         throw new NotImplementedException();
     }
 
-    public IAsyncEnumerable<Onlyoffice.Api.Models.Task> GetFiltredTasksAsync(FilterTasksBuilder builder)
+    public IAsyncEnumerable<Onlyoffice.Api.Models.TaskDto> GetFiltredTasksAsync(FilterTasksBuilder builder)
     {
         throw new NotImplementedException();
     }
@@ -43,7 +43,7 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         throw new NotImplementedException();
     }
 
-    public IAsyncEnumerable<Project> GetProjectsAsync()
+    public IAsyncEnumerable<ProjectDto> GetProjectsAsync()
     {
         throw new NotImplementedException();
     }
@@ -53,7 +53,7 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         throw new NotImplementedException();
     }
 
-    public Task<MilestoneDto> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
+    public Task<MilestoneDto> UpdateMilestoneAsync(int milestoneId, MilestoneUpdateData state)
     {
         throw new NotImplementedException();
     }
@@ -63,7 +63,7 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         throw new NotImplementedException();
     }
 
-    public System.Threading.Tasks.Task UpdateSubtaskAsync(int taskId, int subtaskId, UpdatedStateSubtask state)
+    public System.Threading.Tasks.Task UpdateSubtaskAsync(int taskId, int subtaskId, SubtaskUpdateData state)
     {
         throw new NotImplementedException();
     }
@@ -79,25 +79,25 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
     }
     #endregion
 
-    public async Task<Onlyoffice.Api.Models.Task> CreateTaskAsync(int projectId, UpdatedStateTask state, Status status, int? statusId = null)
+    public async Task<Onlyoffice.Api.Models.TaskDto> CreateTaskAsync(int projectId, TaskUpdateData state, Status status, int? statusId = null)
     {
         var guid = provider["UserId"];
         var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/projectFileApi/create-task/{guid}", state), "self-api");
-        var task = await response.Content.ReadFromJsonAsync<Onlyoffice.Api.Models.Task>();
+        var task = await response.Content.ReadFromJsonAsync<Onlyoffice.Api.Models.TaskDto>();
         return task ?? throw new NullReferenceException("Task is null");
     }
 
-    public async Task<Onlyoffice.Api.Models.Task> UpdateTaskAsync(int taskId, UpdatedStateTask state)
+    public async Task<Onlyoffice.Api.Models.TaskDto> UpdateTaskAsync(int taskId, TaskUpdateData state)
     {
         var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/projectFileApi/update-task/{taskId}", state), "self-api");
-        var task = await response.Content.ReadFromJsonAsync<Onlyoffice.Api.Models.Task>();
+        var task = await response.Content.ReadFromJsonAsync<Onlyoffice.Api.Models.TaskDto>();
         return task ?? throw new NullReferenceException("Task is null");
     }
 
-    public async Task<Onlyoffice.Api.Models.Task> DeleteTaskAsync(int taskId)
+    public async Task<Onlyoffice.Api.Models.TaskDto> DeleteTaskAsync(int taskId)
     {
         var task = await InvokeHttpClientAsync(c => 
-            c.DeleteFromJsonAsync<Onlyoffice.Api.Models.Task>($"api/projectFileApi/delete-task/{taskId}"), "self-api");
+            c.DeleteFromJsonAsync<Onlyoffice.Api.Models.TaskDto>($"api/projectFileApi/delete-task/{taskId}"), "self-api");
         return task ?? throw new NullReferenceException("Task is null");
     }
 
@@ -106,20 +106,20 @@ public class ProjectFileService(IHttpClientFactory httpClientFactory, Authentica
         await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/projectFileApi/update-task-status/{taskId}", statusId), "self-api");
     }
 
-    public IAsyncEnumerable<Onlyoffice.Api.Models.TaskStatus> GetAllTaskStatusesAsync()
+    public IAsyncEnumerable<Onlyoffice.Api.Models.TaskStatusDto> GetAllTaskStatusesAsync()
     {
-        return GetItemsFrom<Onlyoffice.Api.Models.TaskStatus>("api/projectFileApi/all-statuses");
+        return GetItemsFrom<Onlyoffice.Api.Models.TaskStatusDto>("api/projectFileApi/all-statuses");
     }
 
-    public IAsyncEnumerable<Onlyoffice.Api.Models.Task> GetTasksByProjectIdAsync(int projectId)
+    public IAsyncEnumerable<Onlyoffice.Api.Models.TaskDto> GetTasksByProjectIdAsync(int projectId)
     {
         var guid = provider["UserId"];
-        return GetItemsFrom<Onlyoffice.Api.Models.Task>($"api/projectFileApi/all-tasks/{guid}");
+        return GetItemsFrom<Onlyoffice.Api.Models.TaskDto>($"api/projectFileApi/all-tasks/{guid}");
     }
 
-    public async Task<Project> GetProjectByIdAsync(int projectId)
+    public async Task<ProjectDto> GetProjectByIdAsync(int projectId)
     {
-        return await InvokeHttpClientAsync(c => c.GetFromJsonAsync<Project>("api/projectFileApi/project"), "self-api") ?? 
+        return await InvokeHttpClientAsync(c => c.GetFromJsonAsync<ProjectDto>("api/projectFileApi/project"), "self-api") ?? 
             throw new NullReferenceException("Project is null");
     }
 

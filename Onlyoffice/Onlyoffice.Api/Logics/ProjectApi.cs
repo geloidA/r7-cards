@@ -1,23 +1,23 @@
 ﻿using System.Net.Http.Json;
 using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Models;
-using TaskStatus = Onlyoffice.Api.Models.TaskStatus;
+using TaskStatusDto = Onlyoffice.Api.Models.TaskStatusDto;
 
 namespace Onlyoffice.Api.Logics;
 
 public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(httpClientFactory), IProjectApi
 {
     #region CRUD Project
-    public async Task<Project> GetProjectByIdAsync(int projectId)
+    public async Task<ProjectDto> GetProjectByIdAsync(int projectId)
     {
         var project = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<SingleProjectDao>($"api/project/{projectId}"));
         return project?.Response ?? throw new NullReferenceException("Project was not found");
     }
 
-    public async IAsyncEnumerable<Project> GetProjectsAsync()
+    public async IAsyncEnumerable<ProjectDto> GetProjectsAsync()
     {
         var projectDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<ProjectDao>("api/project"));
-        await foreach (var project in projectDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Project>())
+        await foreach (var project in projectDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<ProjectDto>())
         {
             yield return project;
         }
@@ -43,52 +43,54 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
     #endregion
 
     #region CRUD Task
-    public async IAsyncEnumerable<TaskStatus> GetAllTaskStatusesAsync()
+    public async IAsyncEnumerable<TaskStatusDto> GetAllTaskStatusesAsync()
     {
         var taskStatusDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<TaskStatusDao>("api/project/status"));
-        await foreach (var taskStatus in taskStatusDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<TaskStatus>())
+        await foreach (var taskStatus in taskStatusDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<TaskStatusDto>())
         {
             yield return taskStatus;
         }
     }
 
-    public async IAsyncEnumerable<Models.Task> GetTasksByProjectIdAsync(int projectId)
+    public async IAsyncEnumerable<Models.TaskDto> GetTasksByProjectIdAsync(int projectId)
     {
         var taskDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<TaskDao>($"api/project/{projectId}/task"));
-        await foreach (var task in taskDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Models.Task>())
+        await foreach (var task in taskDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Models.TaskDto>())
         {
             yield return task;
         }
     }
 
-    public async System.Threading.Tasks.Task UpdateTaskStatusAsync(int taskId, Status status, int? statusId = null)
+    public async Task<TaskDto> UpdateTaskStatusAsync(int taskId, Status status, int? statusId = null)
     {
-        await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}/status", new { status, statusId }));
+        var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}/status", new { status, statusId }));
+        var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
+        return taskDao?.Response ?? throw new NullReferenceException("Task was not updated");
     }
 
-    public async IAsyncEnumerable<Models.Task> GetFiltredTasksAsync(FilterTasksBuilder builder)
+    public async IAsyncEnumerable<TaskDto> GetFiltredTasksAsync(FilterTasksBuilder builder)
     {
         var filterTasksDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<FilterTasksDao>($"api/project/task/{builder.Build()}"));
-        await foreach (var task in filterTasksDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Models.Task>())
+        await foreach (var task in filterTasksDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Models.TaskDto>())
         {
             yield return task;
         }
     }
 
-    public async Task<Models.Task> CreateTaskAsync(int projectId, UpdatedStateTask state, Status status, int? statusId = null)
+    public async Task<Models.TaskDto> CreateTaskAsync(int projectId, TaskUpdateData state, Status status, int? statusId = null)
     {
         var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/task/status", new { state, status, statusId }));
         var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
         return taskDao?.Response ?? throw new NullReferenceException("Task was not created");
     }
 
-    public async Task<Models.Task> DeleteTaskAsync(int taskId)
+    public async Task<Models.TaskDto> DeleteTaskAsync(int taskId)
     {
         var deletedTask = await InvokeHttpClientAsync(c => c.DeleteFromJsonAsync<SingleTaskDao>($"api/project/task/{taskId}"));
         return deletedTask?.Response ?? throw new NullReferenceException("Task was not deleted");
     }
 
-    public async Task<Models.Task> UpdateTaskAsync(int taskId, UpdatedStateTask state)
+    public async Task<Models.TaskDto> UpdateTaskAsync(int taskId, TaskUpdateData state)
     {
         var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}", state));
         var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
@@ -97,23 +99,25 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
     #endregion
 
     #region CRUD Subtask
-    public System.Threading.Tasks.Task UpdateSubtaskAsync(int taskId, int subtaskId, UpdatedStateSubtask state)
+    public async Task<SubtaskDto> UpdateSubtaskAsync(int taskId, int subtaskId, SubtaskUpdateData state)
     {
-        return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}/{subtaskId}", state));
+        var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}/{subtaskId}", state));
+        var subtaskDao = await response.Content.ReadFromJsonAsync<SingleSubtaskDao>();
+        return subtaskDao?.Response ?? throw new NullReferenceException("Subtask was not updated");
     }    
 
-    public async Task<Subtask> DeleteSubtaskAsync(int taskId, int subtaskId)
+    public async Task<SubtaskDto> DeleteSubtaskAsync(int taskId, int subtaskId)
     {
         var deletedSubtask = await InvokeHttpClientAsync(c => c.DeleteFromJsonAsync<SingleSubtaskDao>($"api/project/task/{taskId}/{subtaskId}"));
         return deletedSubtask?.Response ?? throw new NullReferenceException("Subtask was not deleted");
     }
 
-    public System.Threading.Tasks.Task UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status)
+    public Task UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status)
     {
         return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/task/{taskId}/{subtaskId}/status", new { status }));
     }
 
-    public async Task<Subtask> CreateSubtaskAsync(int taskId, string title, string? responsible = null)
+    public async Task<SubtaskDto> CreateSubtaskAsync(int taskId, string title, string? responsible = null)
     {
         var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/task/{taskId}", new { title, responsible }));
         var subtaskDao = await response.Content.ReadFromJsonAsync<SingleSubtaskDao>();
@@ -131,7 +135,7 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         }
     }
 
-    public async Task<MilestoneDto> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state)
+    public async Task<MilestoneDto> UpdateMilestoneAsync(int milestoneId, MilestoneUpdateData state)
     {
         var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}", state));
         var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
@@ -149,14 +153,14 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"api/project/milestone/{milestoneId}/status", new { status }));
     }
 
-    public async Task<MilestoneDto> CreateMilestoneAsync(int projectId, UpdatedStateMilestone state)
+    public async Task<MilestoneDto> CreateMilestoneAsync(int projectId, MilestoneUpdateData state)
     {
         var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/milestone", state));
         var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
         return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not created " + response.ReasonPhrase);
     }
 
-    public async Task<Models.Task> GetTaskByIdAsync(int taskId)
+    public async Task<Models.TaskDto> GetTaskByIdAsync(int taskId)
     {
         var taskDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<SingleTaskDao>($"api/project/task/{taskId}"));
         return taskDao?.Response ?? throw new NullReferenceException("Task was not found");

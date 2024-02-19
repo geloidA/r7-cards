@@ -2,10 +2,10 @@
 
 public class TaskStatusDao : HttpResponseDaoBase
 {
-    public List<TaskStatus>? Response { get; set; }
+    public List<TaskStatusDto>? Response { get; set; }
 }
 
-public class TaskStatus
+public class TaskStatusDto
 {
     public int StatusType { get; set; }
     public bool CanChangeAvailable { get; set; }

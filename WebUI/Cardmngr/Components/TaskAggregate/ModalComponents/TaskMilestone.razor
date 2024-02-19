@@ -1,4 +1,6 @@
-﻿<Card >
+﻿@using Onlyoffice.Api.Models
+
+<Card >
     <CardBody class="d-flex flex-column">
         <CardTitle>
             <div class="row d-flex align-items-center">
@@ -7,11 +9,11 @@
                     Веха
                 </div>
                 <div class="col d-flex justify-content-end">
-                    <Tool Disabled="!Task.CanEdit" IconName="IconName.Pencil" IconSize="IconSize.x6"
+                    <Tool Disabled="@Disabled" IconName="IconName.Pencil" IconSize="IconSize.x6"
                         TooltipTitle="Изменить" OnClick="@ShowSelectionModalAsync" />
                     <div class="ms-3">
-                        <Tool Disabled="@(!Task.CanEdit || Task.MilestoneId == null)" IconName="IconName.X" IconSize="IconSize.x6"
-                            TooltipTitle="Удалить" OnClick="DeleteMilestone" />
+                        <Tool Disabled="@(Disabled || Task.MilestoneId == null)" IconName="IconName.X" IconSize="IconSize.x6"
+                            TooltipTitle="Удалить" OnClick="@DeleteMilestone" />
                     </div>
                 </div>
             </div>
@@ -19,7 +21,7 @@
         @if (Task.MilestoneId is { })
         {
             <div>
-                <MilestoneLabel Milestone="@(State.TaskMilestone(Task))" />
+                <MilestoneLabel Milestone="@(State.GetMilestone(Task.MilestoneId))" />
             </div>
         }
         else
@@ -35,7 +37,8 @@
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    [Parameter] public OnlyofficeTask Task { get; set; } = null!;
+    [Parameter] public TaskUpdateData Task { get; set; } = null!;
+    [Parameter] public bool Disabled { get; set; }
 
     private async Task ShowSelectionModalAsync()
     {

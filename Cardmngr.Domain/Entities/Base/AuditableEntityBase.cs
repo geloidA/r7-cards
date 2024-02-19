@@ -1,9 +1,9 @@
 ﻿namespace Cardmngr.Domain.Entities.Base
 {
-    public abstract class AuditableEntityBase<TId> : EntityBase<TId>
+    public abstract record class AuditableEntityBase<TId> : EntityBase<TId>
     {
-        public DateTime Created { get; set; }
-        public DateTime Updated { get; set; }
-        public UserInfo CreatedBy { get; set; }
+        public DateTime Created { get; init; }
+        public DateTime Updated { get; init; }
+        public UserInfo CreatedBy { get; init; }
     }
 }

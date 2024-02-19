@@ -2,10 +2,10 @@
 
 namespace Cardmngr.Domain.Entities
 {
-    public class UserInfo : EntityBase<string>
+    public record class UserInfo : EntityBase<string>
     {
-        public string DisplayName { get; set; }
-        public string AvatarSmall { get; set; }
-        public string ProfileUrl { get; set; }
+        public string DisplayName { get; init; }
+        public string AvatarSmall { get; init; }
+        public string ProfileUrl { get; init; }
     }
 }

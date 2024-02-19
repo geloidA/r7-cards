@@ -2,12 +2,12 @@
 
 public class SingleProjectDao : HttpResponseDaoBase
 {
-    public Project? Response { get; set; }
+    public ProjectDto? Response { get; set; }
 }
 
 public class ProjectDao : HttpResponseDaoBase
 {
-    public List<Project>? Response { get; set; }
+    public List<ProjectDto>? Response { get; set; }
 }
 
 public class ProjectInfoDao : HttpResponseDaoBase
@@ -15,7 +15,7 @@ public class ProjectInfoDao : HttpResponseDaoBase
     public List<ProjectInfo>? Response { get; set; }
 }
 
-public class Project
+public class ProjectDto
 {
     public int Id { get; set; }
     public string? Title { get; set; }

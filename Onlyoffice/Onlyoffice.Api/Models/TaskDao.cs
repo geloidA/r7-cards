@@ -2,20 +2,20 @@
 
 public class SingleSubtaskDao : HttpResponseDaoBase
 {
-    public Subtask? Response { get; set; }
+    public SubtaskDto? Response { get; set; }
 }
 
 public class SingleTaskDao : HttpResponseDaoBase
 {
-    public Task? Response { get; set; }
+    public TaskDto? Response { get; set; }
 }
 
 public class TaskDao : HttpResponseDaoBase
 {
-    public List<Task>? Response { get; set; }
+    public List<TaskDto>? Response { get; set; }
 }
 
-public class Task
+public class TaskDto
 {
     public bool CanEdit { get; set; }
     public bool CanCreateSubtask { get; set; }
@@ -29,7 +29,7 @@ public class Task
     public int? MilestoneId { get; set; }
     public MilestoneDto? Milestone { get; set; }
     public ProjectInfo? ProjectOwner { get; set; }
-    public List<Subtask>? Subtasks { get; set; }
+    public List<SubtaskDto>? Subtasks { get; set; }
     public int Status { get; set; }
     public int? Progress { get; set; }
     public UserDto? UpdatedBy { get; set; }
@@ -42,7 +42,7 @@ public class Task
     public DateTime? StartDate { get; set; }
 }
 
-public class UpdatedStateTask
+public class TaskUpdateData
 {
     public string? Description { get; set; }
     public DateTime? Deadline { get; set; }
@@ -55,9 +55,10 @@ public class UpdatedStateTask
     public bool? Notify { get; set; }
     public int? Status { get; set; }
     public int? Progress { get; set; }
+    public int? CustomTaskStatus { get; set; }
 }
 
-public class Subtask
+public class SubtaskDto
 {
     public bool CanEdit { get; set; }
     public int TaskId { get; set; }
@@ -69,20 +70,9 @@ public class Subtask
     public UserDto? CreatedBy { get; set; }
     public DateTime Updated { get; set; }
     public UserDto? Responsible { get; set; }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is not Subtask other) return false;
-        return other.Id == Id;
-    }
-
-    public override int GetHashCode()
-    {
-        return Id.GetHashCode();
-    }
 }
 
-public class UpdatedStateSubtask
+public class SubtaskUpdateData
 {
     public string? Responsible { get; set; }
     public string? Title { get; set; }

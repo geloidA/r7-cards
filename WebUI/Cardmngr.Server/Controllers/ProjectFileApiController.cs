@@ -13,16 +13,16 @@ public class ProjectFileApiController(IProjectFileService projectFile) : Control
     private readonly IProjectFileService projectFile = projectFile;
 
     [HttpGet("project")]
-    public Task<Project> GetProject() => projectFile.GetProject();
+    public Task<ProjectDto> GetProject() => projectFile.GetProject();
 
     [HttpGet("all-statuses")]
-    public IAsyncEnumerable<Onlyoffice.Api.Models.TaskStatus> GetTaskStatuses() => projectFile.GetTaskStatuses();
+    public IAsyncEnumerable<Onlyoffice.Api.Models.TaskStatusDto> GetTaskStatuses() => projectFile.GetTaskStatuses();
 
     [HttpGet("all-tasks/{guid}")]
-    public IAsyncEnumerable<Onlyoffice.Api.Models.Task> GetTasksAsync(string guid) => projectFile.GetTasksAsync(guid);
+    public IAsyncEnumerable<Onlyoffice.Api.Models.TaskDto> GetTasksAsync(string guid) => projectFile.GetTasksAsync(guid);
 
     [HttpPost("create-task/{guid}")]
-    public async Task<IActionResult> CreateTask(string guid, UpdatedStateTask state)
+    public async Task<IActionResult> CreateTask(string guid, TaskUpdateData state)
     {
         var created = await projectFile.CreateTask(guid, state);
         return Ok(created);
@@ -36,7 +36,7 @@ public class ProjectFileApiController(IProjectFileService projectFile) : Control
     }
 
     [HttpPut("update-task/{taskId}")]
-    public async Task<IActionResult> UpdateTask(int taskId, UpdatedStateTask state)
+    public async Task<IActionResult> UpdateTask(int taskId, TaskUpdateData state)
     {
         var updated = await projectFile.UpdateTask(taskId, state);
         return Ok(updated);

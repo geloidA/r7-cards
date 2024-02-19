@@ -8,12 +8,14 @@ public class EntityMappingProfile : Profile
 {
     public EntityMappingProfile()
     {
-        CreateMap<Onlyoffice.Api.Models.Project, Domain.Entities.Project>();
+        CreateMap<ProjectDto, Project>();
         CreateMap<MilestoneDto, Milestone>();
-        CreateMap<Onlyoffice.Api.Models.Subtask, Domain.Entities.Subtask>();
-        CreateMap<Onlyoffice.Api.Models.Task, OnlyofficeTask>()
+        CreateMap<SubtaskDto, Subtask>();
+
+        CreateMap<TaskDto, OnlyofficeTask>()
             .ForMember(dest => dest.TaskStatusId, opt => opt.MapFrom(src => src.CustomTaskStatus));
-        CreateMap<Onlyoffice.Api.Models.TaskStatus, OnlyofficeTaskStatus>();
+
+        CreateMap<TaskStatusDto, OnlyofficeTaskStatus>();
         CreateMap<UserDto, UserInfo>();
         CreateMap<UserProfileDto, UserProfile>();
     }

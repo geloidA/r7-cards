@@ -1,11 +1,13 @@
-﻿@inherits AddEditModalBase<OnlyofficeTask>
+﻿@using Onlyoffice.Api.Models
+
+@inherits AddEditModalBase<OnlyofficeTask, TaskUpdateData>
 
 @using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas
 
 @if (buffer is { })
 {
     <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right" @ref="currentModal">
-        <EditForm Model="buffer" OnValidSubmit="Submit" >
+        <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
             <DataAnnotationsValidator/>
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
                 <TitleChanger @bind-Title="buffer.Title" />
@@ -30,9 +32,12 @@
                         <TaskResponsibles Task="buffer" />
                     </div>
                     <div class="pb-2">
-                        <TaskMilestone Task="buffer" />
+                        <TaskMilestone Disabled="!Model.CanEdit" Task="buffer" />
                     </div>
-                    <TaskSubtasks Task="buffer" />
+                    @if (!IsAdd)
+                    {
+                        <TaskSubtasks Task="buffer" />
+                    }
                 </CascadingValue>
                 <div class="row pt-2 d-flex justify-content-end">
                     <div class="d-flex flex-row">
@@ -41,7 +46,7 @@
                         </Button>
                         @if(!IsAdd)
                         {
-                            <Button class="ms-2" @onclick="@(async () => await State.RemoveTaskAsync(Model.Id))" Size="Size.Small" Color="ButtonColor.Danger" Outline="true" >
+                            <Button class="ms-2" @onclick="DeleteAsync" Size="Size.Small" Color="ButtonColor.Danger" Outline="true">
                                 Удалить
                             </Button>
                         }
@@ -57,7 +62,7 @@
 
     [Parameter] public ProjectState State { get; set; } = null!;
 
-    private async Task Submit()
+    private async Task SubmitAsync()
     {
         if (IsAdd)
         {
@@ -66,6 +71,16 @@
         else
         {
             await State.UpdateTaskAsync(buffer);
+        }
+    }
+
+    private async Task DeleteAsync()
+    {
+        var answer = await ShowDeleteConfirm("Удаление задачи");
+
+        if (answer.Confirmed)
+        {
+            await State.RemoveTaskAsync(Model.Id));
         }
     }
 }

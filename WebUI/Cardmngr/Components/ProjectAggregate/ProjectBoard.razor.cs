@@ -16,19 +16,13 @@ public partial class ProjectBoard
 
     private async Task OnChangeTaskStatus(OnlyofficeTask task, OnlyofficeTaskStatus status)
     {
-        if (status.StatusType == StatusType.Close && !task.CanMarkClosed())
+        if (status.StatusType == StatusType.Close && task.HasUnclosedSubtask())
         {
-            var modalRes = await ShowCloseCardConfirmModal();
-            if (modalRes.Cancelled) return;
+            var confirmModal = await Modal.Show<CloseCardConfirmModal>("Закрытие задачи", ModalOptions).Result;
+            if (confirmModal.Cancelled) return;
             task.CloseAllSubtasks();
         }
 
         await State.UpdateTaskStatusAsync(task, status);
-    }
-
-    private async Task<ModalResult> ShowCloseCardConfirmModal()
-    {
-        var modal = Modal.Show<CloseCardConfirmModal>("Закрытие задачи", ModalOptions);
-        return await modal.Result;
     }
 }

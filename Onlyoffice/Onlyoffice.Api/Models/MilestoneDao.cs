@@ -17,7 +17,7 @@ public class MilestoneDto
     public int Id { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
-    public Project? Project { get; set; }
+    public ProjectDto? Project { get; set; }
     public DateTime? Deadline { get; set; }
     public bool IsKey { get; set; }
     public bool IsNotify { get; set; }
@@ -28,20 +28,9 @@ public class MilestoneDto
     public DateTime Created { get; set; }
     public UserDto? CreatedBy { get; set; }
     public DateTime Updated { get; set; }
-
-    public override int GetHashCode()
-    {
-        return Id.GetHashCode();
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is not MilestoneDto other) return false;
-        return other.Id == Id;
-    }
 }
 
-public class UpdatedStateMilestone
+public class MilestoneUpdateData
 {
     public string? Description { get; set; }
     public string? Title { get; set; }

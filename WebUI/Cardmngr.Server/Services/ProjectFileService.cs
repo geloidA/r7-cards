@@ -2,15 +2,15 @@
 using Onlyoffice.Api.Models;
 
 using Task = System.Threading.Tasks.Task;
-using MyTask = Onlyoffice.Api.Models.Task;
-using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
+using MyTask = Onlyoffice.Api.Models.TaskDto;
+using MyTaskStatus = Onlyoffice.Api.Models.TaskStatusDto;
 using Cardmngr.Server.Enums;
 
 namespace Cardmngr.Server.Services;
 
 public class ProjectFileService(IConfiguration conf) : IProjectFileService
 {
-    public async Task<MyTask> CreateTask(string guid, UpdatedStateTask state)
+    public async Task<MyTask> CreateTask(string guid, TaskUpdateData state)
     {
         var tasks = await ConvertFromFileAsync<List<MyTask>>(ConfigValues.TasksPath, "Tasks path is not configured");
         var id = await IncrementCounterAsync();
@@ -48,9 +48,9 @@ public class ProjectFileService(IConfiguration conf) : IProjectFileService
         return task;
     }
 
-    public Task<Project> GetProject()
+    public Task<ProjectDto> GetProject()
     {
-        return ConvertFromFileAsync<Project>(ConfigValues.ProjectPath, "Project path is not configured");
+        return ConvertFromFileAsync<ProjectDto>(ConfigValues.ProjectPath, "Project path is not configured");
     }
 
     public async IAsyncEnumerable<MyTask> GetTasksAsync(string guid)
@@ -74,7 +74,7 @@ public class ProjectFileService(IConfiguration conf) : IProjectFileService
             yield return status;
     }
 
-    public async Task<MyTask> UpdateTask(int taskId, UpdatedStateTask state)
+    public async Task<MyTask> UpdateTask(int taskId, TaskUpdateData state)
     {
         var tasks = await ConvertFromFileAsync<List<MyTask>>(ConfigValues.TasksPath, "Tasks path is not configured");
 

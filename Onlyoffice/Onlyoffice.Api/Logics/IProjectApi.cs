@@ -1,8 +1,5 @@
 ﻿using Onlyoffice.Api.Models;
 using Onlyoffice.Api.Common;
-using MyTaskStatus = Onlyoffice.Api.Models.TaskStatus;
-using MyTask = Onlyoffice.Api.Models.Task;
-using Task = System.Threading.Tasks.Task;
 
 namespace Onlyoffice.Api.Logics;
 
@@ -24,7 +21,7 @@ public interface IProjectApi
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project"/> 
     /// </remarks>
     /// <returns>List of projects</returns>
-    IAsyncEnumerable<Project> GetProjectsAsync();
+    IAsyncEnumerable<ProjectDto> GetProjectsAsync();
 
     /// <summary>
     /// Returns the detailed information about a project with the specified ID.
@@ -32,9 +29,9 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/%7bid%7d"/>
     /// </remarks>
-    /// <param name="projectId">Project ID</param>
-    /// <returns>Project</returns>
-    Task<Project> GetProjectByIdAsync(int projectId);
+    /// <param name="projectId">ProjectDto ID</param>
+    /// <returns>ProjectDto</returns>
+    Task<ProjectDto> GetProjectByIdAsync(int projectId);
 
     /// <summary>
     /// Returns all the task statuses.
@@ -42,8 +39,8 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/status"/>
     /// </remarks>
-    /// <returns>Task statuses</returns>
-    IAsyncEnumerable<MyTaskStatus> GetAllTaskStatusesAsync();
+    /// <returns>TaskDto statuses</returns>
+    IAsyncEnumerable<TaskStatusDto> GetAllTaskStatusesAsync();
 
     /// <summary>
     /// Returns a list of all the tasks from a project with the ID specified in the request.
@@ -51,16 +48,16 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/%7bprojectid%7d/task"/>
     /// </remarks>
-    /// <param name="projectId">Project ID</param>
+    /// <param name="projectId">ProjectDto ID</param>
     /// <returns>List of tasks</returns>
-    IAsyncEnumerable<MyTask> GetTasksByProjectIdAsync(int projectId);
+    IAsyncEnumerable<TaskDto> GetTasksByProjectIdAsync(int projectId);
 
     /// <summary>
     /// Returns the detailed information about a task with the specified ID.
     /// </summary>
     /// <param name="taskId"></param>
     /// <returns></returns>
-    Task<MyTask> GetTaskByIdAsync(int taskId);
+    Task<TaskDto> GetTaskByIdAsync(int taskId);
 
     /// <summary>
     /// Returns a list with the detailed information about all the tasks matching the parameters specified in the request.
@@ -70,7 +67,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="builder">Builder for parameters in request</param>
     /// <returns>List of tasks</returns>
-    IAsyncEnumerable<MyTask> GetFiltredTasksAsync(FilterTasksBuilder builder);
+    IAsyncEnumerable<TaskDto> GetFiltredTasksAsync(FilterTasksBuilder builder);
 
     /// <summary>
     /// Returns a list of all the users participating in the project with the ID specified in the request.
@@ -78,7 +75,7 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/%7bprojectid%7d/team"/>
     /// </remarks>
-    /// <param name="projectId">Project ID</param>
+    /// <param name="projectId">ProjectDto ID</param>
     /// <returns>List of team members</returns>
     IAsyncEnumerable<UserProfileDto> GetProjectTeamAsync(int projectId);
 
@@ -90,7 +87,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="taskId"></param>
     /// <returns>Deleted task</returns>
-    Task<MyTask> DeleteTaskAsync(int taskId);
+    Task<TaskDto> DeleteTaskAsync(int taskId);
 
     /// <summary>
     /// Adds a task to the selected project with the title and status.
@@ -98,12 +95,12 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/post/api/2.0/project/%7bprojectid%7d/task"/>
     /// </remarks>
-    /// <param name="projectId">Project ID</param>
+    /// <param name="projectId">ProjectDto ID</param>
     /// <param name="state">responsible user ID, task description, deadline time, etc</param>
     /// <param name="status">New task status</param>
     /// <param name="statusId">Custom status ID</param>
     /// <returns>Added task</returns>
-    Task<MyTask> CreateTaskAsync(int projectId, UpdatedStateTask state, Status status, int? statusId = null);
+    Task<TaskDto> CreateTaskAsync(int projectId, TaskUpdateData state, Status status, int? statusId = null);
 
     /// <summary>
     /// Updates the selected task.
@@ -111,9 +108,9 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/put/api/2.0/project/task/%7btaskid%7d"/>
     /// </remarks>
-    /// <param name="taskId">Task ID</param>
+    /// <param name="taskId">TaskDto ID</param>
     /// <param name="state">Updated state</param>
-    Task<MyTask> UpdateTaskAsync(int taskId, UpdatedStateTask state);
+    Task<TaskDto> UpdateTaskAsync(int taskId, TaskUpdateData state);
 
     /// <summary>
     /// Updates a status of a task with the ID specified in the request.
@@ -121,10 +118,10 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/put/api/2.0/project/task/%7btaskid%7d/status"/>
     /// </remarks>
-    /// <param name="taskId">Task ID</param>
+    /// <param name="taskId">TaskDto ID</param>
     /// <param name="status">New task status</param>
     /// <param name="statusId">Custom status ID</param>
-    Task UpdateTaskStatusAsync(int taskId, Status status, int? statusId = null);
+    Task<TaskDto> UpdateTaskStatusAsync(int taskId, Status status, int? statusId = null);
 
     /// <summary>
     /// Updates the selected subtask with the title and responsible specified in the request.
@@ -132,10 +129,10 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/put/api/2.0/project/task/%7btaskid%7d/%7bsubtaskid%7d"/>
     /// </remarks>
-    /// <param name="taskId">Task ID</param>
-    /// <param name="subtaskId">Subtask ID</param>
+    /// <param name="taskId">TaskDto ID</param>
+    /// <param name="subtaskId">SubtaskDto ID</param>
     /// <param name="state">Updated state</param>
-    Task UpdateSubtaskAsync(int taskId, int subtaskId, UpdatedStateSubtask state);
+    Task<SubtaskDto> UpdateSubtaskAsync(int taskId, int subtaskId, SubtaskUpdateData state);
 
     /// <summary>
     /// Deletes the selected subtask from the parent task with the ID specified in the request.
@@ -143,10 +140,10 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/delete/api/2.0/project/task/%7btaskid%7d/%7bsubtaskid%7d"/>
     /// </remarks>
-    /// <param name="taskId">Task ID</param>
-    /// <param name="subtaskId">Subtask ID</param>
-    /// <returns>Subtask</returns>
-    Task<Subtask> DeleteSubtaskAsync(int taskId, int subtaskId);
+    /// <param name="taskId">TaskDto ID</param>
+    /// <param name="subtaskId">SubtaskDto ID</param>
+    /// <returns>SubtaskDto</returns>
+    Task<SubtaskDto> DeleteSubtaskAsync(int taskId, int subtaskId);
 
     /// <summary>
     /// Updates the selected subtask status of the parent task with the ID specified in the request.
@@ -154,8 +151,8 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/put/api/2.0/project/task/%7btaskid%7d/%7bsubtaskid%7d/status"/>
     /// </remarks>
-    /// <param name="taskId">Task ID</param>
-    /// <param name="subtaskId">Subtask ID</param>
+    /// <param name="taskId">TaskDto ID</param>
+    /// <param name="subtaskId">SubtaskDto ID</param>
     /// <param name="status">New subtask status</param>
     /// <returns></returns>
     Task UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status);
@@ -166,11 +163,11 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/post/api/2.0/project/task/%7btaskid%7d"/>
     /// </remarks>
-    /// <param name="taskId">Task ID</param>
-    /// <param name="title">Subtask title</param>
-    /// <param name="responsible">Subtask responsible</param>
-    /// <returns>Subtask</returns>
-    Task<Subtask> CreateSubtaskAsync(int taskId, string title, string? responsible = null);
+    /// <param name="taskId">TaskDto ID</param>
+    /// <param name="title">SubtaskDto title</param>
+    /// <param name="responsible">SubtaskDto responsible</param>
+    /// <returns>SubtaskDto</returns>
+    Task<SubtaskDto> CreateSubtaskAsync(int taskId, string title, string? responsible = null);
 
     /// <summary>
     /// Returns a list of all the milestones from a project with the ID specified in the request.
@@ -178,7 +175,7 @@ public interface IProjectApi
     /// <remarks>
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/%7bid%7d/milestone"/>
     /// </remarks>
-    /// <param name="projectId">Project ID</param>
+    /// <param name="projectId">ProjectDto ID</param>
     /// <returns>List of milestones</returns>
     IAsyncEnumerable<MilestoneDto> GetMilestonesByProjectIdAsync(int projectId);
 
@@ -190,7 +187,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="milestoneId">MilestoneDto ID</param>
     /// <param name="state">Updated state</param>
-    Task<MilestoneDto> UpdateMilestoneAsync(int milestoneId, UpdatedStateMilestone state);
+    Task<MilestoneDto> UpdateMilestoneAsync(int milestoneId, MilestoneUpdateData state);
 
     /// <summary>
     /// Adds a new milestone using the parameters (project ID, milestone title, deadline, etc) specified in the request.
@@ -201,7 +198,7 @@ public interface IProjectApi
     /// <param name="projectId"></param>
     /// <param name="state"></param>
     /// <returns>Added milestone</returns>
-    Task<MilestoneDto> CreateMilestoneAsync(int projectId, UpdatedStateMilestone state);
+    Task<MilestoneDto> CreateMilestoneAsync(int projectId, MilestoneUpdateData state);
 
     /// <summary>
     /// Deletes a milestone with the ID specified in the request.
