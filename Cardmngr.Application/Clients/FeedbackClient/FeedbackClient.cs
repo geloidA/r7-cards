@@ -34,10 +34,10 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
 
         if (response.IsSuccessStatusCode)
         {
-            var feedbacks = await response.Content.ReadFromJsonAsync<List<Feedback>>()
-                ?? throw new NullReferenceException("Something went wrong while getting feedbacks");
-
-            return new FeedbacksVm { Feedbacks = feedbacks };
+            var feedbacks = await response.Content.ReadFromJsonAsAsyncEnumerable<Feedback>().ToListAsync();
+            return feedbacks == null
+                ? throw new NullReferenceException("Something went wrong while getting feedbacks")
+                : new FeedbacksVm { Feedbacks = feedbacks! };
         }
 
         throw new Exception(response.ReasonPhrase);

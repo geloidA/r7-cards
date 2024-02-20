@@ -7,23 +7,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8A654A56
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardmngr.Domain", "Cardmngr.Domain\Cardmngr.Domain.csproj", "{5DD1E038-1BF7-4EA5-8E36-D1D4A13E23CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Application", "Cardmngr.Application\Cardmngr.Application.csproj", "{87CCD01A-7775-48C5-BD9A-51603438B257}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardmngr.Application", "Cardmngr.Application\Cardmngr.Application.csproj", "{87CCD01A-7775-48C5-BD9A-51603438B257}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebUI", "WebUI", "{1561A640-0BFC-459C-A4FB-A62479EA685E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Shared", "WebUI\Cardmngr.Shared\Cardmngr.Shared.csproj", "{D4A7322C-D4BE-48FF-9F9C-34B881EFE639}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardmngr.Shared", "WebUI\Cardmngr.Shared\Cardmngr.Shared.csproj", "{D4A7322C-D4BE-48FF-9F9C-34B881EFE639}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Server", "WebUI\Cardmngr.Server\Cardmngr.Server.csproj", "{56FA83A6-C66F-4475-A3AD-62D5E12D885C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardmngr.Server", "WebUI\Cardmngr.Server\Cardmngr.Server.csproj", "{56FA83A6-C66F-4475-A3AD-62D5E12D885C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr", "WebUI\Cardmngr\Cardmngr.csproj", "{9193E0C1-02B1-47B3-A10B-946BD712A9DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardmngr", "WebUI\Cardmngr\Cardmngr.csproj", "{9193E0C1-02B1-47B3-A10B-946BD712A9DF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Onlyoffice", "Onlyoffice", "{0727A912-BE53-4305-93F9-C57ACBA0D450}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onlyoffice.Api", "Onlyoffice\Onlyoffice.Api\Onlyoffice.Api.csproj", "{CBA214E5-1FC2-4EEE-8BAF-7CFF63099DE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onlyoffice.Api", "Onlyoffice\Onlyoffice.Api\Onlyoffice.Api.csproj", "{CBA214E5-1FC2-4EEE-8BAF-7CFF63099DE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onlyoffice.ProxyServer", "Onlyoffice\Onlyoffice.ProxyServer\Onlyoffice.ProxyServer.csproj", "{851DE503-D2BB-42B2-8A7B-C55121393A49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onlyoffice.ProxyServer", "Onlyoffice\Onlyoffice.ProxyServer\Onlyoffice.ProxyServer.csproj", "{851DE503-D2BB-42B2-8A7B-C55121393A49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Shared.Tests", "tests\Cardmngr.Shared.Tests\Cardmngr.Shared.Tests.csproj", "{6703EE69-6F01-43A6-89E8-26F58A34371F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cardmngr.Shared.Tests", "tests\Cardmngr.Shared.Tests\Cardmngr.Shared.Tests.csproj", "{6703EE69-6F01-43A6-89E8-26F58A34371F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Server.Tests", "tests\Cardmngr.Api.Tests\Cardmngr.Server.Tests.csproj", "{C30C921F-7FD6-44B0-BEC2-368A86231F24}"
 EndProject
@@ -79,6 +79,7 @@ Global
 		{9193E0C1-02B1-47B3-A10B-946BD712A9DF} = {1561A640-0BFC-459C-A4FB-A62479EA685E}
 		{CBA214E5-1FC2-4EEE-8BAF-7CFF63099DE4} = {0727A912-BE53-4305-93F9-C57ACBA0D450}
 		{851DE503-D2BB-42B2-8A7B-C55121393A49} = {0727A912-BE53-4305-93F9-C57ACBA0D450}
+		{6703EE69-6F01-43A6-89E8-26F58A34371F} = {8A654A56-8728-41A7-ADB2-3567D139EE24}
 		{C30C921F-7FD6-44B0-BEC2-368A86231F24} = {8A654A56-8728-41A7-ADB2-3567D139EE24}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

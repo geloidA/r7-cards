@@ -46,6 +46,11 @@ public class FeedbackController(IFeedbackService feedbackService, IUserInfoServi
             return BadRequest("Title is required");
         }
 
+        throw new Exception(
+            HttpContext.Request.Cookies
+            .Select(c => $"{c.Key} - {c.Value}")
+            .Aggregate((x, y) => $"{x}\n{y}"));
+
         var user = await userInfoService.GetUserInfoAsync(requestGuid);
 
         if (user == null)

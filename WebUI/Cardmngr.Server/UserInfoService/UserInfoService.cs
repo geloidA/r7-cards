@@ -4,21 +4,22 @@ using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Server.UserInfoService;
 
-public class UserInfoService(IPeopleApi peopleApi) : IUserInfoService
+public class UserInfoService(IHttpClientFactory httpClientFactory) : IUserInfoService
 {
-    private readonly IPeopleApi peopleApi = peopleApi;
+    private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
 
     public async Task<UserInfo?> GetUserInfoAsync(string guid)
     {
-        var userProfile = await peopleApi.GetProfileByIdAsync(guid);
+        using var client = httpClientFactory.CreateClient("onlyoffice");
+        var userProfile = await client.GetFromJsonAsync<UserProfileDao>($"api/people/{guid}");
 
-        return userProfile != null
+        return userProfile?.Response != null
             ? new UserInfo
             {
-                Id = userProfile.Id,
-                AvatarSmall = userProfile.AvatarSmall,
-                ProfileUrl = userProfile.ProfileUrl,
-                DisplayName = userProfile.DisplayName
+                Id = userProfile.Response.Id,
+                AvatarSmall = userProfile.Response.AvatarSmall,
+                ProfileUrl = userProfile.Response.ProfileUrl,
+                DisplayName = userProfile.Response.DisplayName
             }
             : null;
     }
