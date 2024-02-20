@@ -12,4 +12,7 @@ public class PeopleController(IConfiguration conf) : ApiController(conf)
 
     [Route("api/[controller]/skins/default/images/{**rest}")]
     public Task ProxySkinsDefaultImages(string rest) => ProxyRequestAsync($"{serverUrl}/skins/default/images/{rest}");
+
+    [HttpGet("api/[controller]/{id}")]
+    public Task ProxyGetProfileById(string id) => ProxyRequestAsync($"{apiUrl}/people/{id}");
 }

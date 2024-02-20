@@ -1,0 +1,15 @@
+﻿using Cardmngr.Domain.Entities;
+using Cardmngr.Domain.Feedback;
+using Cardmngr.Shared.Feedbacks;
+
+namespace Cardmngr.Server.FeedbackApi.Service;
+
+public interface IFeedbackService
+{
+    IAsyncEnumerable<Feedback> GetFeedbacks(string requestGuid);
+    Task<Feedback> CreateFeedbackAsync(FeedbackUpdateData data, UserInfo user);
+    Task<Feedback?> FindFeedbackAsync(int id);
+    Task<Feedback> UpdateFeedbackAsync(Feedback feedback, FeedbackUpdateData data, string requestGuid);
+    Task<Feedback> DeleteFeedbackAsync(Feedback feedback);
+    bool CanManipulate(string guid, Feedback feedback);
+}

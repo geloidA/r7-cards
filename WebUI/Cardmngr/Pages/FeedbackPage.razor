@@ -1,0 +1,29 @@
+﻿@page "/feedback-board"
+
+<div class="d-flex position-relative mb-5" style="flex: auto !important;">        
+    <div class="d-flex flex-column">
+        <FeedbacksState>
+            <FeedbackBoard></FeedbackBoard>
+        </FeedbacksState>
+    </div>
+    <div style="max-width: 350px; text-align: justify;">
+        <p>
+            Эта доска предназначена для сбора предложений по улучшению
+            или созданию новых возможностей программы.
+        </p>
+        <p>
+            Также, если Вы нашли ошибку в программе, опишите ее здесь: укажите, что
+            произошло, где она возникла, и какие Ваши действия ее вызвавали.
+        </p>
+        <Callout Heading="Примечание">
+            Перед созданием предложения убедитесь нет ли похожей карточки.
+        </Callout>
+    </div>
+</div>
+
+@code {
+    protected override Task OnInitializedAsync()
+    {
+        return Task.CompletedTask;
+    }
+}

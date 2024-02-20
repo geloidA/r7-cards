@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Onlyoffice.ProxyServer", "O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Shared.Tests", "tests\Cardmngr.Shared.Tests\Cardmngr.Shared.Tests.csproj", "{6703EE69-6F01-43A6-89E8-26F58A34371F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Server.Tests", "tests\Cardmngr.Api.Tests\Cardmngr.Server.Tests.csproj", "{C30C921F-7FD6-44B0-BEC2-368A86231F24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{6703EE69-6F01-43A6-89E8-26F58A34371F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6703EE69-6F01-43A6-89E8-26F58A34371F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6703EE69-6F01-43A6-89E8-26F58A34371F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C30C921F-7FD6-44B0-BEC2-368A86231F24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C30C921F-7FD6-44B0-BEC2-368A86231F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C30C921F-7FD6-44B0-BEC2-368A86231F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C30C921F-7FD6-44B0-BEC2-368A86231F24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +79,7 @@ Global
 		{9193E0C1-02B1-47B3-A10B-946BD712A9DF} = {1561A640-0BFC-459C-A4FB-A62479EA685E}
 		{CBA214E5-1FC2-4EEE-8BAF-7CFF63099DE4} = {0727A912-BE53-4305-93F9-C57ACBA0D450}
 		{851DE503-D2BB-42B2-8A7B-C55121393A49} = {0727A912-BE53-4305-93F9-C57ACBA0D450}
+		{C30C921F-7FD6-44B0-BEC2-368A86231F24} = {8A654A56-8728-41A7-ADB2-3567D139EE24}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8D91AF76-3660-4B86-8114-3695A76CE202}

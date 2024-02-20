@@ -22,5 +22,10 @@ namespace Cardmngr.Domain.Entities
         public DateTime? StartDate { get; init; }
         public int? TaskStatusId { get; init; }
         public Status Status { get; init; }
+
+        public override string ToString()
+        {
+            return $"OnlyofficeTask - {Id}\t{Title}";
+        }
     }
 }

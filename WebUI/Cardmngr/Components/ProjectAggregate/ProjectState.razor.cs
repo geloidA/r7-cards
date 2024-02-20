@@ -1,14 +1,13 @@
 ﻿using Cardmngr.Application.Clients;
 using Cardmngr.Application.Clients.Milestone;
 using Cardmngr.Application.Clients.Subtask;
+using Cardmngr.Application.Clients.Task;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Domain.Enums;
-using Cardmngr.Domain.Extensions;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Shared.Project;
 using Microsoft.AspNetCore.Components;
 using Onlyoffice.Api.Models;
-using System.Threading.Tasks;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
@@ -29,6 +28,18 @@ public partial class ProjectState : ComponentBase
     [Inject] public ISubtaskClient SubtaskClient { get; set; } = null!;
 
     public ProjectStateVm? Model { get; set; }
+
+    public event Action? StateChanged;
+    private void OnStateChanged() => StateChanged?.Invoke();
+
+    public event Action? MilestonesChanged;
+    private void OnMilestonesChanged() => MilestonesChanged?.Invoke();
+
+    public event Action? SelectedMilestonesChanged;
+    private void OnSelectedMilestonesChanged() => SelectedMilestonesChanged?.Invoke();
+
+    public event Action? TasksChanged;
+    private void OnTasksChanged() => TasksChanged?.Invoke();
 
     /// <summary>
     /// Tasks with selected milestones
@@ -65,7 +76,8 @@ public partial class ProjectState : ComponentBase
             selectedMilestones.Add(milestone);
         }
 
-        StateHasChanged();
+        OnStateChanged();
+        OnSelectedMilestonesChanged();
     }
 
     public DateTime? Start => Model?.Tasks.Min(x => x.StartDate);
@@ -78,7 +90,11 @@ public partial class ProjectState : ComponentBase
             .Where(x => x.MilestoneId == milestone.Id)
             .Min(x => x.StartDate);
         
-        return minStart ?? milestone.Deadline.AddDays(-7);
+        var defaultStart = milestone.Deadline.AddDays(-7);
+        
+        return minStart == null || defaultStart < minStart 
+            ? defaultStart 
+            : minStart.Value;
     }
 
     public Milestone? GetMilestone(int? milestoneId)
@@ -101,6 +117,9 @@ public partial class ProjectState : ComponentBase
 
             Model!.Tasks.RemoveAll(x => x.Id == task.Id);
             Model.Tasks.Add(updated);
+
+            OnStateChanged();
+            OnTasksChanged();
         }
     }
 
@@ -109,7 +128,8 @@ public partial class ProjectState : ComponentBase
         var created = await TaskClient.CreateAsync(Model!.Project.Id, task);
         Model.Tasks.Add(created);
         
-        StateHasChanged();
+        OnStateChanged();
+        OnTasksChanged();
     }
 
     internal async Task RemoveTaskAsync(int taskId)
@@ -117,7 +137,8 @@ public partial class ProjectState : ComponentBase
         await TaskClient.RemoveAsync(taskId);
         Model!.Tasks.RemoveAll(x => x.Id == taskId);
 
-        StateHasChanged();
+        OnStateChanged();
+        OnTasksChanged();
     }
 
     internal async Task UpdateTaskAsync(int taskId, TaskUpdateData task)
@@ -126,7 +147,8 @@ public partial class ProjectState : ComponentBase
         Model!.Tasks.RemoveAll(x => x.Id == taskId);
         Model.Tasks.Add(updated);
 
-        StateHasChanged();
+        OnStateChanged();
+        OnTasksChanged();
     }
 
     internal async Task AddMilestoneAsync(MilestoneUpdateData milestone)
@@ -134,7 +156,8 @@ public partial class ProjectState : ComponentBase
         var added = await MilestoneClient.CreateAsync(Model!.Project.Id, milestone);
         Model.Milestones.Add(added);
         
-        StateHasChanged();
+        OnStateChanged();
+        OnMilestonesChanged();
     }
 
     internal async Task RemoveMilestoneAsync(int milestoneId)
@@ -142,7 +165,8 @@ public partial class ProjectState : ComponentBase
         await MilestoneClient.RemoveAsync(milestoneId);
         Model!.Milestones.RemoveAll(x => x.Id == milestoneId);
 
-        StateHasChanged();
+        OnStateChanged();
+        OnMilestonesChanged();
     }
 
     internal async Task UpdateMilestoneAsync(int milestoneId, MilestoneUpdateData milestone)
@@ -151,19 +175,24 @@ public partial class ProjectState : ComponentBase
         Model!.Milestones.RemoveAll(x => x.Id == milestoneId);
         Model!.Milestones.Add(updated);
 
-        StateHasChanged();
+        OnStateChanged();
+        OnMilestonesChanged();
     }
 
     internal async Task AddSubtaskAsync(int taskId, SubtaskUpdateData subtask)
     {
         var added = await SubtaskClient.CreateAsync(taskId, subtask);
         Model!.Tasks.Single(x => x.Id == taskId).Subtasks.Add(added);
+
+        OnStateChanged();
     }
 
     internal async Task RemoveSubtaskAsync(int taskId, int subtaskId)
     {
         await SubtaskClient.RemoveAsync(taskId, subtaskId);
         Model!.Tasks.Single(x => x.Id == taskId).Subtasks.RemoveAll(x => x.Id == subtaskId);
+
+        OnStateChanged();
     }
 
     internal async Task UpdateSubtaskAsync(int taskId, int subtaskId, SubtaskUpdateData updateData)
@@ -172,6 +201,8 @@ public partial class ProjectState : ComponentBase
         var task = Model!.Tasks.Single(x => x.Id == taskId);
         task.Subtasks.RemoveAll(x => x.Id == subtaskId);
         task.Subtasks.Add(updated);
+
+        OnStateChanged();
     }
 
     internal async Task UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status)
@@ -180,5 +211,7 @@ public partial class ProjectState : ComponentBase
         var task = Model!.Tasks.Single(x => x.Id == taskId);
         task.Subtasks.RemoveAll(x => x.Id == subtaskId);
         task.Subtasks.Add(updated);
+
+        OnStateChanged();
     }
 }

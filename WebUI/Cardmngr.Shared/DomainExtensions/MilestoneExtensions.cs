@@ -9,9 +9,9 @@ public static class MilestoneExtensions
         return milestone.Status == Domain.Enums.Status.Closed;
     }
 
-    public static bool IsDeadlineOut(this Milestone task)
+    public static bool IsDeadlineOut(this Milestone milestone)
     {
-        return DateTime.Now > task.Deadline;
+        return !milestone.IsClosed() && DateTime.Now > milestone.Deadline;
     }
 
     public static IEnumerable<Milestone> OrderByMilestoneCriteria(this IEnumerable<Milestone> milestones)

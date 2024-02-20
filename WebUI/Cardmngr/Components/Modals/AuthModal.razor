@@ -31,7 +31,7 @@
         var status = await AuthApiLogic.LoginAsync(new LoginModel(userName, password));
         if (status == AuthenticationResponseType.Error)
         {
-            ToastService.Notify(new(ToastType.Danger, title: "Ошибка авторизации", "Что-то пошло не так"));
+            ToastService.Notify(new(ToastType.Danger, title: "Ошибка авторизации", "Что-то пошло не так")); // todo:
         }
         else await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         busy = false;

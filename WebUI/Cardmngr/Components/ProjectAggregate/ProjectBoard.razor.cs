@@ -14,6 +14,12 @@ public partial class ProjectBoard
     [CascadingParameter] IModalService Modal { get; set; } = default!;
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
 
+    protected override void OnInitialized()
+    {
+        State.SelectedMilestonesChanged += StateHasChanged;
+        State.TasksChanged += StateHasChanged;
+    }
+
     private async Task OnChangeTaskStatus(OnlyofficeTask task, OnlyofficeTaskStatus status)
     {
         if (status.StatusType == StatusType.Close && task.HasUnclosedSubtask())

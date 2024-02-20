@@ -1,5 +1,17 @@
 ﻿@attribute [Authorize]
 
-<CascadingValue Value="this">
-    @ChildContent
-</CascadingValue>
+@if (Initialized)
+{
+    <CascadingValue Value="this" IsFixed="true" >
+        @ChildContent
+    </CascadingValue>
+}
+else
+{
+    <div style="position:absolute; top:30vh; width:100%; text-align:center">
+        <div style="display:flex; gap:10px; justify-content:center; align-items:center">
+        <div class="spinner-border text-secondary" style="width: 2.5rem; height: 2.5rem;" role="status"></div>
+        Загрузка...
+        </div>
+    </div>
+}

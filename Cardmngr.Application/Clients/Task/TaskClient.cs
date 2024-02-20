@@ -4,7 +4,7 @@ using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Logics;
 using Onlyoffice.Api.Models;
 
-namespace Cardmngr.Application.Clients;
+namespace Cardmngr.Application.Clients.Task;
 
 public class TaskClient(IProjectApi projectApi, IMapper mapper) : ITaskClient
 {

@@ -5,10 +5,12 @@ using Cardmngr.Shared.Extensions;
 using Cardmngr.Domain.Entities;
 using Blazored.Modal;
 using Cardmngr.Components.Modals;
+using Cardmngr.Components.Modals.Base;
+using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Components.MilestoneAggregate.Modals;
 
-public partial class MilestoneDetailsModal
+public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, MilestoneUpdateData>
 {
     private Offcanvas currentModal = null!;
 

@@ -1,18 +1,15 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using Cardmngr.Server.Extensions;
-using Cardmngr.Server.Services;
+using Cardmngr.Server.FeedbackApi.Service;
+using Cardmngr.Server.UserInfoService;
 using Microsoft.AspNetCore.ResponseCompression;
+using Onlyoffice.Api.Handlers;
+using Onlyoffice.Api.Logics.People;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var config = builder.Configuration;
-
-DirectoryWrapper.CreateIfDoesntExists(Path.GetFullPath(config["FeedbackDirectory"] ?? throw new Exception("FeedbackDirectory config is null")));
-
-builder.Services
-    .AddScoped<IProjectFileService, ProjectFileService>()
-    .AddRazorPages();
+builder.Services.AddRazorPages();
 
 builder.Services.AddResponseCompression(opts =>
 {
@@ -21,6 +18,13 @@ builder.Services.AddResponseCompression(opts =>
 });
 
 builder.Services.AddControllers();
+
+builder.Services
+    .AddScoped<CookieHandler>()
+    .AddScoped<IPeopleApi, PeopleApi>()
+    .AddScoped<IFeedbackService, FeedbackService>()
+    .AddScoped<IUserInfoService, UserInfoService>()
+    .ConfigureOnlyofficeClient(builder.Configuration);
 
 builder.WebHost.UseKestrel(opt => 
 {

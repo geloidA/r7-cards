@@ -2,7 +2,7 @@
 
 @inject IProjectApi ProjectApi
 
-<Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right">
+<Cardmngr.Components.Modals.MyBlazored.Offcanvas Class="my-offcanvas my-offcanvas-left">
     <OffcanvasHeader Class="py-1 d-flex flex-column" Style="padding-top: 20px !important;">
         <div class="d-flex flex-row align-self-start mb-2">
             <span>@State.Model!.Project.Title</span>
@@ -53,7 +53,7 @@
                     </div>
                 </CardTitle>
                 <CardBody class="m-0 user-select-none" style="max-height: 190px; overflow: auto;">
-                    <MilestoneList ShowMilestoneModal="true" ShowTaskCounts="true" Milestones="State.Model!.Milestones" />
+                    <MilestoneList State="State" />
                 </CardBody>
             </Card>
             <Card class="row mt-4 p-1 bg-shadow">
@@ -80,33 +80,6 @@
 </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
 
 @code {
-
-    [Parameter] public ProjectState State { get; set; } = null!;
-
-    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
-    [CascadingParameter] IModalService Modal { get; set; } = null!;
-
-    private async Task ShowMilestoneCreation()
-    {
-        var parameters = new ModalParameters
-        {
-            { "IsAdd", true }
-        };
-
-        await Modal.Show<MilestoneDetailsModal>("", parameters, Options).Result;
-    }
-
-    private static StatusData GetDataByStatus(ProjectStatus status)
-    {
-        return status switch
-        {
-            ProjectStatus.Paused => StatusData.Paused,
-            ProjectStatus.Open => StatusData.Open,
-            ProjectStatus.Closed => StatusData.Closed,
-            _ => throw new NotImplementedException("Unknown ProjectStatus type")
-        };
-    }
-
     private static RenderFragment<StatusData> RenderStatus => data =>
         @<Badge Color="data.BadgeColor" class="user-select-none">
             <div class="d-flex align-items-center" >
@@ -114,15 +87,4 @@
                 <Icon class="ms-1 d-flex" Name="data.IconName" />
             </div>
         </Badge>;
-
-    private class StatusData(BadgeColor badgeColor, IconName iconName, string title)
-    {
-        public BadgeColor BadgeColor => badgeColor;
-        public IconName IconName => iconName;
-        public string Title => title;
-
-        public static StatusData Open => new(BadgeColor.Primary, IconName.ForwardFill, "Открыт");
-        public static StatusData Closed => new(BadgeColor.Success, IconName.CheckCircleFill, "Закрыт");
-        public static StatusData Paused => new(BadgeColor.Secondary, IconName.PauseCircleFill, "Приостановлен");
-    }
 }

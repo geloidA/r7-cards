@@ -48,7 +48,7 @@
                     </Button>
                     @if (!IsAdd)
                     {
-                        <Button class="ms-2" Size="Size.Small" Disabled="!Model.CanDelete" Color="ButtonColor.Danger"
+                        <Button class="ms-2" Size="Size.Small" Disabled="!Model!.CanDelete" Color="ButtonColor.Danger"
                                 @onclick="DeleteAsync"
                                 Outline="true" >
                                 Удалить

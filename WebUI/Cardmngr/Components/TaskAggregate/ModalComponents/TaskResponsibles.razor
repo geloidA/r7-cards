@@ -44,7 +44,7 @@
 
         if (result.Confirmed)
         {
-            var users = (IEnumerable<string>)result.Data!;
+            var users = (IEnumerable<string?>)result.Data!;
             Task.Responsibles = users!.ToList();
         }
     }

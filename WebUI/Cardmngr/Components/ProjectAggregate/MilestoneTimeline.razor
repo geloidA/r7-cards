@@ -35,6 +35,12 @@
     
     [CascadingParameter] ProjectState State { get; set; } = null!;
 
+    protected override void OnInitialized()
+    {
+        State.MilestonesChanged += StateHasChanged;
+        State.TasksChanged += StateHasChanged;
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)

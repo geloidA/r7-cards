@@ -1,6 +1,5 @@
 .closer {
     background: rgb(255,255,255);
     background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(229,248,224,1) 55%);
-    border-radius: 7px 0px 0px 0px;
     z-index: 999;
 }

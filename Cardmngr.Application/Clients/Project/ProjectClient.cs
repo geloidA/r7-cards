@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using Cardmngr.Application.Clients;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Project;
 using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Logics;
 
-namespace Cardmngr.Application;
+namespace Cardmngr.Application.Clients;
 
 public class ProjectClient(IProjectApi projectApi, IMapper mapper) : IProjectClient
 {
@@ -25,7 +24,7 @@ public class ProjectClient(IProjectApi projectApi, IMapper mapper) : IProjectCli
             Project = mapper.Map<Project>(await project),
             Tasks = mapper.Map<List<OnlyofficeTask>>(await tasks),
             Statuses = mapper.Map<List<OnlyofficeTaskStatus>>(await statuses),
-            Milestones = mapper.Map<List<Milestone>>(await milestones),
+            Milestones = mapper.Map<List<Domain.Entities.Milestone>>(await milestones),
             Team = mapper.Map<List<UserProfile>>(await team)
         };
     }
