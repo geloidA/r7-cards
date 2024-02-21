@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Domain.Feedback;
+using Cardmngr.Shared.Feedbacks;
 using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Application.Mappers
@@ -16,6 +18,8 @@ namespace Cardmngr.Application.Mappers
 
             CreateMap<Milestone, MilestoneUpdateData>()
                 .ForMember(dest => dest.Responsible, opt => opt.MapFrom(src => src.Responsible.Id));
+
+            CreateMap<Feedback, FeedbackUpdateData>();
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using Cardmngr.Server.Exceptions;
 using Cardmngr.Server.Extensions;
 using Cardmngr.Server.FeedbackApi.Service;
 using Cardmngr.Server.UserInfoService;
@@ -19,12 +20,9 @@ builder.Services.AddResponseCompression(opts =>
 
 builder.Services.AddControllers();
 
-builder.Services
-    .AddScoped<CookieHandler>()
-    .AddScoped<IPeopleApi, PeopleApi>()
-    .AddScoped<IFeedbackService, FeedbackService>()
-    .AddScoped<IUserInfoService, UserInfoService>()
-    .ConfigureOnlyofficeClient(builder.Configuration);
+ConfigureFeedbackDirectory(builder.Configuration);
+
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
 builder.WebHost.UseKestrel(opt => 
 {
@@ -59,3 +57,23 @@ app.MapRazorPages();
 app.MapFallbackToFile("index.html");
 
 app.Run();
+
+static void ConfigureFeedbackDirectory(IConfiguration config)
+{
+    ArgumentNullException.ThrowIfNull(config);
+
+    var directoryPath = Path.GetFullPath(config["FeedbackConfig:directory"] 
+        ?? throw new NotConfiguredConfigException("FeedbackConfig:directory"));
+    
+    DirectoryWrapper.CreateIfDoesntExists(directoryPath);
+
+    if (!File.Exists($"{directoryPath}/feedbacks.json"))
+    {
+        File.WriteAllText($"{directoryPath}/feedbacks.json", "[]");
+    }
+
+    if (!File.Exists($"{directoryPath}/counter"))
+    {
+        File.WriteAllText($"{directoryPath}/counter", "0");
+    }
+}

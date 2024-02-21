@@ -1,4 +1,5 @@
 ﻿using Blazored.Modal;
+using Cardmngr.Shared.Feedbacks;
 using Microsoft.AspNetCore.Components;
 using Onlyoffice.Api.Validations;
 
@@ -28,6 +29,7 @@ public static class ServicesExtensions
     public static IServiceCollection AddValidators(this IServiceCollection services)
     {
         return services
+            .AddScoped<FeedbackUpdateDataValidator>()
             .AddScoped<TaskUpdateDataValidator>()
             .AddScoped<MilestoneUpdateDataValidator>();
     }

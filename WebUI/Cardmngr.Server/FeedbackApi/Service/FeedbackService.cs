@@ -65,7 +65,11 @@ public class FeedbackService : IFeedbackService
 
         foreach (var feedback in feedbacks)
         {
-            yield return feedback with { CanEdit = CanManipulate(requestGuid, feedback) };
+            yield return feedback with 
+            {
+                CanEdit = CanManipulate(requestGuid, feedback), 
+                CanChangeStatus = developerGuid == requestGuid // TODO: can be hacked
+            };
         }
     }
 
@@ -84,14 +88,33 @@ public class FeedbackService : IFeedbackService
 
         await WriteAllTextAsync(JsonConvert.SerializeObject(feedbacks));
 
-        return nextFeedback with { CanEdit = true };
+        return nextFeedback with { CanEdit = true, CanChangeStatus = developerGuid == requestGuid };
+    }
+
+    public async Task<Feedback?> UpdateFeedbackStatusAsync(Feedback feedback, FeedbackStatus status, string requestGuid)
+    {
+        if (requestGuid != developerGuid) return null;
+
+        var feedbacks = await GetFeedbacksAsync();
+
+        if (!feedbacks.Remove(feedback))
+        {
+            throw new FeedbackNotFoundException(feedback);
+        }
+
+        var updated = feedback with { Status = status };
+        feedbacks.Add(updated);
+
+        await WriteAllTextAsync(JsonConvert.SerializeObject(feedbacks));
+
+        return updated with { CanChangeStatus = true, CanEdit = true };
     }
 
     public bool CanManipulate(string guid, Feedback feedback)
     {
         if (string.IsNullOrEmpty(guid)) return false;
 
-        return developerGuid == guid || feedback.Creator.Id == guid && feedback.Status == FeedbackStatus.Todo;
+        return developerGuid == guid || feedback.Creator.Id == guid;
     }
 
     private async Task WriteAllTextAsync(string json)

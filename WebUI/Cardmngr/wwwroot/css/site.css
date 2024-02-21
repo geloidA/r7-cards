@@ -166,3 +166,10 @@ ul {
     text-orientation: upright;
     letter-spacing: -1.75px;
 }
+
+.max-height-100 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 5;
+ }

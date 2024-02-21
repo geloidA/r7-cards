@@ -53,7 +53,9 @@
                     </div>
                 </CardTitle>
                 <CardBody class="m-0 user-select-none" style="max-height: 190px; overflow: auto;">
-                    <MilestoneList State="State" />
+                    <CascadingValue Value="this" IsFixed="true">
+                        <MilestoneList State="State" />
+                    </CascadingValue>
                 </CardBody>
             </Card>
             <Card class="row mt-4 p-1 bg-shadow">

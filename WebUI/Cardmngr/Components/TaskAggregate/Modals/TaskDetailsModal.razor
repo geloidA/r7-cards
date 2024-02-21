@@ -15,7 +15,7 @@
             </OffcanvasHeader>
             <ValidationMessage For="() => buffer.Title" class="ms-3 validation-msg" />
             <OffcanvasBody Class="d-flex flex-column form-group">
-                <TaskPriorityChanger Task="buffer" />
+                <TaskPriorityChanger Task="buffer" Disabled="@(!CanEdit)" />
                 <Card class="p-1 mt-2">
                     <DateChanger Title="Дата начала:"
                         EmptyText="Не установлен" @bind-Date="buffer.StartDate" />
@@ -44,12 +44,16 @@
                 </CascadingValue>
                 <div class="row pt-2 d-flex justify-content-end">
                     <div class="d-flex flex-row">
-                        <Button Type="ButtonType.Submit" Size="Size.Small" Color="ButtonColor.Success" Outline="true">
+                        <Button Type="ButtonType.Submit" Size="Size.Small" 
+                            Disabled="!CanEdit"
+                            Color="ButtonColor.Success" Outline="true">
                             @SubmitText
                         </Button>
                         @if(!IsAdd)
                         {
-                            <Button class="ms-2" @onclick="DeleteAsync" Size="Size.Small" Color="ButtonColor.Danger" Outline="true">
+                            <Button class="ms-2" @onclick="DeleteAsync" 
+                                Size="Size.Small" Color="ButtonColor.Danger" 
+                                Outline="true" Disabled="!Model.CanDelete" >
                                 Удалить
                             </Button>
                         }

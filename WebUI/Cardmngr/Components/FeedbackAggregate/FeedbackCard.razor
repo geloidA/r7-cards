@@ -1,0 +1,32 @@
+﻿@using Cardmngr.Components.FeedbackAggregate.Modals
+
+<li class="feedback-card clickable" style="font-size: 13px;" @onclick="OpenModal" >
+    <div class="py-1 px-2 h-100" >
+        <span class="fw-bold" style="overflow: hidden;">@Feedback.Title</span>
+        @if (Feedback.Description is { })
+        {
+            <div class="mt-1 max-height-100 fw-light">
+                @Feedback.Description
+            </div>
+        }
+        <UserAvatar User="Feedback.Creator" Size="25" ShowName="true" />
+    </div>
+</li>
+
+@code {
+    [CascadingParameter] FeedbacksState State { get; set; } = null!;
+    [Parameter] public Feedback Feedback { get; set; } = null!;    
+    [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsModal { get; set; } = null!;
+    [CascadingParameter] IModalService Modal { get; set; } = null!;
+
+    private async Task OpenModal()
+    {
+        var parameters = new ModalParameters
+        {
+            { "State", State },
+            { "Model", Feedback }
+        };
+
+        await Modal.Show<FeedbackDetailsModal>("", parameters, DetailsModal).Result;
+    }
+}

@@ -11,13 +11,6 @@
     opacity: 0.5;
 }
 
-.max-height-100 {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    -webkit-line-clamp: 5;
- }
-
 .red-border {
     border: 2px solid red !important;
     border-radius: 5px;

@@ -1,5 +1,34 @@
-﻿<h3>FeedbackBoard</h3>
+﻿<KolBoard TValue="Feedback" Class="bg-shadow m-1" CanItemDrag="x => x.CanChangeStatus">
+    <Columns>
+        <FeedbackColumn Status="FeedbackStatus.Todo">
+            <HeaderTemplate>
+                <div class="row">
+                    <div class="col align-self-center">
+                        Предложения 📝
+                    </div>
+                    <div class="col col-sm-1">
+                        <Button Color="ButtonColor.Success" Outline="true" Size="Size.ExtraSmall"
+                            @onclick="OpenCreateModalAsync" >
+                            <Icon Name="IconName.Plus" />
+                        </Button>
+                    </div>
+                </div>
+            </HeaderTemplate>
+        </FeedbackColumn>
 
-@code {
+        <FeedbackColumn Status="FeedbackStatus.InProgress">
+            <HeaderTemplate>
+                <div style="margin-top: 1px;">В работе 👨‍💻</div>
+            </HeaderTemplate>
+        </FeedbackColumn>
 
-}
+        <FeedbackColumn Status="FeedbackStatus.Finished">
+            <HeaderTemplate >
+                <div style="margin-top: 1px;">Готово 🏁</div>
+            </HeaderTemplate>
+        </FeedbackColumn>
+    </Columns>
+    <ItemTemplate Context="feedback">
+        <FeedbackCard Feedback="feedback" />
+    </ItemTemplate>
+</KolBoard>

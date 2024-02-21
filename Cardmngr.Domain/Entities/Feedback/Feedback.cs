@@ -10,4 +10,5 @@ public record class Feedback : ResponseEntityBase<int>
     public string Description { get; init; }
     public UserInfo Creator { get; init; }
     public FeedbackStatus Status { get; init; }
+    public bool CanChangeStatus { get; init; }
 }

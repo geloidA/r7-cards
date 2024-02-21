@@ -1,5 +1,4 @@
 ﻿using Cardmngr.Domain.Entities;
-using Onlyoffice.Api.Logics.People;
 using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Server.UserInfoService;
@@ -11,7 +10,7 @@ public class UserInfoService(IHttpClientFactory httpClientFactory) : IUserInfoSe
     public async Task<UserInfo?> GetUserInfoAsync(string guid)
     {
         using var client = httpClientFactory.CreateClient("onlyoffice");
-        var userProfile = await client.GetFromJsonAsync<UserProfileDao>($"api/people/{guid}");
+        var userProfile = await client.GetFromJsonAsync<UserProfileDao>($"people/{guid}");
 
         return userProfile?.Response != null
             ? new UserInfo

@@ -9,6 +9,7 @@ namespace Cardmngr.Components.ProjectAggregate.Modals;
 
 public partial class ProjectDetailsModal
 {
+    internal bool CanOpenModal = true;
     [Parameter] public ProjectState State { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
@@ -16,6 +17,9 @@ public partial class ProjectDetailsModal
 
     private async Task ShowMilestoneCreation()
     {
+        if (!CanOpenModal) return;
+        CanOpenModal = false;
+
         var parameters = new ModalParameters
         {
             { "IsAdd", true },
@@ -23,6 +27,7 @@ public partial class ProjectDetailsModal
         };
 
         await Modal.Show<MilestoneDetailsModal>("", parameters, Options).Result;
+        CanOpenModal = true;
     }
 
     private static StatusData GetDataByStatus(ProjectStatus status)

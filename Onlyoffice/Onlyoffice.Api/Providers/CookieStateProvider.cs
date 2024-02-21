@@ -3,6 +3,7 @@ using Onlyoffice.Api.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Task = System.Threading.Tasks.Task;
 using System.Text.Json;
+using Cardmngr.Domain.Entities;
 
 namespace Onlyoffice.Api.Providers;
 
@@ -37,6 +38,27 @@ public class CookieStateProvider : AuthenticationStateProvider
     {
         claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+    }
+
+    public UserInfo? UserInfo
+    {
+        get
+        {
+            var userProfile = JsonSerializer.Deserialize<UserProfileDto>(this["Data"]);
+            
+            if (userProfile is null)
+            {
+                return null;
+            }
+            
+            return new UserInfo
+            {
+                Id = userProfile.Id,
+                AvatarSmall = userProfile.AvatarSmall,
+                ProfileUrl = userProfile.ProfileUrl,
+                DisplayName = userProfile.DisplayName
+            };
+        }
     }
 
     private static string Check(string? val) => val ?? throw new NullReferenceException("One of user profile property is null");

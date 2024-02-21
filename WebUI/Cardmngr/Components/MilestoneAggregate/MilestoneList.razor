@@ -38,11 +38,15 @@ else
 @code {
     [Parameter] public ProjectState State { get; set; } = null!;
 
+    [CascadingParameter] ProjectDetailsModal ParentModal { get; set; }
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     private async Task ShowModalAsync(Milestone milestone)
     {
+        if (!ParentModal.CanOpenModal) return;
+        ParentModal.CanOpenModal = false;
+
         var parameters = new ModalParameters
         {
             { "Model", milestone },
@@ -50,5 +54,6 @@ else
         };
 
         await Modal.Show<MilestoneDetailsModal>("", parameters, Options).Result;
+        ParentModal.CanOpenModal = true;
     }
 }
