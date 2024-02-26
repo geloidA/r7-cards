@@ -1,6 +1,5 @@
 .board .board-column .item-container .item .task-card {
     font-size: small;
-    border: 1px solid var(--boarder-color);
     cursor: pointer;
     background-color: var(--main-card-bg);
     border-radius: 5px;
@@ -12,7 +11,7 @@
 }
 
 .red-border {
-    border: 2px solid red !important;
+    border: 1px solid red !important;
     border-radius: 5px;
 }
 

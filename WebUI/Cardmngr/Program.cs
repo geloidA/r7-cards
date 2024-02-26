@@ -10,7 +10,7 @@ using Blazored.LocalStorage;
 using Cardmngr.Services;
 using Cardmngr.Application.Extensions;
 using KolBlazor.Extensions;
-using Onlyoffice.Api.Logics.People;
+using Cardmngr.Utils.DetailsModal;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -20,8 +20,8 @@ builder.Services
     .AddScoped<AuthenticationStateProvider, CookieStateProvider>()
     .AddScoped<CookieHandler>()
     .AddScoped<IAuthApiLogic, AuthApiLogic>()
-    .AddScoped<IPeopleApi, PeopleApi>()
     .ConfigureServices()
+    .AddSingleton<DetailsModalManager>()
     .AddScoped<TeamMemberSelectionDialog>()
     .AddBlazoredModal()
     .AddKolBlazor()

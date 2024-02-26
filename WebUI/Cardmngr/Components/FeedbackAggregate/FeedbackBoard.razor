@@ -1,15 +1,15 @@
-﻿<KolBoard TValue="Feedback" Class="bg-shadow m-1" CanItemDrag="x => x.CanChangeStatus">
+﻿<KolBoard TValue="Feedback" Class="m-1" CanItemDrag="x => x.CanChangeStatus">
     <Columns>
         <FeedbackColumn Status="FeedbackStatus.Todo">
             <HeaderTemplate>
-                <div class="row">
+                <div class="d-flex w-100">
                     <div class="col align-self-center">
                         Предложения 📝
                     </div>
-                    <div class="col col-sm-1">
-                        <Button Color="ButtonColor.Success" Outline="true" Size="Size.ExtraSmall"
+                    <div class="col d-flex justify-content-end mt-1">
+                        <Button Color="ButtonColor.Dark" Size="Size.ExtraSmall"
                             @onclick="OpenCreateModalAsync" >
-                            <Icon Name="IconName.Plus" />
+                            <Icon Name="IconName.Lightbulb"/> Добавить
                         </Button>
                     </div>
                 </div>

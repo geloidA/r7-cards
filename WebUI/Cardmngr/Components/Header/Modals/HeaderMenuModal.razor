@@ -11,13 +11,13 @@
         </a>
     </OffcanvasHeader>
     <OffcanvasBody Class="d-flex flex-column">
-        <Card class="bg-shadow">
-            <div class="align-self-center">🫧 Пусто 🫧</div>
-        </Card>
+        <Button Color="ButtonColor.Light" 
+            @onclick="@(() => NavigationManager.NavigateTo("/"))">
+            <b>На главную</b>
+        </Button>
         <div class="container h-100">
             <footer class="footer d-flex gradient-bg-vertical" >
                 <div class="mx-4 my-4">
-                    <Tool IconName="IconName.Send" TooltipTitle="Отправить обратную связь" OnClick=@(() => NavigationManager.NavigateTo("feedback-board")) />
                     <div class="mt-3" @onmouseenter="() => logoutHover = true" @onmouseout="() => logoutHover = false">
                         <Tool IconName="@(logoutHover ? IconName.DoorOpenFill : IconName.DoorClosedFill)" 
                             TooltipTitle="Выйти" IconColor="IconColor.Dark" IconSize="IconSize.x5"

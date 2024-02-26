@@ -7,8 +7,9 @@
     --col-title-color: #000000;
     --boarder-color: #a1bcc2;
     --main-col-bg: #e5f8e0;
-    --main-card-bg: #e5fffc;
-    --main-responsibles-bg: #dff8f5;
+    --main-card-bg: #e5fffc70;
+    --main-responsibles-bg: #dff8f570;
     --highlight-col: #441f1f;
     --drop-highlight-col: #b13b6c;
+    --header-color: #d47d7d;
 }

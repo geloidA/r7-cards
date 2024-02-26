@@ -7,11 +7,16 @@
     cursor: pointer;
 }
 
-.tool-bar {
+.hided-opt {
     opacity: 0;
     transition: opacity 0.25s ease-in-out;
 }
 
-.tool-bar:hover {
+.hided-opt.show-opt {
     opacity: 1;
+}
+
+.selection-opt {
+    background-color: wheat;
+    border-radius: 5px;
 }

@@ -27,7 +27,7 @@
 
 @code {
 
-    private double DayProcentage => 100 / (Deadline - Start)!.Value.TotalDays;
+    private float DayProcentage => 100.0f / (float)(Deadline - Start)!.Value.TotalDays;
 
     [Parameter, EditorRequired] public DateTime? Start { get; set; }
     [Parameter, EditorRequired] public DateTime? Deadline { get; set; }

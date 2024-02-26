@@ -15,8 +15,8 @@
 }
 else
 {
-    <div class="row">
-        <div class="col d-flex justify-content-start">
+    <div class="d-flex w-100  align-self-baseline">
+        <div class="col d-flex justify-content-start align-items-center">
             <Badge class="align-self-center" Color="BadgeColor.Success">
                 @TaskCount
             </Badge>
@@ -25,13 +25,15 @@ else
             </span>
             @if (TaskStatus.Image is { })
             {
-                <img src=@($"data:{TaskStatus.ImageType};base64, {TaskStatus.Image}") class="ms-1">
+                <img src=@($"data:{TaskStatus.ImageType};base64, {TaskStatus.Image}") class="ms-1" style="width: 20px;">
             }
         </div>
         @if (TaskStatus.Available)
         {
             <div class="col d-flex justify-content-end btn-hide">
-                @DropDown
+                <Tool IconName="@IconName.Plus" IconColor="@IconColor.Success" IconSize="@IconSize.x4"
+                    TooltipTitle="Добавить задачу" TooltipPlacement="@TooltipPlacement.Left"
+                    OnClick="@ShowCreateTaskModal" />
             </div>
         }
     </div>

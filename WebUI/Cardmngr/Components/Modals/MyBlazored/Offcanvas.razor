@@ -3,7 +3,8 @@
 <div class="offcanvas @DelayedShow @CssPlacement @Class" style="@Style" tabindex="-1" id="offcanvasWithBackdrop" >
     @if (ShowCloseBtn) 
     {
-        <div class="position-absolute clickable w-100 closer" style="@CloseBtnRadiusStyle" @onclick="CloseAsync" >
+        <div class="position-absolute clickable w-100 closer" style="@CloseBtnRadiusStyle" 
+            @onclick="async () => await CloseAsync()" >
             @if (Placement == MyOffcanvasPlacement.Start)
             {
                 <Icon class="d-flex justify-content-end p-1" Name="IconName.ArrowRightCircle" />
@@ -18,56 +19,5 @@
         @ChildContent
     </div>
 </div>
-<div class="offcanvas-backdrop fade @DelayedShow" style="z-index: 2;" @onclick="CancelAsync"></div>
-
-@code {
-    private string DelayedShow = "";
-    private string CloseBtnRadiusStyle => Placement == MyOffcanvasPlacement.Start 
-        ? "border-radius: 0px 7px 0px 0px;"
-        : "border-radius: 7px 0px 0px 0px;";
-
-    [CascadingParameter] BlazoredModalInstance CurrentModel { get; set; } = null!;
-
-    [Parameter] public MyOffcanvasPlacement Placement { get; set; }
-    [Parameter] public bool ShowCloseBtn { get; set; } = true;
-
-    public async Task CloseAsync() => await CloseAsync(ModalResult.Ok());
-
-    public async Task CloseAsync(ModalResult result)
-    {
-        await ToggleDelayShowAsync();
-        await CurrentModel.CloseAsync(result);
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await ToggleDelayShowAsync();
-    }
-
-    private async Task CancelAsync()
-    {
-        await ToggleDelayShowAsync();
-        await CurrentModel.CloseAsync(ModalResult.Cancel());
-    }
-
-    private async Task ToggleDelayShowAsync() // need for animation showing
-    {
-        await System.Threading.Tasks.Task.Delay(1);
-        DelayedShow = string.IsNullOrEmpty(DelayedShow) ? "show" : "";
-    }
-
-    private string CssPlacement
-    {
-        get
-        {
-            return Placement switch
-            {
-                MyOffcanvasPlacement.Start => "offcanvas-start",
-                MyOffcanvasPlacement.End => "offcanvas-end",
-                MyOffcanvasPlacement.Top => "offcanvas-top",
-                MyOffcanvasPlacement.Bottom => "offcanvas-bottom",
-                _ => throw new NotImplementedException()
-            };
-        }
-    }
-}
+<div class="offcanvas-backdrop fade @DelayedShow" style="z-index: 2;" 
+    @onclick="async () => await CloseAsync(ModalResult.Cancel())"></div>

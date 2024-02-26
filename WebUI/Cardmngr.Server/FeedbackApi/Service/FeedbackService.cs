@@ -32,7 +32,8 @@ public class FeedbackService : IFeedbackService
             Id = await IncrementCounterAsync(),
             Title = data.Title, 
             Description = data.Description,
-            Creator = user
+            Creator = user,
+            Created = DateTime.Now
         };
 
         feedbacks.Add(created);
@@ -102,7 +103,11 @@ public class FeedbackService : IFeedbackService
             throw new FeedbackNotFoundException(feedback);
         }
 
-        var updated = feedback with { Status = status };
+        var updated = feedback with 
+        { 
+            Status = status, 
+            Finished = status == FeedbackStatus.Finished ? DateTime.Now : null
+        };
         feedbacks.Add(updated);
 
         await WriteAllTextAsync(JsonConvert.SerializeObject(feedbacks));

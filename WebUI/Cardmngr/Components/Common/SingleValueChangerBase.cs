@@ -10,7 +10,7 @@ public abstract class SingleValueChangerBase : KolComponentBase
 
     [Parameter] public bool Disabled { get; set; }
 
-    protected async Task ToggleEditMode()
+    internal async Task ToggleEditMode()
     {
         if (PreventToggling()) return;
 

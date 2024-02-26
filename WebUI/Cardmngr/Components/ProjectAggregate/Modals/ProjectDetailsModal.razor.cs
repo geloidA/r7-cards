@@ -9,25 +9,21 @@ namespace Cardmngr.Components.ProjectAggregate.Modals;
 
 public partial class ProjectDetailsModal
 {
-    internal bool CanOpenModal = true;
+    private Components.Modals.MyBlazored.Offcanvas currentModal = null!;
     [Parameter] public ProjectState State { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    private async Task ShowMilestoneCreation()
+    private void ShowMilestoneCreation()
     {
-        if (!CanOpenModal) return;
-        CanOpenModal = false;
-
         var parameters = new ModalParameters
         {
             { "IsAdd", true },
             { "State", State }
         };
 
-        await Modal.Show<MilestoneDetailsModal>("", parameters, Options).Result;
-        CanOpenModal = true;
+        Modal.Show<MilestoneDetailsModal>("", parameters, Options);
     }
 
     private static StatusData GetDataByStatus(ProjectStatus status)

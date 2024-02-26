@@ -6,8 +6,7 @@ namespace Cardmngr.Components.TaskAggregate.Modals;
 
 public partial class TaskDetailsModal
 {
-    private Offcanvas currentModal = null!;
-
+    Offcanvas currentModal = null!;
     private bool CanEdit => Model == null || Model.CanEdit;
 
     [Parameter] public ProjectState State { get; set; } = null!;

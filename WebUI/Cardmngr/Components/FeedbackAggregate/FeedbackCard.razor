@@ -10,6 +10,24 @@
             </div>
         }
         <UserAvatar User="Feedback.Creator" Size="25" ShowName="true" />
+        <div class="d-flex justify-content-end">
+            @if (Feedback.Status == FeedbackStatus.Finished)
+            {
+                <Icon class="d-flex align-items-center" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
+                <span class="ms-1">
+                    Выполнено:
+                    @Feedback.Finished!.Value.ToShortDateString()
+                </span>
+            }
+            else
+            {
+                <Icon class="d-flex align-items-center" Name="IconName.PencilSquare" Color="IconColor.Primary" />
+                <span class="ms-1">
+                    Создано:
+                    @Feedback.Created.ToShortDateString()
+                </span>
+            }
+        </div>
     </div>
 </li>
 

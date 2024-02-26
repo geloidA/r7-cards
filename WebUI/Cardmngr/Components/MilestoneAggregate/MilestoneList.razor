@@ -7,7 +7,7 @@
         <div @key="milestone.Id" class="mt-2 w-100">
             <div class="row">
                 <div class="col-md-6 d-flex flex-row">
-                    <MilestoneLabel OnClick="async () => await ShowModalAsync(milestone)" Milestone="milestone" />
+                    <MilestoneLabel OnClick="() => ShowModal(milestone)" Milestone="milestone" />
                 </div>
                 <div class="col-md-5 align-self-center">
                     <i class="d-flex flex-row" style="font-size: 11px;">
@@ -38,22 +38,17 @@ else
 @code {
     [Parameter] public ProjectState State { get; set; } = null!;
 
-    [CascadingParameter] ProjectDetailsModal ParentModal { get; set; }
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    private async Task ShowModalAsync(Milestone milestone)
+    private void ShowModal(Milestone milestone)
     {
-        if (!ParentModal.CanOpenModal) return;
-        ParentModal.CanOpenModal = false;
-
         var parameters = new ModalParameters
         {
             { "Model", milestone },
             { "State", State }
         };
 
-        await Modal.Show<MilestoneDetailsModal>("", parameters, Options).Result;
-        ParentModal.CanOpenModal = true;
+        Modal.Show<MilestoneDetailsModal>("", parameters, Options);
     }
 }

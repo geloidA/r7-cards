@@ -7,7 +7,8 @@
 
 @if (buffer is { })
 {
-    <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right" @ref="currentModal">
+    <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
+        @ref="currentModal">
         <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
             <FluentValidationValidator ValidatorType="@(typeof(TaskUpdateDataValidator))" />
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
@@ -53,7 +54,7 @@
                         {
                             <Button class="ms-2" @onclick="DeleteAsync" 
                                 Size="Size.Small" Color="ButtonColor.Danger" 
-                                Outline="true" Disabled="!Model.CanDelete" >
+                                Outline="true" Disabled="!Model!.CanDelete" >
                                 Удалить
                             </Button>
                         }

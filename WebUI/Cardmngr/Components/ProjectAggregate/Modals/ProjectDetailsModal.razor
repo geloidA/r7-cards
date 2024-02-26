@@ -2,8 +2,8 @@
 
 @inject IProjectApi ProjectApi
 
-<Cardmngr.Components.Modals.MyBlazored.Offcanvas Class="my-offcanvas my-offcanvas-left">
-    <OffcanvasHeader Class="py-1 d-flex flex-column" Style="padding-top: 20px !important;">
+<Cardmngr.Components.Modals.MyBlazored.Offcanvas Class="my-offcanvas my-offcanvas-left" @ref="currentModal">
+    <OffcanvasHeader Class="py-1 d-flex flex-column" Style="padding-top: 20px !important;" >
         <div class="d-flex flex-row align-self-start mb-2">
             <span>@State.Model!.Project.Title</span>
             <Tooltip Title="Кол-во открытых задач">
@@ -53,9 +53,10 @@
                     </div>
                 </CardTitle>
                 <CardBody class="m-0 user-select-none" style="max-height: 190px; overflow: auto;">
-                    <CascadingValue Value="this" IsFixed="true">
+                    @if (currentModal is { })
+                    {
                         <MilestoneList State="State" />
-                    </CascadingValue>
+                    }
                 </CardBody>
             </Card>
             <Card class="row mt-4 p-1 bg-shadow">

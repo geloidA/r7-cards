@@ -1,18 +1,19 @@
 ﻿using Cardmngr.Components.Modals.MyBlazored;
 using Cardmngr.Components.ProjectAggregate;
 using Microsoft.AspNetCore.Components;
-using Cardmngr.Shared.Extensions;
 using Cardmngr.Domain.Entities;
 using Blazored.Modal;
 using Cardmngr.Components.Modals;
 using Cardmngr.Components.Modals.Base;
+using Cardmngr.Shared.Extensions;
 using Onlyoffice.Api.Models;
+using Cardmngr.Utils.DetailsModal;
 
 namespace Cardmngr.Components.MilestoneAggregate.Modals;
 
 public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, MilestoneUpdateData>
 {
-    private Offcanvas currentModal = null!;
+    Offcanvas currentModal = null!;
 
     private bool CanEdit => Model == null || Model.CanEdit;
 
@@ -28,6 +29,7 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
     protected override void OnInitialized()
     {
         base.OnInitialized();
+
         if (IsAdd)
         {
             buffer.Title = "Новая веха";

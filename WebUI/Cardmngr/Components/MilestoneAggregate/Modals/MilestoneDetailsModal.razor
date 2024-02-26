@@ -9,7 +9,8 @@
 
 @if (buffer is { })
 {
-    <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right" @ref="currentModal">
+    <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
+        @ref="currentModal" >
         <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
             <FluentValidationValidator ValidatorType="@(typeof(MilestoneUpdateDataValidator))" />
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">

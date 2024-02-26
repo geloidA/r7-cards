@@ -1,11 +1,11 @@
 ﻿<div class="feedback-col">
     <KolBoardColumn TValue="Feedback" OnDropItem="DropFeedback" Items="Items">
         <HeaderTemplate>
-            <div class="row w-100">
+            <div class="d-flex mb-2">
                 <div class="col col-sm-1">
-                    <Badge Color="BadgeColor.Danger">@Items.Count()</Badge>
+                    <Badge Color="BadgeColor.Dark">@Items.Count()</Badge>
                 </div>
-                <div class="col">                    
+                <div class="col w-100">                    
                     @HeaderTemplate
                 </div>
             </div>

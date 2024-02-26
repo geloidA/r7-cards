@@ -2,7 +2,7 @@
 
 <div class="p-1 d-flex flex-row align-items-center" style="font-size: 15px;">
     Приоритет -
-    @if (Task.Priority == (int)Priority.High)
+    @if (Task.Priority == (int)Domain.Enums.Priority.High)
     {
         <i class="ms-1 text-primary">Высокий</i>
         <Icon class="ms-1" Name="IconName.ArrowUpCircleFill" Color="IconColor.Primary"/>
@@ -14,7 +14,9 @@
     <div class="col d-flex justify-content-end">
         <Tool IconName="IconName.ArrowDownUp" TooltipPlacement="TooltipPlacement.Top"
             Disabled="@Disabled" TooltipTitle="Изменить" 
-            OnClick="@(() => Task.Priority = Task.Priority == (int)Priority.High ? (int)Priority.Regular : (int)Priority.High)"/>
+            OnClick="@(() => Task.Priority = Task.Priority == (int)Domain.Enums.Priority.High 
+                ? (int)Domain.Enums.Priority.Regular 
+                : (int)Domain.Enums.Priority.High)"/>
     </div>
 </div>
 

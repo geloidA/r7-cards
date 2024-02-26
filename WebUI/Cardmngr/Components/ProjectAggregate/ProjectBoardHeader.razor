@@ -1,7 +1,15 @@
 ﻿<div class="d-flex w-100">    
-    <div class="d-flex ms-3 align-self-center">
-        <Tool IconName="IconName.List" IconSize="IconSize.x5" Text="Проект"
-            OnClick="@ShowProjectMenu" />
+    <div class="ms-3 align-self-center">
+        <div class="d-flex flex-row justify-content-center" style="border-bottom: 1px black solid;">
+            <div class="user-select-none mb-3" style="font-size: small;" >
+                <Icon Name="IconName.Stars" Color="IconColor.Primary"/>
+                Вехи:
+            </div>
+        </div>
+        <div>
+            <Tool IconName="IconName.List" IconSize="IconSize.x5" Text="Проект"
+                OnClick="@ShowProjectMenu" />
+        </div>
     </div>
     <MilestoneTimeline Class="ms-4" ></MilestoneTimeline>
 </div>

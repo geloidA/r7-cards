@@ -3,19 +3,29 @@
 
 @inject AuthenticationStateProvider AuthenticationState
 
-<Badge class="p-0 w-100 overflow-hidden" @onclick="() => State.ToggleMilestone(Milestone)" Color="BadgeColor">
-    <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Right">
-        <div class="@CssSelected p-1 timeline-milestone">
-            @Milestone.Title
+<div @onmouseenter="@(() => isHover = true)" @onmouseleave="@(() => isHover = false)" >
+    <Badge class="p-0 w-100 overflow-hidden" Color="BadgeColor" @onclick="() => State.ToggleMilestone(Milestone)" >
+        <div class="position-absolute selection-opt hided-opt @CssShowOptions" style="margin-left: 5px; margin-top: 3.5px; width: 17px;">
+            <Tooltip Title="Фильтр по вехе">
+                <Icon class="clickable" Name="IconName.EyeFill" Color="IconColor.Dark" />
+            </Tooltip>
         </div>
-    </Tooltip>
-</Badge>
-
-<div class="tool-bar d-flex justify-content-center" style="margin-top: -8px;">
-    <Icon class="clickable" @onclick="ShowDetailsModal" Name="IconName.EyeFill" />
+        <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Right">
+            <div class="@CssSelected p-1 timeline-milestone">
+                @Milestone.Title
+            </div>
+        </Tooltip>
+    </Badge>
+    <div class="d-flex justify-content-center hided-opt @CssShowOptions" style="margin-top: -8px;">
+        <div @onclick:preventDefault @onclick:stopPropagation>
+            <Icon class="clickable" @onclick="ShowDetailsModal" Name="IconName.InfoCircleFill" />
+        </div>
+    </div>
 </div>
 
 @code {
+    private bool isHover;
+    private string CssShowOptions => isHover ? "show-opt" : "";
     private string CssSelected => State.SelectedMilestones.Contains(Milestone) ? "selected" : "";
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;

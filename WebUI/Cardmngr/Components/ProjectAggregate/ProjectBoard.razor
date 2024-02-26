@@ -1,10 +1,11 @@
-﻿<KolBoard TValue="OnlyofficeTask" CanItemDrag="@(x => x.CanEdit)">
+﻿<KolBoard TValue="OnlyofficeTask" CanItemDrag="@(x => x.CanEdit)" Gap="0" >
     <Columns>
         @if (State.Initialized)
         {
+            var isFirst = true;
             foreach (var status in State.Model!.Statuses.InLogicalOrder())
             {
-                <div class="status-column" @key="status" >
+                <div class="@(isFirst ? "" : "status-column")" @key="status" >
                     <KolBoardColumn TValue="OnlyofficeTask" CanCollapse="true"
                         OnDropItem="@(async task => await OnChangeTaskStatus(task, status))"
                         Items="State.OutputTasks!.FilterByStatus(status).OrderByTaskCriteria()">
@@ -19,6 +20,7 @@
                         </HeaderTemplate>
                     </KolBoardColumn>
                 </div>
+                isFirst = false;
             }
         }
     </Columns>
