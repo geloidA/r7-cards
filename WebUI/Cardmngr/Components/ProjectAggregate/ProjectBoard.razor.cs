@@ -5,12 +5,17 @@ using Cardmngr.Shared.Extensions;
 using Blazored.Modal.Services;
 using Blazored.Modal;
 using Cardmngr.Components.Modals.ConfirmModals;
+using Cardmngr.Application.Clients.TaskClient;
+using Cardmngr.Application.Clients.SignalRHubClients;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
 public partial class ProjectBoard
 {
+    [Inject] public ITaskClient TaskClient { get; set; } = null!;
+
     [CascadingParameter] ProjectState State { get; set; } = null!;
+    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
 
@@ -28,6 +33,12 @@ public partial class ProjectBoard
             if (confirmModal.Cancelled) return;
         }
 
-        await State.UpdateTaskStatusAsync(task, status);
+        if (!task.HasStatus(status))
+        {
+            var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, status);
+            State.UpdateTask(updated);
+
+            await ProjectHubClient.SendUpdatedTaskAsync(State.Id, task.Id);
+        }
     }
 }

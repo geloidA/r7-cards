@@ -5,12 +5,14 @@ using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Components.TaskAggregate.Modals;
+using Cardmngr.Application.Clients.SignalRHubClients;
 
 namespace Cardmngr.Components.TaskStatusAggregate;
 
 public partial class TaskStatusHeader
 {
     [CascadingParameter] ProjectState State { get; set; } = null!;
+    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
@@ -27,7 +29,8 @@ public partial class TaskStatusHeader
         {
             { "State", State },
             { "IsAdd", true },
-            { "TaskStatusId", TaskStatus.Id }
+            { "TaskStatusId", TaskStatus.Id },
+            { "ProjectHubClient", ProjectHubClient }
         };
 
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsOptions).Result;

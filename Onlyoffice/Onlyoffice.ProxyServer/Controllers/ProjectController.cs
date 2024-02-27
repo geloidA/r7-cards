@@ -47,6 +47,11 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
     [HttpPut]
     [Route("api/[controller]/task/{taskId}")]
     public Task ProxyUpdateTask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+
+    [HttpGet]
+    [Route("api/[controller]/task/{taskId}")]
+    public Task ProxyTaskById(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+    
     #endregion
 
     #region Subtask Proxy
@@ -71,6 +76,10 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
     [HttpGet]
     [Route("api/[controller]/{projectId}/milestone")]
     public Task ProxyMilestones(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/milestone");
+
+    [HttpGet]
+    [Route("api/[controller]/milestone/{milestoneId}")]
+    public Task ProxyMilestoneById(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}");
 
     [HttpPost]
     [Route("api/[controller]/{projectId}/milestone")]

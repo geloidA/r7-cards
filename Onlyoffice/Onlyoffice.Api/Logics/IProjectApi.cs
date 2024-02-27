@@ -220,4 +220,14 @@ public interface IProjectApi
     /// <param name="status">New milestone status</param>
     /// <returns>Updated milestone</returns>
     Task UpdateMilestoneStatusAsync(int milestoneId, Status status);
+
+    /// <summary>
+    /// Returns the detailed information about a milestone with the ID specified in the request.
+    /// </summary>
+    /// <remarks>
+    /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/milestone/%7bid%7d"/>
+    /// </remarks>
+    /// <param name="milestoneId"></param>
+    /// <returns>Milestone</returns>
+    Task<MilestoneDto> GetMilestoneByIdAsync(int milestoneId);
 }

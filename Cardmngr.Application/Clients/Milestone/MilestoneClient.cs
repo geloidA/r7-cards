@@ -15,6 +15,12 @@ namespace Cardmngr.Application.Clients.Milestone
             return mapper.Map<Domain.Entities.Milestone>(milestoneDto);
         }
 
+        public async Task<Domain.Entities.Milestone> GetAsync(int entityId)
+        {
+            var milestoneDto = await projectApi.GetMilestoneByIdAsync(entityId);
+            return mapper.Map<Domain.Entities.Milestone>(milestoneDto);
+        }
+
         public async Task<Domain.Entities.Milestone> RemoveAsync(int milestoneId)
         {
             var milestoneDto = await projectApi.DeleteMilestoneAsync(milestoneId);

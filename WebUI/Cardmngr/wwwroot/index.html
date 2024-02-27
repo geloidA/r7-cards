@@ -36,7 +36,37 @@
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="js/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="_content/Blazor.Bootstrap/blazor.bootstrap.js"></script>
-    <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script>
+        navigator.serviceWorker.register('service-worker.js');
+
+        function updateVersion(newVersion) {
+            var key = 'r7cards-version';
+
+            var oldVersion = localStorage.getItem(key);
+
+            if (oldVersion == null) {
+                localStorage.setItem(key, newVersion);
+            }
+            else if (newVersion != oldVersion) {
+                localStorage.setItem(key, newVersion);
+
+                caches.delete("dotnet-resources-/").then(function (e) {
+                    console.log("'dotnet-resources-/' cache deleted");
+                });
+
+                // Reload service worker
+                navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' }).then(function (registration) {
+
+                    window.location.reload(); 
+
+                }).catch(function (error) {
+                    // registration failed
+                    console.log(`Registration failed with ${error}`);
+                });
+            }
+        }
+    
+    </script>
 </body>
 
 </html>

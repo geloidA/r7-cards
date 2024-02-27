@@ -6,11 +6,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions/" />
+    <ProjectReference Include="..\Cardmngr\Cardmngr.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cardmngr\Cardmngr.csproj" />
+    <Content Include="version.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>

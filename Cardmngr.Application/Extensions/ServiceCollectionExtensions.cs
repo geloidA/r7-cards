@@ -2,10 +2,11 @@
 using Cardmngr.Application.Clients.FeedbackClient;
 using Cardmngr.Application.Clients.Milestone;
 using Cardmngr.Application.Clients.Subtask;
-using Cardmngr.Application.Clients.Task;
+using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Mappers;
 using Microsoft.Extensions.DependencyInjection;
 using Onlyoffice.Api.Logics;
+using Onlyoffice.Api.Logics.People;
 
 namespace Cardmngr.Application.Extensions;
 
@@ -14,6 +15,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection ConfigureServices(this IServiceCollection services)
     {
         return services
+            .AddScoped<IPeopleApi, PeopleApi>()
             .AddFeedbackClient()
             .AddProjectClient();
     }

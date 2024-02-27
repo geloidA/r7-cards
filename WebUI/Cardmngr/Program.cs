@@ -20,6 +20,7 @@ builder.Services
     .AddScoped<AuthenticationStateProvider, CookieStateProvider>()
     .AddScoped<CookieHandler>()
     .AddScoped<IAuthApiLogic, AuthApiLogic>()
+    .AddScoped<AppInfoService>()
     .ConfigureServices()
     .AddSingleton<DetailsModalManager>()
     .AddScoped<TeamMemberSelectionDialog>()
@@ -34,17 +35,6 @@ builder.Services
     .AddMyCascadingValues()
     .AddValidators();
 
-var config = builder.Configuration;
-
-builder.Services
-    .AddHttpClient("onlyoffice", opt => opt.BaseAddress = new Uri(config["proxy-url"] 
-        ?? throw new NullReferenceException("proxy-url config is null")))
-    .AddHttpMessageHandler<CookieHandler>();
-
-builder.Services.AddHttpClient("self-api", opt => opt.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-
-builder.Services
-    .AddHttpClient("self-api-cookie", opt => opt.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-    .AddHttpMessageHandler<CookieHandler>();
+builder.ConfigureHttpClients();
 
 await builder.Build().RunAsync();

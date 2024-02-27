@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using Cardmngr.Application.Clients.SignalRHubClients
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
@@ -30,7 +31,7 @@
                 }
                 @if (Task.Status == Domain.Enums.Status.Open)
                 {
-                    <Icon class="ms-1" Name="IconName.ArrowClockwise" Color="IconColor.Secondary" />
+                    <Icon class="ms-1" Name="IconName.ForwardFill" Color="IconColor.Secondary" />
                 }
                 else
                 {
@@ -46,6 +47,7 @@
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
     [CascadingParameter] ProjectState State { get; set; } = null!;
+    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     [Parameter, EditorRequired] public OnlyofficeTask Task { get; set; } = null!;
 
@@ -65,7 +67,8 @@
         var paramerters = new ModalParameters
         {
             { "Model", Task },
-            { "State", State }
+            { "State", State },
+            { "ProjectHubClient", ProjectHubClient }
         };
 
         await Modal.Show<TaskDetailsModal>("", paramerters, Options).Result;

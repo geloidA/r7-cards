@@ -8,6 +8,7 @@ using Cardmngr.Components.Modals.Base;
 using Cardmngr.Shared.Extensions;
 using Onlyoffice.Api.Models;
 using Cardmngr.Utils.DetailsModal;
+using Cardmngr.Application.Clients.Milestone;
 
 namespace Cardmngr.Components.MilestoneAggregate.Modals;
 
@@ -23,6 +24,8 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
     private int ActiveTasks => Model == null ? 0 : milestoneTasks.Count(x => !x.IsClosed());
 
     [Parameter] public ProjectState State { get; set; } = null!;
+
+    [Inject] public IMilestoneClient MilestoneClient { get; set; } = null!;
 
     private IEnumerable<OnlyofficeTask> milestoneTasks = [];
 
@@ -44,11 +47,13 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
     {
         if (IsAdd)
         {
-            await State.AddMilestoneAsync(buffer);
+            var added = await MilestoneClient.CreateAsync(Model!.Project.Id, buffer);
+            State.AddMilestone(added);
         }
         else
         {
-            await State.UpdateMilestoneAsync(Model!.Id, buffer);
+            var updated = await MilestoneClient.UpdateAsync(Model!.Id, buffer);
+            State.UpdateMilestone(updated);
         }
 
         await currentModal.CloseAsync();
@@ -60,7 +65,8 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
 
         if (answer.Confirmed)
         {
-            await State.RemoveMilestoneAsync(Model!.Id);
+            await MilestoneClient.RemoveAsync(Model!.Id);
+            State.RemoveMilestone(Model!.Id);
             await currentModal.CloseAsync();
         }
     }

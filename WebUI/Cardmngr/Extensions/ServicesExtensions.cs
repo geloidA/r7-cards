@@ -1,6 +1,8 @@
 ﻿using Blazored.Modal;
 using Cardmngr.Shared.Feedbacks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Onlyoffice.Api.Handlers;
 using Onlyoffice.Api.Validations;
 
 namespace Cardmngr;
@@ -32,5 +34,20 @@ public static class ServicesExtensions
             .AddScoped<FeedbackUpdateDataValidator>()
             .AddScoped<TaskUpdateDataValidator>()
             .AddScoped<MilestoneUpdateDataValidator>();
+    }
+
+    public static void ConfigureHttpClients(this WebAssemblyHostBuilder builder)    
+    {
+        builder.Services
+            .AddHttpClient("onlyoffice", opt => opt.BaseAddress = new Uri(builder.Configuration["proxy-url"] 
+                ?? throw new NullReferenceException("proxy-url config is null")))
+            .AddHttpMessageHandler<CookieHandler>();
+
+        builder.Services
+            .AddHttpClient("self-api", opt => opt.BaseAddress = new Uri($"{builder.HostEnvironment.BaseAddress}api"));
+
+        builder.Services
+            .AddHttpClient("self-api-cookie", opt => opt.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+            .AddHttpMessageHandler<CookieHandler>();
     }
 }

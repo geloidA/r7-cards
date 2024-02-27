@@ -1,12 +1,11 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using Cardmngr.Server.AppInfoApi.Service;
 using Cardmngr.Server.Exceptions;
 using Cardmngr.Server.Extensions;
 using Cardmngr.Server.FeedbackApi.Service;
-using Cardmngr.Server.UserInfoService;
+using Cardmngr.Server.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
-using Onlyoffice.Api.Handlers;
-using Onlyoffice.Api.Logics.People;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,11 +17,16 @@ builder.Services.AddResponseCompression(opts =>
         ["application/octet-stream"]);
 });
 
+builder.Services.AddSignalR();
+
 builder.Services.AddControllers();
 
 ConfigureFeedbackDirectory(builder.Configuration);
 
-builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services
+    .AddSingleton<GroupManager>()
+    .AddScoped<IFeedbackService, FeedbackService>()
+    .AddScoped<IAppInfoService, AppInfoService>();
 
 builder.WebHost.UseKestrel(opt => 
 {
@@ -53,6 +57,8 @@ app.UseStaticFiles();
 
 app.MapControllers();
 app.MapRazorPages();
+
+app.MapHubs();
 
 app.MapFallbackToFile("index.html");
 

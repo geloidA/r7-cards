@@ -1,6 +1,8 @@
 ﻿@inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthenticationProvider
 @inject IAuthApiLogic AuthApiLogic
+@inject AppInfoService AppInfoService
+@inject IJSRuntime JS
 
 <CascadingAuthenticationState>
     <CascadingBlazoredModal>
@@ -16,7 +18,7 @@
                 </LayoutView>
             </NotFound>
         </Router>
-    </CascadingBlazoredModal>    
+    </CascadingBlazoredModal>
 </CascadingAuthenticationState>
 
 @code {
@@ -25,7 +27,8 @@
         var auth =  await LocalStorage.GetItemAsync<string>("isauthenticated");
         var user = (await (AuthenticationProvider as CookieStateProvider)!.GetAuthenticationStateAsync()).User;
 
-        if(!string.IsNullOrEmpty(auth) && !user.Identity!.IsAuthenticated ){
+        if (!string.IsNullOrEmpty(auth) && !user.Identity!.IsAuthenticated)
+        {
             var userDao = await AuthApiLogic.GetSelfProfileAsync();
             if (userDao is { })
             {
@@ -37,5 +40,12 @@
                 await LocalStorage.RemoveItemAsync("isauthenticated");
             }
         }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var appVersion = await AppInfoService.GetVersionAsync();
+        
+        await JS.InvokeVoidAsync("updateVersion", appVersion);
     }
 }

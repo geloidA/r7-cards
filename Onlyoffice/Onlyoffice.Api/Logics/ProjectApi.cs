@@ -52,6 +52,12 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         }
     }
 
+    public async Task<TaskDto> GetTaskByIdAsync(int taskId)
+    {
+        var taskDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<SingleTaskDao>($"api/project/task/{taskId}"));
+        return taskDao?.Response ?? throw new NullReferenceException("Task was not found");
+    }
+
     public async IAsyncEnumerable<TaskDto> GetTasksByProjectIdAsync(int projectId)
     {
         var taskDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<TaskDao>($"api/project/{projectId}/task"));
@@ -156,6 +162,12 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
     {
         var milestoneDao = await InvokeHttpClientAsync(c => c.DeleteFromJsonAsync<SingleMilestoneDao>($"api/project/milestone/{milestoneId}"));
         return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not deleted");
+    }    
+
+    public async Task<MilestoneDto> GetMilestoneByIdAsync(int milestoneId)
+    {
+        var milestoneDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<SingleMilestoneDao>($"api/project/milestone/{milestoneId}"));
+        return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not found");
     }
 
     public Task UpdateMilestoneStatusAsync(int milestoneId, Status status)
@@ -168,12 +180,6 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/milestone", state));
         var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
         return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not created " + response.ReasonPhrase);
-    }
-
-    public async Task<TaskDto> GetTaskByIdAsync(int taskId)
-    {
-        var taskDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<SingleTaskDao>($"api/project/task/{taskId}"));
-        return taskDao?.Response ?? throw new NullReferenceException("Task was not found");
     }
     #endregion
 }

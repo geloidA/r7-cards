@@ -1,31 +1,29 @@
 ﻿using Cardmngr.Application.Clients;
-using Cardmngr.Application.Clients.Milestone;
-using Cardmngr.Application.Clients.Subtask;
-using Cardmngr.Application.Clients.Task;
+using Cardmngr.Application.Clients.SignalRHubClients;
+using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Domain.Entities;
-using Cardmngr.Domain.Enums;
+using Cardmngr.Exceptions;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Shared.Project;
 using Microsoft.AspNetCore.Components;
-using Onlyoffice.Api.Models;
+using Microsoft.AspNetCore.Components.Authorization;
+using Onlyoffice.Api.Providers;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
-public partial class ProjectState : ComponentBase
+public partial class ProjectState : ComponentBase, IAsyncDisposable
 {
     private int previousId = -1;
+    private ProjectHubClient hubClient = null!;
 
     [Parameter] public int Id { get; set; }
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    [Inject] public IProjectClient ProjectClient { get; set; } = null!;
-
-    [Inject] public ITaskClient TaskClient { get; set; } = null!;
-
-    [Inject] public IMilestoneClient MilestoneClient { get; set; } = null!;
-
-    [Inject] public ISubtaskClient SubtaskClient { get; set; } = null!;
+    [Inject] IProjectClient ProjectClient { get; set; } = null!;
+    [Inject] ITaskClient TaskClient { get; set; } = null!;
+    [Inject] NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
 
     public ProjectStateVm? Model { get; set; }
 
@@ -62,8 +60,29 @@ public partial class ProjectState : ComponentBase
             Model = await ProjectClient.GetProjectAsync(Id);
             selectedMilestones = [];
             previousId = Id;
+
+            hubClient = await GetNewHubClientAsync();
+            await hubClient.StartAsync();
         }
         Initialized = true;
+    }
+
+    private async Task<ProjectHubClient> GetNewHubClientAsync()
+    {
+        if (hubClient is { })
+        {
+            await hubClient.DisposeAsync();
+        }
+
+        var client = new ProjectHubClient(NavigationManager, TaskClient, Id, AuthenticationStateProvider.ToCookieProvider());
+
+        client.OnUpdatedTask += UpdateTask;
+        client.OnDeletedTask += RemoveTask;
+        client.OnCreatedTask += AddTask;
+
+        client.ConnectedMembersChanged += () => Console.WriteLine("Members changed");
+
+        return client;
     }
 
     private List<Milestone> selectedMilestones = [];
@@ -109,109 +128,85 @@ public partial class ProjectState : ComponentBase
         return Model?.Tasks.Where(x => x.MilestoneId == milestone.Id) ?? [];
     }
 
-    internal async Task UpdateTaskStatusAsync(OnlyofficeTask task, OnlyofficeTaskStatus status)
+    internal void UpdateTask(OnlyofficeTask task)
     {
-        if (!task.HasStatus(status))
+        Model!.Tasks.RemoveSingle(x => x.Id == task.Id);
+
+        Model.Tasks.Add(task);
+
+        OnStateChanged();
+        OnTasksChanged();
+    }
+
+    internal void AddTask(OnlyofficeTask created)
+    {
+        Model!.Tasks.Add(created);
+        
+        OnStateChanged();
+        OnTasksChanged();
+    }
+
+    internal void RemoveTask(int taskId)
+    {
+        Model!.Tasks.RemoveSingle(x => x.Id == taskId);
+
+        OnStateChanged();
+        OnTasksChanged();       
+    }
+
+    internal void AddMilestone(Milestone milestone)
+    {
+        Model!.Milestones.Add(milestone);
+        
+        OnStateChanged();
+        OnMilestonesChanged();
+    }
+
+    internal void RemoveMilestone(int milestoneId)
+    {
+        Model!.Milestones.RemoveSingle(x => x.Id == milestoneId);
+
+        OnStateChanged();
+        OnMilestonesChanged();
+    }
+
+    internal void UpdateMilestone(Milestone milestone)
+    {
+        Model!.Milestones.RemoveSingle(x => x.Id == milestone.Id);
+
+        Model.Milestones.Add(milestone);
+
+        OnStateChanged();
+        OnMilestonesChanged();
+    }
+
+    internal void AddSubtask(int taskId, Subtask subtask)
+    {
+        Model!.Tasks.Single(x => x.Id == taskId).Subtasks.Add(subtask);
+
+        OnStateChanged();
+    }
+
+    internal void RemoveSubtask(int taskId, int subtaskId)
+    {
+        Model!.Tasks.Single(x => x.Id == taskId).Subtasks.RemoveSingle(x => x.Id == subtaskId);
+        OnStateChanged();
+    }
+
+    internal void UpdateSubtask(int taskId, Subtask subtask)
+    {
+        var task = Model!.Tasks.Single(x => x.Id == taskId);
+        task.Subtasks.RemoveSingle(x => x.Id == subtask.Id);
+        task.Subtasks.Add(subtask);
+
+        OnStateChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubClient is { })
         {
-            var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, status);
-
-            Model!.Tasks.RemoveAll(x => x.Id == task.Id);
-            Model.Tasks.Add(updated);
-
-            OnStateChanged();
-            OnTasksChanged();
+            await hubClient.DisposeAsync();
         }
-    }
-
-    internal async Task AddTaskAsync(TaskUpdateData task)
-    {
-        var created = await TaskClient.CreateAsync(Model!.Project.Id, task);
-        Model.Tasks.Add(created);
-        
-        OnStateChanged();
-        OnTasksChanged();
-    }
-
-    internal async Task RemoveTaskAsync(int taskId)
-    {
-        await TaskClient.RemoveAsync(taskId);
-        Model!.Tasks.RemoveAll(x => x.Id == taskId);
-
-        OnStateChanged();
-        OnTasksChanged();
-    }
-
-    internal async Task UpdateTaskAsync(int taskId, TaskUpdateData task)
-    {
-        var updated = await TaskClient.UpdateAsync(taskId, task);
-        Model!.Tasks.RemoveAll(x => x.Id == taskId);
-        Model.Tasks.Add(updated);
-
-        OnStateChanged();
-        OnTasksChanged();
-    }
-
-    internal async Task AddMilestoneAsync(MilestoneUpdateData milestone)
-    {
-        var added = await MilestoneClient.CreateAsync(Model!.Project.Id, milestone);
-        Model.Milestones.Add(added);
-        
-        OnStateChanged();
-        OnMilestonesChanged();
-    }
-
-    internal async Task RemoveMilestoneAsync(int milestoneId)
-    {
-        await MilestoneClient.RemoveAsync(milestoneId);
-        Model!.Milestones.RemoveAll(x => x.Id == milestoneId);
-
-        OnStateChanged();
-        OnMilestonesChanged();
-    }
-
-    internal async Task UpdateMilestoneAsync(int milestoneId, MilestoneUpdateData milestone)
-    {
-        var updated = await MilestoneClient.UpdateAsync(milestoneId, milestone);
-        Model!.Milestones.RemoveAll(x => x.Id == milestoneId);
-        Model!.Milestones.Add(updated);
-
-        OnStateChanged();
-        OnMilestonesChanged();
-    }
-
-    internal async Task AddSubtaskAsync(int taskId, SubtaskUpdateData subtask)
-    {
-        var added = await SubtaskClient.CreateAsync(taskId, subtask);
-        Model!.Tasks.Single(x => x.Id == taskId).Subtasks.Add(added);
-
-        OnStateChanged();
-    }
-
-    internal async Task RemoveSubtaskAsync(int taskId, int subtaskId)
-    {
-        await SubtaskClient.RemoveAsync(taskId, subtaskId);
-        Model!.Tasks.Single(x => x.Id == taskId).Subtasks.RemoveAll(x => x.Id == subtaskId);
-
-        OnStateChanged();
-    }
-
-    internal async Task UpdateSubtaskAsync(int taskId, int subtaskId, SubtaskUpdateData updateData)
-    {
-        var updated = await SubtaskClient.UpdateAsync(taskId, subtaskId, updateData);
-        var task = Model!.Tasks.Single(x => x.Id == taskId);
-        task.Subtasks.RemoveAll(x => x.Id == subtaskId);
-        task.Subtasks.Add(updated);
-
-        OnStateChanged();
-    }
-
-    internal async Task UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status)
-    {
-        var updated = await SubtaskClient.UpdateSubtaskStatusAsync(taskId, subtaskId, status);
-        var task = Model!.Tasks.Single(x => x.Id == taskId);
-        task.Subtasks.RemoveAll(x => x.Id == subtaskId);
-        task.Subtasks.Add(updated);
-
-        OnStateChanged();
     }
 }

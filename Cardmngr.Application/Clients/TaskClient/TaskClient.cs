@@ -4,7 +4,7 @@ using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Logics;
 using Onlyoffice.Api.Models;
 
-namespace Cardmngr.Application.Clients.Task;
+namespace Cardmngr.Application.Clients.TaskClient;
 
 public class TaskClient(IProjectApi projectApi, IMapper mapper) : ITaskClient
 {
@@ -15,6 +15,12 @@ public class TaskClient(IProjectApi projectApi, IMapper mapper) : ITaskClient
     {
         var createdTask = await projectApi.CreateTaskAsync(projectId, task, (Status)task.Status!, task.CustomTaskStatus);
         return mapper.Map<OnlyofficeTask>(createdTask);
+    }
+
+    public async Task<OnlyofficeTask> GetAsync(int entityId)
+    {
+        var taskDto = await projectApi.GetTaskByIdAsync(entityId);
+        return mapper.Map<OnlyofficeTask>(taskDto);
     }
 
     public async Task<OnlyofficeTask> RemoveAsync(int taskId)

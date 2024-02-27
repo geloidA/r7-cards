@@ -2,7 +2,7 @@
 using Cardmngr.Domain.Entities;
 using Onlyoffice.Api.Models;
 
-namespace Cardmngr.Application.Clients.Task;
+namespace Cardmngr.Application.Clients.TaskClient;
 
 public interface ITaskClient : IEntityClient<OnlyofficeTask, TaskUpdateData>
 {

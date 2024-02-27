@@ -5,5 +5,6 @@
         Task<TEntity> CreateAsync(int projectId, TUpdateData updateData);
         Task<TEntity> UpdateAsync(int entityId, TUpdateData updateData);
         Task<TEntity> RemoveAsync(int entityId);
+        Task<TEntity> GetAsync(int entityId);
     }
 }

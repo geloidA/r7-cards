@@ -17,7 +17,7 @@ public abstract class AddEditModalBase<TModel, TUpdateData> : ComponentBase
     [Parameter] public TModel? Model { get; set; }
     [Parameter] public bool IsAdd { get; set; }
 
-    [Inject] IMapper Mapper { get; set; } = null!;
+    [Inject] protected IMapper Mapper { get; set; } = null!;
 
     protected override void OnInitialized()
     {

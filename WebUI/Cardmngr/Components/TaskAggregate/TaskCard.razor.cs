@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Components;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Components.ProjectAggregate;
 using Cardmngr.Components.TaskAggregate.Modals;
+using Cardmngr.Application.Clients.SignalRHubClients;
 
 namespace Cardmngr.Components.TaskAggregate;
 
 public partial class TaskCard
 {
     [CascadingParameter] ProjectState State { get; set; } = null!;
+    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
     [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsModal { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
@@ -23,7 +25,8 @@ public partial class TaskCard
         var parameters = new ModalParameters
         {
             { "Model", Task },
-            { "State", State }
+            { "State", State },
+            { "ProjectHubClient", ProjectHubClient }
         };
 
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsModal).Result;
