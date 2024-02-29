@@ -11,6 +11,7 @@ using Cardmngr.Services;
 using Cardmngr.Application.Extensions;
 using KolBlazor.Extensions;
 using Cardmngr.Utils.DetailsModal;
+using Cardmngr.Utils;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -21,6 +22,7 @@ builder.Services
     .AddScoped<CookieHandler>()
     .AddScoped<IAuthApiLogic, AuthApiLogic>()
     .AddScoped<AppInfoService>()
+    .AddTransient<RefreshService>()
     .ConfigureServices()
     .AddSingleton<DetailsModalManager>()
     .AddScoped<TeamMemberSelectionDialog>()

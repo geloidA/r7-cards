@@ -9,6 +9,7 @@ namespace Cardmngr.Components.ProjectAggregate.Modals;
 
 public partial class ProjectDetailsModal : IDisposable
 {
+    private readonly Guid lockGuid = Guid.NewGuid();
     private Components.Modals.MyBlazored.Offcanvas currentModal = null!;
     [Parameter] public ProjectState State { get; set; } = null!;
 
@@ -17,7 +18,7 @@ public partial class ProjectDetailsModal : IDisposable
 
     protected override void OnInitialized()
     {
-        State.BlockRefresh();
+        State.RefreshService.Lock(lockGuid);
     }
 
     private void ShowMilestoneCreation()
@@ -42,10 +43,7 @@ public partial class ProjectDetailsModal : IDisposable
         };
     }
 
-    public void Dispose()
-    {
-        State.AllowRefresh();
-    }
+    public void Dispose() => State.RefreshService.RemoveLock(lockGuid);
 
     private class StatusData(BadgeColor badgeColor, IconName iconName, string title)
     {

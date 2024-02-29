@@ -5,11 +5,10 @@ using Cardmngr.Domain.Entities;
 using Cardmngr.Exceptions;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Shared.Project;
+using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Onlyoffice.Api.Providers;
-
-using Timer = System.Timers.Timer;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
@@ -25,9 +24,8 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
     [Inject] IProjectClient ProjectClient { get; set; } = null!;
     [Inject] ITaskClient TaskClient { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] public RefreshService RefreshService { get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
-
-    private Timer refreshTimer = new();
 
     public ProjectStateVm? Model { get; set; }
 
@@ -59,6 +57,13 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
 
     public bool Initialized { get; private set; }
 
+    protected override void OnInitialized()
+    {
+        RefreshService.Refreshed += OnRefreshModelAsync;
+
+        RefreshService.Start(TimeSpan.FromSeconds(7));
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         Initialized = false;
@@ -71,18 +76,15 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
 
             hubClient = await GetNewHubClientAsync();
             await hubClient.StartAsync();
-            
-            refreshTimer.Dispose();
-            refreshTimer = new Timer(TimeSpan.FromSeconds(7));
-            refreshTimer.Elapsed += async (_, _) =>
-            {
-                Model = await ProjectClient.GetProjectAsync(Id);
-                OnStateChanged();
-            };
         }
 
         Initialized = true;
-        refreshTimer.Enabled = true;
+    }
+
+    private async void OnRefreshModelAsync()
+    {
+        Model = await ProjectClient.GetProjectAsync(Id);
+        OnStateChanged();
     }
 
     private async Task<ProjectHubClient> GetNewHubClientAsync()
@@ -99,24 +101,6 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
         client.OnCreatedTask += AddTask;
 
         return client;
-    }
-
-    private readonly Stack<object?> BlockRefreshStack = new();
-
-    public void AllowRefresh()
-    {
-        _ = BlockRefreshStack.TryPop(out var _);
-
-        if (BlockRefreshStack.Count == 0)
-        {
-            refreshTimer.Enabled = true;
-        }
-    }
-
-    public void BlockRefresh()
-    {
-        BlockRefreshStack.Push(null);
-        refreshTimer.Enabled = false;
     }
 
     private List<Milestone> selectedMilestones = [];
@@ -245,6 +229,6 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
             await hubClient.DisposeAsync();
         }
 
-        refreshTimer.Dispose();
+        RefreshService.Dispose();
     }
 }

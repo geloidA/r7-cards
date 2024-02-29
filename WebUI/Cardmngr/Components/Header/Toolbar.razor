@@ -5,7 +5,7 @@
 
 <div class="d-flex align-items-center @Class" style="@Style">
     <Tool IconName="IconName.BoxArrowUpRight" TooltipTitle="Перейти в Р7-Офис" IconColor="IconColor.Dark" 
-        OnClick=@(() => NavigationManager.NavigateTo(Config["onlyoffice-url"] ?? throw new NullReferenceException("No onlyoffice config"))) 
+        OnClick=@(() => NavigationManager.NavigateTo(Config.CheckKey("onlyoffice-url"))) 
         />
 </div>
 

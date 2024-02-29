@@ -12,6 +12,7 @@ namespace Cardmngr.Components.TaskAggregate.Modals;
 
 public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpdateData>, IDisposable
 {
+    private readonly Guid lockGuid = Guid.NewGuid();
     Components.Modals.MyBlazored.Offcanvas currentModal = null!;
     private bool CanEdit => Model == null || Model.CanEdit;
 
@@ -26,7 +27,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     {
         base.OnInitialized();
 
-        State.BlockRefresh();
+        State.RefreshService.Lock(lockGuid);
 
         if (IsAdd)
         {
@@ -107,7 +108,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
 
     public void Dispose()
     {
-        State.AllowRefresh();
+        State.RefreshService.RemoveLock(lockGuid);
         ProjectHubClient.OnUpdatedTask -= NotifyThatTaskWasChanged;
         ProjectHubClient.OnDeletedTask -= NotifyThatTaskWasDeleted;
     }

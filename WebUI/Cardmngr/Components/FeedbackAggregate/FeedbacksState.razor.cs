@@ -16,11 +16,11 @@ public partial class FeedbacksState
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    [Inject] public AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
-    [Inject] public ToastService ToastService { get; set; } = default!;
+    [Inject] ToastService ToastService { get; set; } = default!;
 
-    [Inject] public IFeedbackClient FeedbackClient { get; set; } = default!;
+    [Inject] IFeedbackClient FeedbackClient { get; set; } = default!;
 
     public FeedbacksVm? Model { get; set; }
     public bool Initialized { get; private set; }

@@ -1,15 +1,21 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using Cardmngr.Server.AppInfoApi.Service;
-using Cardmngr.Server.Exceptions;
+using Cardmngr.Shared.Extensions;
 using Cardmngr.Server.Extensions;
 using Cardmngr.Server.FeedbackApi.Service;
 using Cardmngr.Server.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
+using Serilog;
+using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File(new CompactJsonFormatter(), builder.Configuration["Logging:pathFormat"]!, rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 builder.Services.AddResponseCompression(opts =>
 {
@@ -31,10 +37,10 @@ builder.Services
 builder.WebHost.UseKestrel(opt => 
 {
     var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
-    var certificatePath = config["CertificateSettings:CertificatePublic"] ?? throw new NullReferenceException();
-    var keyCertificate = config["CertificateSettings:CertificatePrivate"];
+    var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
+    var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
 
-    var port = int.Parse(config["Port"] ?? throw new Exception("Haven't port in config"));
+    var port = int.Parse(config.CheckKey("Port"));
         
     opt.Listen(IPAddress.Parse(config["IPAddress"]!), port, listenOptions =>
     {
@@ -68,8 +74,7 @@ static void ConfigureFeedbackDirectory(IConfiguration config)
 {
     ArgumentNullException.ThrowIfNull(config);
 
-    var directoryPath = Path.GetFullPath(config["FeedbackConfig:directory"] 
-        ?? throw new NotConfiguredConfigException("FeedbackConfig:directory"));
+    var directoryPath = Path.GetFullPath(config.CheckKey("FeedbackConfig:directory"));
     
     DirectoryWrapper.CreateIfDoesntExists(directoryPath);
 

@@ -14,6 +14,7 @@ namespace Cardmngr.Components.MilestoneAggregate.Modals;
 
 public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, MilestoneUpdateData>, IDisposable
 {
+    private readonly Guid lockGuid = Guid.NewGuid();
     Offcanvas currentModal = null!;
 
     private bool CanEdit => Model == null || Model.CanEdit;
@@ -34,7 +35,7 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
     {
         base.OnInitialized();
 
-        State.BlockRefresh();
+        State.RefreshService.Lock(lockGuid);
 
         if (IsAdd)
         {
@@ -90,8 +91,5 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
         }
     }
 
-    public void Dispose()
-    {
-        State.AllowRefresh();
-    }
+    public void Dispose() => State.RefreshService.RemoveLock(lockGuid);
 }

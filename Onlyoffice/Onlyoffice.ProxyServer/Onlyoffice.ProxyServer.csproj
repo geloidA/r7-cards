@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Onlyoffice.Api\Onlyoffice.Api.csproj" />
+    <ProjectReference Include="..\..\WebUI\Cardmngr.Shared\Cardmngr.Shared.csproj" />
   </ItemGroup>
 
 </Project>

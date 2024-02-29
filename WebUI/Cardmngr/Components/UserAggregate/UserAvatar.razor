@@ -32,6 +32,6 @@
 
     protected override void OnInitialized()
     {
-        proxyUrl = Config["proxy-url"] ?? throw new NullReferenceException("No proxy url config");
+        proxyUrl = Config.CheckKey("proxy-url");
     }
 }

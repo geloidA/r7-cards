@@ -4,6 +4,7 @@ using Cardmngr.Domain.Feedback;
 using Cardmngr.Server.Exceptions;
 using Cardmngr.Shared.Feedbacks;
 using Newtonsoft.Json;
+using Cardmngr.Shared.Extensions;
 
 namespace Cardmngr.Server.FeedbackApi.Service;
 
@@ -17,8 +18,7 @@ public class FeedbackService : IFeedbackService
     {
         directory = conf["FeedbackConfig:directory"]!; // not null because it is checked in ConfigureOnlyofficeClient method
 
-        developerGuid = conf["FeedbackConfig:developerGuid"]
-            ?? throw new NotConfiguredConfigException("FeedbackConfig:developerGuid");
+        developerGuid = conf.CheckKey("FeedbackConfig:developerGuid");
         
         feedbackFile = $"{directory}/feedbacks.json";
     }

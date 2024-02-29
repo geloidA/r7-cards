@@ -23,6 +23,7 @@
 
     private async Task DropFeedback(Feedback dropped)
     {
+        if (dropped.Status == Status) return;
         await State.UpdateFeedbackStatusAsync(dropped.Id, Status);
     }
 }
