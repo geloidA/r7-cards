@@ -3,7 +3,7 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities
 {
-    public record class Project : AuditableEntityBase<int>
+    public sealed record class Project : AuditableEntityBase<int>
     {
         public string Title { get; init; }
         public string Description { get; init; }
@@ -12,5 +12,19 @@ namespace Cardmngr.Domain.Entities
         public bool CanEdit { get; init; }
         public bool CanDelete { get; init; }
         public bool IsPrivate { get; init; }
+
+        public bool Equals(Project other)
+        {
+            if (other is null) return false;
+
+            return Id == other.Id &&
+                Title == other.Title &&
+                Description == other.Description &&
+                Status == other.Status &&
+                Responsible.Id == other.Responsible.Id &&
+                IsPrivate == other.IsPrivate;
+        }
+
+        public override int GetHashCode() => Id;
     }
 }

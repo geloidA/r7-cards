@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Onlyoffice.Api.Providers;
 
+using Timer = System.Timers.Timer;
+
 namespace Cardmngr.Components.ProjectAggregate;
 
 public partial class ProjectState : ComponentBase, IAsyncDisposable
@@ -25,6 +27,8 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
 
+    private Timer refreshTimer = new();
+
     public ProjectStateVm? Model { get; set; }
 
     public event Action? StateChanged;
@@ -38,6 +42,9 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
 
     public event Action? TasksChanged;
     private void OnTasksChanged() => TasksChanged?.Invoke();
+
+    public event Action? SubtasksChanged;
+    private void OnSubtasksChanged() => SubtasksChanged?.Invoke();
 
     /// <summary>
     /// Tasks with selected milestones
@@ -55,6 +62,7 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
     protected override async Task OnParametersSetAsync()
     {
         Initialized = false;
+
         if (previousId != Id)
         {
             Model = await ProjectClient.GetProjectAsync(Id);
@@ -63,8 +71,18 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
 
             hubClient = await GetNewHubClientAsync();
             await hubClient.StartAsync();
+            
+            refreshTimer.Dispose();
+            refreshTimer = new Timer(TimeSpan.FromSeconds(7));
+            refreshTimer.Elapsed += async (_, _) =>
+            {
+                Model = await ProjectClient.GetProjectAsync(Id);
+                OnStateChanged();
+            };
         }
+
         Initialized = true;
+        refreshTimer.Enabled = true;
     }
 
     private async Task<ProjectHubClient> GetNewHubClientAsync()
@@ -80,9 +98,25 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
         client.OnDeletedTask += RemoveTask;
         client.OnCreatedTask += AddTask;
 
-        client.ConnectedMembersChanged += () => Console.WriteLine("Members changed");
-
         return client;
+    }
+
+    private readonly Stack<object?> BlockRefreshStack = new();
+
+    public void AllowRefresh()
+    {
+        _ = BlockRefreshStack.TryPop(out var _);
+
+        if (BlockRefreshStack.Count == 0)
+        {
+            refreshTimer.Enabled = true;
+        }
+    }
+
+    public void BlockRefresh()
+    {
+        BlockRefreshStack.Push(null);
+        refreshTimer.Enabled = false;
     }
 
     private List<Milestone> selectedMilestones = [];
@@ -95,7 +129,6 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
             selectedMilestones.Add(milestone);
         }
 
-        OnStateChanged();
         OnSelectedMilestonesChanged();
     }
 
@@ -128,13 +161,17 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
         return Model?.Tasks.Where(x => x.MilestoneId == milestone.Id) ?? [];
     }
 
+    public IEnumerable<OnlyofficeTask> GetMilestoneTasks(int milestoneId)
+    {
+        return Model?.Tasks.Where(x => x.MilestoneId == milestoneId) ?? [];
+    }
+
     internal void UpdateTask(OnlyofficeTask task)
     {
         Model!.Tasks.RemoveSingle(x => x.Id == task.Id);
 
         Model.Tasks.Add(task);
 
-        OnStateChanged();
         OnTasksChanged();
     }
 
@@ -142,7 +179,6 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
     {
         Model!.Tasks.Add(created);
         
-        OnStateChanged();
         OnTasksChanged();
     }
 
@@ -150,7 +186,6 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
     {
         Model!.Tasks.RemoveSingle(x => x.Id == taskId);
 
-        OnStateChanged();
         OnTasksChanged();       
     }
 
@@ -158,39 +193,41 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
     {
         Model!.Milestones.Add(milestone);
         
-        OnStateChanged();
         OnMilestonesChanged();
     }
 
     internal void RemoveMilestone(int milestoneId)
     {
+        RemoveTaskMilestoneIds(GetMilestoneTasks(milestoneId).ToList());
         Model!.Milestones.RemoveSingle(x => x.Id == milestoneId);
 
-        OnStateChanged();
         OnMilestonesChanged();
+    }
+
+    private void RemoveTaskMilestoneIds(List<OnlyofficeTask> tasks)
+    {
+        Model!.Tasks.RemoveAll(tasks.Contains);
+        tasks.ForEach(x => Model.Tasks.Add(x with { MilestoneId = null }));
     }
 
     internal void UpdateMilestone(Milestone milestone)
     {
         Model!.Milestones.RemoveSingle(x => x.Id == milestone.Id);
-
         Model.Milestones.Add(milestone);
 
-        OnStateChanged();
         OnMilestonesChanged();
     }
 
     internal void AddSubtask(int taskId, Subtask subtask)
     {
         Model!.Tasks.Single(x => x.Id == taskId).Subtasks.Add(subtask);
-
-        OnStateChanged();
+        OnSubtasksChanged();
     }
 
     internal void RemoveSubtask(int taskId, int subtaskId)
     {
         Model!.Tasks.Single(x => x.Id == taskId).Subtasks.RemoveSingle(x => x.Id == subtaskId);
-        OnStateChanged();
+        OnSubtasksChanged();
     }
 
     internal void UpdateSubtask(int taskId, Subtask subtask)
@@ -198,8 +235,7 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
         var task = Model!.Tasks.Single(x => x.Id == taskId);
         task.Subtasks.RemoveSingle(x => x.Id == subtask.Id);
         task.Subtasks.Add(subtask);
-
-        OnStateChanged();
+        OnSubtasksChanged();
     }
 
     public async ValueTask DisposeAsync()
@@ -208,5 +244,7 @@ public partial class ProjectState : ComponentBase, IAsyncDisposable
         {
             await hubClient.DisposeAsync();
         }
+
+        refreshTimer.Dispose();
     }
 }

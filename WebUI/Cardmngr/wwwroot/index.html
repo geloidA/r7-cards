@@ -39,7 +39,7 @@
     <script>
         navigator.serviceWorker.register('service-worker.js');
 
-        function updateVersion(newVersion) {
+        async function updateVersion(newVersion) {
             var key = 'r7cards-version';
 
             var oldVersion = localStorage.getItem(key);
@@ -50,9 +50,9 @@
             else if (newVersion != oldVersion) {
                 localStorage.setItem(key, newVersion);
 
-                caches.delete("dotnet-resources-/").then(function (e) {
-                    console.log("'dotnet-resources-/' cache deleted");
-                });
+                // Delete unused caches
+                const cacheKeys = await caches.keys();
+                await Promise.all(cacheKeys.map(key => caches.delete(key)));
 
                 // Reload service worker
                 navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' }).then(function (registration) {

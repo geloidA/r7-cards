@@ -1,5 +1,8 @@
 ﻿@using Onlyoffice.Api.Models
 @using Cardmngr.Application.Clients.Subtask
+@using AutoMapper
+
+@inject IMapper Mapper
 
 <Card>
     <CardBody style="max-height: 300px; min-height: 160px; overflow-y: scroll;">
@@ -14,12 +17,7 @@
             <CascadingValue Value="hasEditingSubtask" >
                 @foreach (var subtask in Task.Subtasks)
                 {
-                    var updateData = new SubtaskUpdateData 
-                    { 
-                        Status = (int)subtask.Status, 
-                        Title = subtask.Title, 
-                        Responsible = subtask.Responsible?.Id
-                    };
+                    var updateData = Mapper.Map<SubtaskUpdateData>(subtask);
 
                     <SubtaskView Subtask="updateData" UpdateCallback="StateHasChanged"
                         Disabled="!subtask.CanEdit" Id="subtask.Id"

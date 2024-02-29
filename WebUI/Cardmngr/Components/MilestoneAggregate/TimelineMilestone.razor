@@ -1,5 +1,6 @@
 ﻿@using Milestone = Cardmngr.Domain.Entities.Milestone
 @using Domain.Enums
+@using Application.Clients.SignalRHubClients
 
 @inject AuthenticationStateProvider AuthenticationState
 
@@ -31,6 +32,7 @@
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
     [CascadingParameter] ProjectState State { get; set; } = null!;
+    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     [Parameter] public Milestone Milestone { get; set; } = null!;
 
@@ -48,7 +50,8 @@
         var paramerters = new ModalParameters
         {
             { "Model", Milestone },
-            { "State", State }
+            { "State", State },
+            { "ProjectHubClient", ProjectHubClient }
         };
 
         await Modal.Show<MilestoneDetailsModal>("", paramerters, Options).Result;

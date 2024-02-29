@@ -23,6 +23,8 @@ public partial class ProjectBoard
     {
         State.SelectedMilestonesChanged += StateHasChanged;
         State.TasksChanged += StateHasChanged;
+        State.StateChanged += StateHasChanged;
+        State.MilestonesChanged += StateHasChanged;
     }
 
     private async Task OnChangeTaskStatus(OnlyofficeTask task, OnlyofficeTaskStatus status)

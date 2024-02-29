@@ -1,33 +1,15 @@
-﻿@using Onlyoffice.Api.Logics.People
-@using AutoMapper
-
-@inject IPeopleApi PeopleApi
-@inject Mapper Mapper
-
-@if (userInfos is { } && userInfos.Any())
-{
-    <div class="d-flex">
-        @foreach (var user in userInfos)
-        {
-            <UserAvatar User="user" ShowTooltip="true" />
-        }
+﻿@if (userInfos is { } && userInfos.Any())
+{    
+    <div class="d-flex align-items-center">
+        <Tooltip Title="Сейчас на странице" Placement="TooltipPlacement.Left">
+            <Icon class="clickable" Name="@(isCollapsed ? IconName.ChevronCompactLeft : IconName.ChevronCompactRight)"
+                @onclick="@(() => isCollapsed = !isCollapsed)" />
+        </Tooltip>        
+        <div class="connected-users py-0 px-1 collapseble-items" style="@MaxWidth @StyleScroll">
+            @foreach (var user in userInfos)
+            {
+                <UserAvatar User="user" ShowTooltip="true" />
+            }
+        </div>
     </div>
-}
-
-@code {
-    private IEnumerable<UserInfo>? userInfos;
-
-    [Parameter] public IEnumerable<string>? UserIds { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var users = new List<UserInfo>();
-
-        foreach (var id in UserIds)
-        {
-            var profileInfo = await PeopleApi.GetProfileByIdAsync(id);
-
-            users.Add(Mapper.Map<UserProfile>(profileInfo));
-        }
-    }
 }

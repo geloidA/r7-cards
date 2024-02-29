@@ -39,6 +39,7 @@
     {
         State.MilestonesChanged += StateHasChanged;
         State.TasksChanged += StateHasChanged;
+        State.StateChanged += StateHasChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

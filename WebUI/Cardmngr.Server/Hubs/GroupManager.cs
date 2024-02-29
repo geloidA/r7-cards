@@ -11,7 +11,7 @@ public class GroupManager
         usersByConnectionId.TryAdd(connectionId, (userId, projectId));
     }
 
-    public void Remove(int projectId, string connectionId)
+    public void Remove(string connectionId)
     {
         if (usersByConnectionId.TryGetValue(connectionId, out var data))
         {
@@ -22,5 +22,12 @@ public class GroupManager
     public bool TryGet(string connectionId, out (string UserId, int ProjectId) data)
     {
         return usersByConnectionId.TryGetValue(connectionId, out data);
+    }
+
+    public IEnumerable<string> GetUsersByProjectId(int projectId)
+    {
+        return usersByConnectionId
+            .Where(x => x.Value.ProjectId == projectId)
+            .Select(x => x.Value.UserId);
     }
 }

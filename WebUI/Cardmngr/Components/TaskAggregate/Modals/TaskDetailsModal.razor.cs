@@ -1,20 +1,22 @@
 ﻿using Cardmngr.Components.ProjectAggregate;
 using Microsoft.AspNetCore.Components;
-using Cardmngr.Components.Modals.MyBlazored;
 using Cardmngr.Components.Modals.Base;
 using Cardmngr.Domain.Entities;
 using Onlyoffice.Api.Models;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Clients.SignalRHubClients;
+using Cardmngr.Shared.Extensions;
+using BlazorBootstrap;
 
 namespace Cardmngr.Components.TaskAggregate.Modals;
 
-public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpdateData>
+public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpdateData>, IDisposable
 {
-    Offcanvas currentModal = null!;
+    Components.Modals.MyBlazored.Offcanvas currentModal = null!;
     private bool CanEdit => Model == null || Model.CanEdit;
 
-    [Inject] public ITaskClient TaskClient { get; set; } = null!;
+    [Inject] ITaskClient TaskClient { get; set; } = null!;
+    [Inject] ToastService ToastService { get; set; } = null!;
 
     [Parameter] public ProjectState State { get; set; } = null!;
     [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
@@ -24,6 +26,8 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     {
         base.OnInitialized();
 
+        State.BlockRefresh();
+
         if (IsAdd)
         {
             buffer.Title = "Новая задача";
@@ -31,27 +35,42 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
         }
         else
         {
-            ProjectHubClient.OnUpdatedTask += task => 
-            {
-                if (task.Id == Model!.Id)
-                {
-                    Model = task;
-                    buffer = Mapper.Map<TaskUpdateData>(task);
-                    StateHasChanged();
-                }
-            };
-
-            ProjectHubClient.OnDeletedTask += async taskId =>
-            {
-                if (taskId == Model?.Id)
-                {
-                    await currentModal.CloseAsync();
-                }
-            };
+            ProjectHubClient.OnUpdatedTask += NotifyThatTaskWasChanged;
+            ProjectHubClient.OnDeletedTask += NotifyThatTaskWasDeleted;
 
             buffer.Status = null; // need because onlyoffice api update by this value on default task's status
         }
         
+    }
+
+    private void NotifyThatTaskWasChanged(OnlyofficeTask upd)
+    {
+        if (upd.Id == Model!.Id)
+        {
+            ToastService.Notify(new ToastMessage 
+            { 
+                Message = "Задача была изменена кем-то другим",
+                Title = "Задача изменена.",
+                IconName = IconName.Lamp,
+
+            });
+            currentModal.CloseAsync().Forget();
+        }
+    }
+
+    private void NotifyThatTaskWasDeleted(int taskId)
+    {
+        if (taskId == Model?.Id)
+        {
+            ToastService.Notify(new ToastMessage 
+            { 
+                Message = "Задача была удалена",
+                Title = "Задача удалена",
+                IconName = IconName.EmojiAngry,
+                Type = ToastType.Danger
+            });
+            currentModal.CloseAsync().Forget();
+        }
     }
 
     private async Task SubmitAsync()
@@ -84,5 +103,12 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
 
             await currentModal.CloseAsync();
         }
+    }
+
+    public void Dispose()
+    {
+        State.AllowRefresh();
+        ProjectHubClient.OnUpdatedTask -= NotifyThatTaskWasChanged;
+        ProjectHubClient.OnDeletedTask -= NotifyThatTaskWasDeleted;
     }
 }

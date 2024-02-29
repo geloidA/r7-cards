@@ -20,5 +20,6 @@ public class EntityMappingProfile : Profile
         CreateMap<TaskStatusDto, OnlyofficeTaskStatus>();
         CreateMap<UserDto, UserInfo>();
         CreateMap<UserProfileDto, UserProfile>();
+        CreateMap<UserProfileDto, UserInfo>();
     }
 }

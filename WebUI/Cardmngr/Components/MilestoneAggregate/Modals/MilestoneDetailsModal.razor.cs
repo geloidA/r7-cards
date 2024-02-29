@@ -7,12 +7,12 @@ using Cardmngr.Components.Modals;
 using Cardmngr.Components.Modals.Base;
 using Cardmngr.Shared.Extensions;
 using Onlyoffice.Api.Models;
-using Cardmngr.Utils.DetailsModal;
 using Cardmngr.Application.Clients.Milestone;
+using Cardmngr.Application.Clients.SignalRHubClients;
 
 namespace Cardmngr.Components.MilestoneAggregate.Modals;
 
-public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, MilestoneUpdateData>
+public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, MilestoneUpdateData>, IDisposable
 {
     Offcanvas currentModal = null!;
 
@@ -24,14 +24,17 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
     private int ActiveTasks => Model == null ? 0 : milestoneTasks.Count(x => !x.IsClosed());
 
     [Parameter] public ProjectState State { get; set; } = null!;
+    [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
 
-    [Inject] public IMilestoneClient MilestoneClient { get; set; } = null!;
+    [Inject] IMilestoneClient MilestoneClient { get; set; } = null!;
 
     private IEnumerable<OnlyofficeTask> milestoneTasks = [];
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
+
+        State.BlockRefresh();
 
         if (IsAdd)
         {
@@ -47,7 +50,7 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
     {
         if (IsAdd)
         {
-            var added = await MilestoneClient.CreateAsync(Model!.Project.Id, buffer);
+            var added = await MilestoneClient.CreateAsync(State.Model!.Project.Id, buffer);
             State.AddMilestone(added);
         }
         else
@@ -85,5 +88,10 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
         {
             buffer.Responsible = (answer.Data as UserInfo)!.Id;
         }
+    }
+
+    public void Dispose()
+    {
+        State.AllowRefresh();
     }
 }

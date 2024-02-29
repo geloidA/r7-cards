@@ -22,12 +22,7 @@ public class ProjectHubClient : IAsyncDisposable
             .WithUrl(navigationManager.ToAbsoluteUri("/hubs/projectboard"))
             .Build();
 
-        connection.On<int>(nameof(ReceiveCreatedTaskAsync), ReceiveCreatedTaskAsync);
-        connection.On<int>(nameof(ReceiveUpdatedTaskAsync), ReceiveUpdatedTaskAsync);
-        connection.On<int>(nameof(ReceiveDeletedTaskAsync), ReceiveDeletedTaskAsync);
-
-        connection.On<string>(nameof(JoinGroupMemberAsync), JoinGroupMemberAsync);
-        connection.On<string>(nameof(LeaveGroupMemberAsync), LeaveGroupMemberAsync);
+        RegisterHandlers(connection);
 
         userIdentity = authStateProvider.UserInfo?.Id 
             ?? throw new UnauthorizedAccessException("User is not logged in");
@@ -36,13 +31,26 @@ public class ProjectHubClient : IAsyncDisposable
         this.taskClient = taskClient;
     }
 
-    public event Action? ConnectedMembersChanged;
+    private void RegisterHandlers(HubConnection connection)
+    {
+        connection.On<int>(nameof(ReceiveCreatedTaskAsync), ReceiveCreatedTaskAsync);
+        connection.On<int>(nameof(ReceiveUpdatedTaskAsync), ReceiveUpdatedTaskAsync);
+        connection.On<int>("ReceiveDeletedTaskAsync", ReceiveDeletedTask);
+
+        connection.On<string>(nameof(JoinGroupMemberAsync), JoinGroupMemberAsync);
+        connection.On<string>(nameof(LeaveGroupMemberAsync), LeaveGroupMemberAsync);
+    }
+
+    public event Action<MembersChangedEventArgs>? ConnectedMembersChanged;
+
+    private void OnMembersChanged(MemberAction action, string userId) 
+        => ConnectedMembersChanged?.Invoke(new MembersChangedEventArgs(action, userId));
 
     private void LeaveGroupMemberAsync(string userId)
     {
         if (connectedMembers.Remove(userId))
         {
-            ConnectedMembersChanged?.Invoke();
+            OnMembersChanged(MemberAction.Leave, userId);
         }
     }
 
@@ -51,11 +59,11 @@ public class ProjectHubClient : IAsyncDisposable
         if (!connectedMembers.Contains(userId))
         {
             connectedMembers.Add(userId);
-            ConnectedMembersChanged?.Invoke();
+            OnMembersChanged(MemberAction.Join, userId);
         }
     }
 
-    private readonly List<string> connectedMembers = [];
+    private List<string> connectedMembers = [];
     public IEnumerable<string> ConnectedMemberIds
     {
         get
@@ -69,14 +77,16 @@ public class ProjectHubClient : IAsyncDisposable
 
     public async Task StartAsync()
     {
-        await connection.StartAsync();
-
+        await connection.StartAsync();        
         await connection.SendAsync("JoinToProjectBoard", projectId, userIdentity);
+
+        var members = await connection.InvokeAsync<string[]>("GetConnectedMembers", projectId);
+        connectedMembers = [.. members.Where(x => x != userIdentity)];
     }
 
-    public async Task SendUpdatedTaskAsync(int projectId, int taskId)
+    public Task SendUpdatedTaskAsync(int projectId, int taskId)
     {
-        await SendWithAutoReconnect(() => connection.SendAsync(nameof(SendUpdatedTaskAsync), projectId, taskId));
+        return SendWithAutoReconnect(() => connection.SendAsync(nameof(SendUpdatedTaskAsync), projectId, taskId));
     }
 
     public Task SendCreatedTaskAsync(int projectId, int taskId)
@@ -103,6 +113,7 @@ public class ProjectHubClient : IAsyncDisposable
     public event Action<OnlyofficeTask>? OnUpdatedTask;
     public event Action<int>? OnDeletedTask;
 
+    #region Handlers
     private async Task ReceiveUpdatedTaskAsync(int taskId)
     {
         var task = await taskClient.GetAsync(taskId);
@@ -115,11 +126,9 @@ public class ProjectHubClient : IAsyncDisposable
         OnCreatedTask?.Invoke(task);
     }
 
-    private Task ReceiveDeletedTaskAsync(int taskId)
-    {
-        OnDeletedTask?.Invoke(taskId);
-        return Task.CompletedTask;
-    }
+    private void ReceiveDeletedTask(int taskId) => OnDeletedTask?.Invoke(taskId);
+
+    #endregion
 
     public async ValueTask DisposeAsync()
     {

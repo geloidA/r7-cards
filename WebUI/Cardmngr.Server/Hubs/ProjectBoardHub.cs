@@ -7,6 +7,13 @@ public class ProjectBoardHub(GroupManager groupManager) : Hub<IProjectHubReceive
 {
     private readonly GroupManager groupManager = groupManager;
 
+    public string[] GetConnectedMembers(int projectId)
+    {
+        return groupManager
+            .GetUsersByProjectId(projectId)
+            .ToArray();
+    }
+
     public async Task JoinToProjectBoard(int projectId, string userId) // TODO: think about identity
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, projectId.ToString());
@@ -20,7 +27,7 @@ public class ProjectBoardHub(GroupManager groupManager) : Hub<IProjectHubReceive
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, projectId.ToString());
         await Clients.Group(projectId.ToString()).LeaveGroupMemberAsync(userId);
 
-        groupManager.Remove(projectId, Context.ConnectionId);
+        groupManager.Remove(Context.ConnectionId);
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)

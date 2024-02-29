@@ -1,0 +1,15 @@
+.connected-users {
+    display: flex;
+    background-color: rgba(250, 235, 215, 0.589);
+    opacity: 0.8;
+    border-radius: 8px;
+    gap: 3px;
+}
+
+.collapseble-items {
+    transition: max-width 0.5s ease-in-out, min-width 0.5s ease-in-out;
+}
+
+.collapseble-items::-webkit-scrollbar {
+    height: 3px;
+}

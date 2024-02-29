@@ -3,7 +3,7 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities
 {
-    public record class OnlyofficeTask : AuditableEntityBase<int>, IEquatable<OnlyofficeTask>
+    public sealed record class OnlyofficeTask : AuditableEntityBase<int>
     {
         public string Title { get; init; }
         public string Description { get; init; }
@@ -22,6 +22,24 @@ namespace Cardmngr.Domain.Entities
         public DateTime? StartDate { get; init; }
         public int? TaskStatusId { get; init; }
         public Status Status { get; init; }
+
+        public bool Equals(OnlyofficeTask other)
+        {
+            if (other is null) return false;
+
+            return Id == other.Id && 
+                Title == other.Title &&
+                Description == other.Description &&
+                TaskStatusId == other.TaskStatusId &&
+                Status == other.Status &&
+                Deadline == other.Deadline &&
+                StartDate == other.StartDate &&
+                Progress == other.Progress && 
+                Priority == other.Priority &&
+                MilestoneId == other.MilestoneId;
+        }
+        
+        public override int GetHashCode() => Id;
 
         public override string ToString()
         {

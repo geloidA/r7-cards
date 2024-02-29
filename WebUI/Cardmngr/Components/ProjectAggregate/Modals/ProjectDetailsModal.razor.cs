@@ -7,13 +7,18 @@ using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.Modals;
 
-public partial class ProjectDetailsModal
+public partial class ProjectDetailsModal : IDisposable
 {
     private Components.Modals.MyBlazored.Offcanvas currentModal = null!;
     [Parameter] public ProjectState State { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        State.BlockRefresh();
+    }
 
     private void ShowMilestoneCreation()
     {
@@ -36,7 +41,12 @@ public partial class ProjectDetailsModal
             _ => throw new NotImplementedException("Unknown ProjectStatus type")
         };
     }
-    
+
+    public void Dispose()
+    {
+        State.AllowRefresh();
+    }
+
     private class StatusData(BadgeColor badgeColor, IconName iconName, string title)
     {
         public BadgeColor BadgeColor => badgeColor;
