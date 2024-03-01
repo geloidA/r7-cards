@@ -16,7 +16,7 @@ public class FeedbackService : IFeedbackService
 
     public FeedbackService(IConfiguration conf)
     {
-        directory = conf["FeedbackConfig:directory"]!; // not null because it is checked in ConfigureOnlyofficeClient method
+        directory = conf.CheckKey("FeedbackConfig:directory"); // not null because it is checked in ConfigureOnlyofficeClient method
 
         developerGuid = conf.CheckKey("FeedbackConfig:developerGuid");
         

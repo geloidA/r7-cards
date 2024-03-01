@@ -7,15 +7,12 @@ using Cardmngr.Server.FeedbackApi.Service;
 using Cardmngr.Server.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
 using Serilog;
-using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.File(new CompactJsonFormatter(), builder.Configuration["Logging:pathFormat"]!, rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+Log.Logger = new LoggerConfiguration().CreateMyLogger(builder.Configuration.CheckKey("Logging:pathFormat"));
 
 builder.Services.AddResponseCompression(opts =>
 {
