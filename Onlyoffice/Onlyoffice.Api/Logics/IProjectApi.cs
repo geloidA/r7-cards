@@ -12,7 +12,7 @@ public interface IProjectApi
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/@self"/>
     /// </remarks>
     /// <returns>Projects that belongs to current user</returns>
-    IAsyncEnumerable<ProjectInfo> GetUserProjectsAsync();
+    IAsyncEnumerable<ProjectInfoDto> GetUserProjectsAsync();
 
     /// <summary>
     /// Returns a list of all the portal projects with the base information about them.
@@ -101,6 +101,15 @@ public interface IProjectApi
     /// <param name="statusId">Custom status ID</param>
     /// <returns>Added task</returns>
     Task<TaskDto> CreateTaskAsync(int projectId, TaskUpdateData state, Status status, int? statusId = null);
+
+    /// <summary>
+    /// Returns a list with the detailed information about all the tasks for the current user.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/task/%40self"/> 
+    /// </remarks>
+    /// <returns>List of tasks</returns>
+    IAsyncEnumerable<TaskDto> GetSelfTasksAsync();
 
     /// <summary>
     /// Updates the selected task.

@@ -13,7 +13,7 @@ public partial class SubtaskView
 
     [Inject] public ISubtaskClient SubtaskClient { get; set; } = null!;
 
-    [CascadingParameter] ProjectState State { get; set; } = null!;
+    [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
     [CascadingParameter] bool HasEditingSubtask { get; set; }
 

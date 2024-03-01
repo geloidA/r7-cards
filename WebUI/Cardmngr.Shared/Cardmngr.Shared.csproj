@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Project/" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Cardmngr.Domain\Cardmngr.Domain.csproj" />
   </ItemGroup>
 

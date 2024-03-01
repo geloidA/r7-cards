@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Onlyoffice.Api.Common;
 
 namespace Onlyoffice.Api.Models;
 
@@ -31,7 +30,7 @@ public class TaskDto
     public int Priority { get; set; }
     public int? MilestoneId { get; set; }
     public MilestoneDto? Milestone { get; set; }
-    public ProjectInfo? ProjectOwner { get; set; }
+    public ProjectInfoDto? ProjectOwner { get; set; }
     public List<SubtaskDto>? Subtasks { get; set; }
     public int Status { get; set; }
     public int? Progress { get; set; }

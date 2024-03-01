@@ -6,7 +6,7 @@
 
 @if (IsAuthenticated)
 {
-    <ProjectState Id="ProjectId ?? 0" >
+    <MutableProjectState Id="ProjectId ?? 0" >
         <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
             <div class="mb-2">
                 <ProjectBoardHeader></ProjectBoardHeader>
@@ -15,7 +15,7 @@
                 <ProjectBoard></ProjectBoard>
             </div>
         </div>
-    </ProjectState>
+    </MutableProjectState>
 }
 
 @code {

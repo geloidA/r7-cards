@@ -11,7 +11,7 @@ namespace Cardmngr.Components.TaskAggregate;
 
 public partial class TaskCard
 {
-    [CascadingParameter] ProjectState State { get; set; } = null!;
+    [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
     [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsModal { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;

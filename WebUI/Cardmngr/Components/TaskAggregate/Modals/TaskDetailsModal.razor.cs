@@ -19,7 +19,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     [Inject] ITaskClient TaskClient { get; set; } = null!;
     [Inject] ToastService ToastService { get; set; } = null!;
 
-    [Parameter] public ProjectState State { get; set; } = null!;
+    [Parameter] public MutableProjectState State { get; set; } = null!;
     [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
     [Parameter] public int TaskStatusId { get; set; }
 
@@ -78,7 +78,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     {
         if (IsAdd)
         {
-            var created = await TaskClient.CreateAsync(State.Model!.Project.Id, buffer);
+            var created = await TaskClient.CreateAsync(State.Model!.Project!.Id, buffer);
             State.AddTask(created);
             await ProjectHubClient.SendCreatedTaskAsync(State.Model.Project.Id, created.Id);
         }
@@ -86,7 +86,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
         {
             var updated = await TaskClient.UpdateAsync(Model!.Id, buffer);
             State.UpdateTask(updated);
-            await ProjectHubClient.SendUpdatedTaskAsync(State.Model!.Project.Id, updated.Id);
+            await ProjectHubClient.SendUpdatedTaskAsync(State.Model!.Project!.Id, updated.Id);
         }
 
         await currentModal.CloseAsync();
@@ -100,7 +100,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
         {
             await TaskClient.RemoveAsync(Model!.Id);
             State.RemoveTask(Model!.Id);
-            await ProjectHubClient.SendDeletedTaskAsync(State.Model!.Project.Id, Model!.Id);
+            await ProjectHubClient.SendDeletedTaskAsync(State.Model!.Project!.Id, Model!.Id);
 
             await currentModal.CloseAsync();
         }

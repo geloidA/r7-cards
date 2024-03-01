@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Cardmngr.Application.Clients.TaskClient;
+using Cardmngr.Application.Extensions;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Project;
 using Onlyoffice.Api.Common;
@@ -6,27 +8,68 @@ using Onlyoffice.Api.Logics;
 
 namespace Cardmngr.Application.Clients;
 
-public class ProjectClient(IProjectApi projectApi, IMapper mapper) : IProjectClient
+public class ProjectClient(IProjectApi projectApi, ITaskClient taskClient, IMapper mapper) : IProjectClient
 {
     private readonly IProjectApi projectApi = projectApi;
+    private readonly ITaskClient taskClient = taskClient;
     private readonly IMapper mapper = mapper;
 
     public async Task<ProjectStateVm> GetProjectAsync(int projectId)
     {
         var project = projectApi.GetProjectByIdAsync(projectId);
-        var tasks = projectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(projectId)).ToListAsync();
-        var statuses = projectApi.GetAllTaskStatusesAsync().ToListAsync();
-        var milestones = projectApi.GetMilestonesByProjectIdAsync(projectId).ToListAsync();
-        var team = projectApi.GetProjectTeamAsync(projectId).ToListAsync();
+
+        var tasks = projectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(projectId))
+            .ToListAsync(mapper.Map<OnlyofficeTask>);
+
+        var statuses = projectApi.GetAllTaskStatusesAsync().ToListAsync(mapper.Map<OnlyofficeTaskStatus>);
+
+        var milestones = projectApi.GetMilestonesByProjectIdAsync(projectId).ToListAsync(mapper.Map<Domain.Entities.Milestone>);
+
+        var team = projectApi.GetProjectTeamAsync(projectId).ToListAsync(mapper.Map<UserProfile>);
 
         return new ProjectStateVm
         {
             Project = mapper.Map<Project>(await project),
-            Tasks = mapper.Map<List<OnlyofficeTask>>(await tasks),
-            Statuses = mapper.Map<List<OnlyofficeTaskStatus>>(await statuses),
-            Milestones = mapper.Map<List<Domain.Entities.Milestone>>(await milestones),
-            Team = mapper.Map<List<UserProfile>>(await team)
+            Tasks = await tasks,
+            Statuses = await statuses,
+            Milestones = await milestones,
+            Team = await team
         };
+    }
+
+    public async IAsyncEnumerable<ProjectStateVm> GetProjectsWithSelfTasksAsync()
+    {
+        var tasks = await taskClient.GetSelfTasksAsync().ToListAsync();
+        var statuses = await projectApi.GetAllTaskStatusesAsync().ToListAsync(mapper.Map<OnlyofficeTaskStatus>);
+
+        var tasksGroupByProject = tasks.GroupBy(x => x.ProjectOwner?.Id).ToAsyncEnumerable();
+
+        await foreach (var tasksByProject in tasksGroupByProject)
+        {
+            if (tasksByProject.Key != null)
+            {
+                var team = projectApi.GetProjectTeamAsync(tasksByProject.Key.Value).ToListAsync();
+                var milestones = projectApi.GetMilestonesByProjectIdAsync(tasksByProject.Key.Value).ToListAsync();
+                var project = projectApi.GetProjectByIdAsync(tasksByProject.Key.Value);
+
+                yield return new ProjectStateVm
+                {
+                    Project = mapper.Map<Project>(await project),
+                    Milestones = mapper.Map<List<Domain.Entities.Milestone>>(await milestones),
+                    Team = mapper.Map<List<UserProfile>>(await team),
+                    Tasks = [.. tasksByProject],
+                    Statuses = statuses
+                };
+            }
+            else
+            {
+                yield return new ProjectStateVm
+                {
+                    Statuses = statuses,
+                    Tasks = [.. tasksByProject]
+                };
+            }
+        }
     }
 
     public async IAsyncEnumerable<Project> GetSelfProjectsAsync()

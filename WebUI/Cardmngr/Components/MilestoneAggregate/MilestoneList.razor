@@ -38,7 +38,7 @@ else
 }
 
 @code {
-    [Parameter] public ProjectState State { get; set; } = null!;
+    [Parameter] public IProjectState State { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;

@@ -36,6 +36,9 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
     [Route("api/[controller]/task/filter/{**rest}")]
     public Task ProxyFilterTasks(string rest) => ProxyRequestAsync($"{apiUrl}/project/task/filter?{rest}");
 
+    [Route("api/[controller]/task/@self")]
+    public Task ProxyGetSelfTasks() => ProxyRequestAsync($"{apiUrl}/project/task/@self");
+
     [HttpPost]
     [Route("api/[controller]/{projectId}/task")]
     public Task ProxyCreateTask(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/task");

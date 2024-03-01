@@ -9,6 +9,7 @@ using Cardmngr.Shared.Extensions;
 using Onlyoffice.Api.Models;
 using Cardmngr.Application.Clients.Milestone;
 using Cardmngr.Application.Clients.SignalRHubClients;
+using Cardmngr.Extensions;
 
 namespace Cardmngr.Components.MilestoneAggregate.Modals;
 
@@ -24,7 +25,7 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
     private int TotalTasks => Model == null ? 0 : milestoneTasks.Count();
     private int ActiveTasks => Model == null ? 0 : milestoneTasks.Count(x => !x.IsClosed());
 
-    [Parameter] public ProjectState State { get; set; } = null!;
+    [Parameter] public MutableProjectState State { get; set; } = null!;
     [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     [Inject] IMilestoneClient MilestoneClient { get; set; } = null!;
@@ -51,7 +52,7 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
     {
         if (IsAdd)
         {
-            var added = await MilestoneClient.CreateAsync(State.Model!.Project.Id, buffer);
+            var added = await MilestoneClient.CreateAsync(State.Model!.Project!.Id, buffer);
             State.AddMilestone(added);
         }
         else

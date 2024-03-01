@@ -23,6 +23,14 @@ public class TaskClient(IProjectApi projectApi, IMapper mapper) : ITaskClient
         return mapper.Map<OnlyofficeTask>(taskDto);
     }
 
+    public async IAsyncEnumerable<OnlyofficeTask> GetSelfTasksAsync()
+    {
+        await foreach (var tasksDto in projectApi.GetSelfTasksAsync())
+        {
+            yield return mapper.Map<OnlyofficeTask>(tasksDto);
+        }
+    }
+
     public async Task<OnlyofficeTask> RemoveAsync(int taskId)
     {
         var taskDto = await projectApi.DeleteTaskAsync(taskId);

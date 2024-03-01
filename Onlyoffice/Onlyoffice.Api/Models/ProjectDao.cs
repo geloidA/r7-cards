@@ -12,7 +12,7 @@ public class ProjectDao : HttpResponseDaoBase
 
 public class ProjectInfoDao : HttpResponseDaoBase
 {
-    public List<ProjectInfo>? Response { get; set; }
+    public List<ProjectInfoDto>? Response { get; set; }
 }
 
 public class ProjectDto
@@ -32,7 +32,7 @@ public class ProjectDto
     public int TaskCountTotal { get; set; }    
 }
 
-public class ProjectInfo
+public class ProjectInfoDto
 {
     public int Id { get; set; }
     public string? Title { get; set; }

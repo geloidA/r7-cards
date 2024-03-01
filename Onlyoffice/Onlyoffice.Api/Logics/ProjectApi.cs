@@ -23,10 +23,10 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         }
     }
 
-    public async IAsyncEnumerable<ProjectInfo> GetUserProjectsAsync()
+    public async IAsyncEnumerable<ProjectInfoDto> GetUserProjectsAsync()
     {
         var projectDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<ProjectInfoDao>("api/project/@self"));
-        await foreach (var project in projectDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<ProjectInfo>())
+        await foreach (var project in projectDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<ProjectInfoDto>())
         {
             yield return project;
         }
@@ -49,6 +49,15 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         await foreach (var taskStatus in taskStatusDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<TaskStatusDto>())
         {
             yield return taskStatus;
+        }
+    }
+
+    public async IAsyncEnumerable<TaskDto> GetSelfTasksAsync()
+    {
+        var selfTasksDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<TaskDao>("api/project/task/@self"));
+        await foreach (var task in selfTasksDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<TaskDto>())
+        {
+            yield return task;
         }
     }
 

@@ -29,9 +29,8 @@ public abstract class ApiController : Controller
 
     private void LogInfo(string destination)
     {
-        logger.Information("Method: {method}. Request: {destination}. IP: {ip}", 
+        logger.Information("Method: {method}. Request: {destination}.",
             HttpContext.Request.Method, 
-            destination, 
-            HttpContext.Connection.RemoteIpAddress);
+            destination);
     }
 }

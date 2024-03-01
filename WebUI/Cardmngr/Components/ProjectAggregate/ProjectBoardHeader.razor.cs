@@ -8,7 +8,7 @@ namespace Cardmngr.Components.ProjectAggregate;
 
 public partial class ProjectBoardHeader : ComponentBase
 {
-    [CascadingParameter] ProjectState State { get; set; } = null!;
+    [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;

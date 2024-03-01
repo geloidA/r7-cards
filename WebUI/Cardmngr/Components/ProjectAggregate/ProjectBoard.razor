@@ -8,13 +8,13 @@
                 <div class="@(isFirst ? "" : "status-column")" @key="status" >
                     <KolBoardColumn TValue="OnlyofficeTask" CanCollapse="true"
                         OnDropItem="@(async task => await OnChangeTaskStatus(task, status))"
-                        Items="State.OutputTasks!.FilterByStatus(status).OrderByTaskCriteria()">
+                        Items="State.SelectedMilestoneTasks()!.FilterByStatus(status).OrderByTaskCriteria()">
                         <HeaderTemplate Context="isCollapsed">
                             <TaskStatusHeader IsCollapsed="isCollapsed" TaskStatus="status" />
-                            @if (State.SelectedMilestones.Count != 0)
+                            @if (State.SelectedMilestones.Any())
                             {
                                 <div class="mt-1 d-flex justify-content-center fw-light" style="font-size: small;">
-                                    @State.OutputTasks!.FilterByStatus(status).Count() результатов
+                                    @State.SelectedMilestoneTasks()!.FilterByStatus(status).Count() результатов
                                 </div>
                             }
                         </HeaderTemplate>

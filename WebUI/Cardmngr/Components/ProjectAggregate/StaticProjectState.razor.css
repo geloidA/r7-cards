@@ -1,0 +1,10 @@
+.proj-state {
+    display: flex;
+    flex-direction: column;
+    flex: auto;
+
+    border: 1px solid var(--boarder-color);
+    border-radius: 5px;
+
+    min-height: 400px;
+}

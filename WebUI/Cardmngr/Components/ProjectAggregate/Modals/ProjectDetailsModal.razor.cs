@@ -12,7 +12,7 @@ public partial class ProjectDetailsModal : IDisposable
 {
     private readonly Guid lockGuid = Guid.NewGuid();
     private Components.Modals.MyBlazored.Offcanvas currentModal = null!;
-    [Parameter] public ProjectState State { get; set; } = null!;
+    [Parameter] public MutableProjectState State { get; set; } = null!;
     [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;

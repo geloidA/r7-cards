@@ -22,6 +22,7 @@ namespace Cardmngr.Domain.Entities
         public DateTime? StartDate { get; init; }
         public int? TaskStatusId { get; init; }
         public Status Status { get; init; }
+        public ProjectInfo ProjectOwner { get; init; }
 
         public bool Equals(OnlyofficeTask other)
         {
@@ -36,7 +37,8 @@ namespace Cardmngr.Domain.Entities
                 StartDate == other.StartDate &&
                 Progress == other.Progress && 
                 Priority == other.Priority &&
-                MilestoneId == other.MilestoneId;
+                MilestoneId == other.MilestoneId &&
+                ProjectOwner == other.ProjectOwner;
         }
         
         public override int GetHashCode() => Id;

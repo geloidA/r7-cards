@@ -7,4 +7,5 @@ public interface IProjectClient
 {
     Task<ProjectStateVm> GetProjectAsync(int projectId);
     IAsyncEnumerable<Project> GetSelfProjectsAsync();
+    IAsyncEnumerable<ProjectStateVm> GetProjectsWithSelfTasksAsync();
 }

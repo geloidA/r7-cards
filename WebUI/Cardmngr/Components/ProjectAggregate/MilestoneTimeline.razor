@@ -33,7 +33,7 @@
 
     public int Width { get; set; } = 1800;
     
-    [CascadingParameter] ProjectState State { get; set; } = null!;
+    [CascadingParameter] IProjectState State { get; set; } = null!;
 
     protected override void OnInitialized()
     {

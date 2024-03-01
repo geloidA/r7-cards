@@ -10,7 +10,7 @@ namespace Cardmngr.Components.TaskAggregate.ModalComponents;
 
 public partial class TaskMilestone
 {
-    [CascadingParameter] ProjectState State { get; set; } = null!;
+    [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
