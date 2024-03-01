@@ -1,4 +1,6 @@
-﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+﻿@using Cardmngr.Application.Clients.SignalRHubClients
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @if (State.Model!.Milestones.Any())
 {
@@ -40,13 +42,15 @@ else
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
+    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     private void ShowModal(Milestone milestone)
     {
         var parameters = new ModalParameters
         {
             { "Model", milestone },
-            { "State", State }
+            { "State", State },
+            { "ProjectHubClient", ProjectHubClient }
         };
 
         Modal.Show<MilestoneDetailsModal>("", parameters, Options);

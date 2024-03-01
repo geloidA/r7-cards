@@ -1,6 +1,7 @@
 ﻿using BlazorBootstrap;
 using Blazored.Modal;
 using Blazored.Modal.Services;
+using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Components.MilestoneAggregate.Modals;
 using Cardmngr.Domain.Enums;
 using Microsoft.AspNetCore.Components;
@@ -12,6 +13,7 @@ public partial class ProjectDetailsModal : IDisposable
     private readonly Guid lockGuid = Guid.NewGuid();
     private Components.Modals.MyBlazored.Offcanvas currentModal = null!;
     [Parameter] public ProjectState State { get; set; } = null!;
+    [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
@@ -26,7 +28,8 @@ public partial class ProjectDetailsModal : IDisposable
         var parameters = new ModalParameters
         {
             { "IsAdd", true },
-            { "State", State }
+            { "State", State },
+            { "ProjectHubClient", ProjectHubClient }
         };
 
         Modal.Show<MilestoneDetailsModal>("", parameters, Options);

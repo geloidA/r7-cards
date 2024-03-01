@@ -55,7 +55,9 @@
                 <CardBody class="m-0 user-select-none" style="max-height: 190px; overflow: auto;">
                     @if (currentModal is { })
                     {
-                        <MilestoneList State="State" />
+                        <CascadingValue Value="ProjectHubClient" IsFixed="true">
+                            <MilestoneList State="State" />
+                        </CascadingValue>
                     }
                 </CardBody>
             </Card>
