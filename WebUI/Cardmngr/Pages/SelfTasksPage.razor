@@ -4,18 +4,31 @@
 
 @inherits AuthorizedPage
 
+<PageTitle>Мои задачи</PageTitle>
+
 @if (IsAuthenticated)
-{
-    <div>
-        @foreach (var projectVm in projectVms)
-        {
-            <StaticProjectState State="projectVm" >
-                <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
-                    <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
-                        <ProjectBoard></ProjectBoard>
+{    
+    <div class="d-flex flex-column p-2" style="overflow-y: auto; overflow-x: hidden;">
+        <CascadingValue Value="this" IsFixed="true">            
+            <CascadingValue Value="IdOnInitialization" Name="UserId" IsFixed="true" >
+                @foreach (var projectVm in projectVms)
+                {
+                    <div class="mb-4">
+                        <StaticProjectState ViewModel="projectVm" >
+                            <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
+                                <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
+                                    <ProjectBoard></ProjectBoard>
+                                </div>
+                            </div>
+                        </StaticProjectState>
                     </div>
-                </div>
-            </StaticProjectState>
-        }
+                }
+            </CascadingValue>
+        </CascadingValue>
+        <div id="splitter"></div>
+        <i class="d-flex align-self-center mt-2 user-select-none opacity-50 fs-5">
+            <Icon Name="IconName.InfoCircle" />
+            <div class="ms-2">Здесь будут появляться проекты, в которых есть ваши задачи.</div>
+        </i>
     </div>
 }

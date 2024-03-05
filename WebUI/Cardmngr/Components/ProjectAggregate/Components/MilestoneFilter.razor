@@ -1,0 +1,43 @@
+﻿@using Cardmngr.Shared.Project
+
+@if (filterItems.Count != 0)
+{
+    foreach (var item in filterItems)
+    {
+        <div class="row mb-1">
+            <div class="col">
+                <MilestoneLabel Milestone="item.Milestone" />
+            </div>
+            <div class="col d-flex justify-content-end">
+                <InputCheckbox class="clickable form-check-input" 
+                    @bind-Value="item.Selected" 
+                    @onclick="@(() => State.ToggleMilestone(item.Milestone))" />
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="text-muted d-flex justify-content-center">
+        В проекте нет вех
+    </div>
+}
+
+@code {
+    private List<MilestoneFilterItem> filterItems = [];
+
+    [CascadingParameter] IProjectState State { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        filterItems = State.Model!.Milestones
+            .Select(x => new MilestoneFilterItem(x))
+            .ToList() ?? [];
+    }
+
+    private class MilestoneFilterItem(Milestone milestone)
+    {
+        public Milestone Milestone { get; set; } = milestone;
+        public bool Selected { get; set; }
+    }
+}

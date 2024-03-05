@@ -39,7 +39,8 @@ builder.WebHost.UseKestrel(opt =>
 
     var port = int.Parse(config.CheckKey("Port"));
         
-    opt.Listen(IPAddress.Parse(config["IPAddress"]!), port, listenOptions =>
+    opt.Listen(IPAddress.Parse(config["IPAddress"]!), port);
+    opt.Listen(IPAddress.Parse(config["IPAddress"]!), port + 1, listenOptions =>
     {
         listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
     });
@@ -49,11 +50,12 @@ var app = builder.Build();
 
 if (app.Environment.IsProduction())
 {
-    app.UseHttpsRedirection();
     app.UseResponseCompression();
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();

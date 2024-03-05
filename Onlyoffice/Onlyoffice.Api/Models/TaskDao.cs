@@ -52,7 +52,7 @@ public class TaskUpdateData
     public int Priority { get; set; }
     public string? Title { get; set; }
     public int? MilestoneId { get; set; }
-    public List<string?> Responsibles { get; set; }= [];
+    public List<string> Responsibles { get; set; }= [];
     public int? ProjectId { get; set; }
     public bool? Notify { get; set; }
     public int? Status { get; set; } = (int)Common.Status.Open;

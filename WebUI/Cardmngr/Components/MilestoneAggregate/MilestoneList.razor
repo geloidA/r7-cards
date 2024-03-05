@@ -44,7 +44,7 @@ else
     [CascadingParameter] IModalService Modal { get; set; } = null!;
     [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
 
-    private void ShowModal(Milestone milestone)
+    void ShowModal(Milestone milestone)
     {
         var parameters = new ModalParameters
         {

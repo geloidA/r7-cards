@@ -1,0 +1,14 @@
+﻿<Badge class="align-self-center d-flex user-select-none" 
+    Color="BadgeColor.Info" style="padding-right: 5px;" >
+    @State.CountClosedTasks() / @State.Model!.Tasks.Count
+    <Icon class="ms-1" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
+</Badge>
+
+@code {
+    [CascadingParameter] IProjectState State { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        State.TasksChanged += StateHasChanged;
+    }
+}

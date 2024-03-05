@@ -15,7 +15,7 @@
                 </div>
             </div>
         </CardTitle>
-        <UserList Users="SelectedUsers" />
+        <UserList Users="@responsibles" />
     </CardBody>
 </Card>
 
@@ -26,11 +26,36 @@
 
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
+    [Inject] IUserClient UserClient { get; set; } = null!;
+
     [Parameter] public TaskUpdateData Task { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
     
-    private IEnumerable<UserInfo> SelectedUsers => State.Model!.Team
-        .Where(participant => Task.Responsibles?.Any(x => x == participant.Id) ?? false);
+    private List<UserInfo> responsibles = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await foreach (var responsible in ConvertToResponsiblesAsync(Task.Responsibles))
+        {
+            responsibles.Add(responsible);
+        }
+    }
+
+    private async IAsyncEnumerable<UserInfo> ConvertToResponsiblesAsync(IEnumerable<string> ids)
+    {
+        foreach (var id in ids)
+        {
+            var participant = State.Model!.Team.FirstOrDefault(p => p.Id == id);
+            if (participant is { })
+            {
+                yield return participant;
+            }
+            else
+            {
+                yield return await UserClient.GetUserProfileByIdAsync(id);
+            }
+        }
+    }
 
     private async Task ShowResponsibleSelectionModal()
     {
@@ -44,8 +69,14 @@
 
         if (result.Confirmed)
         {
-            var users = (IEnumerable<string?>)result.Data!;
-            Task.Responsibles = users!.ToList();
+            var users = (IEnumerable<string>)result.Data!;
+            Task.Responsibles = users.ToList();
+            
+            responsibles.Clear();
+            await foreach (var responsible in ConvertToResponsiblesAsync(Task.Responsibles))
+            {
+                responsibles.Add(responsible);
+            }
         }
     }
 }

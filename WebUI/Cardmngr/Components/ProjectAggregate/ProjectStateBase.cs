@@ -8,7 +8,16 @@ namespace Cardmngr.Components.ProjectAggregate;
 
 public abstract class ProjectStateBase : ComponentBase, IProjectState
 {
-    public ProjectStateVm? Model { get; protected set; }
+    private ProjectStateVm? model;
+    public ProjectStateVm? Model
+    {
+        get => model;
+        set
+        {
+            model = value;
+            OnStateChanged();
+        }
+    }
 
     public bool Initialized { get; protected set; }
 

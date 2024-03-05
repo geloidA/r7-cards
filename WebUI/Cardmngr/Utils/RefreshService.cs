@@ -19,7 +19,8 @@ public class RefreshService : IDisposable
         timer.Interval = refreshInterval.TotalMilliseconds;
         timer.Elapsed += OnRefreshElapsed;
 
-        timer.Enabled = _started = true;
+        _started = true;
+        timer.Enabled = locks.Count == 0;
     }
 
     public void RemoveLock(Guid lockGuid)
@@ -33,11 +34,14 @@ public class RefreshService : IDisposable
 
     public void Lock(Guid lockGuid)
     {
+        if (lockGuid == Guid.Empty) throw new ArgumentException("lockGuid cannot be empty");
         locks.Add(lockGuid);
         timer.Enabled = false;
     }
 
     public bool Enabled => timer.Enabled;
+    public bool Started => _started;
+    public bool Disposed => _disposed;
 
     public event Action? Refreshed;
     private void OnRefreshElapsed(object? sender, ElapsedEventArgs e) => Refreshed?.Invoke();

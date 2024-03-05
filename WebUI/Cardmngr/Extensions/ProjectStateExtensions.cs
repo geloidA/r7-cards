@@ -51,4 +51,14 @@ public static class ProjectStateExtensions
         if (milestoneId == null) return null;
         return projectState.Model?.Milestones.FirstOrDefault(x => x.Id == milestoneId);
     }
+
+    public static int CountOpenTasks(this IProjectState projectState)
+    {
+        return projectState.Model?.Tasks.Count(x => x.Status == Domain.Enums.Status.Open) ?? 0;
+    }
+
+    public static int CountClosedTasks(this IProjectState projectState)
+    {
+        return projectState.Model?.Tasks.Count(x => x.Status == Domain.Enums.Status.Closed) ?? 0;
+    }
 }

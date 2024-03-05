@@ -1,5 +1,6 @@
 ﻿using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Project;
+using Cardmngr.Utils;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
@@ -29,4 +30,9 @@ public interface IProjectState
     void AddSubtask(int taskId, Subtask subtask);
     void UpdateSubtask(int taskId, Subtask subtask);
     void RemoveSubtask(int taskId, int subtaskId);
+}
+
+public interface IRefresheableProjectState : IProjectState
+{
+    RefreshService RefreshService { get; }
 }

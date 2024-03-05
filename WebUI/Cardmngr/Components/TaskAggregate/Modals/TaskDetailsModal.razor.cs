@@ -19,8 +19,8 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     [Inject] ITaskClient TaskClient { get; set; } = null!;
     [Inject] ToastService ToastService { get; set; } = null!;
 
-    [Parameter] public MutableProjectState State { get; set; } = null!;
-    [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
+    [Parameter] public IRefresheableProjectState State { get; set; } = null!;
+    [Parameter] public ProjectHubClient? ProjectHubClient { get; set; } // refactor this
     [Parameter] public int TaskStatusId { get; set; }
 
     protected override void OnInitialized()
@@ -36,8 +36,11 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
         }
         else
         {
-            ProjectHubClient.OnUpdatedTask += NotifyThatTaskWasChanged;
-            ProjectHubClient.OnDeletedTask += NotifyThatTaskWasDeleted;
+            if (ProjectHubClient is { })
+            {
+                ProjectHubClient.OnUpdatedTask += NotifyThatTaskWasChanged;
+                ProjectHubClient.OnDeletedTask += NotifyThatTaskWasDeleted;
+            }
 
             buffer.Status = null; // need because onlyoffice api update by this value on default task's status
         }
@@ -70,6 +73,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
                 IconName = IconName.EmojiAngry,
                 Type = ToastType.Danger
             });
+
             currentModal.CloseAsync().Forget();
         }
     }
@@ -80,13 +84,15 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
         {
             var created = await TaskClient.CreateAsync(State.Model!.Project!.Id, buffer);
             State.AddTask(created);
-            await ProjectHubClient.SendCreatedTaskAsync(State.Model.Project.Id, created.Id);
+
+            ProjectHubClient?.SendCreatedTaskAsync(State.Model.Project.Id, created.Id).Forget();
         }
         else
         {
             var updated = await TaskClient.UpdateAsync(Model!.Id, buffer);
             State.UpdateTask(updated);
-            await ProjectHubClient.SendUpdatedTaskAsync(State.Model!.Project!.Id, updated.Id);
+
+            ProjectHubClient?.SendUpdatedTaskAsync(State.Model!.Project!.Id, updated.Id).Forget();
         }
 
         await currentModal.CloseAsync();
@@ -100,7 +106,8 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
         {
             await TaskClient.RemoveAsync(Model!.Id);
             State.RemoveTask(Model!.Id);
-            await ProjectHubClient.SendDeletedTaskAsync(State.Model!.Project!.Id, Model!.Id);
+            
+            ProjectHubClient?.SendDeletedTaskAsync(State.Model!.Project!.Id, Model!.Id).Forget();
 
             await currentModal.CloseAsync();
         }
@@ -108,8 +115,15 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
 
     public void Dispose()
     {
-        State.RefreshService.RemoveLock(lockGuid);
-        ProjectHubClient.OnUpdatedTask -= NotifyThatTaskWasChanged;
-        ProjectHubClient.OnDeletedTask -= NotifyThatTaskWasDeleted;
+        if (!State.RefreshService.Disposed)
+        {
+            State.RefreshService.RemoveLock(lockGuid);
+        }
+        
+        if (ProjectHubClient is { })
+        {
+            ProjectHubClient.OnUpdatedTask -= NotifyThatTaskWasChanged;
+            ProjectHubClient.OnDeletedTask -= NotifyThatTaskWasDeleted;
+        }
     }
 }

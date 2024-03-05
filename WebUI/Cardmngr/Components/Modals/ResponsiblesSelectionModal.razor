@@ -5,7 +5,7 @@
             @foreach (var responsible in responsibles)
             {
                 <div @key="responsible.Value.Id" class="d-flex flex-row py-2 align-items-center">
-                    <InputCheckbox @bind-Value="responsible.Checked" />
+                    <InputCheckbox class="form-check-input clickable" @bind-Value="responsible.Checked" />
                     <div class="ms-1">
                         <UserAvatar User="responsible.Value"/>
                     </div>

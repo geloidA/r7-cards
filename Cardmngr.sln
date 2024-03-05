@@ -31,8 +31,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Application.Tests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Tests", "tests\Cardmngr.Tests\Cardmngr.Tests.csproj", "{65C4632E-EF7E-4B83-A8BE-E2041620DF6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Reports", "Cardmngr.Reports\Cardmngr.Reports.csproj", "{8741D8EE-729B-47B6-9C64-6821D98FF682}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,10 +81,6 @@ Global
 		{65C4632E-EF7E-4B83-A8BE-E2041620DF6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65C4632E-EF7E-4B83-A8BE-E2041620DF6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65C4632E-EF7E-4B83-A8BE-E2041620DF6E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8741D8EE-729B-47B6-9C64-6821D98FF682}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8741D8EE-729B-47B6-9C64-6821D98FF682}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8741D8EE-729B-47B6-9C64-6821D98FF682}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8741D8EE-729B-47B6-9C64-6821D98FF682}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

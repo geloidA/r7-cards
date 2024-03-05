@@ -34,7 +34,7 @@ else
     [Parameter] public Milestone Milestone { get; set; } = null!;
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
-    private RenderFragment Badge =>
+    RenderFragment Badge =>
         @<Badge @onclick="OnClick" class=@($"{Class} {(OnClick.HasDelegate ? "clickable" : "")}") 
             IndicatorType="BadgeIndicatorType.RoundedPill" Color="BadgeColor.Warning" >
             <span style="font-size: 12px; font-weight: 500;" class="hide-max-140 user-select-none">

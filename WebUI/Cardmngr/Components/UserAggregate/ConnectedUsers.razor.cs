@@ -1,8 +1,7 @@
-﻿using AutoMapper;
+﻿using Cardmngr.Application.Clients;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Domain.Entities;
 using Microsoft.AspNetCore.Components;
-using Onlyoffice.Api.Logics.People;
 
 namespace Cardmngr.Components.UserAggregate;
 
@@ -14,8 +13,7 @@ public partial class ConnectedUsers
 
     private readonly List<UserInfo> userInfos = [];
 
-    [Inject] IMapper Mapper { get; set; } = null!;
-    [Inject] IPeopleApi PeopleApi { get; set; } = null!;
+    [Inject] IUserClient UserClient { get; set; } = null!;
     
     [CascadingParameter] ProjectHubClient HubClient { get; set; } = null!;
 
@@ -23,9 +21,7 @@ public partial class ConnectedUsers
     {
         foreach (var id in HubClient.ConnectedMemberIds)
         {
-            var profileInfo = await PeopleApi.GetProfileByIdAsync(id);
-
-            userInfos.Add(Mapper.Map<UserInfo>(profileInfo));
+            userInfos.Add(await UserClient.GetUserProfileByIdAsync(id));
         }
 
         HubClient.ConnectedMembersChanged += async args => await OnMembersChangedAsync(args);
@@ -39,9 +35,7 @@ public partial class ConnectedUsers
         }
         else
         {
-            var profileInfo = await PeopleApi.GetProfileByIdAsync(args.UserId);
-
-            userInfos.Add(Mapper.Map<UserInfo>(profileInfo));
+            userInfos.Add(await UserClient.GetUserProfileByIdAsync(args.UserId));
         }
 
         StateHasChanged();

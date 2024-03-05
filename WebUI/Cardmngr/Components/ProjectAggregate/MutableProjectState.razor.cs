@@ -8,7 +8,7 @@ using Onlyoffice.Api.Providers;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
-public sealed partial class MutableProjectState : ProjectStateBase, IAsyncDisposable
+public sealed partial class MutableProjectState : ProjectStateBase, IRefresheableProjectState, IAsyncDisposable
 {
     private int previousId = -1;
     private ProjectHubClient hubClient = null!;
@@ -50,7 +50,6 @@ public sealed partial class MutableProjectState : ProjectStateBase, IAsyncDispos
     private async void OnRefreshModelAsync()
     {
         Model = await ProjectClient.GetProjectAsync(Id);
-        OnStateChanged();
     }
 
     private async Task<ProjectHubClient> GetNewHubClientAsync()

@@ -20,4 +20,12 @@ public partial class SelfTasksPage : AuthorizedPage
             projectVms.Add(projectVm);
         }
     }
+
+    internal void RemoveProject(int? projectId)
+    {
+        if (projectVms.RemoveAll(x => x.Project?.Id == projectId) > 0)
+        {
+            StateHasChanged();
+        }
+    }
 }

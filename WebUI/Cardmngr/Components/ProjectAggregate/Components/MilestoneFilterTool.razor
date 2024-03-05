@@ -1,0 +1,15 @@
+﻿<Tooltip Title="Фильтр по вехе" Placement="TooltipPlacement.Left">
+    <Dropdown Size="Size.ExtraSmall" class="ms-2" Disabled="Disabled"
+        AutoClose="true" AutoCloseBehavior="DropdownAutoCloseBehavior.Outside">
+        <DropdownToggleButton>
+            <Icon Name="IconName.Filter" />
+        </DropdownToggleButton>
+        <DropdownMenu Class="p-3" Style="width: 320px; max-height: 400px;">
+            <MilestoneFilter></MilestoneFilter>
+        </DropdownMenu>
+    </Dropdown>
+</Tooltip>
+
+@code {
+    [Parameter] public bool Disabled { get; set; }
+}

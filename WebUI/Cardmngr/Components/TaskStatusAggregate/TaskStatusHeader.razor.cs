@@ -12,7 +12,7 @@ namespace Cardmngr.Components.TaskStatusAggregate;
 public partial class TaskStatusHeader
 {
     [CascadingParameter] IProjectState State { get; set; } = null!;
-    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
+    [CascadingParameter] ProjectHubClient? ProjectHubClient { get; set; }
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;

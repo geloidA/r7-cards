@@ -3,6 +3,8 @@
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
 
+<PageTitle>Вход</PageTitle>
+
 @code {
     [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
     [CascadingParameter] private IModalService Modal { get; set; } = default!;

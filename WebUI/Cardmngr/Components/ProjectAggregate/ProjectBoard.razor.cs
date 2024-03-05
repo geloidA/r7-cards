@@ -15,7 +15,7 @@ public partial class ProjectBoard
     [Inject] public ITaskClient TaskClient { get; set; } = null!;
 
     [CascadingParameter] IProjectState State { get; set; } = null!;
-    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
+    [CascadingParameter] ProjectHubClient? ProjectHubClient { get; set; }
     [CascadingParameter] IModalService Modal { get; set; } = default!;
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
 
@@ -40,7 +40,7 @@ public partial class ProjectBoard
             var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, status);
             State.UpdateTask(updated);
 
-            await ProjectHubClient.SendUpdatedTaskAsync(State.Model!.Project!.Id, task.Id);
+            ProjectHubClient?.SendUpdatedTaskAsync(State.Model!.Project!.Id, task.Id).Forget();
         }
     }
 }

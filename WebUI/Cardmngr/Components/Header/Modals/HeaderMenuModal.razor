@@ -5,13 +5,13 @@
 <Cardmngr.Components.Modals.MyBlazored.Offcanvas ShowCloseBtn="false"
     Class="my-offcanvas my-offcanvas-left" Style="max-width: 300px;">
     <OffcanvasHeader>
-        <a class="text-dark fw-bold fs-4 ms-3" href="/">
+        <a class="text-dark fw-bold fs-4 ms-3 user-select-none" href="/">
             <Icon Name="IconName.Stack" />
             Карточки
         </a>
     </OffcanvasHeader>
     <OffcanvasBody Class="d-flex flex-column">
-        <Button Color="ButtonColor.Light" 
+        <Button Color="ButtonColor.Light" class="mb-2"
             @onclick="@(() => NavigationManager.NavigateTo("/"))">
             <b>На главную</b>
         </Button>
@@ -36,9 +36,9 @@
 @code {
     [Parameter] public IEnumerable<Project>? UserProjects { get; set; }
 
-    private bool logoutHover;
+    bool logoutHover;
 
-    private async Task LogoutAsync()
+    async Task LogoutAsync()
     {
         if (AuthenticationState is { })
         {            
