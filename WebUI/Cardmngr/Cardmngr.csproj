@@ -42,7 +42,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Typescript Config (Debug)">
-    <TypeScriptRemoveComments>false</TypeScriptRemoveComments>
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
   </PropertyGroup>
 

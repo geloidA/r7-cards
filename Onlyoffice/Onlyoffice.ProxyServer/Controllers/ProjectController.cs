@@ -106,8 +106,11 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
     public async Task CreateTaskWithStatus(int projectId)
     {
         var body = await ConvertStreamToDynamicAsync(HttpContext.Request.Body);
+        var state = (TaskUpdateData)body.state.ToObject<TaskUpdateData>();
+
         var cookieCollection = HttpContext.Request.Cookies;
-        var task = await CreateTaskAsync(projectId, body.state.ToObject<TaskUpdateData>(), cookieCollection); // TODO: refactor
+
+        var task = await CreateTaskAsync(projectId, state, cookieCollection);
         var response = await UpdateTaskStatus(task.Id, (int)body.status, (int?)body.statusId, cookieCollection);
         var str = await response.Content.ReadAsStringAsync();
 

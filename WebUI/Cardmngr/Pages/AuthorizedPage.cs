@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Cardmngr.Application.Extensions;
 
 namespace Cardmngr;
 
@@ -23,8 +25,7 @@ public abstract class AuthorizedPage : ComponentBase
                 NavigationManager.NavigateTo("login");
                 return;
             }
-            IdOnInitialization = user.User.FindFirst("UserId")?.Value 
-                ?? throw new NullReferenceException("UserId not found");
+            IdOnInitialization = user.User.GetNameIdentifier();
         }
     }
 }

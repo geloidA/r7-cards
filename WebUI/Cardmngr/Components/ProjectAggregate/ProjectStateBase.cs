@@ -127,9 +127,9 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState
         OnSubtasksChanged();
     }
 
-    public void UpdateSubtask(int taskId, Subtask subtask)
+    public void UpdateSubtask(Subtask subtask)
     {
-        var task = Model!.Tasks.Single(x => x.Id == taskId);
+        var task = Model!.Tasks.Single(x => x.Id == subtask.TaskId);
         task.Subtasks.RemoveSingle(x => x.Id == subtask.Id);
         task.Subtasks.Add(subtask);
         OnSubtasksChanged();

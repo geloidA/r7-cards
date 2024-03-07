@@ -8,7 +8,7 @@ public class TaskUpdateDataValidator : AbstractValidator<TaskUpdateData>
     public TaskUpdateDataValidator()
     {
         RuleFor(x => x.Deadline)
-            .GreaterThan(x => x.StartDate)
+            .GreaterThanOrEqualTo(x => x.StartDate)
             .WithMessage("Крайний срок меньше дня начала");
             
         RuleFor(x => x.Title)

@@ -6,8 +6,7 @@
 
 <PageTitle>Мои задачи</PageTitle>
 
-@if (IsAuthenticated)
-{    
+<AuthorizeView>
     <div class="d-flex flex-column p-2" style="overflow-y: auto; overflow-x: hidden;">
         <CascadingValue Value="this" IsFixed="true">            
             <CascadingValue Value="IdOnInitialization" Name="UserId" IsFixed="true" >
@@ -31,4 +30,4 @@
             <div class="ms-2">Здесь будут появляться проекты, в которых есть ваши задачи.</div>
         </i>
     </div>
-}
+</AuthorizeView>

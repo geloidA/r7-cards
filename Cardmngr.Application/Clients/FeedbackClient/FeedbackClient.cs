@@ -9,7 +9,7 @@ namespace Cardmngr.Application.Clients.FeedbackClient;
 
 public class FeedbackClient(IHttpClientFactory httpClientFactory, AuthenticationStateProvider authenticationStateProvider) : IFeedbackClient
 {
-    private readonly string userGuid = authenticationStateProvider.ToCookieProvider()["UserId"];
+    private readonly string userGuid = authenticationStateProvider.ToCookieProvider().UserId;
     private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
 
     public async Task<Feedback> CreateFeedbackAsync(FeedbackCreateRequestData data)

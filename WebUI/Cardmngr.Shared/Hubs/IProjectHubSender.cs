@@ -1,6 +1,4 @@
-﻿using Cardmngr.Domain.Entities;
-
-namespace Cardmngr.Shared.Hubs;
+﻿namespace Cardmngr.Shared.Hubs;
 
 public interface IProjectHubSender
 {

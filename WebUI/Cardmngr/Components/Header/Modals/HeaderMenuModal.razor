@@ -15,9 +15,13 @@
             @onclick="@(() => NavigationManager.NavigateTo("/"))">
             <b>На главную</b>
         </Button>
-        <Button Color="ButtonColor.Light" 
+        <Button Color="ButtonColor.Light" class="mb-2" 
             @onclick="@(() => NavigationManager.NavigateTo("/self-tasks"))">
             <b>Мои задачи</b>
+        </Button>
+        <Button Color="ButtonColor.Light" 
+            @onclick="@(() => NavigationManager.NavigateTo("/feedback-board"))">
+            <b>Пожелания и предложения</b>
         </Button>
         <div class="container h-100">
             <footer class="footer d-flex gradient-bg-vertical" >

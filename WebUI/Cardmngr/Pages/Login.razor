@@ -6,8 +6,8 @@
 <PageTitle>Вход</PageTitle>
 
 @code {
-    [CascadingParameter] private Task<AuthenticationState>? AuthenticationState { get; set; }
-    [CascadingParameter] private IModalService Modal { get; set; } = default!;
+    [CascadingParameter] Task<AuthenticationState>? AuthenticationState { get; set; }
+    [CascadingParameter] IModalService Modal { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -31,7 +31,7 @@
         }
     }
 
-    private async Task<ModalResult> ShowAuthentication()
+    async Task<ModalResult> ShowAuthentication()
     {
         var options = new ModalOptions
         {
@@ -40,6 +40,6 @@
             Position = ModalPosition.Middle
         };
 
-        return await Modal.Show<Components.Modals.AuthModal>("Авторизация 🪆", options).Result;
+        return await Modal.Show<Components.Modals.AuthModal>("Авторизация", options).Result;
     }
 }

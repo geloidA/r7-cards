@@ -28,7 +28,7 @@ public interface IProjectState
     void ToggleMilestone(Milestone milestone);
 
     void AddSubtask(int taskId, Subtask subtask);
-    void UpdateSubtask(int taskId, Subtask subtask);
+    void UpdateSubtask(Subtask subtask);
     void RemoveSubtask(int taskId, int subtaskId);
 }
 

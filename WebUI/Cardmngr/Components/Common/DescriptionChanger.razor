@@ -13,6 +13,7 @@
                 @if (EditMode)
                 {
                     <textarea @ref="Input" @bind="Description" @onfocusout="ToggleEditMode"
+                        class="form-control"
                         style="height: 100%; resize:none; min-height:150px;" />
                 }
                 else

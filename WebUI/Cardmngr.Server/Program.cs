@@ -1,10 +1,7 @@
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using Cardmngr.Server.AppInfoApi.Service;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Server.Extensions;
-using Cardmngr.Server.FeedbackApi.Service;
-using Cardmngr.Server.Hubs;
 using Microsoft.AspNetCore.ResponseCompression;
 using Serilog;
 
@@ -26,10 +23,7 @@ builder.Services.AddControllers();
 
 ConfigureFeedbackDirectory(builder.Configuration);
 
-builder.Services
-    .AddSingleton<GroupManager>()
-    .AddScoped<IFeedbackService, FeedbackService>()
-    .AddScoped<IAppInfoService, AppInfoService>();
+builder.Services.AddCardmngrServices();
 
 builder.WebHost.UseKestrel(opt => 
 {
@@ -46,6 +40,8 @@ builder.WebHost.UseKestrel(opt =>
     });
 });
 
+builder.Services.AddAuthentication();
+
 var app = builder.Build();
 
 if (app.Environment.IsProduction())
@@ -55,16 +51,17 @@ if (app.Environment.IsProduction())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-
-app.UseBlazorFrameworkFiles();
-app.UseStaticFiles();
-
-app.MapControllers();
-app.MapRazorPages();
+app.UseHttpsRedirection()
+   .UseBlazorFrameworkFiles()
+   .UseStaticFiles();
 
 app.MapHubs();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapRazorPages();
+app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();

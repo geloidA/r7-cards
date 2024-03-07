@@ -29,7 +29,7 @@ public partial class SubtaskView
 
         var updated = await SubtaskClient.UpdateSubtaskStatusAsync(Task.Id, Id, (Status)Subtask.Status);
         
-        State.UpdateSubtask(Task.Id, updated);
+        State.UpdateSubtask(updated);
     }
 
     private async Task DeleteSubtask()
@@ -42,7 +42,7 @@ public partial class SubtaskView
     private async Task Submit()
     {
         var updated = await SubtaskClient.UpdateAsync(Task.Id, Id, Subtask);
-        State.UpdateSubtask(Task.Id, updated);
+        State.UpdateSubtask(updated);
         await UpdateCallback.InvokeAsync();
         await EditModeChanged.InvokeAsync(false);
         isEditMode = false;

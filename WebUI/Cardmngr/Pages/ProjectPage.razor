@@ -5,9 +5,7 @@
 @inject IProjectApi ProjectApi
 
 <PageTitle>Проект</PageTitle>
-
-@if (IsAuthenticated)
-{
+<AuthorizeView>
     <MutableProjectState Id="ProjectId ?? 0" >
         <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
             <div class="mb-2">
@@ -18,7 +16,7 @@
             </div>
         </div>
     </MutableProjectState>
-}
+</AuthorizeView>
 
 @code {
     [Parameter] public int? ProjectId { get; set; }

@@ -3,8 +3,7 @@
 
 <PageTitle>Обратная связь</PageTitle>
 
-@if (IsAuthenticated)
-{
+<AuthorizeView>
     <div class="row d-flex position-relative mb-5 detal-background" style="flex: auto !important;">        
         <div class="col d-flex flex-column">
             <FeedbacksState>
@@ -25,4 +24,4 @@
             </Callout>
         </div>
     </div>
-}
+</AuthorizeView>

@@ -14,6 +14,7 @@ public sealed partial class StaticProjectState : ProjectStateBase, IRefresheable
     private string CssHeight => isCollapsed 
         ? "min-height: 50px;" 
         : "max-height: 850px; min-height: 850px;";
+
     [Parameter] public ProjectStateVm? ViewModel { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
 

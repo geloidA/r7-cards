@@ -23,7 +23,7 @@ public class ProjectBoardHub(GroupManager groupManager) : Hub<IProjectHubReceive
         await Groups.AddToGroupAsync(Context.ConnectionId, projectId.ToString());
         await Clients.OthersInGroup(projectId.ToString()).JoinGroupMemberAsync(userId);
 
-        groupManager.Add(projectId, userId, Context.ConnectionId);
+        groupManager.Add(Context.ConnectionId, (userId, projectId));
     }
 
     public async Task LeaveFromProjectBoard(int projectId, string userId)

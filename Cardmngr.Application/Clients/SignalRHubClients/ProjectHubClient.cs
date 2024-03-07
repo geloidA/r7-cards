@@ -1,12 +1,13 @@
 ﻿using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Shared.Hubs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Onlyoffice.Api.Providers;
 
 namespace Cardmngr.Application.Clients.SignalRHubClients;
 
-public class ProjectHubClient : IAsyncDisposable
+public sealed class ProjectHubClient : IAsyncDisposable
 {
     private readonly string userIdentity;
     private readonly ITaskClient taskClient;
@@ -19,13 +20,12 @@ public class ProjectHubClient : IAsyncDisposable
         CookieStateProvider authStateProvider)
     {
         connection = new HubConnectionBuilder()
-            .WithUrl(navigationManager.ToAbsoluteUri("/hubs/projectboard"))
+            .WithUrl(navigationManager.ToAbsoluteUri(HubPatterns.ProjectBoard))
             .Build();
 
         RegisterHandlers(connection);
 
-        userIdentity = authStateProvider.UserInfo?.Id 
-            ?? throw new UnauthorizedAccessException("User is not logged in");
+        userIdentity = authStateProvider.UserId;
 
         this.projectId = projectId;
         this.taskClient = taskClient;
@@ -77,7 +77,7 @@ public class ProjectHubClient : IAsyncDisposable
 
     public async Task StartAsync()
     {
-        await connection.StartAsync();        
+        await connection.StartAsync();
         await connection.SendAsync("JoinToProjectBoard", projectId, userIdentity);
 
         var members = await connection.InvokeAsync<string[]>("GetConnectedMembers", projectId);

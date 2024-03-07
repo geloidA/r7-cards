@@ -1,13 +1,15 @@
 ﻿@inherits SingleValueChangerBase
 
-<div class="row">
+<div class="row p-1">
     <div class="col">
         @Title
+    </div>
+    <div class="col d-flex justify-content-end">
         @if (EditMode)
         {
-            <input @ref="Input" type="date" class="ms-2" @bind="Date"
+            <input @ref="Input" type="date" class="form-control" @bind="Date"
                 @onfocusout="ToggleEditMode"
-                style="max-width: 150px;" id="@InputId" />
+                style="max-width: 150px; max-height: 25px;" id="@InputId" />
         }
         else
         {

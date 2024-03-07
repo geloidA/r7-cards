@@ -1,5 +1,8 @@
-﻿@inject ILocalStorageService LocalStorage
+﻿@using System.Security.Claims
+
+@inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthenticationProvider
+@inject MyNotificationService NotificationService
 @inject IAuthApiLogic AuthApiLogic
 @inject AppInfoService AppInfoService
 @inject IJSRuntime JS
@@ -25,14 +28,16 @@
     private async Task OnNavigateAsync(NavigationContext args)
     {
         var auth =  await LocalStorage.GetItemAsync<string>("isauthenticated");
-        var user = (await (AuthenticationProvider as CookieStateProvider)!.GetAuthenticationStateAsync()).User;
+        var user = await AuthenticationProvider.GetAuthenticationStateAsync();
 
-        if (!string.IsNullOrEmpty(auth) && !user.Identity!.IsAuthenticated)
+        if (!string.IsNullOrEmpty(auth) && !user.User.Identity!.IsAuthenticated)
         {
             var userDao = await AuthApiLogic.GetSelfProfileAsync();
             if (userDao is { })
             {
-                (AuthenticationProvider as CookieStateProvider)!.SetAuthInfo(userDao.Response!);
+                AuthenticationProvider
+                    .ToCookieProvider()
+                    .SetAuthInfo(userDao.Response!);
             }
             else 
             {
@@ -44,8 +49,32 @@
 
     protected override async Task OnInitializedAsync()
     {
+        AuthenticationProvider.AuthenticationStateChanged += RequestPermission;
+        NotificationService.TaskReceived += ReceiveTask;
         var appVersion = await AppInfoService.GetVersionAsync();
         
         await JS.InvokeVoidAsync("updateVersion", appVersion);
+    }
+
+    private async void RequestPermission(Task<AuthenticationState> authState)
+    {
+        var state = await authState;
+
+        if (state.User.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
+        {
+            if (NotificationService.HasConnection)
+            {
+                await NotificationService.DisposeAsync();
+            }
+
+            var userId = state.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            @* await NotificationService.TryRequestPermissionAsync(userId); *@
+        }
+    }
+
+    private void ReceiveTask(OnlyofficeTask task)
+    {
+        
     }
 }
