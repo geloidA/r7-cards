@@ -10,6 +10,8 @@
 *.userosscache
 *.sln.docstates
 
+WebUI/data/feedback/counter
+WebUI/data/feedback/feedbacks.json
 log*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
@@ -345,3 +347,7 @@ healthchecksdb
 
 # Auto-generated JS files from typescript
 Cardmngr/wwwroot/js/GeneratedJS/
+WebUI/data/feedback/counter
+WebUI/data/feedback/feedbacks.json
+WebUI/data/feedback/feedbacks.json
+WebUI/data/feedback/counter

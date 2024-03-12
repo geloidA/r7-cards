@@ -6,30 +6,28 @@
 
 <PageTitle>Главная</PageTitle>
 
-<AuthorizeView>
-    <div class="h-100 w-100 detal-background" >
-        <div class="row w-100 h-100">
-            <div class="col d-flex align-items-end">
-                <Button style="margin-bottom: 4em;" class="p-1" Outline="true" Color="ButtonColor.Dark"
-                    @onclick="@(() => NavigationManager.NavigateTo("feedback-board"))">
-                    <span style="font-size: 20px;" class="fw-lighter user-select-none" >
-                        <Icon Name="IconName.Lightbulb" />
-                        Пожелания и предложения
-                    </span>
-                </Button>                
-            </div>
-            <div class="col d-flex align-items-center">
-                <div class="row">
-                    <div class="col">
-                        <UserProjectsView UserProjects="userProjects" Class="bg-shadow" MaxHeight="500" />
-                    </div>
+<div class="h-100 w-100 detal-background" >
+    <div class="row w-100 h-100">
+        <div class="col d-flex align-items-end">
+            <Button style="margin-bottom: 4em;" class="p-1" Outline="true" Color="ButtonColor.Dark"
+                @onclick="@(() => NavigationManager.NavigateTo("feedback-board"))">
+                <span style="font-size: 20px;" class="fw-lighter user-select-none" >
+                    <Icon Name="IconName.Lightbulb" />
+                    Пожелания и предложения
+                </span>
+            </Button>                
+        </div>
+        <div class="col d-flex align-items-center">
+            <div class="row">
+                <div class="col">
+                    <UserProjectsView UserProjects="userProjects" Class="bg-shadow" MaxHeight="500" />
                 </div>
             </div>
-            <div class="col">
-            </div>
+        </div>
+        <div class="col">
         </div>
     </div>
-</AuthorizeView>
+</div>
 
 @code {
     private List<Project>? userProjects;

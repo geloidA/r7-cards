@@ -7,6 +7,7 @@ using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Shared.Extensions;
 using BlazorBootstrap;
+using Cardmngr.Notification;
 
 namespace Cardmngr.Components.TaskAggregate.Modals;
 
@@ -17,7 +18,8 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     private bool CanEdit => Model == null || Model.CanEdit;
 
     [Inject] ITaskClient TaskClient { get; set; } = null!;
-    [Inject] ToastService ToastService { get; set; } = null!;
+    [Inject] ToastService ToastService { get; set; } = null!;    
+    [Inject] NotificationHubConnection NotificationHubConnection { get; set; } = null!;
 
     [Parameter] public IRefresheableProjectState State { get; set; } = null!;
     [Parameter] public ProjectHubClient? ProjectHubClient { get; set; } // refactor this
@@ -55,9 +57,9 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
             { 
                 Message = "Задача была изменена кем-то другим",
                 Title = "Задача изменена.",
-                IconName = IconName.Lamp,
-
+                IconName = IconName.Lamp
             });
+
             currentModal.CloseAsync().Forget();
         }
     }
@@ -86,6 +88,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
             State.AddTask(created);
 
             ProjectHubClient?.SendCreatedTaskAsync(State.Model.Project.Id, created.Id).Forget();
+            NotificationHubConnection.NotifyAboutCreatedTaskAsync(created).Forget();
         }
         else
         {

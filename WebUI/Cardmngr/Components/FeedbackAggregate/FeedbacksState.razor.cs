@@ -2,7 +2,6 @@
 using Cardmngr.Application.Clients.FeedbackClient;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Domain.Enums;
-using Cardmngr.Domain.Feedback;
 using Cardmngr.Shared.Feedbacks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -10,7 +9,7 @@ using Onlyoffice.Api.Providers;
 
 namespace Cardmngr.Components.FeedbackAggregate;
 
-public partial class FeedbacksState
+public partial class FeedbacksState : ComponentBase
 {
     private UserInfo? currentUser;
 

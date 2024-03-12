@@ -7,7 +7,6 @@ public abstract class ClientsManager<TKey, TValue>
     where TValue : notnull
 {    
     private readonly ConcurrentDictionary<TKey, TValue> keyValuePairs = [];
-    private readonly ConcurrentDictionary<TValue, TKey> valueKeyPairs = [];
 
     public IEnumerable<KeyValuePair<TKey, TValue>> ValuePairs
     {
@@ -18,29 +17,35 @@ public abstract class ClientsManager<TKey, TValue>
         }
     }
 
-    public bool ContainsValue(TValue val) => valueKeyPairs.ContainsKey(val);
+    public int Count => keyValuePairs.Count;
 
-    public bool TryGetKeyByValue(TValue val, out TKey? key)
-    {
-        var res = valueKeyPairs.TryGetValue(val, out var data);
-        key = data;
-        return res;
-    }
+    public bool ContainsKey(TKey key) => keyValuePairs.ContainsKey(key);
 
     public void Add(TKey key, TValue value)
     {
         keyValuePairs.TryAdd(key, value);
-        valueKeyPairs.TryAdd(value, key);
     }
 
     public bool Remove(TKey key)
     {
         if (keyValuePairs.TryRemove(key, out var value))
         {
-            valueKeyPairs.TryRemove(value, out _);
             return true;
         }
         return false;
+    }
+
+    public TValue this[TKey key]
+    {
+        get
+        {
+            return keyValuePairs[key];
+        }
+
+        set
+        {
+            keyValuePairs[key] = value;
+        }
     }
 
     public bool TryGet(TKey key, out TValue? data) => keyValuePairs.TryGetValue(key, out data);

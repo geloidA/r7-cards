@@ -1,80 +1,14 @@
-﻿@using System.Security.Claims
-
-@inject ILocalStorageService LocalStorage
-@inject AuthenticationStateProvider AuthenticationProvider
-@inject MyNotificationService NotificationService
-@inject IAuthApiLogic AuthApiLogic
-@inject AppInfoService AppInfoService
-@inject IJSRuntime JS
-
-<CascadingAuthenticationState>
-    <CascadingBlazoredModal>
-        <Router AppAssembly="@typeof(App).Assembly" OnNavigateAsync="OnNavigateAsync">
-            <Found Context="routeData">
-                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-                <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-            </Found>
-            <NotFound>
-                <PageTitle>Not found</PageTitle>
-                <LayoutView Layout="@typeof(MainLayout)">
-                    <p role="alert">Sorry, there's nothing at this address.</p>
-                </LayoutView>
-            </NotFound>
-        </Router>
-    </CascadingBlazoredModal>
-</CascadingAuthenticationState>
-
-@code {
-    private async Task OnNavigateAsync(NavigationContext args)
-    {
-        var auth =  await LocalStorage.GetItemAsync<string>("isauthenticated");
-        var user = await AuthenticationProvider.GetAuthenticationStateAsync();
-
-        if (!string.IsNullOrEmpty(auth) && !user.User.Identity!.IsAuthenticated)
-        {
-            var userDao = await AuthApiLogic.GetSelfProfileAsync();
-            if (userDao is { })
-            {
-                AuthenticationProvider
-                    .ToCookieProvider()
-                    .SetAuthInfo(userDao.Response!);
-            }
-            else 
-            {
-                Console.WriteLine("Can't authenticate");
-                await LocalStorage.RemoveItemAsync("isauthenticated");
-            }
-        }
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        AuthenticationProvider.AuthenticationStateChanged += RequestPermission;
-        NotificationService.TaskReceived += ReceiveTask;
-        var appVersion = await AppInfoService.GetVersionAsync();
-        
-        await JS.InvokeVoidAsync("updateVersion", appVersion);
-    }
-
-    private async void RequestPermission(Task<AuthenticationState> authState)
-    {
-        var state = await authState;
-
-        if (state.User.HasClaim(x => x.Type == ClaimTypes.NameIdentifier))
-        {
-            if (NotificationService.HasConnection)
-            {
-                await NotificationService.DisposeAsync();
-            }
-
-            var userId = state.User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-
-            @* await NotificationService.TryRequestPermissionAsync(userId); *@
-        }
-    }
-
-    private void ReceiveTask(OnlyofficeTask task)
-    {
-        
-    }
-}
+﻿<CascadingBlazoredModal>
+    <Router AppAssembly="@typeof(App).Assembly" OnNavigateAsync="OnNavigateAsync">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingBlazoredModal>

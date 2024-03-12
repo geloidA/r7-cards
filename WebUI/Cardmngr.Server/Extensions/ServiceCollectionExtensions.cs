@@ -10,7 +10,6 @@ public static class ServiceCollectionExtensions
     {
         return collection
             .AddSingleton<GroupManager>()
-            .AddSingleton<NotificationManager>()
             .AddScoped<IFeedbackService, FeedbackService>()
             .AddScoped<IAppInfoService, AppInfoService>();
     }

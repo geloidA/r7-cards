@@ -1,4 +1,6 @@
 ﻿using Blazored.Modal;
+using Cardmngr.Notification;
+using Cardmngr.Services;
 using Cardmngr.Shared.Feedbacks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -34,6 +36,14 @@ public static class ServicesExtensions
             .AddScoped<FeedbackUpdateDataValidator>()
             .AddScoped<TaskUpdateDataValidator>()
             .AddScoped<MilestoneUpdateDataValidator>();
+    }
+
+    public static IServiceCollection AddNotifications(this IServiceCollection services)
+    {
+        return services
+            .AddSingleton<NotificationHubConnection>()
+            .AddScoped<NotificationService>()
+            .AddScoped<NotificationJSModule>();
     }
 
     public static void ConfigureHttpClients(this WebAssemblyHostBuilder builder)    

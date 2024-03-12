@@ -1,8 +1,6 @@
 ﻿using Cardmngr.Application.Clients;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Application.Clients.TaskClient;
-using Cardmngr.Domain.Entities;
-using Cardmngr.Services;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -23,7 +21,6 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
     [Inject] ITaskClient TaskClient { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
     [Inject] public RefreshService RefreshService { get; set; } = null!;
-    [Inject] MyNotificationService NotificationService { get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
 
     protected override void OnInitialized()
@@ -68,15 +65,7 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
         client.OnDeletedTask += RemoveTask;
         client.OnCreatedTask += AddTask;
 
-        client.OnCreatedTask += SendNotifications;
-        client.OnUpdatedTask += SendNotifications;
-
         return client;
-    }
-
-    private async void SendNotifications(OnlyofficeTask task)
-    {
-        await NotificationService.SendTaskAsync(task);
     }
 
     public async ValueTask DisposeAsync()
