@@ -10,7 +10,6 @@ using Blazored.LocalStorage;
 using Cardmngr.Services;
 using Cardmngr.Application.Extensions;
 using KolBlazor.Extensions;
-using Cardmngr.Utils.DetailsModal;
 using Cardmngr.Utils;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -22,9 +21,9 @@ builder.Services
     .AddScoped<CookieHandler>()
     .AddScoped<IAuthApiLogic, AuthApiLogic>()
     .AddScoped<AppInfoService>()
+    .AddSingleton<TagColorGetter>()
     .AddTransient<RefreshService>()
     .ConfigureServices()
-    .AddSingleton<DetailsModalManager>()
     .AddScoped<TeamMemberSelectionDialog>()
     .AddBlazoredModal()
     .AddKolBlazor()

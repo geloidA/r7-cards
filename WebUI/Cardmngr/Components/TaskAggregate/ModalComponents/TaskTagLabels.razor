@@ -1,0 +1,56 @@
+﻿<Card >
+    <CardBody class="d-flex flex-column" style="overflow-y: scroll; max-height: 200px;">
+        <CardTitle>
+            <div class="row d-flex align-items-center">
+                <div class="col-md-11 fs-6"> 
+                    <Icon Name="IconName.Tags" />
+                    Метки
+                </div>
+                <div class="col-md-1 d-flex align-items-center justify-content-end" >
+                    <Dropdown @ref="dropdown" OnHidden="ClearSearchText" Size="Size.ExtraSmall" 
+                        class="position-static user-select-none" Disabled="Disabled"
+                        AutoClose="true" AutoCloseBehavior="DropdownAutoCloseBehavior.Outside">
+                        <DropdownToggleButton>
+                            <Icon Name="IconName.Plus" />
+                        </DropdownToggleButton>
+                        <DropdownMenu Class="p-3" Style="width: 320px; max-height: 400px;">
+                            <div class="d-flex align-items-center" style="font-size: small;">
+                                <span style="font-size: x-small;">Новая метка</span>
+                                <input @bind="newTagText" @bind:event="oninput" class="form-control" />
+                                <Button class="ms-1 p-0" style="height: 38px;" Outline="true" Size="Size.ExtraSmall" 
+                                    @onclick="CreateTag" Color="ButtonColor.Success" >
+                                    <Icon Name="IconName.Plus" Size="IconSize.x6" />
+                                </Button>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 overflow-auto mt-2 bg-light p-3" style="max-height: 150px; border-radius: 5px;">
+                                @foreach (var tag in SearchTags)
+                                {
+                                    <div class="clickable" @onclick="() => AddTag(tag)">
+                                        <TaskTagLabel Tag="tag" Color="TagColorGetter.GetColor(tag)" />
+                                    </div>
+                                }
+                            </div>
+                        </DropdownMenu>
+                    </Dropdown>
+                </div>
+            </div>
+        </CardTitle>
+    </CardBody>
+    <div class="d-flex flex-wrap gap-1 px-3" style="padding-bottom: 10px;">
+        @if (TaskTags is { } && TaskTags.Count > 0)
+        {
+            @foreach (var tag in TaskTags)
+            {
+                <div class="d-flex align-items-center">
+                    <TaskTagLabel Tag="@tag" Color="@TagColorGetter.GetColor(tag)" />
+                    <Icon Name="IconName.X" class="@(tag.CanEdit ? "clickable" : "")" 
+                        @onclick="() => RemoveTag(tag)" />
+                </div>
+            }
+        }
+        else
+        {
+            <span class="user-select-none text-secondary">Список пуст</span>
+        }
+    </div>
+</Card>

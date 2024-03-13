@@ -1,8 +1,16 @@
 ﻿@if (responsibles is { })
 {
-    <Card>
+    <div class="row">
+        <div class="col-4">
+        </div>
+        <div class="col d-flex justify-content-end">
+            <Icon Name="IconName.Search" class="align-self-center" />
+            <input class="form-control ms-2" @bind="searchText" @bind:event="oninput" />
+        </div>
+    </div>
+    <Card class="mt-2">
         <CardBody style="max-height: 250px; overflow-y: scroll;">
-            @foreach (var responsible in responsibles)
+            @foreach (var responsible in responsibles.Where(x => x.Value.DisplayName.Contains(searchText)))
             {
                 <div @key="responsible.Value.Id" class="d-flex flex-row py-2 align-items-center">
                     <InputCheckbox class="form-check-input clickable" @bind-Value="responsible.Checked" />
@@ -28,10 +36,11 @@
 }
 else
 {
-    <span>Загрузка</span>
+    <span>Загрузка...</span>
 }
 
 @code {
+    string searchText = "";
     [CascadingParameter] BlazoredModalInstance Modal { get; set; } = default!;
     List<SelectionUser>? responsibles;
 

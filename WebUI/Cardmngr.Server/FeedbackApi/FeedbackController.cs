@@ -60,6 +60,24 @@ public class FeedbackController(IFeedbackService feedbackService) : Controller
         return Created("", created);
     }
 
+    [HttpPost("like/{add}/{feedbackId}")]
+    public async Task<ActionResult<Feedback>> ToggleLikeFeedbackAsync(int feedbackId, bool add)
+    {
+        logger.Information("ToggleLikeFeedback. Id: {feedbackId}", feedbackId);
+
+        var feedback = await feedbackService.FindFeedbackAsync(feedbackId);
+
+        if (feedback == null) 
+        {
+            logger.Information($"Can't find feedback by id - {feedbackId}");
+            return NotFound($"Can't find feedback by id - {feedbackId}");
+        }
+
+        var updated = await feedbackService.ToggleFeedbackLikeAsync(feedback, add);
+
+        return Ok(updated);
+    }
+
     [HttpPut("{requestGuid}/{id}")]
     public async Task<ActionResult<Feedback>> UpdateFeedback(string requestGuid, int id, [FromBody] FeedbackUpdateData data)
     {

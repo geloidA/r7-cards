@@ -17,6 +17,12 @@
             </OffcanvasHeader>
             <ValidationMessage For="() => buffer.Title" class="ms-3 validation-msg" />
             <OffcanvasBody Class="d-flex flex-column form-group">
+                @if (Model is { })
+                {
+                    <i style="font-size: 13px; margin-right: 5px;" class="d-flex mb-2 justify-content-end text-secondary">
+                        Создатель: @Model.CreatedBy.DisplayName
+                    </i>
+                }
                 <TaskPriorityChanger Task="buffer" Disabled="@(!CanEdit)" />
                 <Card class="p-1 mt-2">
                     <DateChanger Title="Дата начала:"
@@ -40,6 +46,11 @@
                     @if (!IsAdd)
                     {                        
                         <CascadingValue Value="Model" IsFixed="true">
+                            <CascadingValue Value="TaskTags" IsFixed="true">
+                                <div class="pb-2">
+                                    <TaskTagLabels Disabled="@(!CanEdit)" />
+                                </div>
+                            </CascadingValue>
                             <TaskSubtasks />
                         </CascadingValue>
                     }

@@ -58,6 +58,21 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
         throw new Exception(response.ReasonPhrase);
     }
 
+    public async Task<Feedback?> ToggleFeedbackLikeAsync(int feedbackId, bool add)
+    {
+        using var client = httpClientFactory.CreateClient("self-api-cookie");
+
+        var response = await client.PostAsync($"api/feedback/like/{add}/{feedbackId}", null);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<Feedback>()
+                ?? throw new NullReferenceException("Something went wrong while toggling feedback like");
+        }
+
+        return null;
+    }
+
     public async Task<Feedback?> UpdateFeedbackAsync(int feedbackId, FeedbackUpdateData data)
     {
         using var client = httpClientFactory.CreateClient("self-api-cookie");

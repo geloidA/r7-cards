@@ -2,6 +2,7 @@
 using Cardmngr.Notification;
 using Cardmngr.Services;
 using Cardmngr.Shared.Feedbacks;
+using Cardmngr.Validators;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Onlyoffice.Api.Handlers;
@@ -33,6 +34,7 @@ public static class ServicesExtensions
     public static IServiceCollection AddValidators(this IServiceCollection services)
     {
         return services
+            .AddScoped<LoginDataValidator>()
             .AddScoped<FeedbackUpdateDataValidator>()
             .AddScoped<TaskUpdateDataValidator>()
             .AddScoped<MilestoneUpdateDataValidator>();

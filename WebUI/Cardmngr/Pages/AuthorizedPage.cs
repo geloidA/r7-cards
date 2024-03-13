@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Cardmngr.Application.Extensions;
 
 namespace Cardmngr;
 
-[Authorize]
 public abstract class AuthorizedPage : ComponentBase
 {
     protected bool IsAuthenticated { get; private set; }

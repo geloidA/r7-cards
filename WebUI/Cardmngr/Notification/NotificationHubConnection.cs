@@ -59,8 +59,18 @@ public sealed class NotificationHubConnection(IServiceProvider serviceProvider) 
 
     private void ReceiveTaskAsync(OnlyofficeTask task) => TaskReceived?.Invoke(task);
 
-    public Task NotifyAboutCreatedTaskAsync(OnlyofficeTask task)
-        => connection?.SendAsync(nameof(NotifyAboutCreatedTaskAsync), task, lastUserId) ?? Task.CompletedTask;
+    public async Task NotifyAboutCreatedTaskAsync(OnlyofficeTask task)
+    {
+        if (connection is { })
+        {
+            if (connection.State == HubConnectionState.Disconnected)
+            {
+                await ReconnectAsync();
+            }
+
+            await connection.SendAsync(nameof(NotifyAboutCreatedTaskAsync), task, lastUserId);
+        }
+    }
 
     public ValueTask DisposeAsync()
     {

@@ -6,16 +6,18 @@
 
 <PageTitle>Проект</PageTitle>
 
-<MutableProjectState Id="ProjectId ?? 0" >
-    <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
-        <div class="mb-2">
-            <ProjectBoardHeader></ProjectBoardHeader>
+<AuthorizeView>
+    <MutableProjectState Id="ProjectId ?? 0" >
+        <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
+            <div class="mb-2">
+                <ProjectBoardHeader></ProjectBoardHeader>
+            </div>
+            <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
+                <ProjectBoard></ProjectBoard>
+            </div>
         </div>
-        <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
-            <ProjectBoard></ProjectBoard>
-        </div>
-    </div>
-</MutableProjectState>
+    </MutableProjectState>
+</AuthorizeView>
 
 @code {
     [Parameter] public int? ProjectId { get; set; }

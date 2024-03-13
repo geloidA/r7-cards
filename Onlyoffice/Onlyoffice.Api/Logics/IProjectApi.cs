@@ -239,4 +239,18 @@ public interface IProjectApi
     /// <param name="milestoneId"></param>
     /// <returns>Milestone</returns>
     Task<MilestoneDto> GetMilestoneByIdAsync(int milestoneId);
+
+    /// <summary>
+    /// Returns a list of the comments for the task with the ID specified in the request.
+    /// </summary>
+    /// <remarks>
+    /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/get/api/2.0/project/task/%7btaskid%7d/comment"/>
+    /// </remarks>
+    /// <param name="taskId"></param>
+    /// <returns>Comments</returns>
+    IAsyncEnumerable<CommentDto> GetTaskCommentsAsync(int taskId);
+
+    Task<CommentDto> CreateTaskCommentAsync(int taskId, CommentUpdateData comment);
+
+    Task RemoveTaskCommentAsync(string commentId);
 }

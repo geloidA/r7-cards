@@ -8,6 +8,7 @@ using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Shared.Extensions;
 using BlazorBootstrap;
 using Cardmngr.Notification;
+using Cardmngr.Services;
 
 namespace Cardmngr.Components.TaskAggregate.Modals;
 
@@ -18,12 +19,14 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     private bool CanEdit => Model == null || Model.CanEdit;
 
     [Inject] ITaskClient TaskClient { get; set; } = null!;
-    [Inject] ToastService ToastService { get; set; } = null!;    
+    [Inject] TagColorGetter TagColorGetter { get; set; } = null!;
+    [Inject] ToastService ToastService { get; set; } = null!;
     [Inject] NotificationHubConnection NotificationHubConnection { get; set; } = null!;
 
     [Parameter] public IRefresheableProjectState State { get; set; } = null!;
-    [Parameter] public ProjectHubClient? ProjectHubClient { get; set; } // refactor this
+    [Parameter] public ProjectHubClient? ProjectHubClient { get; set; }
     [Parameter] public int TaskStatusId { get; set; }
+    [Parameter] public List<TaskTag>? TaskTags { get; set; }
 
     protected override void OnInitialized()
     {
@@ -107,6 +110,9 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
 
         if (answer.Confirmed)
         {
+            foreach (var tag in TaskTags ?? [])
+                TagColorGetter.RemoveTag(tag);
+
             await TaskClient.RemoveAsync(Model!.Id);
             State.RemoveTask(Model!.Id);
             

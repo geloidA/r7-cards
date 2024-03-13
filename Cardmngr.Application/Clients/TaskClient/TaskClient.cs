@@ -3,6 +3,7 @@ using Cardmngr.Domain.Entities;
 using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Logics;
 using Onlyoffice.Api.Models;
+using Cardmngr.Domain.Extensions;
 
 namespace Cardmngr.Application.Clients.TaskClient;
 
@@ -15,6 +16,12 @@ public class TaskClient(IProjectApi projectApi, IMapper mapper) : ITaskClient
     {
         var createdTask = await projectApi.CreateTaskAsync(projectId, task, (Status)task.Status!, task.CustomTaskStatus);
         return mapper.Map<OnlyofficeTask>(createdTask);
+    }
+
+    public async Task<TaskTag> CreateTagAsync(int taskId, string name)
+    {
+        var commentDto = await projectApi.CreateTaskCommentAsync(taskId, new CommentUpdateData { Content = name.ToCommentContent() });
+        return new TaskTag(commentDto.Id, name, commentDto.CanEdit);
     }
 
     public async Task<OnlyofficeTask> GetAsync(int entityId)
@@ -31,11 +38,33 @@ public class TaskClient(IProjectApi projectApi, IMapper mapper) : ITaskClient
         }
     }
 
+    public async IAsyncEnumerable<Comment> GetTaskCommentsAsync(int taskId)
+    {
+        await foreach (var comment in projectApi.GetTaskCommentsAsync(taskId))
+        {
+            yield return mapper.Map<Comment>(comment);
+        }
+    }
+
+    public async IAsyncEnumerable<TaskTag> GetTaskTagsAsync(int taskId)
+    {
+        await foreach (var comment in projectApi.GetTaskCommentsAsync(taskId))
+        {
+            if (comment.Text.TryParseToTagName(out var tagName))
+            {
+                yield return new TaskTag(comment.Id, tagName, comment.CanEdit);
+            }
+        }
+        yield break;
+    }
+
     public async Task<OnlyofficeTask> RemoveAsync(int taskId)
     {
         var taskDto = await projectApi.DeleteTaskAsync(taskId);
         return mapper.Map<OnlyofficeTask>(taskDto);
     }
+
+    public Task RemoveTagAsync(string tagId) => projectApi.RemoveTaskCommentAsync(tagId);
 
     public async Task<OnlyofficeTask> UpdateAsync(int taskId, TaskUpdateData task)
     {

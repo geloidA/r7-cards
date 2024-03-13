@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Application.Tests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Tests", "tests\Cardmngr.Tests\Cardmngr.Tests.csproj", "{65C4632E-EF7E-4B83-A8BE-E2041620DF6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Domain.Tests", "tests\Cardmngr.Domain.Tests\Cardmngr.Domain.Tests.csproj", "{6EBF0361-398E-4593-BC59-DD582133A3BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{65C4632E-EF7E-4B83-A8BE-E2041620DF6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65C4632E-EF7E-4B83-A8BE-E2041620DF6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65C4632E-EF7E-4B83-A8BE-E2041620DF6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EBF0361-398E-4593-BC59-DD582133A3BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EBF0361-398E-4593-BC59-DD582133A3BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EBF0361-398E-4593-BC59-DD582133A3BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EBF0361-398E-4593-BC59-DD582133A3BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +101,7 @@ Global
 		{C30C921F-7FD6-44B0-BEC2-368A86231F24} = {8A654A56-8728-41A7-ADB2-3567D139EE24}
 		{BDB52C86-076A-4F10-882C-996BDB06DB55} = {8A654A56-8728-41A7-ADB2-3567D139EE24}
 		{65C4632E-EF7E-4B83-A8BE-E2041620DF6E} = {8A654A56-8728-41A7-ADB2-3567D139EE24}
+		{6EBF0361-398E-4593-BC59-DD582133A3BE} = {8A654A56-8728-41A7-ADB2-3567D139EE24}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8D91AF76-3660-4B86-8114-3695A76CE202}

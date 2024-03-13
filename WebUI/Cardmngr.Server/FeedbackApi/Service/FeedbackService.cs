@@ -122,6 +122,27 @@ public class FeedbackService : IFeedbackService
         return developerGuid == guid || feedback.Creator.Id == guid;
     }
 
+    public async Task<Feedback?> ToggleFeedbackLikeAsync(Feedback feedback, bool add)
+    {
+        var feedbacks = await GetFeedbacksAsync();
+
+        if (!feedbacks.Remove(feedback))
+        {
+            throw new FeedbackNotFoundException(feedback);
+        }
+
+        var updated = feedback with 
+        { 
+            LikeCount = feedback.LikeCount + (add ? 1 : -1)
+        };
+        
+        feedbacks.Add(updated);
+
+        await WriteAllTextAsync(JsonConvert.SerializeObject(feedbacks));
+
+        return updated with { CanEdit = true };
+    }
+
     private async Task WriteAllTextAsync(string json)
     {
         await File.WriteAllTextAsync(feedbackFile, json);

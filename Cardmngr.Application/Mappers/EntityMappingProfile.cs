@@ -24,5 +24,6 @@ public class EntityMappingProfile : Profile
         CreateMap<UserDto, UserInfo>();
         CreateMap<UserProfileDto, UserProfile>();
         CreateMap<UserProfileDto, UserInfo>();
+        CreateMap<CommentDto, Comment>();
     }
 }

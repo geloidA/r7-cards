@@ -14,7 +14,9 @@
 </div>
 
 @code {
-    private IEnumerable<Feedback> Items => State.Model!.Feedbacks.Where(x => x.Status == Status);
+    private IEnumerable<Feedback> Items => State.Model!.Feedbacks
+        .Where(x => x.Status == Status)
+        .OrderByDescending(x => x.LikeCount);
 
     [Parameter] public RenderFragment? HeaderTemplate { get; set; }
     [Parameter, EditorRequired] public FeedbackStatus Status { get; set; }

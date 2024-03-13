@@ -39,70 +39,65 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
     [Route("api/[controller]/task/@self")]
     public Task ProxyGetSelfTasks() => ProxyRequestAsync($"{apiUrl}/project/task/@self");
 
-    [HttpPost]
-    [Route("api/[controller]/{projectId}/task")]
+    [HttpPost("api/[controller]/{projectId}/task")]
     public Task ProxyCreateTask(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/task");
 
-    [HttpDelete]
-    [Route("api/[controller]/task/{taskId}")]
+    [HttpDelete("api/[controller]/task/{taskId}")]
     public Task ProxyDeleteTask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
 
-    [HttpPut]
-    [Route("api/[controller]/task/{taskId}")]
+    [HttpPut("api/[controller]/task/{taskId}")]
     public Task ProxyUpdateTask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
 
-    [HttpGet]
-    [Route("api/[controller]/task/{taskId}")]
+    [HttpGet("api/[controller]/task/{taskId}")]
     public Task ProxyTaskById(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+
+    [HttpGet("api/[controller]/task/{taskId}/comment")]
+    public Task ProxyGetTaskComments(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/comment");
+
+    [HttpPost("api/[controller]/task/{taskId}/comment")]
+    public Task ProxyCreateTaskComment(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/comment");
+
+    [HttpDelete("api/[controller]/comment/{commentId}")]
+    public Task ProxyDeleteTaskComment(string commentId) => ProxyRequestAsync($"{apiUrl}/project/comment/{commentId}");
+
     
     #endregion
 
     #region Subtask Proxy
-    [HttpPut]
-    [Route("api/[controller]/task/{taskId}/{subtaskId}")]
+    [HttpPut("api/[controller]/task/{taskId}/{subtaskId}")]
     public Task ProxyUpdateSubtask(int taskId, int subtaskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/{subtaskId}");
 
-    [HttpPut]
-    [Route("api/[controller]/task/{taskId}/{subtaskId}/status")]
+    [HttpPut("api/[controller]/task/{taskId}/{subtaskId}/status")]
     public Task ProxyUpdateSubtaskStatus(int taskId, int subtaskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/{subtaskId}/status");
 
-    [HttpDelete]
-    [Route("api/[controller]/task/{taskId}/{subtaskId}")]
+    [HttpDelete("api/[controller]/task/{taskId}/{subtaskId}")]
     public Task ProxyDeleteSubtask(int taskId, int subtaskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/{subtaskId}");
 
-    [HttpPost]
-    [Route("api/[controller]/task/{taskId}")]
+    [HttpPost("api/[controller]/task/{taskId}")]
     public Task ProxyCreateSubtask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
     #endregion
 
     #region Milestone Proxy
-    [HttpGet]
-    [Route("api/[controller]/{projectId}/milestone")]
+    [HttpGet("api/[controller]/{projectId}/milestone")]
     public Task ProxyMilestones(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/milestone");
 
-    [HttpGet]
-    [Route("api/[controller]/milestone/{milestoneId}")]
+    [HttpGet("api/[controller]/milestone/{milestoneId}")]
     public Task ProxyMilestoneById(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}");
 
-    [HttpPost]
-    [Route("api/[controller]/{projectId}/milestone")]
+    [HttpPost("api/[controller]/{projectId}/milestone")]
     public Task ProxyCreateMilestone(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/milestone");
 
-    [HttpDelete]
-    [Route("api/[controller]/milestone/{milestoneId}")]
+    [HttpDelete("api/[controller]/milestone/{milestoneId}")]
     public Task ProxyDeleteMilestone(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}");
 
-    [HttpPut]
-    [Route("api/[controller]/milestone/{milestoneId}/status")]
+    [HttpPut("api/[controller]/milestone/{milestoneId}/status")]
     public Task ProxyUpdateMilestoneStatus(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}/status");
 
-    [HttpPut]
-    [Route("api/[controller]/milestone/{milestoneId}")]
+    [HttpPut("api/[controller]/milestone/{milestoneId}")]
     public Task ProxyUpdateMilestone(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}");
     #endregion
 
-    [HttpPost]
-    [Route("api/[controller]/{projectId}/task/status")]
+    [HttpPost("api/[controller]/{projectId}/task/status")]
     public async Task CreateTaskWithStatus(int projectId)
     {
         var body = await ConvertStreamToDynamicAsync(HttpContext.Request.Body);

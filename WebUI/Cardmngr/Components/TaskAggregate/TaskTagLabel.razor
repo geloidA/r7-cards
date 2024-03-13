@@ -1,0 +1,18 @@
+﻿@using ColorType = System.Drawing.Color
+
+<Badge class="d-flex user-select-none" style=@CssStyle 
+    IndicatorType="BadgeIndicatorType.RoundedPill">
+    <Icon style="font-size: 15px;" Name="IconName.Tag" />
+    <div class="ms-1 align-self-center">@Tag.Name</div>
+</Badge>
+
+@code {
+    [Parameter] public TaskTag Tag { get; set; } = null!;
+    [Parameter] public ColorType Color { get; set; } = ColorType.Red;
+
+    string CssStyle => $"background-color: {Color.WithAlpha(0.5).ToRgbaText()} !important; " +
+        "color: black !important; " +
+        $"border: 1px solid {Color.ToRgbaText()}; " + 
+        "padding-top: 1px; " +
+        "padding-bottom: 1px; ";
+}

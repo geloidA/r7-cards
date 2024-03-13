@@ -1,6 +1,7 @@
 using Cardmngr.Domain.Feedback;
 using Cardmngr.Server.FeedbackApi;
 using Cardmngr.Server.FeedbackApi.Service;
+using Cardmngr.Shared.Feedbacks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -55,7 +56,7 @@ public class FeedbackControllerTests
         var controller = new FeedbackController(feedbackService.Object);
 
         // Act
-        var result = await controller.GetFeedback(id);
+        var result = await controller.GetFeedback(id, "");
 
         // Assert;
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -74,7 +75,7 @@ public class FeedbackControllerTests
         var controller = new FeedbackController(feedbackService.Object);
 
         // Act
-        var result = await controller.GetFeedback(id);
+        var result = await controller.GetFeedback(id, "");
 
         // Assert
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
@@ -88,15 +89,14 @@ public class FeedbackControllerTests
     public async Task CreateFeedback_ValidData_ReturnsFeedback()
     {
         // Arrange
-        var requestGuid = "123";
-        var data = new FeedbackUpdateData { Title = "Test Title" };
+        var data = new FeedbackCreateRequestData(null!, new FeedbackUpdateData { Title = "Test Title" });
         var mockFeedbackService = new Mock<IFeedbackService>();
-        mockFeedbackService.Setup(x => x.CreateFeedbackAsync(data, requestGuid)).ReturnsAsync(new Feedback());
+        mockFeedbackService.Setup(x => x.CreateFeedbackAsync(data.Data, null!)).ReturnsAsync(new Feedback());
 
         var controller = new FeedbackController(mockFeedbackService.Object);
 
         // Act
-        var result = await controller.CreateFeedback(requestGuid, data);
+        var result = await controller.CreateFeedback(data);
 
         // Assert
         var createdFeedback = Assert.IsType<CreatedResult>(result.Result);
@@ -107,13 +107,12 @@ public class FeedbackControllerTests
     public async Task CreateFeedback_EmptyTitle_ReturnsBadRequest()
     {
         // Arrange
-        var requestGuid = "123";
-        var data = new FeedbackUpdateData { Title = "" };
+        var data = new FeedbackCreateRequestData(null!, new FeedbackUpdateData { Title = "" });
         var mockFeedbackService = new Mock<IFeedbackService>();
         var controller = new FeedbackController(mockFeedbackService.Object);
 
         // Act
-        var result = await controller.CreateFeedback(requestGuid, data);
+        var result = await controller.CreateFeedback(data);
 
         // Assert
         Assert.IsType<BadRequestObjectResult>(result.Result);

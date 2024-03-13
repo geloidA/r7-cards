@@ -18,7 +18,8 @@ export function create(title: string, options: MyNotificationOptions | undefined
     notification.onclick = (e) => {
         e.preventDefault();
         if (options?.href) {
-            window.location.href = options.href;
+            window.open(options.href);
+            window.focus();
         }
     }
 

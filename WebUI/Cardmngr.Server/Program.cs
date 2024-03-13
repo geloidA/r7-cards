@@ -4,7 +4,6 @@ using Cardmngr.Shared.Extensions;
 using Cardmngr.Server.Extensions;
 using Microsoft.AspNetCore.ResponseCompression;
 using Serilog;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 

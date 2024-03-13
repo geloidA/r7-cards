@@ -1,29 +1,36 @@
 ﻿@using Onlyoffice.Api.Models.Authentication
+@using Cardmngr.Validators
 
 @inject IAuthApiLogic AuthApiLogic
 @inject ToastService ToastService
 
-<div class="d-flex flex-column">
-    <span class="font-monospace mb-1">Почта / Логин</span>
-    <InputText id="user-name-input" class="form-control" @bind-Value="userName" />    
-</div>
+@if (loginData is { })
+{
+    <EditForm Model="loginData" OnValidSubmit="SumbitAuth">
+        <FluentValidationValidator ValidatorType="@(typeof(LoginDataValidator))" />
+        <div class="d-flex flex-column">
+            <span class="font-monospace mb-1">Почта / Логин</span>
+            <input id="UserName" class="form-control" @bind="loginData.UserName" />
+            <ValidationMessage For="() => loginData.UserName" class="validation-msg"/>
+        </div>
 
-<div class="d-flex flex-column mt-4">
-    <span class="font-monospace mb-1">Пароль</span>
-    <InputText type="password" id="password-input" class="form-control" @bind-Value="password" />
-</div>
+        <div class="d-flex flex-column mt-4">
+            <span class="font-monospace mb-1">Пароль</span>
+            <input type="password" id="Password" class="form-control" @bind="loginData.Password" />
+            <ValidationMessage For="() => loginData.Password" class="validation-msg"/>
+        </div>
 
-<div class="mt-2 d-flex justify-content-center">
-    <Button Type="ButtonType.Submit" LoadingText="Загрузка" Loading="busy" @onclick="SumbitAuth" 
-        Disabled="string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password)" 
-        Color="ButtonColor.Success" >
-        Войти
-    </Button>
-</div>
+        <div class="mt-2 d-flex justify-content-center">
+            <Button Type="ButtonType.Submit" LoadingText="Загрузка"
+                Loading="busy" Color="ButtonColor.Success" >
+                Войти
+            </Button>
+        </div>
+    </EditForm>
+}
 
 @code {
-    string userName = "";
-    string password = "";
+    readonly LoginData loginData = new();
     bool busy;
     
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
@@ -31,10 +38,10 @@
     async Task SumbitAuth()
     {
         busy = true;
-        var status = await AuthApiLogic.LoginAsync(new LoginModel(userName, password));
+        var status = await AuthApiLogic.LoginAsync(new LoginModel(loginData.UserName, loginData.Password));
         if (status == AuthenticationResponseType.Error)
         {
-            ToastService.Notify(new(ToastType.Danger, title: "Ошибка авторизации", "Не удалось войти")); // todo:
+            ToastService.Notify(new(ToastType.Danger, title: "Ошибка авторизации", "Не удалось войти"));
         }
         else await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         busy = false;

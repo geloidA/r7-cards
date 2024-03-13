@@ -13,4 +13,5 @@ public record class Feedback : ResponseEntityBase<int>
     public bool CanChangeStatus { get; init; }
     public DateTime Created { get; init; }
     public DateTime? Finished { get; init; }
+    public int LikeCount { get; set; }
 }

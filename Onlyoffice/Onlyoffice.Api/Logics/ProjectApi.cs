@@ -118,6 +118,37 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
         return taskDao?.Response ?? throw new NullReferenceException("Task was not updated");
     }
+
+    public async IAsyncEnumerable<CommentDto> GetTaskCommentsAsync(int taskId)
+    {
+        var response = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<CommentsDao>($"api/project/task/{taskId}/comment"));
+        
+        foreach (var comment in response?.Response.Where(x => !x.Inactive) ?? [])
+        {
+            yield return comment;
+        }
+    }
+
+    public async Task<CommentDto> CreateTaskCommentAsync(int taskId, CommentUpdateData comment)
+    {
+        var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/task/{taskId}/comment", comment));
+
+        if (response.IsSuccessStatusCode)
+        {
+            var commentsDao = await response.Content.ReadFromJsonAsync<SingleCommentDao>();
+            return commentsDao?.Response ?? throw new NullReferenceException("Task was not created");
+        }
+        else
+        {
+            throw new Exception(response.ReasonPhrase);
+        }
+    }
+
+    public async Task RemoveTaskCommentAsync(string commentId)
+    {
+        var response = await InvokeHttpClientAsync(c => c.DeleteAsync($"api/project/comment/{commentId}"));
+        response.EnsureSuccessStatusCode();
+    }
     #endregion
 
     #region CRUD Subtask

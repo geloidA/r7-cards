@@ -25,7 +25,7 @@ public class OrderTaskExtensionsTests
             Priority = Domain.Enums.Priority.High 
         };
         var firstTask = new OnlyofficeTask { Title = "First task", Status = Domain.Enums.Status.Open, Deadline = DateTime.Now.AddYears(1) };
-        var secondTask = new OnlyofficeTask { Title = "Second task", Status = Domain.Enums.Status.Open, Deadline = DateTime.Now.AddYears(1) };
+        var secondTask = new OnlyofficeTask { Title = "Second task", Status = Domain.Enums.Status.Open, Deadline = DateTime.Now.AddYears(2) };
         var deadlineTask = new OnlyofficeTask { Title = "Deadline task", Status = Domain.Enums.Status.Open, Deadline = DateTime.Now.AddDays(-1) };
         var closedTask = new OnlyofficeTask { Title = "Closed task", Status = Domain.Enums.Status.Closed, Deadline = new DateTime(2022, 2, 1) };
 

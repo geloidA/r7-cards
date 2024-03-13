@@ -12,6 +12,7 @@
 
 WebUI/data/feedback/counter
 WebUI/data/feedback/feedbacks.json
+WebUI/Cardmngr/wwwroot/js/GeneratedJS
 log*
 
 # User-specific files (MonoDevelop/Xamarin Studio)

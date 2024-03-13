@@ -12,7 +12,7 @@ using Onlyoffice.Api.Logics;
 
 namespace Cardmngr;
 
-public partial class App
+public partial class App : ComponentBase
 {
     [Inject] ILocalStorageService LocalStorage { get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationProvider { get; set; } = null!;
@@ -52,7 +52,7 @@ public partial class App
         
         await JS.InvokeVoidAsync("updateVersion", appVersion);
 
-        _ = NotificationService.RequestPermissionAsync();
+        await NotificationService.RequestPermissionAsync();
     }
 
     private async void RequestPermission(Task<AuthenticationState> authState)
