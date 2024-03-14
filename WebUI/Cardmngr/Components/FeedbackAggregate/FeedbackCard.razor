@@ -1,6 +1,9 @@
 ﻿@using Cardmngr.Application.Clients.FeedbackClient
 @using Cardmngr.Components.FeedbackAggregate.Modals
 
+@inject IFeedbackClient FeedbackClient
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 <li class="feedback-card clickable" style="font-size: 13px;" @onclick="OpenModal" >
     <div class="py-1 px-2 h-100" >
         <span class="fw-bold" style="overflow: hidden;">@Feedback.Title</span>
@@ -15,8 +18,10 @@
             @if (Feedback.Status == FeedbackStatus.Todo)
             {
                 <div class="col-3 d-flex ms-1" @onclick:stopPropagation >
-                    <Icon Name="IconName.HandThumbsUpFill" @onclick="ToggleLike" Color="@(likePressed ? IconColor.Success : IconColor.None)" />
-                    <span class="ms-2">@Feedback.LikeCount</span>
+                    <div @onclick="ToggleLike">
+                        <Icon Name="IconName.HandThumbsUpFill" Color="@(likePressed ? IconColor.Success : IconColor.None)" />
+                        <span class="ms-2">@Feedback.LikedUsers.Count</span>
+                    </div>
                 </div>
             }
             <div class="col d-flex justify-content-end">
@@ -45,10 +50,14 @@
     bool likePressed;
 
     [CascadingParameter] FeedbacksState State { get; set; } = null!;
-    [Inject] IFeedbackClient FeedbackClient { get; set; } = null!;
     [Parameter] public Feedback Feedback { get; set; } = null!;    
     [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsModal { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {        
+        likePressed = Feedback.LikedUsers.Contains(AuthenticationStateProvider.ToCookieProvider().UserId);
+    }
 
     async Task OpenModal()
     {
@@ -65,8 +74,6 @@
     {
         likePressed = !likePressed;
 
-        var updated = await FeedbackClient.ToggleFeedbackLikeAsync(Feedback.Id, likePressed);
-
-        Feedback.LikeCount = updated?.LikeCount ?? throw new NullReferenceException("Can't like feedback");
+        await State.ToggleFeedbackLikeAsync(Feedback.Id);
     }
 }

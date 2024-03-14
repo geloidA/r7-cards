@@ -122,7 +122,7 @@ public class FeedbackService : IFeedbackService
         return developerGuid == guid || feedback.Creator.Id == guid;
     }
 
-    public async Task<Feedback?> ToggleFeedbackLikeAsync(Feedback feedback, bool add)
+    public async Task<Feedback?> ToggleFeedbackLikeAsync(Feedback feedback, string requestGuid)
     {
         var feedbacks = await GetFeedbacksAsync();
 
@@ -131,16 +131,20 @@ public class FeedbackService : IFeedbackService
             throw new FeedbackNotFoundException(feedback);
         }
 
-        var updated = feedback with 
-        { 
-            LikeCount = feedback.LikeCount + (add ? 1 : -1)
-        };
+        if (!feedback.LikedUsers.Remove(requestGuid))
+        {
+            feedback.LikedUsers.Add(requestGuid);
+        }
         
-        feedbacks.Add(updated);
+        feedbacks.Add(feedback);
 
         await WriteAllTextAsync(JsonConvert.SerializeObject(feedbacks));
 
-        return updated with { CanEdit = true };
+        return feedback with 
+        { 
+            CanEdit = CanManipulate(requestGuid, feedback), 
+            CanChangeStatus = requestGuid == developerGuid 
+        };
     }
 
     private async Task WriteAllTextAsync(string json)

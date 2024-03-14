@@ -58,11 +58,11 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
         throw new Exception(response.ReasonPhrase);
     }
 
-    public async Task<Feedback?> ToggleFeedbackLikeAsync(int feedbackId, bool add)
+    public async Task<Feedback?> ToggleFeedbackLikeAsync(int feedbackId)
     {
         using var client = httpClientFactory.CreateClient("self-api-cookie");
 
-        var response = await client.PostAsync($"api/feedback/like/{add}/{feedbackId}", null);
+        var response = await client.PostAsync($"api/feedback/like/{feedbackId}/{userGuid}", null);
 
         if (response.IsSuccessStatusCode)
         {

@@ -78,6 +78,22 @@ public partial class FeedbacksState : ComponentBase
         }
     }
 
+    internal async Task ToggleFeedbackLikeAsync(int feedbackId)
+    {
+        var updated = await FeedbackClient.ToggleFeedbackLikeAsync(feedbackId);
+
+        if (updated is { })
+        {
+            Model!.Feedbacks.RemoveAll(x => x.Id == feedbackId);
+            Model.Feedbacks.Add(updated);
+            OnStateChanged();
+        }
+        else
+        {
+            ToastService.Notify(new ToastMessage(ToastType.Danger, "Не удалось обновить"));
+        }
+    }
+
     internal async Task UpdateFeedbackStatusAsync(int feedbackId, FeedbackStatus status)
     {
         var updated = await FeedbackClient.UpdateFeedbackStatusAsync(feedbackId, status);

@@ -42,6 +42,6 @@ public static class OnlyofficeTaskExtensions
     {
         return tasks
             .OrderByDescending(x => (x.IsDeadlineOut(), -(int)x.Status, x.Priority))
-            .ThenBy(x => (x.Deadline is { }, x.Deadline));
+            .ThenBy(x => (x.Deadline == null, x.Deadline));
     }
 }
