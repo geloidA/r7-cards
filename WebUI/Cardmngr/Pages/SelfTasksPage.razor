@@ -4,30 +4,41 @@
 
 @inherits AuthorizedPage
 
-<PageTitle>Мои задачи</PageTitle>
+<PageTitle>Проекты</PageTitle>
 
-<AuthorizeView>
-    <div class="d-flex flex-column p-2" style="overflow-y: auto; overflow-x: hidden;">
-        <CascadingValue Value="this" IsFixed="true">            
-            <CascadingValue Value="IdOnInitialization" Name="UserId" IsFixed="true" >
-                @foreach (var projectVm in projectVms)
-                {
-                    <div class="mb-4">
-                        <StaticProjectState ViewModel="projectVm" >
-                            <div class="d-flex flex-column position-relative mb-5" style="flex: auto !important;">
-                                <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
-                                    <ProjectBoard></ProjectBoard>
+@if (initialized)
+{
+    <AuthorizeView>
+        <div class="d-flex justify-content-end gap-1 mb-1" style="margin-right: 10px;">
+            <Button Size="Size.ExtraSmall" @onclick="() => ChangeCollapse(false)" Color="ButtonColor.Dark" Outline="true">Открыть все</Button>
+            <Button Size="Size.ExtraSmall" @onclick="() => ChangeCollapse(true)" Color="ButtonColor.Dark" Outline="true">Закрыть все</Button>
+        </div>
+        <div class="d-flex flex-column p-2" style="overflow-y: auto; overflow-x: hidden;">
+            <CascadingValue Value="this" IsFixed="true">
+                <CascadingValue Value="IdOnInitialization" Name="UserId" IsFixed="true" >
+                    @foreach (var project in allProjects)
+                    {
+                        <div class="mb-2">
+                            <StaticProjectState ViewModel="project" >
+                                <div class="d-flex flex-column position-relative" style="flex: auto !important;">
+                                    <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
+                                        <ProjectBoard></ProjectBoard>
+                                    </div>
                                 </div>
-                            </div>
-                        </StaticProjectState>
-                    </div>
-                }
+                            </StaticProjectState>
+                        </div>
+                    }
+                </CascadingValue>
             </CascadingValue>
-        </CascadingValue>
-        <div id="splitter"></div>
-        <i class="d-flex align-self-center mt-2 user-select-none opacity-50 fs-5">
-            <Icon Name="IconName.InfoCircle" />
-            <div class="ms-2">Здесь будут появляться проекты, в которых есть ваши задачи.</div>
-        </i>
+        </div>
+    </AuthorizeView>
+}
+else
+{
+    <div style="position:absolute; top:30vh; width:100%; text-align:center">
+        <div style="display:flex; gap:10px; justify-content:center; align-items:center">
+            <Spinner />
+            <span class="ms-2">Загрузка...</span>
+        </div>
     </div>
-</AuthorizeView>
+}

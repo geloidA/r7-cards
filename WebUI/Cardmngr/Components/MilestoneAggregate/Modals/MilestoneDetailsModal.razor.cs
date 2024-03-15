@@ -71,7 +71,7 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
         if (answer.Confirmed)
         {
             await MilestoneClient.RemoveAsync(Model!.Id);
-            State.RemoveMilestone(Model!.Id);
+            State.RemoveMilestone(Model);
             await currentModal.CloseAsync();
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace Cardmngr.Exceptions;
+﻿using Cardmngr.Shared.Exceptions;
+
+namespace Cardmngr.Shared.Extensions;
 
 public static class ListExtensions
 {

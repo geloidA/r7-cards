@@ -1,16 +1,18 @@
-﻿<div class="d-flex gap-1 align-items-center">
-    @foreach (var milestone in State.SelectedMilestones)
+﻿@using Cardmngr.Shared.Utils.Filter
+
+<div class="d-flex gap-1 align-items-center">
+    @foreach (var milestone in milestoneTaskFilter)
     {
         <MilestoneLabel Milestone="milestone" />
     }
 </div>
 
 @code {
-
+    private MilestoneTaskFilter milestoneTaskFilter = null!;
     [CascadingParameter] IProjectState State { get; set; } = null!;
 
     protected override void OnInitialized()
     {
-        State.SelectedMilestonesChanged += StateHasChanged;
+        milestoneTaskFilter = State.TaskFilter.OfType<MilestoneTaskFilter>();
     }
 }

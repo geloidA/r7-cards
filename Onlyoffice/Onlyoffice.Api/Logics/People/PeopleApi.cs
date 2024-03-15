@@ -11,4 +11,14 @@ public class PeopleApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(http
         
         return response?.Response;
     }
+
+    public async IAsyncEnumerable<UserProfileDto> GetUsersAsync()
+    {
+        var response = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<UserProfilesDao>("api/people"));
+
+        foreach (var user in response?.Response ?? [])
+        {
+            yield return user;
+        }
+    }
 }

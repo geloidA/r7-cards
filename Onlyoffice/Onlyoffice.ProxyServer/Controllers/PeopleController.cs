@@ -15,4 +15,7 @@ public class PeopleController(IConfiguration conf) : ApiController(conf)
 
     [HttpGet("api/[controller]/{id}")]
     public Task ProxyGetProfileById(string id) => ProxyRequestAsync($"{apiUrl}/people/{id}");
+
+    [HttpGet("api/[controller]")]
+    public Task ProxyGetUsers() => ProxyRequestAsync($"{apiUrl}/people");
 }

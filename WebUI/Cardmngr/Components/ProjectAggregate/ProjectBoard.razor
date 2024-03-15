@@ -6,15 +6,15 @@
             foreach (var status in State.Model!.Statuses.InLogicalOrder())
             {
                 <div class="@(isFirst ? "" : "status-column")" @key="status" >
-                    <KolBoardColumn TValue="OnlyofficeTask" CanCollapse="true"
+                    <KolBoardColumn Width="365" TValue="OnlyofficeTask" CanCollapse="true"
                         OnDropItem="@(async task => await OnChangeTaskStatus(task, status))"
-                        Items="State.SelectedMilestoneTasks()!.FilterByStatus(status).OrderByTaskCriteria()">
+                        Items="GetTasksForStatus(status)">
                         <HeaderTemplate Context="isCollapsed">
                             <TaskStatusHeader IsCollapsed="isCollapsed" TaskStatus="status" />
-                            @if (State.SelectedMilestones.Any())
+                            @if (State.TaskFilter.Filters.Any())
                             {
                                 <div class="mt-1 d-flex justify-content-center fw-light" style="font-size: small;">
-                                    @State.SelectedMilestoneTasks()!.FilterByStatus(status).Count() результатов
+                                    @GetTasksForStatus(status).Count() результатов
                                 </div>
                             }
                         </HeaderTemplate>

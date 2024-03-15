@@ -1,31 +1,32 @@
 ﻿using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Project;
+using Cardmngr.Shared.Utils.Filter;
 using Cardmngr.Utils;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
 public interface IProjectState
 {
-    ProjectStateVm? Model { get; }
+    IProjectStateVm? Model { get; }
 
     event Action? StateChanged;
     event Action? MilestonesChanged;
-    event Action? SelectedMilestonesChanged;
     event Action? TasksChanged;
     event Action? SubtasksChanged;
 
     bool Initialized { get; }
 
-    IEnumerable<Milestone> SelectedMilestones { get; }
+    public void OnTasksChanged();
+
+    IFilterManager<OnlyofficeTask> TaskFilter { get; }
 
     void AddTask(OnlyofficeTask created);
     void UpdateTask(OnlyofficeTask task);
-    void RemoveTask(int taskId);
+    void RemoveTask(OnlyofficeTask taskId);
 
     void AddMilestone(Milestone milestone);
     void UpdateMilestone(Milestone milestone);
-    void RemoveMilestone(int milestoneId);
-    void ToggleMilestone(Milestone milestone);
+    void RemoveMilestone(Milestone milestoneId);
 
     void AddSubtask(int taskId, Subtask subtask);
     void UpdateSubtask(Subtask subtask);

@@ -15,6 +15,7 @@ public partial class Offcanvas : OffcanvasBase
 
     [Parameter] public MyOffcanvasPlacement Placement { get; set; }
     [Parameter] public bool ShowCloseBtn { get; set; } = true;
+    [Parameter] public int Width { get; set; } = 450;
 
     public async Task CloseAsync(ModalResult? result = null)
     {

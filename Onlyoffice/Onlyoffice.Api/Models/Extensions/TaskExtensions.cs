@@ -2,7 +2,7 @@
 
 public static class TaskExtensions
 {
-    public static IEnumerable<TaskDto> FilterByStatus(this IEnumerable<TaskDto> tasks, TaskStatusDto status) // TODO: move somewhere
+    public static IEnumerable<TaskDto> FilterByStatus(this IEnumerable<TaskDto> tasks, TaskStatusDto status) 
     {
         return tasks
             .Where(t => t.CustomTaskStatus.HasValue 

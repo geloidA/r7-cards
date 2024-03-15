@@ -11,12 +11,14 @@
             <KolTimeline ShowTodayLine="true" Class="scrollbar-none py-0" >
                 @if (State.Initialized)
                 {
-                    foreach (var milestone in State.Model!.Milestones)
-                    {
-                        <KolTimelineItem @key="milestone.Id" End="milestone.Deadline" Start="State.GetMilestoneStart(milestone)">
-                            <TimelineMilestone Milestone="milestone" />
-                        </KolTimelineItem>
-                    }
+                    <CascadingValue Value="milestoneTaskFilter" IsFixed="true">
+                        @foreach (var milestone in State.Model!.Milestones)
+                        {
+                            <KolTimelineItem @key="milestone.Id" End="milestone.Deadline" Start="State.GetMilestoneStart(milestone)">
+                                <TimelineMilestone Milestone="milestone" />
+                            </KolTimelineItem>
+                        }
+                    </CascadingValue>
                 }
             </KolTimeline>
         </div>
@@ -35,8 +37,26 @@
     
     [CascadingParameter] IProjectState State { get; set; } = null!;
 
+    private bool firstFilterItemFlag = true;
+    private readonly MilestoneTaskFilter milestoneTaskFilter = new();
+
     protected override void OnInitialized()
     {
+        // Remove filter if empty
+        milestoneTaskFilter.FilterChanged += () =>
+        {
+            if (!milestoneTaskFilter.Any())
+            {
+                State.TaskFilter.RemoveFilter(milestoneTaskFilter);
+                firstFilterItemFlag = true;
+            }
+            else if (firstFilterItemFlag)
+            {
+                State.TaskFilter.AddFilter(milestoneTaskFilter);
+                firstFilterItemFlag = false;
+            }
+        };
+
         State.MilestonesChanged += StateHasChanged;
         State.TasksChanged += StateHasChanged;
         State.StateChanged += StateHasChanged;

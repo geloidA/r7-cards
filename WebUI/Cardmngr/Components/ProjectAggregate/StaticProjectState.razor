@@ -6,18 +6,18 @@
 {
     <CascadingValue Value="this" IsFixed="true">
         <div class="proj-state scrollbar-none" style="@CssHeight">
-            <div class="ms-3 mb-3">
+            <div class="ms-3 mb-1">
                 <div class="row">
                     <div class="col d-flex fw-bold text-black">
                         <ProjectClosedTasksInfo></ProjectClosedTasksInfo>
                         <div class="ms-2 align-self-center">
-                            @(Model!.Project?.Title ?? "Задачи вне проектов")
+                            @(Model?.Project?.Title ?? "Задачи вне проектов")
                         </div>
-                        @if (Model.Project is { })
+                        @if (Model is { })
                         {
                             if (IsCurrentUserInTeam)
                             {
-                                <a class="align-self-center" href=@($"/project/{Model.Project.Id}")>
+                                <a class="align-self-center" href=@($"/project/{Model.Project!.Id}")>
                                     <Icon class="ms-1" Name="IconName.BoxArrowInDownLeft" />
                                 </a>
                             }
@@ -32,8 +32,6 @@
                         }
                     </div>
                     <div class="col align-self-center d-flex justify-content-end" style="margin-right: 10px;">
-                        <SelectedMilestoneLabels />
-                        <MilestoneFilterTool Disabled="isCollapsed" />
                         <Icon class="clickable ms-2" @onclick="@ToggleCollapsed"
                             Name="@(isCollapsed ? IconName.ChevronDown : IconName.ChevronUp)" />
                     </div>
@@ -48,5 +46,8 @@
 }
 else
 {
-    <div>Loading...</div>
+    <div class="d-flex align-self-center justify-content-center mb-2">
+        <Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Medium" />
+        <span class="ms-2">Загрузка...</span>
+    </div>
 }

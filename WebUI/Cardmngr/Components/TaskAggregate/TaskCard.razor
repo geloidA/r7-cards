@@ -1,8 +1,8 @@
 ﻿@using Domain.Enums
 
 <li class="task-card @CssDeadline" @onclick="OpenModal" >
-    <div class="container py-1 px-4 default-text" style="min-height: 100px;">
-        <div class="row py-1">
+    <div class="container py-1 px-4 default-text" style="min-height: 150px;">
+        <div class="row py-1 @CssMarginTitle">
             <div class="px-0 d-flex flex-row">
                 @if (Task.Priority == Domain.Enums.Priority.High)
                 {
@@ -11,12 +11,12 @@
                             TooltipTitle="Приоритет - Высокий" TooltipPlacement="TooltipPlacement.Bottom" />
                     </div>
                 }
-                <div style="overflow: hidden;" class="fw-bold">@Task.Title</div>
+                <div style="overflow: hidden;" class="fw-bold fs-6">@Task.Title</div>
             </div>
         </div>
         @if (Task.Description is { })
         {
-            <div class="row fw-light max-height-100" >
+            <div class="row fw-light max-height-100 desc-text" >
                 @Task.Description
             </div>
         }
@@ -44,14 +44,17 @@
                 </div>
             </div>
         }
-        <div class="row py-1">
-            <div class="d-flex flex-wrap gap-1 px-0">
-                @foreach (var tag in taskTags)
-                {
-                    <TaskTagLabel Tag="tag" Color="TagColorGetter.GetColor(tag)" />
-                }
+        @if (taskTags.Count > 0)
+        {
+            <div class="row py-1">
+                <div class="d-flex flex-wrap gap-1 px-0">
+                    @foreach (var tag in taskTags)
+                    {
+                        <TaskTagLabel Tag="tag" Color="TagColorGetter.GetColor(tag)" />
+                    }
+                </div>
             </div>
-        </div>
+        }
         @if (Task.Deadline is { })
         {
             <div class="row">

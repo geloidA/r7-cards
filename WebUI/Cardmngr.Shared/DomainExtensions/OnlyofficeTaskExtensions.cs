@@ -21,11 +21,6 @@ public static class OnlyofficeTaskExtensions
         return tasks.Where(x => x.HasStatus(status));
     }
 
-    public static IEnumerable<OnlyofficeTask> FilterByMilestones(this IEnumerable<OnlyofficeTask> tasks, IEnumerable<Milestone> milestones)
-    {
-        return tasks.Where(x => milestones.Any(m => m.Id == x.MilestoneId));
-    }
-
     public static bool HasStatus(this OnlyofficeTask task, OnlyofficeTaskStatus status)
     {
         return task.TaskStatusId is null

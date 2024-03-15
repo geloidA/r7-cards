@@ -17,7 +17,7 @@
         </Button>
         <Button Color="ButtonColor.Light" class="mb-2" 
             @onclick="@(() => NavigationManager.NavigateTo("/self-tasks"))">
-            <b>Мои задачи</b>
+            <b>Проекты</b>
         </Button>
         <Button Color="ButtonColor.Light" 
             @onclick="@(() => NavigationManager.NavigateTo("/feedback-board"))">
@@ -38,7 +38,7 @@
 </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
 
 @code {
-    [Parameter] public IEnumerable<Project>? UserProjects { get; set; }
+    [Parameter] public IEnumerable<object>? Nothing { get; set; } // TODO: ??? close animation only with parameter ???
 
     bool logoutHover;
 

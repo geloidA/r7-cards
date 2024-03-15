@@ -1,11 +1,12 @@
 ﻿@using Milestone = Cardmngr.Domain.Entities.Milestone
 @using Domain.Enums
 @using Application.Clients.SignalRHubClients
+@using Cardmngr.Shared.Utils.Filter
 
 @inject AuthenticationStateProvider AuthenticationState
 
 <div @onmouseenter="@(() => isHover = true)" @onmouseleave="@(() => isHover = false)" >
-    <Badge class="p-0 w-100 overflow-hidden" Color="BadgeColor" @onclick="() => State.ToggleMilestone(Milestone)" >
+    <Badge class="p-0 w-100 overflow-hidden" Color="BadgeColor" @onclick="() => ToggleMilestone(Milestone)" >
         <div class="position-absolute selection-opt hided-opt @CssShowOptions" style="margin-left: 5px; margin-top: 3.5px; width: 17px;">
             <Tooltip Title="Фильтр по вехе">
                 <Icon class="clickable" Name="IconName.EyeFill" Color="IconColor.Dark" />
@@ -27,14 +28,21 @@
 @code {
     private bool isHover;
     private string CssShowOptions => isHover ? "show-opt" : "";
-    private string CssSelected => State.SelectedMilestones.Contains(Milestone) ? "selected" : "";
+    private string CssSelected => MilestoneTaskFilter.Contains(Milestone) ? "selected" : "";
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
+    [CascadingParameter] MilestoneTaskFilter MilestoneTaskFilter { get; set; } = null!;
 
     [Parameter] public Milestone Milestone { get; set; } = null!;
+
+    void ToggleMilestone(Milestone milestone)
+    {
+        MilestoneTaskFilter.Toggle(Milestone);
+        State.OnTasksChanged();
+    }
 
     private BadgeColor BadgeColor
     {

@@ -9,8 +9,9 @@ public class FilterTasksBuilder
     private FilterTasksBuilder() { }
     public static FilterTasksBuilder Instance => new();
 
-    public FilterTasksBuilder WithProjectId(int projectId)
+    public FilterTasksBuilder WithProjectId(int? projectId)
     {
+        if (projectId is null) return this;
         urlBuilder.Append($"projectid={projectId}&");
         return this;
     }
@@ -69,14 +70,16 @@ public class FilterTasksBuilder
         return this;
     }
 
-    public FilterTasksBuilder WithParticipant(string participantGuid)
+    public FilterTasksBuilder WithParticipant(string? participantGuid)
     {
+        if (participantGuid is null) return this;
         urlBuilder.Append($"participant={participantGuid}&");
         return this;
     }
 
-    public FilterTasksBuilder WithCreator(string creatorGuid)
+    public FilterTasksBuilder WithCreator(string? creatorGuid)
     {
+        if (creatorGuid is null) return this;
         urlBuilder.Append($"creator={creatorGuid}&");
         return this;
     }

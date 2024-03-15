@@ -1,5 +1,4 @@
-﻿@inject IProjectClient ProjectClient
-@inject AuthenticationStateProvider AuthenticationState
+﻿@inject AuthenticationStateProvider AuthenticationState
 
 @using System.Text.Json
 
@@ -10,10 +9,8 @@
         </Button>
     </div>
     <div class="col-md-9">
-        @if (userProjects is { })
-        {
-            <ProjectNavigator Projects="userProjects" />
-        }
+        <ProjectNavigator />
+        <FilterCustomizer />
     </div>
     <div class="col-md-2 d-flex justify-content-end">
         <Toolbar />
@@ -25,16 +22,13 @@
 </div>
 
 @code {
-    private List<Project> userProjects = null!;
     private UserProfile? currentUser;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
-    {        
-        userProjects = await ProjectClient.GetSelfProjectsAsync().ToListAsync();
-
+    protected override void OnInitialized()
+    {
         if (AuthenticationState is { })
         {
             var provider = AuthenticationState.ToCookieProvider();
@@ -44,7 +38,7 @@
 
     private async Task OpenSidebar()
     {
-        await Modal.Show<HeaderMenuModal>("", new ModalParameters { { "UserProjects", userProjects } }, Options).Result;
+        await Modal.Show<HeaderMenuModal>("", new ModalParameters { { "Nothing", Enumerable.Empty<object>() } }, Options).Result;
             // TODO: ??? close animation only with parameter ???
     }
 }

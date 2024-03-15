@@ -1,15 +1,16 @@
 ﻿@inject NavigationManager NavigationManager
+@inject IProjectClient ProjectClient
 
 @inherits KolComponentBase
 
-@if (showTitle && Projects is { })
+@if (showTitle)
 {
     <Dropdown class="@Class" style="@Style" Size="Size.None">
         <DropdownToggleButton class="fw-bold" Color="ButtonColor.None">
             @selectedProjectTitle
         </DropdownToggleButton>
-        <DropdownMenu class="overflow-scroll scroll-hidden" style="max-height: 500px;">
-            @foreach (var project in Projects)
+        <DropdownMenu class="overflow-scroll scroll-hidden user-select-none" style="max-height: 500px;">
+            @foreach (var project in projectsByIds.Values)
             {
                 <DropdownItem @onclick="() => NavigateTo(project)"
                     Type="ButtonType.Link">@project.Title</DropdownItem>
@@ -22,11 +23,13 @@
     Dictionary<int, Project> projectsByIds = [];
     bool showTitle;
     string? selectedProjectTitle;
-    [Parameter] public IEnumerable<Project> Projects { get; set; } = null!;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        projectsByIds = Projects.ToDictionary(x => x.Id, x => x);
+        projectsByIds = (await ProjectClient
+            .GetSelfProjectsAsync()
+            .ToListAsync())
+            .ToDictionary(x => x.Id, x => x);
 
         UpdateStateByLocation(NavigationManager.Uri);
         NavigationManager.LocationChanged += (_, args) => UpdateStateByLocation(args.Location);

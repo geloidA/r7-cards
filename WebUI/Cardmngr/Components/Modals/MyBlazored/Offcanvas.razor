@@ -1,6 +1,6 @@
 ﻿@inherits OffcanvasBase
 
-<div class="offcanvas @DelayedShow @CssPlacement @Class" style="@Style" tabindex="-1" id="offcanvasWithBackdrop" >
+<div class="offcanvas @DelayedShow @CssPlacement @Class" style="@Style @($"width: {Width}px;")" tabindex="-1" id="offcanvasWithBackdrop" >
     @if (ShowCloseBtn) 
     {
         <div class="position-absolute clickable w-100 closer" style="@CloseBtnRadiusStyle" 

@@ -1,6 +1,7 @@
 ﻿using Cardmngr.Application.Clients;
 using Cardmngr.Application.Clients.FeedbackClient;
 using Cardmngr.Application.Clients.Milestone;
+using Cardmngr.Application.Clients.People;
 using Cardmngr.Application.Clients.Subtask;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Mappers;
@@ -31,6 +32,7 @@ public static class ServiceCollectionExtensions
         return services
             .AddAutoMapper(typeof(EntityMappingProfile), typeof(EnumMappingProfile), typeof(UpdateStatesMappingProfile))
             .AddScoped<IProjectApi, ProjectApi>()
+            .AddScoped<IPeopleClient, PeopleClient>()
             .AddScoped<IUserClient, UserClient>()
             .AddScoped<IProjectClient, ProjectClient>()
             .AddScoped<ITaskClient, TaskClient>()

@@ -7,10 +7,11 @@ using Blazored.Modal;
 using Cardmngr.Components.Modals.ConfirmModals;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Clients.SignalRHubClients;
+using Cardmngr.Extensions;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
-public partial class ProjectBoard
+public partial class ProjectBoard : ComponentBase
 {
     [Inject] public ITaskClient TaskClient { get; set; } = null!;
 
@@ -21,10 +22,21 @@ public partial class ProjectBoard
 
     protected override void OnInitialized()
     {
-        State.SelectedMilestonesChanged += StateHasChanged;
+        State.TaskFilter.FilterChanged += StateHasChanged;
         State.TasksChanged += StateHasChanged;
         State.StateChanged += StateHasChanged;
         State.MilestonesChanged += StateHasChanged;
+    }
+
+    private IEnumerable<OnlyofficeTask> GetTasksForStatus(OnlyofficeTaskStatus status)
+    {
+        var filtered = State
+            .FilteredTasks()
+            .FilterByStatus(status);
+
+        return status.StatusType == StatusType.Open
+            ? filtered.OrderByTaskCriteria()
+            : filtered.OrderByDescending(x => x.Updated);
     }
 
     private async Task OnChangeTaskStatus(OnlyofficeTask task, OnlyofficeTaskStatus status)
@@ -40,7 +52,7 @@ public partial class ProjectBoard
             var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, status);
             State.UpdateTask(updated);
 
-            ProjectHubClient?.SendUpdatedTaskAsync(State.Model!.Project!.Id, task.Id).Forget();
+            ProjectHubClient?.SendUpdatedTaskAsync(task.ProjectOwner.Id, task.Id).Forget();
         }
     }
 }

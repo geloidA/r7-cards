@@ -1,6 +1,6 @@
 ﻿using Cardmngr.Components.ProjectAggregate;
 using Cardmngr.Domain.Entities;
-using Cardmngr.Shared.Extensions;
+using Cardmngr.Shared.Utils.Filter;
 
 namespace Cardmngr.Extensions;
 
@@ -16,11 +16,15 @@ public static class ProjectStateExtensions
         return projectState.Model?.Tasks.Where(x => x.MilestoneId == milestoneId) ?? [];
     }
 
-    public static IEnumerable<OnlyofficeTask>? SelectedMilestoneTasks(this IProjectState projectState)
+    /// <summary>
+    /// Filters tasks by projectState's taskFilter 
+    /// </summary>
+    /// <see cref="IFilterManager{T}"/>
+    /// <param name="projectState"></param>
+    /// <returns>Filtered tasks</returns>
+    public static IEnumerable<OnlyofficeTask> FilteredTasks(this IProjectState projectState)
     {
-        return projectState.SelectedMilestones.Any()
-            ? projectState.Model?.Tasks.FilterByMilestones(projectState.SelectedMilestones)
-            : projectState.Model?.Tasks;
+        return projectState.Model?.Tasks.Filter(projectState.TaskFilter) ?? [];
     }
 
     public static DateTime? Start(this IProjectState projectState)

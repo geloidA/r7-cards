@@ -23,7 +23,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     [Inject] ToastService ToastService { get; set; } = null!;
     [Inject] NotificationHubConnection NotificationHubConnection { get; set; } = null!;
 
-    [Parameter] public IRefresheableProjectState State { get; set; } = null!;
+    [Parameter] public IProjectState State { get; set; } = null!;
     [Parameter] public ProjectHubClient? ProjectHubClient { get; set; }
     [Parameter] public int TaskStatusId { get; set; }
     [Parameter] public List<TaskTag>? TaskTags { get; set; }
@@ -32,7 +32,10 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     {
         base.OnInitialized();
 
-        State.RefreshService.Lock(lockGuid);
+        if (State is IRefresheableProjectState refresheableProjectState)
+        {
+            refresheableProjectState.RefreshService.Lock(lockGuid);
+        }
 
         if (IsAdd)
         {
@@ -87,10 +90,10 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     {
         if (IsAdd)
         {
-            var created = await TaskClient.CreateAsync(State.Model!.Project!.Id, buffer);
+            var created = await TaskClient.CreateAsync(State.Model!.Project!.Id, buffer); // TODO: hide Model in state
             State.AddTask(created);
 
-            ProjectHubClient?.SendCreatedTaskAsync(State.Model.Project.Id, created.Id).Forget();
+            ProjectHubClient?.SendCreatedTaskAsync(created.ProjectOwner.Id, created.Id).Forget();
             NotificationHubConnection.NotifyAboutCreatedTaskAsync(created).Forget();
         }
         else
@@ -98,7 +101,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
             var updated = await TaskClient.UpdateAsync(Model!.Id, buffer);
             State.UpdateTask(updated);
 
-            ProjectHubClient?.SendUpdatedTaskAsync(State.Model!.Project!.Id, updated.Id).Forget();
+            ProjectHubClient?.SendUpdatedTaskAsync(updated.ProjectOwner.Id, updated.Id).Forget();
         }
 
         await currentModal.CloseAsync();
@@ -114,9 +117,9 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
                 TagColorGetter.RemoveTag(tag);
 
             await TaskClient.RemoveAsync(Model!.Id);
-            State.RemoveTask(Model!.Id);
+            State.RemoveTask(Model);
             
-            ProjectHubClient?.SendDeletedTaskAsync(State.Model!.Project!.Id, Model!.Id).Forget();
+            ProjectHubClient?.SendDeletedTaskAsync(Model.ProjectOwner.Id, Model!.Id).Forget();
 
             await currentModal.CloseAsync();
         }
@@ -124,9 +127,12 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
 
     public void Dispose()
     {
-        if (!State.RefreshService.Disposed)
+        if (State is IRefresheableProjectState refresheableProjectState)
         {
-            State.RefreshService.RemoveLock(lockGuid);
+            if (!refresheableProjectState.RefreshService.Disposed)
+            {
+                refresheableProjectState.RefreshService.RemoveLock(lockGuid);
+            }
         }
         
         if (ProjectHubClient is { })

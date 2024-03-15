@@ -22,6 +22,7 @@ builder.Services
     .AddScoped<IAuthApiLogic, AuthApiLogic>()
     .AddScoped<AppInfoService>()
     .AddSingleton<TagColorGetter>()
+    .AddSingleton<FilterManagerService>()
     .AddTransient<RefreshService>()
     .ConfigureServices()
     .AddScoped<TeamMemberSelectionDialog>()

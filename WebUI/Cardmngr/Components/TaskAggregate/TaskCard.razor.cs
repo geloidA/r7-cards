@@ -18,7 +18,7 @@ public partial class TaskCard : ComponentBase, IDisposable
     [Inject] ITaskClient TaskClient { get; set; } = null!;
     [Inject] TagColorGetter TagColorGetter { get; set; } = null!;
 
-    [CascadingParameter] IRefresheableProjectState State { get; set; } = null!;
+    [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] ProjectHubClient? ProjectHubClient { get; set; }
     [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsModal { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
@@ -26,11 +26,15 @@ public partial class TaskCard : ComponentBase, IDisposable
     [Parameter] public OnlyofficeTask Task { get; set; } = null!;
 
     string CssDeadline => Task.IsDeadlineOut() ? "red-border" : "";
+    string CssMarginTitle => string.IsNullOrEmpty(Task.Description) ? "mb-5" : "";
 
     protected override async Task OnInitializedAsync()
     {        
         taskTags = await TaskClient.GetTaskTagsAsync(Task.Id).ToListAsync();
-        State.RefreshService.Refreshed += RefreshTaskTags;
+        if (State is IRefresheableProjectState refresheableProjectState)
+        {
+            refresheableProjectState.RefreshService.Refreshed += RefreshTaskTags;
+        }
     }
 
     private async void RefreshTaskTags()
@@ -63,6 +67,9 @@ public partial class TaskCard : ComponentBase, IDisposable
 
     public void Dispose()
     {
-        State.RefreshService.Refreshed -= RefreshTaskTags;
+        if (State is IRefresheableProjectState refresheableProjectState)
+        {
+            refresheableProjectState.RefreshService.Refreshed -= RefreshTaskTags;
+        }
     }
 }

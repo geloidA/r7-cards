@@ -1,6 +1,9 @@
 ﻿using Cardmngr.Application.Clients;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Application.Clients.TaskClient;
+using Cardmngr.Domain.Entities;
+using Cardmngr.Shared;
+using Cardmngr.Shared.Utils.Filter;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -23,10 +26,12 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
     [Inject] public RefreshService RefreshService { get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
 
+    private readonly TaskFilterManager taskFilterManager = new();
+    public override IFilterManager<OnlyofficeTask> TaskFilter => taskFilterManager;
+
     protected override void OnInitialized()
     {
         RefreshService.Refreshed += OnRefreshModelAsync;
-
         RefreshService.Start(TimeSpan.FromSeconds(7));
     }
 
@@ -37,7 +42,7 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
         if (previousId != Id)
         {
             Model = await ProjectClient.GetProjectAsync(Id);
-            ClearSelectedMilestones();
+            TaskFilter.Clear();
             previousId = Id;
 
             hubClient = await GetNewHubClientAsync();
