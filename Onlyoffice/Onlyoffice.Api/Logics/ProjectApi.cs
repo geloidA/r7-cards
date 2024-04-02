@@ -83,7 +83,7 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         return taskDao?.Response ?? throw new NullReferenceException("Task was not updated");
     }
 
-    public async IAsyncEnumerable<TaskDto> GetFiltredTasksAsync(FilterTasksBuilder builder)
+    public async IAsyncEnumerable<TaskDto> GetFiltredTasksAsync(FilterBuilder builder)
     {
         var filterTasksDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<FilterTasksDao>($"api/project/task/{builder.Build()}"));
         await foreach (var task in filterTasksDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Models.TaskDto>())

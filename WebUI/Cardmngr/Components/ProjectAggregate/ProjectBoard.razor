@@ -7,12 +7,10 @@
             {
                 @if (!isFirst)
                 {
-                    <div class="status-column" style="width: 1px;">
-
-                    </div>
+                    <div class="status-column" style="width: 1px;"/>
                 }
                 <div @key="status" >
-                    <KolBoardColumn Width="365" MinItemSize="150" TValue="OnlyofficeTask" CanCollapse="true"
+                    <KolBoardColumn Width="365" TValue="OnlyofficeTask" CanCollapse="true"
                         OnDropItem="@(async task => await OnChangeTaskStatus(task, status))"
                         Items="GetTasksForStatus(status)">
                         <HeaderTemplate Context="isCollapsed">

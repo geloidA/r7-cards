@@ -67,7 +67,7 @@ public interface IProjectApi
     /// </remarks>
     /// <param name="builder">Builder for parameters in request</param>
     /// <returns>List of tasks</returns>
-    IAsyncEnumerable<TaskDto> GetFiltredTasksAsync(FilterTasksBuilder builder);
+    IAsyncEnumerable<TaskDto> GetFiltredTasksAsync(FilterBuilder builder);
 
     /// <summary>
     /// Returns a list of all the users participating in the project with the ID specified in the request.

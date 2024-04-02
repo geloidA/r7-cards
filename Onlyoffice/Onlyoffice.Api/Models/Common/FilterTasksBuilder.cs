@@ -1,98 +1,94 @@
-﻿using System.Text;
+﻿namespace Onlyoffice.Api.Common;
 
-namespace Onlyoffice.Api.Common;
-
-public class FilterTasksBuilder
-{
-    private readonly StringBuilder urlBuilder = new("filter/");
-    
+public sealed class FilterTasksBuilder : FilterBuilder
+{    
     private FilterTasksBuilder() { }
     public static FilterTasksBuilder Instance => new();
 
-    public FilterTasksBuilder WithProjectId(int? projectId)
+    public FilterTasksBuilder ProjectId(int? projectId)
     {
         if (projectId is null) return this;
-        urlBuilder.Append($"projectid={projectId}&");
+        _filters["projectId"] = projectId.ToString()!;
         return this;
     }
 
-    public FilterTasksBuilder WithMyProjects(bool value)
+    public FilterTasksBuilder MyProjects(bool value)
     {
-        urlBuilder.Append($"myProjects={value}&");
+        _filters["myProjects"] = value.ToString();
         return this;
     }
 
-    public FilterTasksBuilder WithMilestone(int milestoneId)
+    public FilterTasksBuilder Milestone(int milestoneId)
     {
-        urlBuilder.Append($"milestoneid={milestoneId}&");
+        _filters["milestone"] = milestoneId.ToString();
         return this;
     }
 
-    public FilterTasksBuilder WithMyMilestones(bool value)
+    public FilterTasksBuilder MyMilestones(bool value)
     {
-        urlBuilder.Append($"myMilestones={value}&");
+        _filters["myMilestones"] = value.ToString();
         return this;
     }
 
-    public FilterTasksBuilder WithNoMilestone(bool value)
+    public FilterTasksBuilder NoMilestone(bool value)
     {
-        urlBuilder.Append($"nomilestone={value}&");
+        _filters["noMilestone"] = value.ToString();
         return this;
     }
 
-    public FilterTasksBuilder WithTag(int projectTag)
+    public FilterTasksBuilder Tag(int projectTag)
     {
-        urlBuilder.Append($"tag={projectTag}&");
+        _filters["tag"] = projectTag.ToString();
         return this;
     }
 
-    public FilterTasksBuilder WithStatus(Status status)
+    public FilterTasksBuilder Status(Status status)
     {
-        urlBuilder.Append($"status={(int)status}&");
+        _filters["status"] = ((int)status).ToString();
         return this;
     }
 
-    public FilterTasksBuilder WithSubstatus(int customStatusId)
+    public FilterTasksBuilder Substatus(int customStatusId)
     {
-        urlBuilder.Append($"substatus={customStatusId}&");
+        _filters["substatus"] = customStatusId.ToString();
         return this;
     }
 
-    public FilterTasksBuilder WithFollowed(bool value)
+    public FilterTasksBuilder Followed(bool value)
     {
-        urlBuilder.Append($"follow={value}&");
+        _filters["followed"] = value.ToString();
         return this;
     }
 
-    public FilterTasksBuilder WithDepartment(string departmentGuid)
+    public FilterTasksBuilder Department(string departmentGuid)
     {
-        urlBuilder.Append($"department={departmentGuid}&");
+        _filters["department"] = departmentGuid;
         return this;
     }
 
-    public FilterTasksBuilder WithParticipant(string? participantGuid)
+    public FilterTasksBuilder Participant(string? participantGuid)
     {
         if (participantGuid is null) return this;
-        urlBuilder.Append($"participant={participantGuid}&");
+        _filters["participant"] = participantGuid;
         return this;
     }
 
-    public FilterTasksBuilder WithCreator(string? creatorGuid)
+    public FilterTasksBuilder Creator(string? creatorGuid)
     {
         if (creatorGuid is null) return this;
-        urlBuilder.Append($"creator={creatorGuid}&");
+        _filters["creator"] = creatorGuid;
         return this;
     }
 
-    public FilterTasksBuilder WithDeadlineStart(DateTime startDate)
+    public FilterTasksBuilder DeadlineStart(DateTime startDate)
     {
-        urlBuilder.Append($"deadlineStart={startDate:yyyy-MM-dd}&");
+        _filters["deadlineStart"] = startDate.ToString("yyyy-MM-dd");
         return this;
     }
 
-    public FilterTasksBuilder WithDeadlineStop(DateTime endDate)
+    public FilterTasksBuilder DeadlineStop(DateTime endDate)
     {
-        urlBuilder.Append($"deadlineStop={endDate:yyyy-MM-dd}&");
+        _filters["deadlineStop"] = endDate.ToString("yyyy-MM-dd");
         return this;
     }
 
@@ -101,9 +97,9 @@ public class FilterTasksBuilder
     /// </summary>
     /// <param name="lastId"></param>
     /// <returns></returns>
-    public FilterTasksBuilder WithLastId(int lastId)
+    public FilterTasksBuilder LastId(int lastId)
     {
-        urlBuilder.Append($"lastid={lastId}&");
+        _filters["lastid"] = lastId.ToString();
         return this;
     }
 
@@ -111,5 +107,14 @@ public class FilterTasksBuilder
     /// Builds url in a string
     /// </summary>
     /// <returns>Builded url</returns>
-    public string Build() => urlBuilder.ToString();
+    public override string Build()
+    {
+        if (_filters.ContainsKey("projectId") && _filters.ContainsKey("myProjects"))
+            throw new ArgumentException("Filter 'projectId' and 'myProjects' are mutually exclusive");
+        
+        if (_filters.ContainsKey("milestone") && _filters.ContainsKey("myMilestones"))
+            throw new ArgumentException("Filter 'milestone' and 'myMilestones' are mutually exclusive");
+        
+        return $"filter/{string.Join("&", _filters.Select(x => $"{x.Key}={x.Value}"))}";
+    }
 }

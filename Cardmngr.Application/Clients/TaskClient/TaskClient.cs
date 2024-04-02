@@ -4,6 +4,7 @@ using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Logics;
 using Onlyoffice.Api.Models;
 using Cardmngr.Domain.Extensions;
+using Onlyoffice.Api;
 
 namespace Cardmngr.Application.Clients.TaskClient;
 
@@ -28,6 +29,14 @@ public class TaskClient(IProjectApi projectApi, IMapper mapper) : ITaskClient
     {
         var taskDto = await projectApi.GetTaskByIdAsync(entityId);
         return mapper.Map<OnlyofficeTask>(taskDto);
+    }
+
+    public async IAsyncEnumerable<OnlyofficeTask> GetEntitiesAsync(FilterBuilder? filterBuilder = null)
+    {
+        await foreach (var tasksDto in projectApi.GetFiltredTasksAsync(filterBuilder ?? FilterBuilder.Empty))
+        {
+            yield return mapper.Map<OnlyofficeTask>(tasksDto);
+        }
     }
 
     public async IAsyncEnumerable<OnlyofficeTask> GetSelfTasksAsync()

@@ -18,7 +18,7 @@ public class ProjectClient(IProjectApi projectApi, ITaskClient taskClient, IMapp
     {
         var project = projectApi.GetProjectByIdAsync(projectId);
 
-        var tasks = projectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.WithProjectId(projectId))
+        var tasks = projectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.ProjectId(projectId))
             .ToListAsync(mapper.Map<OnlyofficeTask>);
 
         var statuses = projectApi.GetAllTaskStatusesAsync().ToListAsync(mapper.Map<OnlyofficeTaskStatus>);

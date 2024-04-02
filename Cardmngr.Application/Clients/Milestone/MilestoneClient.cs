@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Onlyoffice.Api;
 using Onlyoffice.Api.Logics;
 using Onlyoffice.Api.Models;
 
@@ -19,6 +20,11 @@ namespace Cardmngr.Application.Clients.Milestone
         {
             var milestoneDto = await projectApi.GetMilestoneByIdAsync(entityId);
             return mapper.Map<Domain.Entities.Milestone>(milestoneDto);
+        }
+
+        public IAsyncEnumerable<Domain.Entities.Milestone> GetEntitiesAsync(FilterBuilder? filterBuilder = null)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<Domain.Entities.Milestone> RemoveAsync(int milestoneId)

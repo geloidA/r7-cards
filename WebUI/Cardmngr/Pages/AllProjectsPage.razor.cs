@@ -19,7 +19,7 @@ public partial class AllProjectsPage : AuthorizedPage, IDisposable
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var projs = await ProjectClient.GetProjectsWithTaskFilterAsync(FilterTasksBuilder.Instance.WithMyProjects(true)).ToListAsync();
+        var projs = await ProjectClient.GetProjectsWithTaskFilterAsync(FilterTasksBuilder.Instance.MyProjects(true)).ToListAsync();
         allProjects = projs.Select(x => new StaticProjectVm(x)).ToList();
         SummaryService.SetProjects(projs);
         SummaryService.FilterManager.OnFilterChanged += OnFilterChanged;
@@ -29,7 +29,7 @@ public partial class AllProjectsPage : AuthorizedPage, IDisposable
 
     private async void OnFilterChanged(FilterTasksBuilder builder)
     {
-        builder = SummaryService.FilterManager.ProjectId == null ? builder.WithMyProjects(true) : builder;
+        builder = SummaryService.FilterManager.ProjectId == null ? builder.MyProjects(true) : builder;
         allProjects = await ProjectClient.GetProjectsWithTaskFilterAsync(builder)
             .Select(x => new StaticProjectVm(x))
             .ToListAsync();

@@ -48,16 +48,16 @@ public class FilterManagerService // TODO: Refactor
     private FilterTasksBuilder GenerateFilter()
     {
         var builder = FilterTasksBuilder.Instance
-            .WithCreator(withCreatedBy)
-            .WithParticipant(withResponsible)
-            .WithProjectId(projectId);
+            .Creator(withCreatedBy)
+            .Participant(withResponsible)
+            .ProjectId(projectId);
 
-        if (onlyClosed) builder = builder.WithStatus(Status.Closed);
+        if (onlyClosed) builder = builder.Status(Status.Closed);
 
         return onlyDeadlined
             ? builder
-                .WithDeadlineStop(DateTime.Now)
-                .WithStatus(Status.Open)
+                .DeadlineStop(DateTime.Now)
+                .Status(Status.Open)
             : builder;
     }
 
