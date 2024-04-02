@@ -16,6 +16,11 @@ public static class OnlyofficeTaskExtensions
         return !task.IsClosed() && DateTime.Now > task.Deadline;
     }
 
+    public static bool IsSevenDaysDeadlineOut(this OnlyofficeTask task)
+    {
+        return !task.IsClosed() && DateTime.Now.AddDays(6) > task.Deadline;
+    }
+
     public static IEnumerable<OnlyofficeTask> FilterByStatus(this IEnumerable<OnlyofficeTask> tasks, OnlyofficeTaskStatus status)
     {
         return tasks.Where(x => x.HasStatus(status));
@@ -36,7 +41,7 @@ public static class OnlyofficeTaskExtensions
     public static IEnumerable<OnlyofficeTask> OrderByTaskCriteria(this IEnumerable<OnlyofficeTask> tasks)
     {
         return tasks
-            .OrderByDescending(x => (x.IsDeadlineOut(), -(int)x.Status, x.Priority))
+            .OrderByDescending(x => (x.IsDeadlineOut(), -(int)x.Status, x.Priority, x.Updated))
             .ThenBy(x => (x.Deadline == null, x.Deadline));
     }
 }

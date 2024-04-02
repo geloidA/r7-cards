@@ -8,6 +8,7 @@ using Cardmngr.Components.TaskAggregate.Modals;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Services;
+using System.Net;
 
 namespace Cardmngr.Components.TaskAggregate;
 
@@ -25,15 +26,32 @@ public partial class TaskCard : ComponentBase, IDisposable
 
     [Parameter] public OnlyofficeTask Task { get; set; } = null!;
 
-    string CssDeadline => Task.IsDeadlineOut() ? "red-border" : "";
     string CssMarginTitle => string.IsNullOrEmpty(Task.Description) ? "mb-5" : "";
 
+    private string CssDeadline =>
+        Task.Deadline is null ? "" :
+        Task.IsDeadlineOut() ? "red-border" :
+        Task.IsSevenDaysDeadlineOut() ? "warning-border" : "";
+
     protected override async Task OnInitializedAsync()
-    {        
-        taskTags = await TaskClient.GetTaskTagsAsync(Task.Id).ToListAsync();
+    {
+        await InitializeTaskTagsAsync();
+
         if (State is IRefresheableProjectState refresheableProjectState)
         {
             refresheableProjectState.RefreshService.Refreshed += RefreshTaskTags;
+        }
+    }
+
+    private async Task InitializeTaskTagsAsync()
+    {
+        try
+        {
+            taskTags = await TaskClient.GetTaskTagsAsync(Task.Id).ToListAsync();
+        }
+        catch (HttpRequestException e) when (e.StatusCode != HttpStatusCode.BadGateway)
+        {
+            throw;
         }
     }
 
@@ -56,13 +74,19 @@ public partial class TaskCard : ComponentBase, IDisposable
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsModal).Result;
     }
 
-    private string GetDeadlineString()
+    /// <summary>
+    /// {0} - days left
+    /// {1} - day count name
+    /// </summary>
+    /// <param name="format"></param>
+    /// <returns></returns>
+    private string GetDeadlineString(string format)
     {
         if (Task.Deadline is null) return "Срок неизвестен";
         var diff = DateTime.Now.Date - Task.Deadline.Value.Date;
-        return diff.TotalDays == 0
-            ? "Срок истек - Сегодня"
-            : $"Срок истек - {diff.TotalDays} {Utils.Common.GetDayNameByDayCount(diff.TotalDays)} назад";
+        return diff.TotalDays != 0
+            ? string.Format(format, Math.Abs(diff.TotalDays), Utils.Common.GetDayNameByDayCount(diff.TotalDays))
+            : "";
     }
 
     public void Dispose()

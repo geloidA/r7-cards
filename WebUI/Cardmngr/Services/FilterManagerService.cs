@@ -8,9 +8,7 @@ public class FilterManagerService // TODO: Refactor
     private readonly Timer timer;
     private bool onlyClosed;
     private bool onlyDeadlined;
-    private string? withResponsible;
     private string? withCreatedBy;
-    private int? projectId;
     private bool settingsChanged;
 
     public FilterManagerService()
@@ -77,11 +75,15 @@ public class FilterManagerService // TODO: Refactor
         return onlyDeadlined;
     }
 
-    public string? SetResponsible(string? responsibleGuid)
+    private string? withResponsible;
+    public string? Responsible 
     {
-        withResponsible = responsibleGuid;
-        SettingsChanged();
-        return withResponsible;
+        get => withResponsible;
+        set
+        {
+            withResponsible = value;
+            SettingsChanged();
+        }
     }
     
     public string? SetCreatedBy(string? createdByGuid)
@@ -90,11 +92,15 @@ public class FilterManagerService // TODO: Refactor
         SettingsChanged();
         return withCreatedBy;
     }
-    
-    public int? SetProjectId(int? projectId)
+
+    private int? projectId;
+    public int? ProjectId 
     {
-        this.projectId = projectId;
-        SettingsChanged();
-        return projectId;
+        get => projectId;
+        set
+        {
+            projectId = value;
+            SettingsChanged();
+        }
     }
 }

@@ -28,15 +28,15 @@ public partial class ProjectBoard : ComponentBase
         State.MilestonesChanged += StateHasChanged;
     }
 
-    private IEnumerable<OnlyofficeTask> GetTasksForStatus(OnlyofficeTaskStatus status)
+    private ICollection<OnlyofficeTask> GetTasksForStatus(OnlyofficeTaskStatus status)
     {
         var filtered = State
             .FilteredTasks()
             .FilterByStatus(status);
 
         return status.StatusType == StatusType.Open
-            ? filtered.OrderByTaskCriteria()
-            : filtered.OrderByDescending(x => x.Updated);
+            ? [.. filtered.OrderByTaskCriteria()]
+            : [.. filtered.OrderByDescending(x => x.Updated)];
     }
 
     private async Task OnChangeTaskStatus(OnlyofficeTask task, OnlyofficeTaskStatus status)

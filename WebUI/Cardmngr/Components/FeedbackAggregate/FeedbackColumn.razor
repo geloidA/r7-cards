@@ -1,5 +1,5 @@
 ﻿<div class="feedback-col">
-    <KolBoardColumn TValue="Feedback" OnDropItem="DropFeedback" Items="Items">
+    <KolBoardColumn TValue="Feedback" OnDropItem="DropFeedback" MinItemSize="100" Items="Items">
         <HeaderTemplate>
             <div class="d-flex mb-2">
                 <div class="col col-sm-1">
@@ -14,9 +14,10 @@
 </div>
 
 @code {
-    private IEnumerable<Feedback> Items => State.Model!.Feedbacks
+    private ICollection<Feedback> Items => State.Model!.Feedbacks
         .Where(x => x.Status == Status)
-        .OrderByDescending(x => x.LikedUsers.Count);
+        .OrderByDescending(x => x.LikedUsers.Count)
+        .ToList();
 
     [Parameter] public RenderFragment? HeaderTemplate { get; set; }
     [Parameter, EditorRequired] public FeedbackStatus Status { get; set; }

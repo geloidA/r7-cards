@@ -12,7 +12,7 @@
                         @(selectedProject is { } ? selectedProject.Title : "Выберите проект")
                     </DropdownToggleButton>
                     <DropdownMenu style="max-height: 200px;" class="overflow-auto">
-                        @foreach (var project in projects)
+                        @foreach (var project in SummaryService.GetProjects())
                         {
                             <DropdownItem @onclick="() => SelectProject(project)">
                                 @project.Title
@@ -35,7 +35,7 @@
                         @(selectedResponsible is { } ? selectedResponsible.DisplayName : "Выберите пользователя")
                     </DropdownToggleButton>
                     <DropdownMenu style="max-height: 200px;" class="overflow-auto">
-                        @foreach (var user in users)
+                        @foreach (var user in SummaryService.GetResponsibles())
                         {
                             <DropdownItem @onclick="() => SelectResponsible(user)">
                                 @user.DisplayName
@@ -57,7 +57,7 @@
                         @(selectedCreatedBy is { } ? selectedCreatedBy.DisplayName : "Выберите пользователя")
                     </DropdownToggleButton>
                     <DropdownMenu style="max-height: 200px;" class="overflow-auto">
-                        @foreach (var user in users)
+                        @foreach (var user in SummaryService.GetCreatedBys())
                         {
                             <DropdownItem @onclick="() => SelectCreatedBy(user)">
                                 @user.DisplayName

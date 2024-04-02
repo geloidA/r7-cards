@@ -1,12 +1,18 @@
-﻿<KolBoard TValue="OnlyofficeTask" CanItemDrag="@(x => x.CanEdit)" Gap="0" >
+﻿<KolBoard TValue="OnlyofficeTask" CanItemDrag="@(x => x.CanEdit)" Gap="20" >
     <Columns>
         @if (State.Initialized)
         {
             var isFirst = true;
             foreach (var status in State.Model!.Statuses.InLogicalOrder())
             {
-                <div class="@(isFirst ? "" : "status-column")" @key="status" >
-                    <KolBoardColumn Width="365" TValue="OnlyofficeTask" CanCollapse="true"
+                @if (!isFirst)
+                {
+                    <div class="status-column" style="width: 1px;">
+
+                    </div>
+                }
+                <div @key="status" >
+                    <KolBoardColumn Width="365" MinItemSize="150" TValue="OnlyofficeTask" CanCollapse="true"
                         OnDropItem="@(async task => await OnChangeTaskStatus(task, status))"
                         Items="GetTasksForStatus(status)">
                         <HeaderTemplate Context="isCollapsed">

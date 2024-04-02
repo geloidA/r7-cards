@@ -62,17 +62,17 @@
                     @if (Task.IsDeadlineOut())
                     {
                         <Tool IconName="IconName.Fire" IconColor="IconColor.Danger" 
-                            TooltipTitle="@(GetDeadlineString())" TooltipPlacement="TooltipPlacement.Left" />
-                        <span class="small ms-2 text-danger" >
-                            Крайний срок:
-                            @Task.Deadline?.ToString("d MMM yyyy г.")</span>
+                            TooltipTitle="@(GetDeadlineString("Срок истек - {0} {1} назад"))" TooltipPlacement="TooltipPlacement.Left" />
                     }
-                    else
+                    else if (Task.IsSevenDaysDeadlineOut())
                     {
-                        <span class="small ms-2 fw-lighter" >
-                            Крайний срок:
-                            @Task.Deadline?.ToString("d MMM yyyy г.")</span>
+                        <Tool IconName="IconName.ExclamationTriangleFill" IconColor="IconColor.Warning"
+                            TooltipTitle="@(GetDeadlineString("Крайний срок истечет через {0} {1}"))" TooltipPlacement="TooltipPlacement.Left" />
                     }
+                    <span class="small ms-2 @(Task.IsDeadlineOut() ? "text-danger" : "fw-lighter")" >
+                        Крайний срок:
+                        @Task.Deadline?.ToString("d MMM yyyy г.")
+                    </span>
                 </div>
             </div>
         }

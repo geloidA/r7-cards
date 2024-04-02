@@ -7,7 +7,7 @@
     <CascadingValue Value="this" IsFixed="true">
         <div class="proj-state scrollbar-none" style="@CssHeight">
             <div class="ms-3 mb-1">
-                <div class="row">
+                <div class="row" @ondblclick="@ToggleCollapsed">
                     <div class="col d-flex fw-bold text-black">
                         <ProjectClosedTasksInfo></ProjectClosedTasksInfo>
                         <div class="ms-2 align-self-center">
@@ -33,11 +33,11 @@
                     </div>
                     <div class="col align-self-center d-flex justify-content-end" style="margin-right: 10px;">
                         <Icon class="clickable ms-2" @onclick="@ToggleCollapsed"
-                            Name="@(isCollapsed ? IconName.ChevronDown : IconName.ChevronUp)" />
+                            Name="@(ViewModel?.IsCollapsed ?? true ? IconName.ChevronDown : IconName.ChevronUp)" />
                     </div>
                 </div>
             </div>
-            @if (!isCollapsed)
+            @if (!(ViewModel?.IsCollapsed ?? true))
             {
                 @ChildContent
             }

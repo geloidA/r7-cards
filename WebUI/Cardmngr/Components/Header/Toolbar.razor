@@ -12,7 +12,7 @@
 @code {
     void NavigateToR7Office()
     {
-        if (NavigationManager.Uri.Contains("project"))
+        if (NavigationManager.Uri.Contains("/project/"))
         {
             NavigationManager.NavigateTo(Config.CheckKey("onlyoffice-url") + $"/Products/Projects/Projects.aspx?prjID={CurrentProjectId}");
         }
