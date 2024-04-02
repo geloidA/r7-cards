@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Cardmngr.Application.Clients;
 using Cardmngr.Application.Clients.People;
 using Cardmngr.Domain.Entities;
@@ -39,9 +39,15 @@ public partial class FilterCustomizer : ComponentBase
 
     private void SelectResponsible(UserInfo? user)
     {
-        if (selectedResponsible?.Id == user?.Id) return;
-        FilterManager.SetResponsible(user?.Id);
-        selectedResponsible = user;
+        Console.WriteLine($"Responsible changed on {SummaryService.FilterManager.Responsible}");
+        Console.WriteLine($"Selected responsible is {selectedResponsible?.Id ?? "null"}");
+        if (SummaryService.FilterManager.Responsible != selectedResponsible?.Id)
+        {
+            selectedResponsible = SummaryService
+                .GetResponsibles()
+                .SingleOrDefault(x => x.Id == SummaryService.FilterManager.Responsible);
+            StateHasChanged();
+        }
     }
 
     private UserInfo? selectedCreatedBy; // TODO: DRY
