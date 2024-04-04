@@ -1,4 +1,5 @@
-﻿using Cardmngr.Domain.Entities;
+﻿using Cardmngr.Domain;
+using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Project;
 using Onlyoffice.Api.Common;
 
@@ -10,5 +11,6 @@ public interface IProjectClient
     IAsyncEnumerable<Project> GetSelfProjectsAsync();
     IAsyncEnumerable<ProjectStateVm> GetProjectsWithSelfTasksAsync();
     IAsyncEnumerable<Project> GetProjectsAsync();
-    IAsyncEnumerable<IProjectStateVm> GetProjectsWithTaskFilterAsync(FilterTasksBuilder filter);
+    IAsyncEnumerable<KeyValuePair<ProjectInfo, ICollection<OnlyofficeTask>>> GetGroupedFilteredTasksAsync(FilterTasksBuilder filter);
+    Task<ProjectStateVm> CreateProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks);
 }

@@ -27,7 +27,7 @@
             </i>
         </div>
         <div class="col d-flex justify-content-end">                
-            @RenderStatus(GetDataByStatus(State.Model!.Project.Status))
+            @ProjectStatusBadge.RenderStatus(State.Model!.Project.Status.GetBadgeData())
         </div>
     </div>
     <OffcanvasBody Class="d-flex flex-column px-3">
@@ -83,13 +83,3 @@
         </div>
     </OffcanvasBody>
 </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
-
-@code {
-    private static RenderFragment<StatusData> RenderStatus => data =>
-        @<Badge Color="data.BadgeColor" class="user-select-none">
-            <div class="d-flex align-items-center" >
-                <span style="font-size: small;">@data.Title</span>
-                <Icon class="ms-1 d-flex" Name="data.IconName" />
-            </div>
-        </Badge>;
-}

@@ -3,7 +3,7 @@
         @if (State.Initialized)
         {
             var isFirst = true;
-            foreach (var status in State.Model!.Statuses.InLogicalOrder())
+            foreach (var status in State.Model?.Statuses.InLogicalOrder() ?? [])
             {
                 @if (!isFirst)
                 {

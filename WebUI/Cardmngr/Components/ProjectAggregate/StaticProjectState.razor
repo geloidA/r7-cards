@@ -2,52 +2,54 @@
 
 @inherits ProjectStateBase
 
-@if (Initialized)
-{
-    <CascadingValue Value="this" IsFixed="true">
-        <div class="proj-state scrollbar-none" style="@CssHeight">
-            <div class="ms-3 mb-1">
-                <div class="row" @ondblclick="@ToggleCollapsed">
-                    <div class="col d-flex fw-bold text-black">
-                        <ProjectClosedTasksInfo></ProjectClosedTasksInfo>
-                        <div class="ms-2 align-self-center">
-                            @(Model?.Project?.Title ?? "Задачи вне проектов")
-                        </div>
-                        @if (Model is { })
+<CascadingValue Value="this" IsFixed="true">
+    <div class="proj-state scrollbar-none" style="@CssHeight">
+        <div class="proj-header clickable" @ondblclick="@ToggleCollapsed">
+            <div class="row user-select-none">
+                <div class="col d-flex fw-bold text-black">
+                    @if (ViewModel is { })
+                    {
+                        @if (ViewModel.ProjectInfo.IsPrivate)
                         {
-                            if (IsCurrentUserInTeam)
-                            {
-                                <a class="align-self-center" href=@($"/project/{Model.Project!.Id}")>
-                                    <Icon class="ms-1" Name="IconName.BoxArrowInDownLeft" />
-                                </a>
-                            }
-                            else
-                            {
-                                <Tooltip class="align-self-center text-muted" 
-                                    Title="Вы не являетесь участником команды"
-                                    Placement="TooltipPlacement.Right">
-                                    <Icon class="ms-1" Name="IconName.BoxArrowInDownLeft" />
-                                </Tooltip>
-                            }
+                            <div class="align-self-center">
+                                <Icon Name="IconName.LockFill" title="Приватный проект"
+                                    Color="IconColor.Warning" />
+                            </div>
                         }
-                    </div>
-                    <div class="col align-self-center d-flex justify-content-end" style="margin-right: 10px;">
-                        <Icon class="clickable ms-2" @onclick="@ToggleCollapsed"
-                            Name="@(ViewModel?.IsCollapsed ?? true ? IconName.ChevronDown : IconName.ChevronUp)" />
-                    </div>
+                        <div class="ms-2 align-self-center">
+                            @ViewModel.ProjectInfo.Title
+                        </div>
+                        <a class="align-self-center" href=@($"/project/{ViewModel.ProjectInfo.Id}")>
+                            <Icon class="ms-1" Name="IconName.BoxArrowInDownLeft" />
+                        </a>
+                    }
+                </div>
+                <div class="col align-self-center d-flex justify-content-end" style="margin-right: 10px;">
+                    <i class="tip-hide text-secondary" style="font-size: small;">
+                        Двойной клик для рыскрытия/закрытия
+                    </i>
+                    <Icon class="clickable ms-2" @onclick="@ToggleCollapsed"
+                        Name="@(ViewModel?.IsCollapsed ?? true ? IconName.ChevronDown : IconName.ChevronUp)" />
                 </div>
             </div>
-            @if (!(ViewModel?.IsCollapsed ?? true))
-            {
-                @ChildContent
-            }
         </div>
-    </CascadingValue>
-}
-else
-{
-    <div class="d-flex align-self-center justify-content-center mb-2">
-        <Spinner Color="SpinnerColor.Light" Size="SpinnerSize.Medium" />
-        <span class="ms-2">Загрузка...</span>
+        @if (!(ViewModel?.IsCollapsed ?? true))
+        {
+            if (Model is { })
+            {
+                <div class="d-flex flex-column position-relative" style="flex: auto !important;">
+                    <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
+                        <ProjectBoard></ProjectBoard>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex justify-content-center align-content-center user-select-none">
+                    <Spinner class="fs-6" style="height: 20px; width: 20px;"/>
+                    <span class="ms-2">Загрузка...</span>
+                </div>
+            }
+        }
     </div>
-}
+</CascadingValue>

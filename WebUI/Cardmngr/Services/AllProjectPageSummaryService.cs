@@ -1,37 +1,40 @@
-﻿using Cardmngr.Domain.Entities;
-using Cardmngr.Shared.Project;
+﻿using Cardmngr.Domain;
+using Cardmngr.Domain.Entities;
 
 namespace Cardmngr.Services;
 
 public class AllProjectsPageSummaryService
 {
-    private List<IProjectStateVm>? projects = [];
+    private List<OnlyofficeTask>? tasks = [];
     
-    public FilterManagerService FilterManager { get; private set; } = new();
+    public FilterManagerService FilterManager { get; } = new();
 
     public event Action? OnProjectsChanged;
 
-    public void SetProjects(List<IProjectStateVm> projects)
+    public void SetTasks(List<OnlyofficeTask> tasks, bool notify = true)
     {
-        this.projects = projects;
-        OnProjectsChanged?.Invoke();
+        this.tasks = tasks;
+        
+        if (notify)
+        {            
+            OnProjectsChanged?.Invoke();
+        }
     }
 
-    public IEnumerable<UserInfo> GetResponsibles() => projects?
-        .SelectMany(x => x.Tasks.SelectMany(y => y.Responsibles))
+    public IEnumerable<UserInfo> GetResponsibles() => tasks?
+        .SelectMany(x => x.Responsibles)
         .Distinct() ?? [];
 
-    public IEnumerable<Project> GetProjects() => projects?
-        .Where(x => x.Project != null)
-        .Select(x => x.Project!) ?? [];
+    public IEnumerable<ProjectInfo> GetProjects() => tasks?
+        .Select(x => x.ProjectOwner) 
+        .Distinct() ?? [];
 
-    public IEnumerable<UserInfo> GetCreatedBys() => projects?
-        .SelectMany(x => x.Tasks.Select(y => y.CreatedBy))
+    public IEnumerable<UserInfo> GetCreatedBys() => tasks?
+        .Select(x => x.CreatedBy)
         .Distinct() ?? [];
     
     public void LeftPage()
     {
-        projects = null;
-        FilterManager = new();
+        tasks = null;
     }
 }

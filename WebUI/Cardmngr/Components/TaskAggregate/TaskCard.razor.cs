@@ -12,7 +12,7 @@ using System.Net;
 
 namespace Cardmngr.Components.TaskAggregate;
 
-public partial class TaskCard : ComponentBase, IDisposable
+public partial class TaskCard : ComponentBase
 {
     private List<TaskTag> taskTags = [];
 
@@ -36,11 +36,6 @@ public partial class TaskCard : ComponentBase, IDisposable
     protected override async Task OnInitializedAsync()
     {
         await InitializeTaskTagsAsync();
-
-        if (State is IRefresheableProjectState refresheableProjectState)
-        {
-            refresheableProjectState.RefreshService.Refreshed += RefreshTaskTags;
-        }
     }
 
     private async Task InitializeTaskTagsAsync()
@@ -53,12 +48,6 @@ public partial class TaskCard : ComponentBase, IDisposable
         {
             throw;
         }
-    }
-
-    private async void RefreshTaskTags()
-    {
-        taskTags = await TaskClient.GetTaskTagsAsync(Task.Id).ToListAsync();
-        InvokeAsync(StateHasChanged).Forget();
     }
 
     private async Task OpenModal()
@@ -87,13 +76,5 @@ public partial class TaskCard : ComponentBase, IDisposable
         return diff.TotalDays != 0
             ? string.Format(format, Math.Abs(diff.TotalDays), Utils.Common.GetDayNameByDayCount(diff.TotalDays))
             : "";
-    }
-
-    public void Dispose()
-    {
-        if (State is IRefresheableProjectState refresheableProjectState)
-        {
-            refresheableProjectState.RefreshService.Refreshed -= RefreshTaskTags;
-        }
     }
 }

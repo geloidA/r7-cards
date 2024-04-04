@@ -1,6 +1,4 @@
-﻿using System.Timers;
-using Cardmngr.Exceptions;
-using Timer = System.Timers.Timer;
+﻿using Cardmngr.Exceptions;
 
 namespace Cardmngr.Utils;
 
@@ -8,19 +6,22 @@ public class RefreshService : IDisposable
 {
     private bool _started = false;
     private bool _disposed = false;
-    private readonly Timer timer = new();
+    private Timer? timer;
     private readonly HashSet<Guid> locks = [];
+    private TimeSpan refreshInterval;
 
     public void Start(TimeSpan refreshInterval)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (_started) throw new RefreshServiceMultipleStartException();
 
-        timer.Interval = refreshInterval.TotalMilliseconds;
-        timer.Elapsed += OnRefreshElapsed;
+        this.refreshInterval = refreshInterval;
 
+        timer = locks.Count == 0
+            ? new Timer(OnRefreshElapsed, null, refreshInterval, refreshInterval)
+            : new Timer(OnRefreshElapsed, null, Timeout.Infinite, Timeout.Infinite);
+    
         _started = true;
-        timer.Enabled = locks.Count == 0;
     }
 
     public void RemoveLock(Guid lockGuid)
@@ -28,7 +29,7 @@ public class RefreshService : IDisposable
         if (locks.Remove(lockGuid))
         {
             if (locks.Count == 0)
-                timer.Enabled = true;
+                timer?.Change(refreshInterval, refreshInterval);
         }
     }
 
@@ -36,20 +37,21 @@ public class RefreshService : IDisposable
     {
         if (lockGuid == Guid.Empty) throw new ArgumentException("lockGuid cannot be empty");
         locks.Add(lockGuid);
-        timer.Enabled = false;
+        if (locks.Count == 1)
+            timer?.Change(Timeout.Infinite, Timeout.Infinite);
     }
 
-    public bool Enabled => timer.Enabled;
+    public bool Enabled => locks.Count == 0 && _started;
     public bool Started => _started;
     public bool Disposed => _disposed;
 
     public event Action? Refreshed;
-    private void OnRefreshElapsed(object? sender, ElapsedEventArgs e) => Refreshed?.Invoke();
+    private void OnRefreshElapsed(object? sender) => Refreshed?.Invoke();
 
     public void Dispose()
     {
         Refreshed = null;
-        timer.Dispose();
+        timer?.Dispose();
         _disposed = true;
     }
 }

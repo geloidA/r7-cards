@@ -10,29 +10,19 @@
 @if (initialized)
 {
     <AuthorizeView>
-        <div class="d-flex justify-content-end gap-1 mb-1" style="margin-right: 10px;">
-            <Button Size="Size.ExtraSmall" @onclick="() => allProjects.ForEach(x => x.IsCollapsed = false)" 
-                Color="ButtonColor.Dark" Outline="true">Открыть все</Button>
-            <Button Size="Size.ExtraSmall" @onclick="() => allProjects.ForEach(x => x.IsCollapsed = true)" 
-                Color="ButtonColor.Dark" Outline="true">Закрыть все</Button>
-        </div>
         <div class="d-flex flex-column p-2" style="overflow-y: auto; overflow-x: hidden;">
             <CascadingValue Value="IdOnInitialization" Name="UserId" IsFixed="true" >
                 <div style="height: 900px; overflow-y:auto; overflow-x:hidden">
-                    <Virtualize Items="allProjects" Context="project" ItemSize="650">
+                    <Virtualize Items="allProjects" Context="project">
                         <ItemContent>
-                            <div class="mb-2" @key="project.StateVm.Project!.Id" >
-                                <StaticProjectState ViewModel="project" >
-                                    <div class="d-flex flex-column position-relative" style="flex: auto !important;">
-                                        <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
-                                            <ProjectBoard></ProjectBoard>
-                                        </div>
-                                    </div>
-                                </StaticProjectState>
+                            <div class="mb-2" @key="project.ProjectInfo.Id" >
+                                <StaticProjectState ViewModel="project"  />
                             </div>
                         </ItemContent>
                         <EmptyContent>
-                            Пусто!
+                            <div class="d-flex justify-content-center">
+                                <Badge class="w-100 mx-5" Color="BadgeColor.Light"><i>Список пуст</i></Badge>
+                            </div>
                         </EmptyContent>
                     </Virtualize>
                 </div>

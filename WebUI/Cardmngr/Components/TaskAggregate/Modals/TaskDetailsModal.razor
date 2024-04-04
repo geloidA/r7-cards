@@ -8,7 +8,7 @@
 
 @if (buffer is { })
 {
-    <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
+    <Cardmngr.Components.Modals.MyBlazored.Offcanvas Width="520" Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
         @ref="currentModal">
         <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
             <FluentValidationValidator ValidatorType="@(typeof(TaskUpdateDataValidator))" />

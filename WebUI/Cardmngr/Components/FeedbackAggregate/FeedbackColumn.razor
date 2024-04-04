@@ -1,5 +1,5 @@
 ﻿<div class="feedback-col">
-    <KolBoardColumn TValue="Feedback" OnDropItem="DropFeedback" Items="Items">
+    <KolBoardColumn TValue="Feedback" Width="Width" OnDropItem="DropFeedback" Items="Items">
         <HeaderTemplate>
             <div class="d-flex mb-2">
                 <div class="col col-sm-1">
@@ -20,6 +20,7 @@
         .ToList();
 
     [Parameter] public RenderFragment? HeaderTemplate { get; set; }
+    [Parameter] public int Width { get; set; } = 324;
     [Parameter, EditorRequired] public FeedbackStatus Status { get; set; }
 
     [CascadingParameter] FeedbacksState State { get; set; } = null!;

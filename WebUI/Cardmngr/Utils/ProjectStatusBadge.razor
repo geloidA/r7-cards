@@ -1,0 +1,10 @@
+﻿
+@code {
+    public static RenderFragment<ProjectStatusData> RenderStatus => data =>
+        @<Badge Color="data.BadgeColor" class="user-select-none">
+            <div class="d-flex align-items-center" >
+                <span style="font-size: xx-small;">@data.Title</span>
+                <Icon class="ms-1 d-flex" Name="data.IconName" />
+            </div>
+        </Badge>;
+}

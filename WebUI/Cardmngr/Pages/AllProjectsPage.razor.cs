@@ -19,25 +19,32 @@ public partial class AllProjectsPage : AuthorizedPage, IDisposable
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        var projs = await ProjectClient.GetProjectsWithTaskFilterAsync(FilterTasksBuilder.Instance.MyProjects(true)).ToListAsync();
-        allProjects = projs.Select(x => new StaticProjectVm(x)).ToList();
-        SummaryService.SetProjects(projs);
-        SummaryService.FilterManager.OnFilterChanged += OnFilterChanged;
-        SummaryService.FilterManager.Responsible = IdOnInitialization;
+        SummaryService.FilterManager.OnFilterChanged += OnFilterChangedAsync;
+        if (SummaryService.FilterManager.Responsible == null)
+        {
+            SummaryService.FilterManager.Responsible = IdOnInitialization;
+        }
+        else
+        {
+            OnFilterChangedAsync(SummaryService.FilterManager.GenerateFilter());
+        }
         initialized = true;
     }
 
-    private async void OnFilterChanged(FilterTasksBuilder builder)
+    private async void OnFilterChangedAsync(FilterTasksBuilder builder)
     {
-        builder = SummaryService.FilterManager.ProjectId == null ? builder.MyProjects(true) : builder;
-        allProjects = await ProjectClient.GetProjectsWithTaskFilterAsync(builder)
-            .Select(x => new StaticProjectVm(x))
+        allProjects = await ProjectClient.GetGroupedFilteredTasksAsync(builder)
+            .Select(x => new StaticProjectVm(x.Key, x.Value))
             .ToListAsync();
-        await InvokeAsync(StateHasChanged);
+
+        SummaryService.SetTasks(allProjects.SelectMany(x => x.Tasks).ToList());
+        
+        StateHasChanged();
     }
 
     public void Dispose()
     {
         SummaryService.LeftPage();
+        SummaryService.FilterManager.OnFilterChanged -= OnFilterChangedAsync;
     }
 }

@@ -17,12 +17,12 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState
         get => model;
         set
         {
-            if (value is not ProjectStateVm newVal)
+            if (value != null && value is not ProjectStateVm)
             {
                 throw new InvalidCastException("value is not ProjectStateVm");
             }
 
-            model = newVal;
+            model = value as ProjectStateVm;
             OnStateChanged();
         }
     }

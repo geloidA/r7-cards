@@ -8,7 +8,6 @@ public class FilterManagerService // TODO: Refactor
     private readonly Timer timer;
     private bool onlyClosed;
     private bool onlyDeadlined;
-    private string? withCreatedBy;
     private bool settingsChanged;
 
     public FilterManagerService()
@@ -45,14 +44,14 @@ public class FilterManagerService // TODO: Refactor
     public event Action<FilterTasksBuilder>? OnFilterChanged;
     private void OnFilterChangedInternal() => OnFilterChanged?.Invoke(GenerateFilter());
 
-    private FilterTasksBuilder GenerateFilter()
+    public FilterTasksBuilder GenerateFilter()
     {
         var builder = FilterTasksBuilder.Instance
             .Creator(withCreatedBy)
-            .Participant(withResponsible)
-            .ProjectId(projectId);
+            .Participant(withResponsible);
 
         if (onlyClosed) builder = builder.Status(Status.Closed);
+        builder = projectId != null ? builder.ProjectId(projectId.Value) : builder.MyProjects(true);
 
         return onlyDeadlined
             ? builder
@@ -82,6 +81,17 @@ public class FilterManagerService // TODO: Refactor
         set
         {
             withResponsible = value;
+            SettingsChanged();
+        }
+    }
+
+    private string? withCreatedBy;
+    public string? CreatedBy
+    {
+        get => withCreatedBy;
+        set
+        {
+            withCreatedBy = value;
             SettingsChanged();
         }
     }

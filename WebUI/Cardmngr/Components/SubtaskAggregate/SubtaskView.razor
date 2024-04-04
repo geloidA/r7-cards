@@ -2,7 +2,7 @@
 <EditForm Model="Subtask" OnValidSubmit="Submit" >
     <DataAnnotationsValidator/>
     <div class="row d-flex align-items-center mt-2">
-        <div class="col-md-6 d-flex flex-row align-items-center overflow-hidden">
+        <div class="col d-flex flex-row align-items-center overflow-hidden">
             @if (Subtask.Status == (int)Status.Open)
             {
                 <Tool IconName="IconName.ClockFill" IconColor="IconColor.Info" 
@@ -11,14 +11,14 @@
                     OnClick="@SwitchSubtaskStatus" />
                 @if (isEditMode)
                 {
-                    <div class="d-flex flex-column">
-                        <input class="ms-2 w-100" @bind="Subtask.Title" />
+                    <div class="d-flex w-100 flex-column">
+                        <input class="ms-2 w-100 form-control" @bind="Subtask.Title" />
                         <ValidationMessage For="() => Subtask.Title" style="font-size: x-small;" class="ms-2 validation-msg" />
                     </div>
                 }
                 else
                 {
-                    <span class="ms-2" style="font-size: 15px;">@Subtask.Title</span>
+                    <span class="ms-1" style="font-size: 15px;">@Subtask.Title</span>
                 }
             }
             else
@@ -27,15 +27,15 @@
                     IconSize="IconSize.x5" TooltipPlacement="TooltipPlacement.Left"
                     TooltipTitle="Отметить невыполненым" Disabled="@(Task.IsClosed() || Disabled)"
                     OnClick="@SwitchSubtaskStatus" DisabledTitle="@(Task.IsClosed() ? "Задача закрыта" : "Недоступно")"/>
-                <s class="ms-2 text-secondary">
+                <s class="ms-1 text-secondary" style="font-size: 15px;">
                     <i>@Subtask.Title</i>
                 </s>
             }
         </div>
-        <div class="col-md-4 d-flex justify-content-center">
+        <div class="col-md-1 d-flex justify-content-center">
             <ResponsibleSelection @bind-SelectedId="Subtask.Responsible" EditMode="isEditMode" Team="State.Model!.Team" />
         </div>
-        <div class="col-md-2 d-flex justify-content-end">
+        <div class="col-md-1 d-flex">
             @if (!Disabled)
             {
                 if (Subtask.Status != (int)Status.Closed)
