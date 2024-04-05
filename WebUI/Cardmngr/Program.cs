@@ -11,6 +11,7 @@ using Cardmngr.Services;
 using Cardmngr.Application.Extensions;
 using KolBlazor.Extensions;
 using Cardmngr.Utils;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -28,10 +29,10 @@ builder.Services
     .AddScoped<TeamMemberSelectionDialog>()
     .AddBlazoredModal()
     .AddKolBlazor()
+    .AddFluentUIComponents()
     .AddNotifications()
     .AddCascadingAuthenticationState()
     .AddBlazoredLocalStorage()
-    .AddBlazorBootstrap()
     .AddAuthorizationCore()
     .AddOptions();
 

@@ -6,9 +6,9 @@ using Onlyoffice.Api.Models;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Shared.Extensions;
-using BlazorBootstrap;
 using Cardmngr.Notification;
 using Cardmngr.Services;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.TaskAggregate.Modals;
 
@@ -20,7 +20,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
 
     [Inject] ITaskClient TaskClient { get; set; } = null!;
     [Inject] TagColorGetter TagColorGetter { get; set; } = null!;
-    [Inject] ToastService ToastService { get; set; } = null!;
+    [Inject] IToastService ToastService { get; set; } = null!;
     [Inject] NotificationHubConnection NotificationHubConnection { get; set; } = null!;
 
     [Parameter] public IProjectState State { get; set; } = null!;
@@ -59,12 +59,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     {
         if (upd.Id == Model!.Id)
         {
-            ToastService.Notify(new ToastMessage 
-            { 
-                Message = "Задача была изменена кем-то другим",
-                Title = "Задача изменена.",
-                IconName = IconName.Lamp
-            });
+            ToastService.ShowInfo("Задача была изменена кем-то другим");
 
             currentModal.CloseAsync().Forget();
         }
@@ -74,13 +69,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     {
         if (taskId == Model?.Id)
         {
-            ToastService.Notify(new ToastMessage 
-            { 
-                Message = "Задача была удалена",
-                Title = "Задача удалена",
-                IconName = IconName.EmojiAngry,
-                Type = ToastType.Danger
-            });
+            ToastService.ShowInfo("Задача была удалена кем-то другим");
 
             currentModal.CloseAsync().Forget();
         }
@@ -88,9 +77,15 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
 
     private async Task SubmitAsync()
     {
+        if (shiftEnter)
+        {
+            shiftEnter = false;
+            return;
+        }
+
         if (IsAdd)
         {
-            var created = await TaskClient.CreateAsync(State.Model!.Project!.Id, buffer); // TODO: hide Model in state
+            var created = await TaskClient.CreateAsync(State.Model!.Project!.Id, buffer);
             State.AddTask(created);
 
             ProjectHubClient?.SendCreatedTaskAsync(created.ProjectOwner.Id, created.Id).Forget();

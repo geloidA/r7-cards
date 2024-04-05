@@ -1,42 +1,80 @@
 ﻿@using Onlyoffice.Api.Models
 
-<Card >
-    <CardBody class="d-flex flex-column">
-        <CardTitle>
-            <div class="row d-flex align-items-center">
-                <div class="col fs-6"> 
-                    <Icon Name="IconName.Star" />
-                    Веха
-                </div>
-                <div class="col d-flex justify-content-end">
-                    <Tool Disabled="@Disabled" IconName="IconName.Pencil" IconSize="IconSize.x6"
-                        TooltipTitle="Изменить" OnClick="@ShowSelectionModalAsync" />
-                    <div class="ms-3">
-                        <Tool Disabled="@(Disabled || Task.MilestoneId == null)" IconName="IconName.X" IconSize="IconSize.x6"
-                            TooltipTitle="Удалить" OnClick="@DeleteMilestone" />
-                    </div>
-                </div>
-            </div>
-        </CardTitle>
-        @if (Task.MilestoneId is { })
+<FluentAutocomplete @ref="MilestoneList"
+        TOption="Milestone"
+        Disabled="Disabled"
+        MaximumSelectedOptions="1"
+        SelectedOptions="SelectedMilestone"
+        SelectedOptionsChanged="OnSelectionChanged"
+        OnOptionsSearch="OnSearch"
+        Placeholder="Нет" >
+
+    <LabelTemplate>
+        Веха 
+        <FluentIcon Value="@(new Icons.Regular.Size20.Star())" Style="margin: 0 4px;" />
+    </LabelTemplate>
+
+    <SelectedOptionTemplate>
+        <FluentBadge Appearance="Appearance.Neutral">
+            @context.Title
+        </FluentBadge>
+    </SelectedOptionTemplate>
+
+    <MaximumSelectedOptionsMessage>
+        Задача может принадлежать только одной вехе
+    </MaximumSelectedOptionsMessage>
+
+    <OptionTemplate>
+        <FluentBadge Appearance="Appearance.Neutral">
+            @context.Title
+        </FluentBadge>
+    </OptionTemplate>
+
+    <HeaderContent>
+        <FluentLabel Color="Color.Accent"
+            Style="padding: 8px; font-size: 11px; border-bottom: 1px solid var(--neutral-fill-stealth-hover);">
+            Вехи проекта
+        </FluentLabel>
+    </HeaderContent>
+
+    <FooterContent>
+        @if (!context.Any())
         {
-            <div>
-                <MilestoneLabel Milestone="@(State.GetMilestone(Task.MilestoneId))" />
-            </div>
+            <FluentLabel Style="font-size: 11px; text-align: center; width: 200px;">
+                Нет результатов
+            </FluentLabel>
         }
-        else
-        {
-            <span class="text-secondary">Вне вехи</span>
-        }
-    </CardBody>
-</Card>
+    </FooterContent>
+
+</FluentAutocomplete>
 
 @code {
-    private static RenderFragment<Milestone> RenderMilestone = milestone =>
-        @<div class="py-1 px-1 d-flex align-items-center">
-            <Badge Color="BadgeColor.Warning" IndicatorType="BadgeIndicatorType.RoundedPill"
-                style="max-width: 425px; overflow: hidden;">
-                @milestone.Title
-            </Badge>
-        </div>;
+    FluentAutocomplete<Milestone> MilestoneList = default!;
+    IEnumerable<Milestone> SelectedMilestone = [];
+
+    [Parameter] public TaskUpdateData Task { get; set; } = null!;    
+    [CascadingParameter] IProjectState State { get; set; } = null!;
+    [Parameter] public bool Disabled { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var selected = State.Model.Milestones.SingleOrDefault(x => x.Id == Task.MilestoneId);
+        if (selected is { })
+        {
+            SelectedMilestone = [selected];
+        }
+    }
+
+    void OnSelectionChanged(IEnumerable<Milestone> e)
+    {
+        Task.MilestoneId = e.Any() ? e.Single().Id : null;
+        SelectedMilestone = e;
+    }
+
+    void OnSearch(OptionsSearchEventArgs<Milestone> e)
+    {
+        e.Items = State.Model.Milestones
+            .Where(x => x.Title.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(m => m.Title);
+    }
 }

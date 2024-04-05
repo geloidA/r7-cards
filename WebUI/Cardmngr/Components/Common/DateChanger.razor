@@ -1,28 +1,10 @@
-﻿@inherits SingleValueChangerBase
+﻿@inherits SingleValueChangerBase<DateTime?>
 
-<div class="row p-1">
-    <div class="col">
-        @Title
-    </div>
-    <div class="col d-flex justify-content-end">
-        @if (EditMode)
-        {
-            <input @ref="Input" type="date" class="form-control" @bind="Date"
-                @onfocusout="ToggleEditMode"
-                style="max-width: 150px; max-height: 25px;" id="@InputId" />
-        }
-        else
-        {
-            @if (Date is { })
-            {
-                <span @onclick="ToggleEditMode" class="small ms-2">@Date?.ToString("d MMM yyyy г.")</span>
-            }
-            else
-            {
-                <i @onclick="ToggleEditMode" class="text-secondary fw-lighter ms-2">@EmptyText</i>
-            }
-        }
-    </div>
+<div class="d-flex align-items-center @Class" style="@Style">
+    @Title
+    <div style="flex-grow: 1;"></div>
+    <FluentDatePicker Autofocus="true" Placeholder="@EmptyText"
+        ReadOnly="Disabled" @bind-Value="Date" id="@InputId" />
 </div>
 
 @code {

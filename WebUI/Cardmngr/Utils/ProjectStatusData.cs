@@ -1,17 +1,17 @@
-﻿using BlazorBootstrap;
-using Cardmngr.Domain.Enums;
+﻿using Cardmngr.Domain.Enums;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Utils;
 
-public class ProjectStatusData(BadgeColor badgeColor, IconName iconName, string title)
+public class ProjectStatusData(string badgeColor, Icon iconName, string title)
 {
-    public BadgeColor BadgeColor => badgeColor;
-    public IconName IconName => iconName;
+    public string BadgeColor => badgeColor;
+    public Icon IconName => iconName;
     public string Title => title;
 
-    public static ProjectStatusData Open => new(BadgeColor.Primary, IconName.ForwardFill, "Открыт");
-    public static ProjectStatusData Closed => new(BadgeColor.Success, IconName.CheckCircleFill, "Закрыт");
-    public static ProjectStatusData Paused => new(BadgeColor.Secondary, IconName.PauseCircleFill, "Приостановлен");
+    public static ProjectStatusData Open => new("blue", new Icons.Filled.Size20.ArrowForward(), "Открыт");
+    public static ProjectStatusData Closed => new("green", new Icons.Filled.Size20.CheckmarkCircle(), "Закрыт");
+    public static ProjectStatusData Paused => new("gray", new Icons.Filled.Size20.Pause(), "Приостановлен");
 }
 
 public static class ProjectStatusExtensions

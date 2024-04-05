@@ -5,6 +5,7 @@ using Cardmngr.Services;
 using Cardmngr.Shared;
 using Cardmngr.Shared.Utils.Filter;
 using Microsoft.AspNetCore.Components;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
@@ -13,6 +14,10 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
     private string CssHeight => ViewModel?.IsCollapsed ?? true 
         ? "min-height: 50px;" 
         : "max-height: 650px; min-height: 650px;";
+
+    private Icon CollapsedIcon => ViewModel?.IsCollapsed ?? true 
+        ? new Icons.Regular.Size16.ChevronDown() 
+        : new Icons.Regular.Size16.ChevronUp();
 
     [Parameter] public StaticProjectVm? ViewModel { get; set; }
     [Inject] IProjectClient ProjectClient { get; set; } = null!;

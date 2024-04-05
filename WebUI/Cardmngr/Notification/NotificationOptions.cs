@@ -2,7 +2,7 @@
 
 public class NotificationOptions
 {
-    public string? Badge { get; set; }
+    public string? FluentBadge { get; set; }
 
     public string? Body { get; set; }
 

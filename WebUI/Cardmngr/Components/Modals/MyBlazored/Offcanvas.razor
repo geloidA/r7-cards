@@ -3,15 +3,17 @@
 <div class="offcanvas @DelayedShow @CssPlacement @Class" style="@Style @($"width: {Width}px;")" tabindex="-1" id="offcanvasWithBackdrop" >
     @if (ShowCloseBtn) 
     {
-        <div class="position-absolute clickable w-100 closer" style="@CloseBtnRadiusStyle" 
+        <div class="position-absolute clickable w-100" style="z-index: 999; @CloseBtnRadiusStyle" 
             @onclick="async () => await CloseAsync()" >
             @if (Placement == MyOffcanvasPlacement.Start)
             {
-                <Icon class="d-flex justify-content-end p-1" Name="IconName.ArrowLeftCircle" />
+                <div class="d-flex justify-content-end">
+                    <FluentIcon Value="@(new Icons.Regular.Size20.ArrowCircleLeft())" />
+                </div>
             }
             else
             {
-                <Icon class="p-1" Name="IconName.ArrowRightCircle" />
+                <FluentIcon Value="@(new Icons.Regular.Size20.ArrowCircleRight())" />
             }
         </div>;
     }

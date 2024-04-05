@@ -1,31 +1,67 @@
-﻿using BlazorBootstrap;
-using Cardmngr.Application.Clients.TaskClient;
+﻿using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Services;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.TaskAggregate.ModalComponents;
 
 public partial class TaskTagLabels : ComponentBase
 {
     private readonly IEqualityComparer<TaskTag> comparer = new TaskTagNameEqualityComparer();
-    private Dropdown dropdown = null!;
     private string newTagText = "";
+
+    private FluentAutocomplete<TaskTag> TagList = default!;
+    private IEnumerable<TaskTag> SelectedTags = [];
 
     [CascadingParameter] List<TaskTag>? TaskTags { get; set; }
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
 
     [Inject] TagColorGetter TagColorGetter { get; set; } = null!;
     [Inject] ITaskClient TaskClient { get; set; } = null!;
-    [Inject] ToastService ToastService { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
 
-    private IEnumerable<TaskTag> SearchTags => TagColorGetter.Tags
-        .Except(TaskTags ?? [], comparer)
-        .Where(x => x.Name.Contains(newTagText, StringComparison.CurrentCultureIgnoreCase));
+    protected override void OnInitialized()
+    {
+        SelectedTags = TaskTags ?? [];
+    }
 
-    private void ClearSearchText() => newTagText = "";
+    private void OnSearch(OptionsSearchEventArgs<TaskTag> e)
+    {
+        e.Items = TaskTags?
+            .Where(x => x.Name.StartsWith(e.Text, StringComparison.CurrentCultureIgnoreCase))
+            .OrderBy(x => x.Name);
+    }
+
+    private async void SelectedTagsChanged(IEnumerable<TaskTag> selectedTags)
+    {
+        var deleted = SelectedTags.Except(selectedTags, comparer).SingleOrDefault();
+        var added = selectedTags.Except(SelectedTags, comparer).SingleOrDefault();
+
+        if (deleted is { })
+            await AddTag(deleted);
+        if (added is not null)
+            await RemoveTag(added);
+
+        SelectedTags = selectedTags;
+    }
+
+    private async Task CreateTag()
+    {
+        if (!string.IsNullOrEmpty(newTagText) && !TagColorGetter.Contains(newTagText))
+        {
+            var created = await TaskClient.CreateTagAsync(Task.Id, newTagText);
+            TaskTags?.Add(created);
+        }
+    }
+
+    private async Task AddTag(TaskTag newTag)
+    {
+        await TaskClient.CreateTagAsync(Task.Id, newTag.Name);
+        
+        TaskTags?.Add(newTag);
+    }
 
     private async Task RemoveTag(TaskTag tag)
     {
@@ -34,50 +70,5 @@ public partial class TaskTagLabels : ComponentBase
         await TaskClient.RemoveTagAsync(tag.Id);
         TagColorGetter.RemoveTag(tag);
         TaskTags?.Remove(tag);
-    }
-
-    private async Task CreateTag()
-    {
-        if (!IsCanAddNewTag())
-        {
-            return;
-        }
-
-        if (!string.IsNullOrEmpty(newTagText) && !TagColorGetter.Contains(newTagText))
-        {
-            var created = await TaskClient.CreateTagAsync(Task.Id, newTagText);
-            TaskTags?.Add(created);
-            await dropdown.HideAsync();
-        }
-    }
-
-    private async Task AddTag(TaskTag newTag)
-    {
-        if (!IsCanAddNewTag())
-        {
-            return;
-        }
-
-        await TaskClient.CreateTagAsync(Task.Id, newTag.Name);
-        
-        TaskTags?.Add(newTag);
-    }
-
-    private bool IsCanAddNewTag()
-    {
-        if (TaskTags?.Count > 4)
-        {
-            ToastService.Notify(new ToastMessage 
-            { 
-                Title = "Превышено количество меток", 
-                Type = ToastType.Warning, 
-                IconName = IconName.HandIndex,
-                Message = "Нельзя добавить больше 5 меток" 
-            });
-
-            return false;
-        }
-
-        return true;
     }
 }

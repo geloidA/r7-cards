@@ -22,10 +22,10 @@
                 </div>
                 <div class="col-md-1 d-flex justify-content-end">
                     <Tooltip Title="@(milestone.IsDeadlineOut() ? "Веха просрочена" : "Открытых задач")">
-                        <Badge Color="@(milestone.IsDeadlineOut() ? BadgeColor.Danger : BadgeColor.Info)" 
+                        <FluentBadge BackgroundColor="@(milestone.IsDeadlineOut() ? "red" : "blue")" 
                             class="p-1" style="margin-right: 2px; font-size: 11px;" >
                             @State.GetMilestoneTasks(milestone).Count(x => !x.IsClosed())
-                            </Badge>
+                            </FluentBadge>
                     </Tooltip>
                 </div>
             </div>
@@ -34,7 +34,7 @@
 }
 else
 {
-    <span class="text-secondary">Список пуст</span>
+    <span>Список пуст</span>
 }
 
 @code {

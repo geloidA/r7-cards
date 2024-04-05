@@ -6,7 +6,7 @@
 @inject AuthenticationStateProvider AuthenticationState
 
 <div @onmouseenter="@(() => isHover = true)" @onmouseleave="@(() => isHover = false)" >
-    <Badge class="p-0 w-100 overflow-hidden" Color="BadgeColor" @onclick="() => ToggleMilestone(Milestone)" >
+    <FluentBadge class="p-0 w-100 overflow-hidden" BackgroundColor="@BadgeColor" @onclick="() => ToggleMilestone(Milestone)" >
         <div class="position-absolute selection-opt hided-opt @CssShowOptions" style="margin-left: 5px; margin-top: 3.5px; width: 17px;">
             <Tooltip Title="Фильтр по вехе">
                 <Icon class="clickable" Name="IconName.EyeFill" Color="IconColor.Dark" />
@@ -17,7 +17,7 @@
                 @Milestone.Title
             </div>
         </Tooltip>
-    </Badge>
+    </FluentBadge>
     <div class="d-flex justify-content-center hided-opt @CssShowOptions" style="margin-top: -8px;">
         <div @onclick:preventDefault @onclick:stopPropagation>
             <Icon class="clickable" @onclick="ShowDetailsModal" Name="IconName.InfoCircleFill" />
@@ -44,12 +44,12 @@
         State.OnTasksChanged();
     }
 
-    private BadgeColor BadgeColor
+    private string BadgeColor
     {
         get
         {
-            if (Milestone.IsClosed()) return BadgeColor.Success;
-            return Milestone.IsDeadlineOut() ? BadgeColor.Secondary : BadgeColor.Warning;
+            if (Milestone.IsClosed()) return "green";
+            return Milestone.IsDeadlineOut() ? "gray" : "yellow";
         }
     }
 

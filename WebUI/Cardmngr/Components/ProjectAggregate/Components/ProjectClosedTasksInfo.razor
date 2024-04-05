@@ -1,8 +1,10 @@
-﻿<Badge class="align-self-center d-flex user-select-none" 
-    Color="BadgeColor.Info" style="padding-right: 5px;" >
+﻿
+
+<FluentBadge class="align-self-center d-flex user-select-none" 
+    BackgroundColor="blue" style="padding-right: 5px;" >
     @State.CountClosedTasks() / @State.Model!.Tasks.Count
-    <Icon class="ms-1" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
-</Badge>
+    <FluentIcon class="ms-1" Value="@(new Icons.Regular.Size12.CheckmarkCircle())" />
+</FluentBadge>
 
 @code {
     [CascadingParameter] IProjectState State { get; set; } = null!;

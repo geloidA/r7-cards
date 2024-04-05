@@ -8,7 +8,7 @@
             <input class="form-control ms-2" @bind="searchText" @bind:event="oninput" />
         </div>
     </div>
-    <Card class="mt-2">
+    <FluentCard class="mt-2">
         <CardBody style="max-height: 250px; overflow-y: scroll;">
             @foreach (var responsible in responsibles.Where(x => x.Value.DisplayName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)))
             {
@@ -23,14 +23,14 @@
                 </div>
             }
         </CardBody>
-    </Card>
+    </FluentCard>
 
     <div class="row mt-4">
         <div class="col d-flex justify-content-center">
-            <Button Color="ButtonColor.Success" @onclick="Confirm" >ОК</Button>
+            <FluentButton OnClick="Confirm" >ОК</FluentButton>
         </div>
         <div class="col d-flex justify-content-center">
-            <Button Color="ButtonColor.Secondary" @onclick="Cancel">Отмена</Button>
+            <FluentButton OnClick="Cancel">Отмена</FluentButton>
         </div>
     </div>
 }

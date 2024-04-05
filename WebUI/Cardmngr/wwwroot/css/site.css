@@ -1,21 +1,31 @@
 :root {
-    --col-bg-2: #3d84ca;
-    --padding-main: 0;
-    --main-board-bg: #ffffff;
-    --main-board-bg-dark: #303436;
-    --main-board-bg-light: #667a8d;
-    --col-title-color: #000000;
-    --boarder-color: #a1bcc2;
-    --main-col-bg: #e5f8e0;
-    --main-card-bg: #e5fffc70;
-    --main-responsibles-bg: #dff8f570;
-    --highlight-col: #441f1f;
-    --drop-highlight-col: #b13b6c;
-    --header-color: rgb(100, 182, 202);
+    --main-board-bg: var(--neutral-layer-4);
+    --col-title-color: var(--neutral-foreground-rest);
+    --boarder-color: var(--fill-color);
+    --main-col-bg: var(--neutral-layer-2);
+    --main-card-bg: var(--neutral-layer-1);
+    --main-responsibles-bg: var(--neutral-layer-2);
 }
 
-* {
-    box-sizing: border-box;
+.siteheader {
+    background-color: var(--neutral-layer-4) !important;
+    border-bottom: calc(var(--stroke-width)* 2px) solid var(--accent-fill-rest);
+    margin-bottom: 0 !important;
+}
+
+.content {
+    display: flex;
+    height: 100dvh;
+    background-color: var(--neutral-layer-4);
+}
+
+article {
+    padding: 1rem;
+    border-right: 1px solid var(--neutral-stroke-divider-rest);
+    margin: 0 0;
+    overflow-x: hidden;
+    transition: all 300ms ease-in-out;
+    width: 100%;
 }
 
 ul {
@@ -24,29 +34,6 @@ ul {
 
 .clickable {
     cursor: pointer;
-}
-
-.highlight:hover {
-    /* add your desired CSS styles here */
-    background-color: var(--highlight-col); /* Example: change background color */
-    border-radius: 2px; /* Rounds the corners of the element */
-    cursor: pointer;
-}
-
-.highlight:active:hover {
-    /* Reset the styles to their default values when the mouse is pressed */
-    background-color: initial;
-    border-radius: initial;
-}
-
-.grabbing:hover {
-    background-color: var(--highlight-col); /* Example: change background color */
-    border-radius: 2px; /* Rounds the corners of the element */
-    cursor: grab;
-}
-
-.grabbing:active {
-    cursor: grabbing;
 }
 
 #blazor-error-ui{
@@ -85,28 +72,9 @@ ul {
     white-space: nowrap;
 }
 
-.footer {
-    font-size: large;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-}
-
-.top-line {
-    border-top: 1px solid #c5c5c5;
-}
-
 .gradient-bg {
     background-color: #D9AFD9;
-background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
-
-    /* background-color: #4158D0;
-    background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%); */
-    /* background-color: #FF3CAC;
-background-image: linear-gradient(225deg, #C850C0 0%, #784BA0 50%, #2B86C5 100%); */
-
-
+    background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
 }
 
 .gradient-bg-vertical {
@@ -130,17 +98,13 @@ background-image: linear-gradient(225deg, #C850C0 0%, #784BA0 50%, #2B86C5 100%)
     border-radius: 20px;
 }
 
-.super-small {
-    font-size: 10px;
-}
-
 .scrollbar-none::-webkit-scrollbar {
     width: 0px;
     height: 0px;
 }
 
 .my-offcanvas {
-    background-color: var(--main-board-bg);
+    background-color: var(--neutral-layer-2);
 }
 
 .my-offcanvas-right {
@@ -149,11 +113,6 @@ background-image: linear-gradient(225deg, #C850C0 0%, #784BA0 50%, #2B86C5 100%)
 
 .my-offcanvas-left {
     border-radius: 0px 7px 7px 0px;
-}
-
-.bordered {
-    border: 1px solid var(--boarder-color); 
-    border-radius: 6px;
 }
 
 .validation-msg {

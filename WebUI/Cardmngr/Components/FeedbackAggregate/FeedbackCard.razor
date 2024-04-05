@@ -19,7 +19,7 @@
             {
                 <div class="col-3 d-flex ms-1" @onclick:stopPropagation >
                     <div @onclick="ToggleLike">
-                        <Icon Name="IconName.HandThumbsUpFill" Color="@(likePressed ? IconColor.Success : IconColor.None)" />
+                        @* <Icon Name="IconName.HandThumbsUpFill" Color="@(likePressed ? IconColor.Success : IconColor.None)" /> *@
                         <span class="ms-2">@Feedback.LikedUsers.Count</span>
                     </div>
                 </div>

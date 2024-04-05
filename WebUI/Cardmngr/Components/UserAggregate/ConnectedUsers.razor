@@ -1,10 +1,10 @@
 ﻿@if (userInfos is { } && userInfos.Any())
 {    
     <div class="d-flex align-items-center">
-        <Tooltip Title="Сейчас на странице" Placement="TooltipPlacement.Left">
+        @* <Tooltip Title="Сейчас на странице" Placement="TooltipPlacement.Left">
             <Icon class="clickable" Name="@(isCollapsed ? IconName.ChevronCompactLeft : IconName.ChevronCompactRight)"
                 @onclick="@(() => isCollapsed = !isCollapsed)" />
-        </Tooltip>        
+        </Tooltip>*@
         <div class="connected-users py-0 px-1 collapseble-items" style="@MaxWidth @StyleScroll">
             @foreach (var user in userInfos)
             {

@@ -35,10 +35,10 @@
                     }
                 </div>
                 <ValidationMessage For="() => buffer.Responsible" class="validation-msg" />
-                <Card class="p-1 mt-3">
+                <FluentCard class="p-1 mt-3">
                     <DateChanger Title="Крайний срок:" InputId="Deadline" Disabled="!CanEdit" EmptyText="Не установлен" @bind-Date="@buffer.Deadline" />
                     <ValidationMessage For="() => buffer.Deadline" class="validation-msg" />
-                </Card>
+                </FluentCard>
                 <DescriptionChanger Disabled="!CanEdit" Class="mt-2" @bind-Description="@buffer.Description" />
                 @if (!IsAdd)
                 {
@@ -51,18 +51,15 @@
                     </div>
                 }
                 <div class="d-flex mt-2 flex-row">
-                    <Button
-                        Size="Size.Small" Disabled="!CanEdit" Type="ButtonType.Submit" 
-                        Color="ButtonColor.Success" Outline="true" >
+                    <FluentButton Disabled="!CanEdit" Type="ButtonType.Submit" >
                         @SubmitText
-                    </Button>
+                    </FluentButton>
                     @if (!IsAdd)
                     {
-                        <Button class="ms-2" Size="Size.Small" Disabled="!Model!.CanDelete" Color="ButtonColor.Danger"
-                                @onclick="DeleteAsync"
-                                Outline="true" >
+                        <FluentButton Class="ms-2" Disabled="!Model!.CanDelete"
+                                OnClick="DeleteAsync" >
                                 Удалить
-                        </Button>
+                        </FluentButton>
                     }
                 </div>
             </OffcanvasBody>

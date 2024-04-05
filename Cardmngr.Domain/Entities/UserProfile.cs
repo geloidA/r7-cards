@@ -3,8 +3,6 @@
 public record UserProfile(
     string UserName,
     bool IsVisitor,
-    string FirstName,
-    string LastName,
     string Email,
     int Status,
     int ActivationStatus,
@@ -21,5 +19,7 @@ public record UserProfile(
     int UsedSpace,
     int DocsSpace,
     int MailSpace,
-    int TalkSpace
+    int TalkSpace,
+    string FirstName = "Unknown",
+    string LastName = "Unknown"
 ) : UserInfo;

@@ -10,69 +10,66 @@
 {
     <Cardmngr.Components.Modals.MyBlazored.Offcanvas Width="520" Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
         @ref="currentModal">
-        <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
+        <FluentEditForm id="task-details-form" Model="buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown" >
             <FluentValidationValidator ValidatorType="@(typeof(TaskUpdateDataValidator))" />
-            <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
-                <TitleChanger @bind-Title="buffer.Title" />
-            </OffcanvasHeader>
-            <ValidationMessage For="() => buffer.Title" class="ms-3 validation-msg" />
-            <OffcanvasBody Class="d-flex flex-column form-group">
+            <OffcanvasHeader Class="py-0 d-flex" Style="padding-top: 20px !important;">
+                <FluentTextField style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
+                    @bind-Value="buffer.Title" class="p-0 w-100" />
+            </OffcanvasHeader>            
+            <FluentValidationMessage For="() => buffer.Title" class="ms-3" />
+            <OffcanvasBody Class="d-flex flex-column form-group gap-2">
                 @if (Model is { })
                 {
-                    <i style="font-size: 13px; margin-right: 5px;" class="d-flex mb-2 justify-content-end text-secondary">
+                    <i style="font-size: 13px; margin-right: 5px;" class="d-flex justify-content-end">
                         Создатель: @Model.CreatedBy.DisplayName
                     </i>
                 }
-                <TaskPriorityChanger Task="buffer" Disabled="@(!CanEdit)" />
-                <Card class="p-1 mt-2">
-                    <DateChanger Title="Дата начала:"
-                        EmptyText="Не установлен" @bind-Date="buffer.StartDate" />
-                </Card>
-                <Card class="p-1 mt-2">
-                    <DateChanger Title="Крайний срок" InputId="Deadline"
-                        EmptyText="Не установлен" @bind-Date="buffer.Deadline" />
-                    <ValidationMessage For="() => buffer.Deadline" class="validation-msg" />
-                </Card>
-                <div class="pt-2">
-                    <DescriptionChanger @bind-Description="buffer.Description" />
-                </div>                
+                <TaskPriorityChanger Class="justify-content-end" Task="buffer" Disabled="@(!CanEdit)" />
+                <FluentDatePicker Placeholder="Не установлен"
+                    ReadOnly="!CanEdit" @bind-Value="buffer.StartDate" Label="Дата начала:" />
+                <FluentDatePicker Placeholder="Не установлен"
+                    ReadOnly="!CanEdit" @bind-Value="buffer.Deadline" Label="Крайний срок:" />
+                <FluentValidationMessage For="() => buffer.Deadline" />
+                <FluentTextArea Resize="TextAreaResize.Vertical" Form="task-details-form"
+                    Placeholder="Описание" Class="w-100" Rows="6"
+                    @bind-Value="buffer.Description" Spellcheck="true" />
                 <CascadingValue Value="State" IsFixed="true">
-                    <div class="pb-2 pt-2">
-                        <TaskResponsibles Task="buffer" Disabled="!CanEdit" />
-                    </div>
-                    <div class="pb-2">
-                        <TaskMilestone Disabled="!CanEdit" Task="buffer" />
-                    </div>
+                    <TaskResponsibles Task="buffer" Disabled="!CanEdit" />
+                    <TaskMilestone Disabled="!CanEdit" Task="buffer" />
                     @if (!IsAdd)
                     {                        
                         <CascadingValue Value="Model" IsFixed="true">
-                            <CascadingValue Value="TaskTags" IsFixed="true">
-                                <div class="pb-2">
-                                    <TaskTagLabels Disabled="@(!CanEdit)" />
-                                </div>
+                            <CascadingValue Value="TaskTags" IsFixed="true">                                
+                                <TaskTagLabels Disabled="@(!CanEdit)" />
                             </CascadingValue>
                             <TaskSubtasks />
                         </CascadingValue>
                     }
                 </CascadingValue>
-                <div class="row pt-2 d-flex justify-content-end">
+                <div class="d-flex justify-content-end">
                     <div class="d-flex flex-row">
-                        <Button Type="ButtonType.Submit" Size="Size.Small" 
-                            Disabled="!CanEdit"
-                            Color="ButtonColor.Success" Outline="true">
+                        <FluentButton Type="ButtonType.Submit"
+                            Disabled="!CanEdit">
                             @SubmitText
-                        </Button>
+                        </FluentButton>
                         @if(!IsAdd)
                         {
-                            <Button class="ms-2" @onclick="DeleteAsync" 
-                                Size="Size.Small" Color="ButtonColor.Danger" 
-                                Outline="true" Disabled="!Model!.CanDelete" >
+                            <FluentButton Class="ms-2" OnClick="DeleteAsync" Disabled="!Model!.CanDelete" >
                                 Удалить
-                            </Button>
+                            </FluentButton>
                         }
                     </div>
                 </div>
             </OffcanvasBody>
-        </EditForm>
+        </FluentEditForm>
     </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
+}
+
+@code {
+    bool shiftEnter;
+
+    void HandleKeyDown(KeyboardEventArgs e)
+    {
+        shiftEnter = e.Key == "Enter" && e.ShiftKey;
+    }
 }

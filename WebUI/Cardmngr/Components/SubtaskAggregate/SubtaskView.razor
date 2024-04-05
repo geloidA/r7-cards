@@ -5,8 +5,7 @@
         <div class="col d-flex flex-row align-items-center overflow-hidden">
             @if (Subtask.Status == (int)Status.Open)
             {
-                <Tool IconName="IconName.ClockFill" IconColor="IconColor.Info" 
-                    IconSize="IconSize.x5" TooltipPlacement="TooltipPlacement.Left"
+                <Tool Icon="@(new Icons.Filled.Size20.Clock())" Color="Color.Info"
                     TooltipTitle="Отметить выполненым" Disabled="@Disabled"
                     OnClick="@SwitchSubtaskStatus" />
                 @if (isEditMode)
@@ -23,11 +22,10 @@
             }
             else
             {
-                <Tool IconName="IconName.CheckCircleFill" IconColor="IconColor.Success" 
-                    IconSize="IconSize.x5" TooltipPlacement="TooltipPlacement.Left"
+                <Tool Icon="@(new Icons.Filled.Size20.CheckmarkCircle())" Color="Color.Success"
                     TooltipTitle="Отметить невыполненым" Disabled="@(Task.IsClosed() || Disabled)"
                     OnClick="@SwitchSubtaskStatus" DisabledTitle="@(Task.IsClosed() ? "Задача закрыта" : "Недоступно")"/>
-                <s class="ms-1 text-secondary" style="font-size: 15px;">
+                <s class="ms-1" style="font-size: 15px;">
                     <i>@Subtask.Title</i>
                 </s>
             }
@@ -42,14 +40,13 @@
                 {
                     if (isEditMode)
                     {
-                        <Button style="min-width: 31px;" Color="ButtonColor.Success" Outline="true" Size="Size.ExtraSmall"
-                            Type="ButtonType.Submit" >
+                        <FluentButton Style="min-width: 31px;" Type="ButtonType.Submit" >
                             OK
-                        </Button> 
+                        </FluentButton> 
                     }
                     else
                     {
-                        <Dropdown Size="Size.ExtraSmall" AutoClose="true" >
+                        @* <Dropdown Size="Size.ExtraSmall" AutoClose="true" >
                             <DropdownToggleButton Color="ButtonColor.Light">
                                 <Icon Name="IconName.ThreeDots" />
                             </DropdownToggleButton>
@@ -61,12 +58,13 @@
                                     Удалить
                                 </DropdownItem>
                             </DropdownMenu>
-                        </Dropdown>
+                        </Dropdown> *@
                     }
                 }
                 else
                 {
-                    <Tool IconName="IconName.X" IconColor="IconColor.Danger" TooltipTitle="Удалить" 
+                    <Tool Icon="@(new Icons.Regular.Size16.Delete())" Color="Color.Error" 
+                        TooltipTitle="Удалить" 
                         OnClick="DeleteSubtask" />
                 }
             }

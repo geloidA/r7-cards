@@ -1,54 +1,29 @@
 ﻿@inject NavigationManager NavigationManager
-@inject ILocalStorageService LocalStorage
-@inject AuthenticationStateProvider AuthenticationState
 
 <Cardmngr.Components.Modals.MyBlazored.Offcanvas ShowCloseBtn="false"
     Class="my-offcanvas my-offcanvas-left" Style="max-width: 300px;">
     <OffcanvasHeader>
-        <a class="text-dark fw-bold fs-4 ms-3 user-select-none" href="/">
-            <Icon Name="IconName.Stack" />
+        <a class="fw-bold fs-4 user-select-none" href="/">
+            <FluentIcon Width="36" Value="@(new Icons.Regular.Size24.Layer())" />
             Карточки
         </a>
     </OffcanvasHeader>
     <OffcanvasBody Class="d-flex flex-column">
-        <Button Color="ButtonColor.Light" class="mb-2"
-            @onclick="@(() => NavigationManager.NavigateTo("/"))">
+        <FluentButton Class="mb-2"
+            OnClick="@(() => NavigationManager.NavigateTo("/"))">
             <b>На главную</b>
-        </Button>
-        <Button Color="ButtonColor.Light" class="mb-2" 
-            @onclick="@(() => NavigationManager.NavigateTo("/all-projects"))">
+        </FluentButton>
+        <FluentButton Class="mb-2" 
+            OnClick="@(() => NavigationManager.NavigateTo("/all-projects"))">
             <b>Проекты</b>
-        </Button>
-        <Button Color="ButtonColor.Light" 
-            @onclick="@(() => NavigationManager.NavigateTo("/feedback-board"))">
+        </FluentButton>
+        <FluentButton
+            OnClick="@(() => NavigationManager.NavigateTo("/feedback-board"))">
             <b>Пожелания и предложения</b>
-        </Button>
-        <div class="container h-100">
-            <footer class="footer d-flex gradient-bg-vertical" >
-                <div class="mx-4 my-4">
-                    <div class="mt-3" @onmouseenter="() => logoutHover = true" @onmouseout="() => logoutHover = false">
-                        <Tool IconName="@(logoutHover ? IconName.DoorOpenFill : IconName.DoorClosedFill)" 
-                            TooltipTitle="Выйти" IconColor="IconColor.Dark" IconSize="IconSize.x5"
-                            OnClick="LogoutAsync" />
-                    </div>
-                </div>
-            </footer>
-        </div>
+        </FluentButton>
     </OffcanvasBody>
 </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
 
 @code {
     [Parameter] public IEnumerable<object>? Nothing { get; set; } // TODO: ??? close animation only with parameter ???
-
-    bool logoutHover;
-
-    async Task LogoutAsync()
-    {
-        if (AuthenticationState is { })
-        {            
-            AuthenticationState.ToCookieProvider().ClearAuthInfo();
-            await LocalStorage.RemoveItemAsync("isauthenticated");
-            NavigationManager.NavigateTo("login");
-        }
-    }
 }

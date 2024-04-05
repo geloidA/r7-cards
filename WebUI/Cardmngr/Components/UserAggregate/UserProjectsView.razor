@@ -1,6 +1,6 @@
 ﻿@inherits KolComponentBase
 
-<Card class="@Class" style="@Style" >
+<FluentCard class="@Class" style="@Style" >
     <CardTitle>
         <h6>
             <Icon Name="IconName.JournalBookmarkFill" />
@@ -22,7 +22,7 @@
             <span>Вы не состоите ни в одном из проектов</span>
         }
     </CardBody>
-</Card>
+</FluentCard>
 
 @code {
     [Parameter] public List<Project>? UserProjects { get; set; }

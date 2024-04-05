@@ -2,7 +2,7 @@
 @using Cardmngr.Validators
 
 @inject IAuthApiLogic AuthApiLogic
-@inject ToastService ToastService
+@inject IToastService ToastService
 
 @if (loginData is { })
 {
@@ -21,10 +21,10 @@
         </div>
 
         <div class="mt-2 d-flex justify-content-center">
-            <Button Type="ButtonType.Submit" LoadingText="Загрузка"
-                Loading="busy" Color="ButtonColor.Success" >
+            <FluentButton Type="ButtonType.Submit"
+                Loading="busy" >
                 Войти
-            </Button>
+            </FluentButton>
         </div>
     </EditForm>
 }
@@ -41,7 +41,7 @@
         var status = await AuthApiLogic.LoginAsync(new LoginModel(loginData.UserName, loginData.Password));
         if (status == AuthenticationResponseType.Error)
         {
-            ToastService.Notify(new(ToastType.Danger, title: "Ошибка авторизации", "Не удалось войти"));
+            ToastService.ShowError("Ошибка авторизации");
         }
         else await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         busy = false;

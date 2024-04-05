@@ -2,7 +2,7 @@
 
 @if (Items is { })
 {
-    <Card>
+    <FluentCard>
         <CardBody style="max-height: 250px; overflow-y: scroll;">
             @foreach (var item in Items)
             {
@@ -12,7 +12,7 @@
                 </div>
             }
         </CardBody>
-    </Card>
+    </FluentCard>
 }
 
 @code {

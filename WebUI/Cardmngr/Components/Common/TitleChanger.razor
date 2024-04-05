@@ -1,13 +1,13 @@
 ﻿@using System.ComponentModel.DataAnnotations
 
-@inherits SingleValueChangerBase
+@inherits SingleValueChangerBase<string>
 
 <div class="d-flex flex-row w-100 align-items-center @Class" style="@Style">
     <div class="col">
         @if (EditMode)
         {
-            <input @ref="Input" style="font-size: 20px; font-weight: 500;" @onfocusout="ToggleEditMode"
-                @bind="Title" class="p-0 w-100 form-control" id="Title" />
+            <FluentTextField @ref="Input" style="font-size: 20px; font-weight: 500;" @onfocusout="ToggleEditMode"
+                @bind-Value="Title" class="p-0 w-100 form-control" id="Title" />
         }
         else
         {

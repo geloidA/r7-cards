@@ -1,82 +1,77 @@
 ﻿@using System.Collections.ObjectModel
 @using Onlyoffice.Api.Models
 
-<Card >
-    <CardBody class="d-flex flex-column" style="overflow-y: scroll; max-height: 200px;">
-        <CardTitle>
-            <div class="row d-flex align-items-center">
-                <div class="col-md-11 fs-6"> 
-                    <Icon Name="IconName.PeopleFill" />
-                    Ответственные
-                </div>
-                <div class="col-md-1 d-flex justify-content-end">
-                    <Tool Disabled="@Disabled" IconName="@IconName.Pencil" IconSize="@IconSize.x6"
-                        TooltipTitle="Изменить" OnClick="@ShowResponsibleSelectionModal" />
-                </div>
-            </div>
-        </CardTitle>
-        <UserList Users="@responsibles" />
-    </CardBody>
-</Card>
+@inject IConfiguration Config
 
+<FluentAutocomplete @ref="ResponsibleList"
+        TOption="UserInfo"
+        Disabled="Disabled"
+        OptionStyle="min-height: 40px;"
+        OnOptionsSearch="OnSearch"
+        SelectedOptions="SelectedResponsibles"
+        SelectedOptionsChanged="SelectedChanged"
+        Placeholder="Нет" >
+
+    <LabelTemplate>
+        Ответственные 
+        <FluentIcon Value="@(new Icons.Regular.Size20.Person())" Style="margin: 0 4px;" />
+    </LabelTemplate>
+
+    <SelectedOptionTemplate>
+        <FluentPersona Name="@context.DisplayName" 
+            ImageSize="24px"            
+            Style="height: 26px; background: var(--neutral-fill-secondary-hover)"
+            Image="@($"{proxyUrl}/api/people{context.AvatarSmall}")"
+            OnDismissClick="@(async () => await ResponsibleList.RemoveSelectedItemAsync(context))"/>
+    </SelectedOptionTemplate>
+
+    <OptionTemplate>
+        <FluentPersona Name="@context.DisplayName"
+            ImageSize="32px"
+            Image="@($"{proxyUrl}/api/people{context.AvatarSmall}")" />
+    </OptionTemplate>
+
+    <HeaderContent>
+        <FluentLabel Color="Color.Accent"
+            Style="padding: 8px; font-size: 11px; border-bottom: 1px solid var(--neutral-fill-stealth-hover);">
+            Команда проекта
+        </FluentLabel>
+    </HeaderContent>
+
+    <FooterContent>
+        @if (!context.Any())
+        {
+            <FluentLabel Style="font-size: 11px; text-align: center; width: 200px;">
+                Нет результатов
+            </FluentLabel>
+        }
+    </FooterContent>
+</FluentAutocomplete>
 
 @code {
+    string proxyUrl = null!;
+    FluentAutocomplete<UserInfo> ResponsibleList = default!;
+    IEnumerable<UserInfo> SelectedResponsibles = [];
     [CascadingParameter] IProjectState State { get; set; } = null!;
-    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
-
-    [CascadingParameter] IModalService Modal { get; set; } = default!;
-
-    [Inject] IUserClient UserClient { get; set; } = null!;
 
     [Parameter] public TaskUpdateData Task { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
-    
-    private List<UserInfo> responsibles = [];
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await foreach (var responsible in ConvertToResponsiblesAsync(Task.Responsibles))
-        {
-            responsibles.Add(responsible);
-        }
+        proxyUrl = Config.CheckKey("proxy-url");
+        SelectedResponsibles = State.Model.Team.Where(x => Task.Responsibles.Any(id => id == x.Id));
     }
 
-    private async IAsyncEnumerable<UserInfo> ConvertToResponsiblesAsync(IEnumerable<string> ids)
+    void OnSearch(OptionsSearchEventArgs<UserInfo> e)
     {
-        foreach (var id in ids)
-        {
-            var participant = State.Model!.Team.FirstOrDefault(p => p.Id == id);
-            if (participant is { })
-            {
-                yield return participant;
-            }
-            else
-            {
-                yield return await UserClient.GetUserProfileByIdAsync(id);
-            }
-        }
+        e.Items = State.Model.Team
+            .Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(x => x.DisplayName);
     }
 
-    private async Task ShowResponsibleSelectionModal()
+    void SelectedChanged(IEnumerable<UserInfo> users)
     {
-        var parameters = new ModalParameters
-        {
-            { "SelectedIds", Task.Responsibles },
-            { "Responsibles", State.Model!.Team }
-        };
-
-        var result = await Modal.Show<ResponsiblesSelectionModal>("Выберите ответственных", parameters, ModalOptions).Result;
-
-        if (result.Confirmed)
-        {
-            var users = (IEnumerable<string>)result.Data!;
-            Task.Responsibles = users.ToList();
-            
-            responsibles.Clear();
-            await foreach (var responsible in ConvertToResponsiblesAsync(Task.Responsibles))
-            {
-                responsibles.Add(responsible);
-            }
-        }
+        Task.Responsibles = users.Select(x => x.Id).ToList();
     }
 }

@@ -3,6 +3,7 @@
 @inherits AuthorizedPage
 
 @inject IProjectClient ProjectClient
+@inject IToastService ToastService
 
 <PageTitle>Главная</PageTitle>
 
@@ -10,13 +11,13 @@
     <div class="h-100 w-100 detal-background" >
         <div class="row w-100 h-100">
             <div class="col d-flex align-items-end">
-                <Button style="margin-bottom: 4em;" class="p-1" Outline="true" Color="ButtonColor.Dark"
-                    @onclick="@(() => NavigationManager.NavigateTo("feedback-board"))">
+                <FluentButton Style="margin-bottom: 4em;" Class="p-1" 
+                    OnClick="@(() => NavigationManager.NavigateTo("feedback-board"))">
                     <span style="font-size: 20px;" class="fw-lighter user-select-none" >
                         <Icon Name="IconName.Lightbulb" />
                         Пожелания и предложения
                     </span>
-                </Button>                
+                </FluentButton>                
             </div>
             <div class="col d-flex align-items-center">
                 <div class="row">

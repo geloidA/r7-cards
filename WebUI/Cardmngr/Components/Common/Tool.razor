@@ -1,21 +1,23 @@
-﻿@inherits KolComponentBase
+﻿@using Microsoft.FluentUI.AspNetCore.Components
+@inherits KolComponentBase
 
 @if (TooltipTitle is { })
 {
-    <Tooltip Title="@(Disabled ? DisabledTitle : TooltipTitle)" Placement="TooltipPlacement" >
-        <div class="d-flex align-items-center tool @Class @СssDisabled" style="@Style" @onclick="OnClickHandler">
-            <Icon Name="IconName" Size="IconSize" Color="IconColor"/>
-            @if (Text is { })
-            {
-                <div class="ms-1">@Text</div>
-            }
-        </div>
-    </Tooltip>
+    <div id="@tooltipGuid.ToString()" class="d-flex align-items-center tool @Class @СssDisabled" style="@Style" @onclick="OnClickHandler">
+        <FluentIcon Value="Icon" Color="Color"/>
+        @if (Text is { })
+        {
+            <div class="ms-1">@Text</div>
+        }
+    </div>
+    <FluentTooltip Anchor="@tooltipGuid.ToString()" >
+        @(Disabled ? DisabledTitle : TooltipTitle)
+    </FluentTooltip>
 }
 else
 {
     <div class="d-flex justify-content-center align-items-center tool @Class @СssDisabled" style="@Style" @onclick="OnClickHandler">
-        <Icon Name="IconName" Size="IconSize" Color="IconColor"/>
+        <FluentIcon Value="Icon" Color="Color"/>
         @if (Text is { })
         {
             <div class="ms-1">@Text</div>
@@ -23,18 +25,15 @@ else
     </div>
 }
 
-
-
 @code {
+    private readonly Guid tooltipGuid = Guid.NewGuid();
     private string СssDisabled => Disabled ? "disabled" : "";
     [Parameter] public bool Disabled { get; set; }
     [Parameter] public string DisabledTitle { get; set; } = "Недоступно";
-    [Parameter] public IconName IconName { get; set; }
-    [Parameter] public IconSize IconSize { get; set; }
+    [Parameter] public Icon Icon { get; set; }
+    [Parameter] public Color? Color { get; set; }
     [Parameter] public string? Text { get; set; }
     [Parameter] public string? TooltipTitle { get; set; }
-    [Parameter] public TooltipPlacement TooltipPlacement { get; set; }
-    [Parameter] public IconColor IconColor { get; set; }
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     private async Task OnClickHandler(MouseEventArgs args)

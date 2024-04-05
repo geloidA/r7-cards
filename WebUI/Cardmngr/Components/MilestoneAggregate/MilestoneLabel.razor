@@ -7,12 +7,12 @@
         @if (Milestone.Title?.Length > 20)
         {
             <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Bottom">
-                @Badge
+                @FluentBadge
             </Tooltip>
         }
         else
         {
-            @Badge
+            @FluentBadge
         }
     </div>
 }
@@ -21,12 +21,12 @@ else
     @if (Milestone.Title?.Length > 20)
     {
         <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Bottom">
-            @Badge
+            @FluentBadge
         </Tooltip>
     }
     else
     {
-        @Badge
+        @FluentBadge
     }
 }
 
@@ -34,11 +34,11 @@ else
     [Parameter] public Milestone Milestone { get; set; } = null!;
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
-    RenderFragment Badge =>
-        @<Badge @onclick="OnClick" class=@($"{Class} {(OnClick.HasDelegate ? "clickable" : "")}") 
-            Color="BadgeColor.Warning" >
+    RenderFragment FluentBadge =>
+        @<FluentBadge @onclick="OnClick" class=@($"{Class} {(OnClick.HasDelegate ? "clickable" : "")}") 
+            BackgroundColor="yellow" >
             <span style="font-size: 12px; font-weight: 500;" class="hide-max-140 user-select-none">
                 @Milestone.Title
             </span>
-        </Badge>;
+        </FluentBadge>;
 }

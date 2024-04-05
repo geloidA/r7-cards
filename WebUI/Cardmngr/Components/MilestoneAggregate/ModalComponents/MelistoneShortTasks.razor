@@ -1,6 +1,6 @@
 ﻿@if (MilestoneTasks.Any())
 {
-    <Card>
+    <FluentCard>
         <CardBody class="p-1 overflow-auto d-flex flex-column task-container" style="max-height: 500px;">
             @foreach (var task in MilestoneTasks.OrderByTaskCriteria())
             {
@@ -17,15 +17,15 @@
             <span>@($"{MilestoneTasks.Count(x => x.Status == Status.Closed)} / {MilestoneTasks.Count()}")</span>
             <Icon class="ms-2" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
         </CardFooter>
-    </Card>
+    </FluentCard>
 }
 else
 {
-    <Card>
+    <FluentCard>
         <CardBody>
-            <span class="text-secondary">Веха не содержит задач</span>
+            <span>Веха не содержит задач</span>
         </CardBody>
-    </Card>
+    </FluentCard>
 }
 
 @code {

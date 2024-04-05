@@ -1,7 +1,7 @@
 ﻿@if (IsCollapsed)
 {
     <div class="d-flex flex-column" style="margin-top: 7px;">
-        <Badge class="align-self-center" Color="BadgeColor.Success">@TaskCount</Badge>
+        <FluentBadge class="align-self-center" Color="BadgeColor.Success">@TaskCount</FluentBadge>
         <span class="title text-vertical align-self-center mt-1">
             @TaskStatus.Title
         </span>
@@ -15,11 +15,11 @@
 }
 else
 {
-    <div class="d-flex w-100  align-self-baseline">
+    <div class="d-flex w-100 align-self-baseline">
         <div class="col d-flex justify-content-start align-items-center">
-            <Badge class="align-self-center" Color="BadgeColor.Success">
+            <FluentBadge Class="align-self-center" Appearance="Appearance.Accent" >
                 @TaskCount
-            </Badge>
+            </FluentBadge>
             <span class="title ms-1 user-select-none">
                 @TaskStatus.Title
             </span>
@@ -31,9 +31,8 @@ else
         @if (TaskStatus.Available)
         {
             <div class="col d-flex justify-content-end btn-hide">
-                <Tool IconName="@IconName.Plus" IconColor="@IconColor.Success" IconSize="@IconSize.x4"
-                    TooltipTitle="Добавить задачу" TooltipPlacement="@TooltipPlacement.Left"
-                    OnClick="@ShowCreateTaskModal" />
+                <Tool Color="Color.Success" Icon="@(new Icons.Regular.Size20.Add())"
+                    TooltipTitle="Добавить задачу" OnClick="@ShowCreateTaskModal" />
             </div>
         }
     </div>

@@ -6,7 +6,7 @@
         <div class="d-flex flex-column">
             <span style="font-size: smaller;">Проект</span>
             <div class="d-flex align-items-center">
-                <Dropdown Size="Size.ExtraSmall">
+                @* <Dropdown Size="Size.ExtraSmall">
                     <DropdownToggleButton Color="@(selectedProject is { } ? ButtonColor.Dark : ButtonColor.Light)" class="fw-bold overflow-hidden" 
                         style="font-size: 11px; max-width: 200px;">
                         @(selectedProject is { } ? selectedProject.Title : "Выберите проект")
@@ -19,7 +19,7 @@
                             </DropdownItem>
                         }
                     </DropdownMenu>
-                </Dropdown>
+                </Dropdown> *@
                 @if (selectedProject is { })
                 {
                     <Icon Name="IconName.X" class="clickable ms-1 mt-1" @onclick="() => SelectProject(null)" />
@@ -29,7 +29,7 @@
         <div class="d-flex flex-column ms-2">
             <span style="font-size: smaller;">Ответственный</span>
             <div class="d-flex align-items-center">
-                <Dropdown Size="Size.ExtraSmall">
+                @* <Dropdown Size="Size.ExtraSmall">
                     <DropdownToggleButton Color="@(selectedResponsible is { } ? ButtonColor.Dark : ButtonColor.Light)" 
                         class="fw-bold" style="font-size: 11px;">
                         @(selectedResponsible is { } ? selectedResponsible.DisplayName : "Выберите пользователя")
@@ -42,7 +42,7 @@
                             </DropdownItem>
                         }
                     </DropdownMenu>
-                </Dropdown>
+                </Dropdown> *@
                 @if (selectedResponsible is { })
                 {
                     <Icon Name="IconName.X" class="clickable ms-1 mt-1" @onclick="() => SelectResponsible(null)" />
@@ -52,7 +52,7 @@
         <div class="d-flex flex-column ms-2">
             <span style="font-size: smaller;">Автор</span>
             <div class="d-flex align-items-center">
-                <Dropdown Size="Size.ExtraSmall">
+                @* <Dropdown Size="Size.ExtraSmall">
                     <DropdownToggleButton Color="@(selectedCreatedBy is { } ? ButtonColor.Dark : ButtonColor.Light)" class="fw-bold" style="font-size: 11px;">
                         @(selectedCreatedBy is { } ? selectedCreatedBy.DisplayName : "Выберите пользователя")
                     </DropdownToggleButton>
@@ -64,7 +64,7 @@
                             </DropdownItem>
                         }
                     </DropdownMenu>
-                </Dropdown>
+                </Dropdown> *@
                 @if (selectedCreatedBy is { })
                 {
                     <Icon Name="IconName.X" class="clickable ms-1 mt-1" @onclick="() => SelectCreatedBy(null)" />
@@ -72,18 +72,18 @@
             </div>
         </div>
         <div class="user-select-none mt-3 ms-2">
-            <Badge class="clickable" Color="@(onlyDeadlined ? BadgeColor.Dark : BadgeColor.Light)">
+            <FluentBadge class="clickable" BackgroundColor="@(onlyDeadlined ? "black" : "white")">
                 <div class="d-flex align-items-center" @onclick="@ToggleDeadlineFilter">
                     <InputCheckbox class="form-check-input" style="margin-bottom: 2px;" @bind-Value="onlyDeadlined" />
                     <span class="ms-1">Только просроченные</span>
                 </div>
-            </Badge>
-            <Badge class="ms-2 clickable" Color="@(onlyClosed ? BadgeColor.Dark : BadgeColor.Light)">
+            </FluentBadge>
+            <FluentBadge class="ms-2 clickable" BackgroundColor="@(onlyClosed ? "black" : "white")">
                 <div class="d-flex align-items-center" @onclick="@ToggleClosedFilter">
                     <InputCheckbox class="form-check-input" style="margin-bottom: 2px;" @bind-Value="onlyClosed"  />
                     <span class="ms-1">Только закрытые</span>
                 </div>
-            </Badge>
+            </FluentBadge>
         </div>
     </div>
 }

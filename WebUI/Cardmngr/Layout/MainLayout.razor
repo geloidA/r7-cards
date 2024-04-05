@@ -1,20 +1,32 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.FluentUI.AspNetCore.Components
+@inherits LayoutComponentBase
 
-<Toasts class="p-3" AutoHide="true" Delay="3000" Placement="ToastsPlacement.TopLeft" />
+<FluentToastProvider />
+<FluentMessageBarProvider />
 
-<div class="d-flex h-100" style="flex: auto !important;" >
-
-    <main class="p-0 container-xl overflow-hidden" style="width: 100%; max-width: none; flex: auto !important;">
+<FluentLayout>
+    <FluentHeader class="siteheader">
         <AuthorizeView>
             <Authorized>
                 <Header />
             </Authorized>
         </AuthorizeView>
-        <div class="content px-4 h-100 d-flex flex-column gradient-bg" style="flex: auto !important;" >
-            <div class="d-flex flex-column h-100 py-2" style="flex: auto !important;">
-                @Body
-            </div>
-        </div>
-    </main>
-
-</div>
+    </FluentHeader>
+    <FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
+        <FluentBodyContent Class="body-content" style="height: 100dvh;">
+            <ErrorBoundary>
+                <ChildContent>
+                    <div class="content">
+                        <article>
+                            @Body
+                            <FluentTooltipProvider />
+                        </article>
+                    </div>
+                </ChildContent>
+                <ErrorContent Context="ex">
+                    <div class="blazor-error-boundary">@ex.Message</div>
+                </ErrorContent>
+            </ErrorBoundary>
+        </FluentBodyContent>
+    </FluentStack>
+</FluentLayout>

@@ -4,15 +4,13 @@
 }
 <div class="row @(AdditionalText is { } ? "mt-4" : "")">
     <div class="col d-flex justify-content-center">
-        <Button Color="ButtonColor.Light" Size="Size.Small"
-            @onclick="async () => await Modal.CloseAsync(ModalResult.Ok())">
+        <FluentButton OnClick="async () => await Modal.CloseAsync(ModalResult.Ok())">
             @OkTitle
-        </Button>
+        </FluentButton>
     </div>
     <div class="col d-flex justify-content-center">
-        <Button Color="ButtonColor.Secondary" Size="Size.Small" Outline
-            @onclick="async () => await Modal.CloseAsync(ModalResult.Cancel())" >
+        <FluentButton OnClick="async () => await Modal.CloseAsync(ModalResult.Cancel())" >
             @CancelTitle
-        </Button>
+        </FluentButton>
     </div>
 </div>

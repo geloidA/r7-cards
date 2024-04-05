@@ -1,10 +1,10 @@
-﻿using BlazorBootstrap;
-using Cardmngr.Application.Clients.FeedbackClient;
+﻿using Cardmngr.Application.Clients.FeedbackClient;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Domain.Enums;
 using Cardmngr.Shared.Feedbacks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.FluentUI.AspNetCore.Components;
 using Onlyoffice.Api.Providers;
 
 namespace Cardmngr.Components.FeedbackAggregate;
@@ -17,7 +17,7 @@ public partial class FeedbacksState : ComponentBase
 
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
-    [Inject] ToastService ToastService { get; set; } = default!;
+    [Inject] IToastService ToastService { get; set; } = default!;
 
     [Inject] IFeedbackClient FeedbackClient { get; set; } = default!;
 
@@ -58,7 +58,7 @@ public partial class FeedbacksState : ComponentBase
         }
         else
         {
-            ToastService.Notify(new ToastMessage(ToastType.Danger, "Не удалось удалить"));
+            ToastService.ShowError("Не удалось удалить");
         }
     }
 
@@ -74,7 +74,7 @@ public partial class FeedbacksState : ComponentBase
         }
         else
         {
-            ToastService.Notify(new ToastMessage(ToastType.Danger, "Не удалось обновить"));
+            ToastService.ShowError("Не удалось обновить");
         }
     }
 
@@ -90,7 +90,7 @@ public partial class FeedbacksState : ComponentBase
         }
         else
         {
-            ToastService.Notify(new ToastMessage(ToastType.Danger, "Не удалось обновить"));
+            ToastService.ShowError("Не удалось обновить");
         }
     }
 

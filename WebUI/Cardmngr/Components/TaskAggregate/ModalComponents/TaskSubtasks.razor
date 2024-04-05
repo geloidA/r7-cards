@@ -4,38 +4,36 @@
 
 @inject IMapper Mapper
 
-<Card>
-    <CardBody style="max-height: 300px; min-height: 160px; overflow-y: scroll;">
-        <CardTitle>
-            <div class="d-flex align-items-center fs-6">
-                <Icon Name="IconName.UiChecks" />
-                <span class="ms-1">Подзадачи</span>
-            </div>
-        </CardTitle>
-        @if (Task.Subtasks.Any())
-        {
-            <CascadingValue Value="hasEditingSubtask" >
-                @foreach (var subtask in Task.Subtasks)
-                {
-                    var updateData = Mapper.Map<SubtaskUpdateData>(subtask);
+<FluentCard style="max-height: 300px; min-height: 160px; overflow-y: scroll;">
+    <CardTitle>
+        <div class="d-flex align-items-center fs-6">
+            <FluentIcon Value="@(new Icons.Regular.Size24.Check())"/>
+            <span class="ms-1">Подзадачи</span>
+        </div>
+    </CardTitle>
+    @if (Task.Subtasks.Any())
+    {
+        <CascadingValue Value="hasEditingSubtask" >
+            @foreach (var subtask in Task.Subtasks)
+            {
+                var updateData = Mapper.Map<SubtaskUpdateData>(subtask);
 
-                    <SubtaskView Subtask="updateData" UpdateCallback="StateHasChanged"
-                        Disabled="!subtask.CanEdit" Id="subtask.Id"
-                        EditModeChanged="next => hasEditingSubtask = next"
-                        @key="subtask.Id" />
-                }
-            </CascadingValue>
-        }
-        else
-        {
-            <span class="text-secondary">Список пуст</span>
-        }
-    </CardBody>
+                <SubtaskView Subtask="updateData" UpdateCallback="StateHasChanged"
+                    Disabled="!subtask.CanEdit" Id="subtask.Id"
+                    EditModeChanged="next => hasEditingSubtask = next"
+                    @key="subtask.Id" />
+            }
+        </CascadingValue>
+    }
+    else
+    {
+        <span>Список пуст</span>
+    }
     <CardFooter class="d-flex justify-content-end bg-main">
-        <Tool IconName="@IconName.Plus" IconSize="@IconSize.x5" TooltipTitle="Добавить"
+        <Tool Icon="@(new Icons.Regular.Size20.Add())" TooltipTitle="Добавить"
             Disabled="@(!Task.CanEdit || Task.IsClosed())" @onclick="ShowCreationModal" />
     </CardFooter>
-</Card>
+</FluentCard>
 
 @code {
     private bool hasEditingSubtask;

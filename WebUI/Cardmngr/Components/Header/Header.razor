@@ -1,27 +1,31 @@
 ﻿@inject AuthenticationStateProvider AuthenticationState
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
+@inject IConfiguration Config
 
 @using System.Text.Json
 
-<div class="bb-top-row px-4 d-flex" style="background-color: var(--header-color); border: none;">
-    <div class="col-md-1 d-flex justify-content-start">
-        <Button class="py-0" Color="ButtonColor.Dark" Outline="true" @onclick="OpenSidebar" >
-            <Icon Name="IconName.List" />
-        </Button>
-    </div>
-    <div class="col-md-9">
-        <ProjectNavigator />
-        <FilterCustomizer />
-    </div>
-    <div class="col-md-2 d-flex justify-content-end">
-        <Toolbar />
-        @if (currentUser is { })
-        {
-            <ProfileTool Class="ms-3" UserProfile="currentUser" />
-        }
-    </div>
-</div>
+<FluentButton Class="py-0" style="margin-right: 20px;" Appearance="Appearance.Outline"
+    OnClick="OpenSidebar" IconEnd="@(new Icons.Regular.Size16.List())" />
+<ProjectNavigator />
+<FilterCustomizer />
+<div style="flex-grow: 1;"></div>
+<Toolbar />
+<div class="ms-2"></div>
+@if (currentUser is { })
+{
+    <FluentProfileMenu Initials="@($"{currentUser.LastName[0]}{currentUser.FirstName[0]}")" 
+        Image="@($"{proxyUrl}/api/people{currentUser.AvatarSmall}")"
+        OnHeaderButtonClick="LogoutAsync">
+        <UserAvatar User="@currentUser" />
+    </FluentProfileMenu>
+    <FluentIcon class="ms-2"
+        Value="@(new Icons.Regular.Size20.Settings())"
+        />
+}
 
 @code {
+    string proxyUrl = null!;
     private UserProfile? currentUser;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
@@ -31,6 +35,7 @@
     {
         if (AuthenticationState is { })
         {
+            proxyUrl = Config.CheckKey("proxy-url");
             var provider = AuthenticationState.ToCookieProvider();
             currentUser = JsonSerializer.Deserialize<UserProfile>(provider["Data"]);
         }
@@ -40,5 +45,15 @@
     {
         await Modal.Show<HeaderMenuModal>("", new ModalParameters { { "Nothing", Enumerable.Empty<object>() } }, Options).Result;
             // TODO: ??? close animation only with parameter ???
+    }
+
+    async Task LogoutAsync()
+    {
+        if (AuthenticationState is { })
+        {            
+            AuthenticationState.ToCookieProvider().ClearAuthInfo();
+            await LocalStorage.RemoveItemAsync("isauthenticated");
+            NavigationManager.NavigateTo("login");
+        }
     }
 }
