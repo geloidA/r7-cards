@@ -54,7 +54,7 @@ ul {
     top: 0.5rem;}
 
 .bg-main {
-    background-color: var(--main-col-bg);
+    background-color: var(--accent-fill-rest);
 }
 
 .bg-shadow {

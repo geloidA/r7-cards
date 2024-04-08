@@ -4,13 +4,14 @@
 @inject IConfiguration Config
 
 <FluentAutocomplete @ref="ResponsibleList"
-        TOption="UserInfo"
-        Disabled="Disabled"
-        OptionStyle="min-height: 40px;"
-        OnOptionsSearch="OnSearch"
-        SelectedOptions="SelectedResponsibles"
-        SelectedOptionsChanged="SelectedChanged"
-        Placeholder="Нет" >
+    TOption="UserInfo"
+    class="both-gradient"
+    Disabled="Disabled"
+    OptionStyle="min-height: 40px;"
+    OnOptionsSearch="OnSearch"
+    SelectedOptions="SelectedResponsibles"
+    SelectedOptionsChanged="SelectedChanged"
+    Placeholder="Нет" >
 
     <LabelTemplate>
         Ответственные 
@@ -19,15 +20,16 @@
 
     <SelectedOptionTemplate>
         <FluentPersona Name="@context.DisplayName" 
-            ImageSize="24px"            
-            Style="height: 26px; background: var(--neutral-fill-secondary-hover)"
+            ImageSize="22px"
+            Class="p-1"
+            Style="height: 26px; background: var(--main-responsibles-bg)"
             Image="@($"{proxyUrl}/api/people{context.AvatarSmall}")"
             OnDismissClick="@(async () => await ResponsibleList.RemoveSelectedItemAsync(context))"/>
     </SelectedOptionTemplate>
 
     <OptionTemplate>
         <FluentPersona Name="@context.DisplayName"
-            ImageSize="32px"
+            ImageSize="22px"
             Image="@($"{proxyUrl}/api/people{context.AvatarSmall}")" />
     </OptionTemplate>
 

@@ -4,16 +4,16 @@
 
 @inject IMapper Mapper
 
-<FluentCard style="max-height: 300px; min-height: 160px; overflow-y: scroll;">
-    <CardTitle>
-        <div class="d-flex align-items-center fs-6">
-            <FluentIcon Value="@(new Icons.Regular.Size24.Check())"/>
-            <span class="ms-1">Подзадачи</span>
-        </div>
-    </CardTitle>
-    @if (Task.Subtasks.Any())
-    {
-        <CascadingValue Value="hasEditingSubtask" >
+<div class="d-flex align-items-center fs-6">
+    <FluentIcon Value="@(new Icons.Regular.Size24.Check())"/>
+    <span class="ms-1" style="color: var(--neutral-foreground-rest);">Подзадачи</span>
+    <Tool Icon="@(new Icons.Regular.Size16.Add())" Class="ms-1" TooltipTitle="Добавить"
+        Disabled="@(!Task.CanEdit || Task.IsClosed())" @onclick="ShowCreationModal" />
+</div>
+@if (Task.Subtasks.Any())
+{
+    <CascadingValue Value="hasEditingSubtask" >
+        <FluentHorizontalScroll FlippersHiddenFromAt="true" class="both-gradient" Easing="ScrollEasing.EaseInOut">
             @foreach (var subtask in Task.Subtasks)
             {
                 var updateData = Mapper.Map<SubtaskUpdateData>(subtask);
@@ -23,17 +23,13 @@
                     EditModeChanged="next => hasEditingSubtask = next"
                     @key="subtask.Id" />
             }
-        </CascadingValue>
-    }
-    else
-    {
-        <span>Список пуст</span>
-    }
-    <CardFooter class="d-flex justify-content-end bg-main">
-        <Tool Icon="@(new Icons.Regular.Size20.Add())" TooltipTitle="Добавить"
-            Disabled="@(!Task.CanEdit || Task.IsClosed())" @onclick="ShowCreationModal" />
-    </CardFooter>
-</FluentCard>
+        </FluentHorizontalScroll>
+    </CascadingValue>
+}
+else
+{
+    <span>Список пуст</span>
+}
 
 @code {
     private bool hasEditingSubtask;

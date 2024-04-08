@@ -2,6 +2,7 @@
 using Cardmngr.Domain.Entities;
 using Cardmngr.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.Header;
 
@@ -18,9 +19,16 @@ public partial class FilterCustomizer : ComponentBase
     {        
         SummaryService.OnProjectsChanged += () =>
         {
-            selectedResponsible ??= SummaryService
-                .GetResponsibles()
-                .SingleOrDefault(x => x.Id == SummaryService.FilterManager.Responsible);
+            if (!SelectedResponsible.Any())
+            {
+                var responsible = SummaryService
+                    .GetResponsibles()
+                    .SingleOrDefault(x => x.Id == SummaryService.FilterManager.Responsible);
+                if (responsible is { })
+                {
+                    SelectedResponsible = [responsible];
+                }
+            }
 
             StateHasChanged();
         };
@@ -28,31 +36,58 @@ public partial class FilterCustomizer : ComponentBase
         NavigationManager.LocationChanged += (_, args) => UpdateStateByLocation(args.Location);
     }
 
-    private UserInfo? selectedResponsible;
+    private IEnumerable<ProjectInfo> SelectedProject = [];
 
-    private void SelectResponsible(UserInfo? user)
+    private void SelectionProjectChanged(IEnumerable<ProjectInfo> projects)
     {
-        if (selectedResponsible?.Id == user?.Id) return;
-        SummaryService.FilterManager.Responsible = user?.Id;
-        selectedResponsible = user;
+        var selectedProject = projects.SingleOrDefault();
+        SummaryService.FilterManager.ProjectId = selectedProject?.Id;
+
+        SelectedProject = selectedProject is { } ? [selectedProject] : [];
     }
 
-    private UserInfo? selectedCreatedBy; // TODO: DRY
-
-    private void SelectCreatedBy(UserInfo? user)
+    private void OnProjectSearch(OptionsSearchEventArgs<ProjectInfo> e)
     {
-        if (selectedCreatedBy?.Id == user?.Id) return;
-        SummaryService.FilterManager.CreatedBy = user?.Id;
-        selectedCreatedBy = user;
+        e.Items = SummaryService
+            .GetProjects()
+            .Where(x => x.Title.StartsWith(e.Text, StringComparison.CurrentCultureIgnoreCase))
+            .OrderBy(x => x.Title);
     }
 
-    private ProjectInfo? selectedProject;
+    private IEnumerable<UserInfo> SelectedResponsible = [];
 
-    private void SelectProject(ProjectInfo? project)
+    private void SelectionResponsibleChanged(IEnumerable<UserInfo> users)
     {
-        if (selectedProject?.Id == project?.Id) return;
-        SummaryService.FilterManager.ProjectId = project?.Id;
-        selectedProject = project;
+        var selectedResponsible = users.SingleOrDefault();
+        SummaryService.FilterManager.Responsible = selectedResponsible?.Id;
+
+        SelectedResponsible = selectedResponsible is { } ? [selectedResponsible] : [];
+    }
+
+    private void OnResponsibleSearch(OptionsSearchEventArgs<UserInfo> e)
+    {
+        e.Items = SummaryService
+            .GetResponsibles()
+            .Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.CurrentCultureIgnoreCase))
+            .OrderBy(x => x.DisplayName);
+    }
+
+    private IEnumerable<UserInfo> SelectedCreatedBy = [];
+
+    private void SelectionCreatedByChanged(IEnumerable<UserInfo> users)
+    {
+        var selectedCreatedBy = users.SingleOrDefault();
+        SummaryService.FilterManager.CreatedBy = selectedCreatedBy?.Id;
+
+        SelectedCreatedBy = selectedCreatedBy is { } ? [selectedCreatedBy] : [];
+    }
+
+    private void OnCreatedBySearch(OptionsSearchEventArgs<UserInfo> e)
+    {
+        e.Items = SummaryService
+            .GetCreatedBys()
+            .Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.CurrentCultureIgnoreCase))
+            .OrderBy(x => x.DisplayName);
     }
 
     private void ToggleDeadlineFilter()

@@ -41,6 +41,8 @@ public partial class SubtaskView
 
     private async Task Submit()
     {
+        if (string.IsNullOrEmpty(Subtask.Title)) return;
+         
         var updated = await SubtaskClient.UpdateAsync(Task.Id, Id, Subtask);
         State.UpdateSubtask(updated);
         await UpdateCallback.InvokeAsync();

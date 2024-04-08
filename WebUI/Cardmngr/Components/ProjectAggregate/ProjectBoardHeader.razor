@@ -1,14 +1,14 @@
 ﻿<div class="d-flex w-100">    
-    <div class="ms-3 align-self-center">
-        <div class="d-flex flex-row justify-content-center" style="border-bottom: 1px black solid;">
-            <div class="user-select-none mb-3" style="font-size: small;" >
-                <Icon Name="IconName.Stars" Color="IconColor.Primary"/>
-                Вехи:
-            </div>
-        </div>
-        <div>
+    <div>
+        <div class="mb-2">
             <Tool Icon="@(new Icons.Regular.Size24.List())" Text="Проект"
                 OnClick="@ShowProjectMenu" />
+        </div>
+        <div class="d-flex flex-row" >
+            <div class="user-select-none" style="font-size: small;" >
+                <FluentIcon Value="@(new Icons.Filled.Size16.Sparkle())" Color="Color.Accent"/>
+                Вехи:
+            </div>
         </div>
     </div>
     <MilestoneTimeline Class="ms-4" ></MilestoneTimeline>

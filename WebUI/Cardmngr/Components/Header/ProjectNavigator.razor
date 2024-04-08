@@ -5,21 +5,32 @@
 
 @if (showTitle)
 {
-    <Dropdown class="@Class" style="@Style" Size="Size.None">
-        <DropdownToggleButton class="fw-bold" Color="ButtonColor.None">
-            @selectedProjectTitle
-        </DropdownToggleButton>
-        <DropdownMenu class="overflow-scroll scroll-hidden user-select-none" style="max-height: 500px;">
-            @foreach (var project in projectsByIds.Values)
-            {
-                <DropdownItem @onclick="() => NavigateTo(project)"
-                    Type="ButtonType.Link">@project.Title</DropdownItem>
-            }
-        </DropdownMenu>
-    </Dropdown>
+    <FluentButton Id="btn-pj-nav" @onclick="() => openPopover = !openPopover" Appearance="Appearance.Outline" >
+        @selectedProjectTitle
+    </FluentButton>
+
+    <FluentPopover Style="width: 500px; height: 150px; border-radius: 5px;" 
+        AnchorId="btn-pj-nav" @bind-Open="openPopover" class="overflow-auto" >
+        <Body>
+            <FluentGrid Spacing="1">
+                @foreach (var project in projectsByIds.Values)
+                {
+                    <FluentGridItem>
+                        <FluentAnchor OnClick="() => openPopover = !openPopover" 
+                            Appearance="Appearance.Stealth" title="@project.Title"
+                            Style="max-width: 450px;" Class="overflow-hidden"
+                            Href="@($"/project/{project.Id}")">
+                            @project.Title
+                        </FluentAnchor>
+                    </FluentGridItem>
+                }
+            </FluentGrid>            
+        </Body>
+    </FluentPopover>
 }
 
 @code {
+    bool openPopover;
     Dictionary<int, Project> projectsByIds = [];
     bool showTitle;
     string? selectedProjectTitle;
@@ -44,12 +55,6 @@
             selectedProjectTitle = projectInfo.Title;
         }
         StateHasChanged();
-    }
-
-    private void NavigateTo(Project project)
-    {
-        selectedProjectTitle = project.Title;
-        NavigationManager.NavigateTo($"/project/{project.Id}");
     }
 
     private static bool IsProjectUri(string uri)

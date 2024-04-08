@@ -1,4 +1,4 @@
-﻿<FluentAutocomplete @ref="TagList"
+﻿<FluentAutocomplete
         TOption="TaskTag"
         Disabled="Disabled"
         MaximumSelectedOptions="4"
@@ -12,64 +12,34 @@
         <FluentIcon Value="@(new Icons.Regular.Size20.Tag())" Style="margin: 0 4px;" />
     </LabelTemplate>
 
-    <SelectedOptionTemplate>
-        <FluentPersona Name="@context.Name" />
-    </SelectedOptionTemplate>
-</FluentAutocomplete>
+    <OptionTemplate>
+        <TaskTagLabel Tag="@context" Color="@TagColorGetter.GetColor(context)" />
+    </OptionTemplate>
 
-@* <FluentCard >
-    <CardBody class="d-flex flex-column" style="overflow-y: scroll; max-height: 200px;">
-        <CardTitle>
-            <div class="row d-flex align-items-center">
-                <div class="col-md-11 fs-6"> 
-                    <Icon Name="IconName.Tags" />
-                    Метки
-                </div>
-                <div class="col-md-1 d-flex align-items-center justify-content-end" >
-                    <Dropdown @ref="dropdown" OnHidden="ClearSearchText" Size="Size.ExtraSmall" 
-                        class="position-static user-select-none" Disabled="Disabled"
-                        AutoClose="true" AutoCloseBehavior="DropdownAutoCloseBehavior.Outside">
-                        <DropdownToggleButton>
-                            <Icon Name="IconName.Plus" />
-                        </DropdownToggleButton>
-                        <DropdownMenu Class="p-3" Style="width: 320px; max-height: 400px;">
-                            <div class="d-flex align-items-center" style="font-size: small;">
-                                <span style="font-size: x-small;">Новая метка</span>
-                                <input @bind="newTagText" @bind:event="oninput" class="form-control" />
-                                <FluentButton class="ms-1 p-0" style="height: 38px;" Outline="true" Size="Size.ExtraSmall" 
-                                    @onclick="CreateTag" Color="ButtonColor.Success" >
-                                    <Icon Name="IconName.Plus" Size="IconSize.x6" />
-                                </FluentButton>
-                            </div>
-                            <div class="d-flex flex-wrap gap-2 overflow-auto mt-2 bg-light p-3" style="max-height: 150px; border-radius: 5px;">
-                                @foreach (var tag in SearchTags)
-                                {
-                                    <div class="clickable" @onclick="() => AddTag(tag)">
-                                        <TaskTagLabel Tag="tag" Color="TagColorGetter.GetColor(tag)" />
-                                    </div>
-                                }
-                            </div>
-                        </DropdownMenu>
-                    </Dropdown>
-                </div>
-            </div>
-        </CardTitle>
-    </CardBody>
-    <div class="d-flex flex-wrap gap-1 px-3" style="padding-bottom: 10px;">
-        @if (TaskTags is { } && TaskTags.Count > 0)
+    <SelectedOptionTemplate>
+        <TaskTagLabel Tag="@context" Color="@TagColorGetter.GetColor(context)" />
+    </SelectedOptionTemplate>
+
+    <HeaderContent>
+        <div class="d-flex" style="font-size: small;">
+            <FluentTextField Placeholder="Название метки" @bind-Value="newTagText" />
+            <FluentButton class="ms-1" Appearance="Appearance.Outline" Type="ButtonType.Button" @onclick="CreateTag">
+                <FluentIcon Value="@(new Icons.Regular.Size12.Add())" Color="Color.Success" />
+            </FluentButton>
+        </div>
+    </HeaderContent>
+
+    <MaximumSelectedOptionsMessage>
+        Максимальное кол-во меток: 4
+    </MaximumSelectedOptionsMessage>
+
+    <FooterContent>
+        @if (!context.Any())
         {
-            @foreach (var tag in TaskTags)
-            {
-                <div class="d-flex align-items-center">
-                    <TaskTagLabel Tag="@tag" Color="@TagColorGetter.GetColor(tag)" />
-                    <Icon Name="IconName.X" class="@(tag.CanEdit ? "clickable" : "")" 
-                        @onclick="() => RemoveTag(tag)" />
-                </div>
-            }
+            <FluentLabel Style="font-size: 11px; text-align: center; width: 200px;">
+                Нет результатов
+            </FluentLabel>
         }
-        else
-        {
-            <span class="user-select-none">Список пуст</span>
-        }
-    </div>
-</FluentCard> *@
+    </FooterContent>
+
+</FluentAutocomplete>

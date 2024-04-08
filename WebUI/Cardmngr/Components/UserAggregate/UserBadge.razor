@@ -1,7 +1,7 @@
 ﻿@inherits KolComponentBase
 
 <div class="d-flex flex-column @(OnClick.HasDelegate ? "clickable" : "") @Class" style="@Style" @onclick="OnClick" >    
-    <FluentBadge class="@(User is { } ? "py-0" : "")" BackgroundColor="@BadgeColor" >
+    <FluentBadge class="@(User is { } ? "py-0" : "")" Circular="true" BackgroundColor="@BadgeColor" >
         @if (User is { })
         {
             <UserAvatar ShowName="true" Size="25" User="User" />

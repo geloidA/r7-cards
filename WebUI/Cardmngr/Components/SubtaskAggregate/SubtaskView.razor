@@ -1,64 +1,29 @@
-﻿
-<EditForm Model="Subtask" OnValidSubmit="Submit" >
+﻿@inject IConfiguration Config
+
+<EditForm Model="Subtask" OnValidSubmit="Submit" Context="subtask" >
     <DataAnnotationsValidator/>
-    <div class="row d-flex align-items-center mt-2">
-        <div class="col d-flex flex-row align-items-center overflow-hidden">
-            @if (Subtask.Status == (int)Status.Open)
-            {
-                <Tool Icon="@(new Icons.Filled.Size20.Clock())" Color="Color.Info"
-                    TooltipTitle="Отметить выполненым" Disabled="@Disabled"
-                    OnClick="@SwitchSubtaskStatus" />
-                @if (isEditMode)
-                {
-                    <div class="d-flex w-100 flex-column">
-                        <input class="ms-2 w-100 form-control" @bind="Subtask.Title" />
-                        <ValidationMessage For="() => Subtask.Title" style="font-size: x-small;" class="ms-2 validation-msg" />
-                    </div>
-                }
-                else
-                {
-                    <span class="ms-1" style="font-size: 15px;">@Subtask.Title</span>
-                }
-            }
-            else
-            {
-                <Tool Icon="@(new Icons.Filled.Size20.CheckmarkCircle())" Color="Color.Success"
-                    TooltipTitle="Отметить невыполненым" Disabled="@(Task.IsClosed() || Disabled)"
-                    OnClick="@SwitchSubtaskStatus" DisabledTitle="@(Task.IsClosed() ? "Задача закрыта" : "Недоступно")"/>
-                <s class="ms-1" style="font-size: 15px;">
-                    <i>@Subtask.Title</i>
-                </s>
-            }
-        </div>
-        <div class="col-md-1 d-flex justify-content-center">
-            <ResponsibleSelection @bind-SelectedId="Subtask.Responsible" EditMode="isEditMode" Team="State.Model!.Team" />
-        </div>
-        <div class="col-md-1 d-flex">
+    <FluentCard AreaRestricted="false" Width="250px" Height="200px" Style="padding: 0;">
+        <div class="d-flex justify-content-end p-2">
             @if (!Disabled)
             {
                 if (Subtask.Status != (int)Status.Closed)
                 {
                     if (isEditMode)
                     {
-                        <FluentButton Style="min-width: 31px;" Type="ButtonType.Submit" >
-                            OK
-                        </FluentButton> 
+                        <FluentIcon Value="@(new Icons.Filled.Size16.Edit())" OnClick="Submit" />
                     }
                     else
                     {
-                        @* <Dropdown Size="Size.ExtraSmall" AutoClose="true" >
-                            <DropdownToggleButton Color="ButtonColor.Light">
-                                <Icon Name="IconName.ThreeDots" />
-                            </DropdownToggleButton>
-                            <DropdownMenu>
-                                <DropdownItem Disabled="HasEditingSubtask" @onclick="BlockOthers">
-                                    Редактировать
-                                </DropdownItem>
-                                <DropdownItem @onclick="DeleteSubtask">
-                                    Удалить
-                                </DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown> *@
+                        <FluentIcon Id="@menuGuid.ToString()" OnClick="() => open = !open" Value="@(new Icons.Regular.Size16.Edit())" />
+
+                        <FluentMenu @bind-Open="open" Anchor="@menuGuid.ToString()" >
+                            <FluentMenuItem OnClick="BlockOthers" Disabled="HasEditingSubtask" >
+                                Редактировать
+                            </FluentMenuItem>
+                            <FluentMenuItem OnClick="DeleteSubtask" >
+                                Удалить
+                            </FluentMenuItem>
+                        </FluentMenu>
                     }
                 }
                 else
@@ -69,5 +34,103 @@
                 }
             }
         </div>
-    </div>
+        <div class="p-1 overflow-auto" style="height: 55%;">
+            @if (Subtask.Status == (int)Status.Open)
+            {
+                if (isEditMode)
+                {
+                    <FluentTextArea Style="width: 100%; height: 100%;"
+                        Class="scrollbar-none" @bind-Value="Subtask.Title" />
+                }
+                else
+                {
+                    <p>@Subtask.Title</p>
+                }
+            }
+            else
+            {
+                <i>@Subtask.Title</i>
+            }
+        </div>
+        <FluentAutocomplete class="px-1" Disabled="!isEditMode"
+            TOption="UserInfo" MaximumOptionsSearch="3"
+            IconSearch="@(new Icons.Regular.Size16.Person())"
+            MaximumSelectedOptions="1" Placeholder="Без ответственного"
+            SelectedOptionsChanged="SelectedResponsibleChanged"
+            SelectedOptions="SelectedResponsible"
+            OnOptionsSearch="OnSearch">
+
+            <SelectedOptionTemplate>
+                <FluentPersona Name="@context.DisplayName" 
+                    ImageSize="22px"
+                    Class="p-1"
+                    Style="height: 26px; background: var(--main-responsibles-bg); font-size: 12px;"
+                    Image="@($"{proxyUrl}/api/people{context.AvatarSmall}")" />
+            </SelectedOptionTemplate>
+
+            <OptionTemplate>
+                <FluentPersona Name="@context.DisplayName"
+                    ImageSize="22px"
+                    Image="@($"{proxyUrl}/api/people{context.AvatarSmall}")" />
+            </OptionTemplate>
+
+            <HeaderContent>
+                <FluentLabel Color="Color.Accent"
+                    Style="padding: 8px; font-size: 11px; border-bottom: 1px solid var(--neutral-fill-stealth-hover);">
+                    Команда проекта
+                </FluentLabel>
+            </HeaderContent>
+
+            <FooterContent>
+                @if (!context.Any())
+                {
+                    <FluentLabel Style="font-size: 11px; text-align: center; width: 200px;">
+                        Нет результатов
+                    </FluentLabel>
+                }
+            </FooterContent>
+
+        </FluentAutocomplete>
+        <FluentFooter class="d-flex flex-row ps-1">
+            @if (Subtask.Status == (int)Status.Open)
+            {
+                <Tool Icon="@(new Icons.Filled.Size20.Clock())" Color="@Color.Info" Disabled="@Disabled"
+                    OnClick="@SwitchSubtaskStatus" />
+            }
+            else
+            {
+                <Tool Icon="@(new Icons.Filled.Size20.CheckmarkCircle())" Color="Color.Success" 
+                    Disabled="@(Task.IsClosed() || Disabled)" OnClick="@SwitchSubtaskStatus" />
+            }
+        </FluentFooter>
+    </FluentCard>
 </EditForm>
+
+@code {
+    IEnumerable<UserInfo> SelectedResponsible = [];
+    readonly Guid menuGuid = Guid.NewGuid();
+    string proxyUrl = null!;
+    bool open;
+
+    protected override void OnInitialized()
+    {        
+        proxyUrl = Config.CheckKey("proxy-url");
+        if (Subtask.Responsible is { })
+        {
+            SelectedResponsible = [State.Model.Team.Single(x => x.Id == Subtask.Responsible)];
+        }
+    }
+
+    void OnSearch(OptionsSearchEventArgs<UserInfo> e)
+    {
+        e.Items = State.Model.Team
+            .Where(u => u.DisplayName.StartsWith(e.Text, StringComparison.InvariantCultureIgnoreCase))
+            .OrderBy(u => u.DisplayName);
+    }
+
+    void SelectedResponsibleChanged(IEnumerable<UserInfo> newVal)
+    {
+        Subtask.Responsible = newVal.SingleOrDefault()?.Id;
+        SelectedResponsible = newVal;
+    }
+}
