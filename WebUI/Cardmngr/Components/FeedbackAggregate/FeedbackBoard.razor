@@ -2,15 +2,16 @@
     <Columns>
         <FeedbackColumn Width="420" Status="FeedbackStatus.Todo">
             <HeaderTemplate>
-                <div class="d-flex w-100">
-                    <div class="col-md-8 align-self-center" style="font-size: 13px;">
+                <div class="d-flex">
+                    <div style="font-size: 13px;">
                         Предложения и найденные ошибки 📝
                     </div>
-                    <div class="col d-flex justify-content-end align-self-baseline mt-1">
-                        <FluentButton OnClick="OpenCreateModalAsync" >
-                            Добавить
-                        </FluentButton>
-                    </div>
+                    <FluentSpacer />
+                    <FluentButton OnClick="OpenCreateModalAsync"
+                        Appearance="Appearance.Accent" 
+                        Style="font-size: 13px; height: 20px;" >
+                        Добавить
+                    </FluentButton>
                 </div>
             </HeaderTemplate>
         </FeedbackColumn>

@@ -52,12 +52,16 @@ public partial class TaskTagLabels : ComponentBase
         SelectedTags = selectedTags;
     }
 
+    private bool CanCreate => !string.IsNullOrEmpty(newTagText) && !TagColorGetter.Contains(newTagText);
+
     private async Task CreateTag()
     {
-        if (!string.IsNullOrEmpty(newTagText) && !TagColorGetter.Contains(newTagText))
+        if (CanCreate)
         {
             var created = await TaskClient.CreateTagAsync(OnlyofficeTask.Id, newTagText);
+            TagColorGetter.GetColor(created);
             TaskTags?.Add(created);
+            StateHasChanged();
         }
     }
 

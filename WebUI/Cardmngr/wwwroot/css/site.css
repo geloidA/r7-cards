@@ -7,6 +7,12 @@
     --main-responsibles-bg: var(--neutral-layer-2);
 }
 
+.my-modal {
+    background-color: var(--neutral-layer-2) !important;
+    padding: 20px;
+    border-radius: 10px;
+}
+
 .siteheader {
     background-color: var(--neutral-layer-4) !important;
     border-bottom: calc(var(--stroke-width)* 2px) solid var(--accent-fill-rest);
@@ -70,19 +76,6 @@ ul {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.gradient-bg {
-    background-color: #D9AFD9;
-    background-image: linear-gradient(0deg, #D9AFD9 0%, #97D9E1 100%);
-}
-
-.gradient-bg-vertical {
-    background: rgb(255,255,255);
-    background: -moz-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(78,255,234,1) 100%);
-    background: -webkit-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(78,255,234,1) 100%);
-    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(78,255,234,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#4effea",GradientType=1);
 }
 
 *::-webkit-scrollbar {

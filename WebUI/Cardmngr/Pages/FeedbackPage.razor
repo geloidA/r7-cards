@@ -4,13 +4,13 @@
 <PageTitle>Обратная связь</PageTitle>
 
 <AuthorizeView>
-    <div class="row d-flex position-relative mb-5 detal-background" style="flex: auto !important;">        
+    <div class="row d-flex position-relative detal-background h-100" >        
         <div class="col d-flex flex-column">
             <FeedbacksState>
                 <FeedbackBoard></FeedbackBoard>
             </FeedbacksState>
         </div>
-        <div class="col" style="max-width: 350px; text-align: justify;">
+        <div class="col" style="max-width: 553px; text-align: justify;">
             <p>
                 Эта доска предназначена для сбора предложений по улучшению
                 или созданию новых возможностей программы.
@@ -19,9 +19,9 @@
                 Также, если Вы нашли ошибку в программе, опишите ее здесь: укажите, что
                 произошло, где она возникла, и какие Ваши действия ее вызвали.
             </p>
-            <Callout Heading="Примечание">
+            <FluentMessageBar Title="Примечание" Intent="@MessageIntent.Warning" AllowDismiss="false" >
                 Перед созданием предложения убедитесь нет ли похожей карточки.
-            </Callout>
+            </FluentMessageBar>
         </div>
     </div>
 </AuthorizeView>

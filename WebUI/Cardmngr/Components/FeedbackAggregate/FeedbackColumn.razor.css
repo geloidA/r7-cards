@@ -1,5 +1,5 @@
 .feedback-col {
-    background-color: #90dfc7;
+    background-color: rgba(var(--main-col-bg), 0.8);
     border: 1px solid var(--boarder-color);
     border-radius: 5px;
 }

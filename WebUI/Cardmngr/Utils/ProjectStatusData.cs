@@ -9,9 +9,9 @@ public class ProjectStatusData(string badgeColor, Icon iconName, string title)
     public Icon IconName => iconName;
     public string Title => title;
 
-    public static ProjectStatusData Open => new("blue", new Icons.Filled.Size20.ArrowForward(), "Открыт");
-    public static ProjectStatusData Closed => new("green", new Icons.Filled.Size20.CheckmarkCircle(), "Закрыт");
-    public static ProjectStatusData Paused => new("gray", new Icons.Filled.Size20.Pause(), "Приостановлен");
+    public static ProjectStatusData Open => new("#A79277", new Icons.Filled.Size20.ArrowForward(), "Открыт");
+    public static ProjectStatusData Closed => new("#5BBCFF", new Icons.Filled.Size20.CheckmarkCircle(), "Закрыт");
+    public static ProjectStatusData Paused => new("#FFD1E3", new Icons.Filled.Size20.Pause(), "Приостановлен");
 }
 
 public static class ProjectStatusExtensions

@@ -1,30 +1,26 @@
 ﻿@if (MilestoneTasks.Any())
 {
-    <FluentCard>
-        <CardBody class="p-1 overflow-auto d-flex flex-column task-container" style="max-height: 500px;">
-            @foreach (var task in MilestoneTasks.OrderByTaskCriteria())
-            {
-                <span class="py-1" style="z-index: 99;" >
-                    <ShortTaskCard Task="task" />
-                </span>
-            }
-        </CardBody>
-        <CardFooter class="d-flex justify-content-end bg-main">
-            <h6 class="col">
-                <Icon Name="IconName.UiChecks" />
-                Задачи
-            </h6>
-            <span>@($"{MilestoneTasks.Count(x => x.Status == Status.Closed)} / {MilestoneTasks.Count()}")</span>
-            <Icon class="ms-2" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
-        </CardFooter>
-    </FluentCard>
+    <div class="overflow-auto d-flex flex-column task-container gap-2" style="max-height: 400px;">
+        @foreach (var task in MilestoneTasks.OrderByTaskCriteria())
+        {
+            <span style="z-index: 99;" class="w-100" >
+                <ShortTaskCard Task="task" />
+            </span>
+        }
+    </div>
+    <FluentFooter class="d-flex flex-row align-items-center mt-2">
+        <FluentIcon Value="@(new Icons.Regular.Size20.CheckmarkStarburst())" />
+        <span class="ms-1">Задачи</span>
+        <FluentSpacer />
+        <span>@($"{MilestoneTasks.Count(x => x.Status == Status.Closed)} / {MilestoneTasks.Count()}")</span>
+        <FluentIcon class="ms-1" Color="Color.Success"
+            Value="@(new Icons.Filled.Size20.CheckmarkCircle())" />
+    </FluentFooter>
 }
 else
 {
     <FluentCard>
-        <CardBody>
-            <span>Веха не содержит задач</span>
-        </CardBody>
+        <span>Веха не содержит задач</span>
     </FluentCard>
 }
 

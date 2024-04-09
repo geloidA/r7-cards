@@ -9,11 +9,13 @@
         <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
             <FluentValidationValidator />
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
-                <TitleChanger @ref="titleChanger" Disabled="@(!CanEdit)" @bind-Title="@buffer.Title" />
+                <FluentTextField style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
+                    @bind-Value="buffer.Title" class="p-0 w-100" Autofocus="true" />
             </OffcanvasHeader>
-            <ValidationMessage For="() => buffer.Title" class="ms-3 validation-msg" />
+            <FluentValidationMessage For="() => buffer.Title" class="ms-3" />
             <OffcanvasBody Class="d-flex flex-column">
-                <DescriptionChanger Disabled="@(!CanEdit)" Class="mt-2" @bind-Description="@buffer.Description" />
+                <FluentTextArea Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100" Rows="6"
+                    @bind-Value="buffer.Description" Spellcheck="true" ReadOnly="!CanEdit" />
             </OffcanvasBody>
             @if (!IsAdd)
             {

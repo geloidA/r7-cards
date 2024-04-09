@@ -11,18 +11,15 @@
     <div class="h-100 w-100 detal-background" >
         <div class="row w-100 h-100">
             <div class="col d-flex align-items-end">
-                <FluentButton Style="margin-bottom: 4em;" Class="p-1" 
-                    OnClick="@(() => NavigationManager.NavigateTo("feedback-board"))">
-                    <span style="font-size: 20px;" class="fw-lighter user-select-none" >
-                        <Icon Name="IconName.Lightbulb" />
-                        Пожелания и предложения
-                    </span>
-                </FluentButton>                
+                <FluentAnchor Style="margin-bottom: 4em;" Appearance="Appearance.Lightweight"
+                    Href="feedback-board" IconStart="@(new Icons.Filled.Size20.Lightbulb())">
+                    <span class="fs-5">Пожелания и предложения</span>
+                </FluentAnchor>
             </div>
             <div class="col d-flex align-items-center">
                 <div class="row">
                     <div class="col">
-                        <UserProjectsView UserProjects="userProjects" Class="bg-shadow" MaxHeight="500" />
+                        <UserProjectsView UserProjects="userProjects" MaxHeight="500" />
                     </div>
                 </div>
             </div>

@@ -1,24 +1,50 @@
 ﻿@using Onlyoffice.Api.Models
 
+@inject IConfiguration Config
+
 @inherits CreationModalBase
 
-<div class="row">
-    <div class="row py-3">
-        <div class="col-3 align-self-center">
-            <span class="font-monospace">Название</span>            
-        </div>
-        <div class="col d-flex justify-content-end">
-            <InputText id="subtask-name-input" class="form-control" style="font-size: larger;" @bind-Value="subtask.Title" />
-        </div>
-    </div>
-    <div class="row py-3 align-items-center">
-        <div class="col">
-            <span class="font-monospace">Ответственный</span>           
-        </div>
-        <div class="col d-flex justify-content-end">
-            <ResponsibleSelection @bind-SelectedId="subtask.Responsible" EditMode="true" Team="Team" />
-        </div>
-    </div>
+<div class="flex-row">
+    <FluentTextField Label="Название" id="subtask-name-input" @bind-Value="subtask.Title" Style="width: 300px;" />
+    <FluentAutocomplete TOption="UserInfo" MaximumSelectedOptions="1" Width="300px"
+                    @bind-SelectedOptions="Responsible" Context="user"
+                    OnOptionsSearch="OnSearchResponsible" Placeholder="Не установлен">
+
+            <LabelTemplate>
+                Ответственный
+                <FluentIcon Value="@(new Icons.Regular.Size20.Person())" Style="margin: 0 4px;" />
+            </LabelTemplate>
+
+            <SelectedOptionTemplate>
+                <FluentPersona Name="@user.DisplayName" 
+                    ImageSize="22px"
+                    Class="p-1"
+                    Style="height: 26px; background: var(--main-responsibles-bg)"
+                    Image="@($"{proxyUrl}/api/people{user.AvatarSmall}")" />
+            </SelectedOptionTemplate>
+
+            <OptionTemplate>
+                <FluentPersona Name="@user.DisplayName"
+                    ImageSize="22px"
+                    Image="@($"{proxyUrl}/api/people{user.AvatarSmall}")" />
+            </OptionTemplate>
+
+            <HeaderContent>
+                <FluentLabel Color="Color.Accent"
+                    Style="padding: 8px; font-size: 11px; border-bottom: 1px solid var(--neutral-fill-stealth-hover);">
+                    Команда проекта
+                </FluentLabel>
+            </HeaderContent>
+
+            <FooterContent>
+                @if (!user.Any())
+                {
+                    <FluentLabel Style="font-size: 11px; text-align: center; width: 200px;">
+                        Нет результатов
+                    </FluentLabel>
+                }
+            </FooterContent>
+    </FluentAutocomplete>
 </div>
 <div class="mt-2 d-flex justify-content-end">
     <FluentButton Type="ButtonType.Submit" OnClick="SumbitCreate" Disabled="string.IsNullOrWhiteSpace(subtask.Title)"
@@ -27,9 +53,36 @@
 </div>
 
 @code {
+    string proxyUrl = "";
     private SubtaskUpdateData subtask = new();
 
+    protected override void OnInitialized()
+    {
+        proxyUrl = Config.CheckKey("proxy-url");
+    }
+
+    private IEnumerable<UserInfo?> SelectedResponsible
+    {
+        get => subtask.Responsible is { }
+            ? [Team.First(x => x.Id == subtask.Responsible)]
+            : [];
+        set => subtask.Responsible = value.FirstOrDefault()?.Id;
+    }
+
     [Parameter] public IEnumerable<UserInfo> Team { get; set; } = null!;
+
+    public IEnumerable<UserInfo?> Responsible
+    {
+        get => subtask.Responsible is { } 
+            ? [Team.First(x => x.Id == subtask.Responsible)] 
+            : [];
+        set => subtask.Responsible = value.FirstOrDefault()?.Id;
+    }
+
+    private void OnSearchResponsible(OptionsSearchEventArgs<UserInfo> e)
+    {
+        e.Items = Team.Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase));
+    }
 
     protected override async Task SumbitCreate() => await BlazoredModal.CloseAsync(ModalResult.Ok(subtask));
 }

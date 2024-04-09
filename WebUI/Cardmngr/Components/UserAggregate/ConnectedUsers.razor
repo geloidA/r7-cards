@@ -1,10 +1,8 @@
 ﻿@if (userInfos is { } && userInfos.Any())
 {    
     <div class="d-flex align-items-center">
-        @* <Tooltip Title="Сейчас на странице" Placement="TooltipPlacement.Left">
-            <Icon class="clickable" Name="@(isCollapsed ? IconName.ChevronCompactLeft : IconName.ChevronCompactRight)"
-                @onclick="@(() => isCollapsed = !isCollapsed)" />
-        </Tooltip>*@
+        <FluentIcon class="clickable" title="Сейчас на странице" Value="@(isCollapsed ? closed : opened)"
+            OnClick="@(() => isCollapsed = !isCollapsed)" />
         <div class="connected-users py-0 px-1 collapseble-items" style="@MaxWidth @StyleScroll">
             @foreach (var user in userInfos)
             {
@@ -12,4 +10,9 @@
             }
         </div>
     </div>
+}
+
+@code {
+    readonly Icon opened = new Icons.Regular.Size16.ChevronRight();
+    readonly Icon closed = new Icons.Regular.Size16.ChevronLeft();
 }

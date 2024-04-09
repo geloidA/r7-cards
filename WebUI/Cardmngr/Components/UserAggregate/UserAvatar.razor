@@ -6,9 +6,7 @@
         <div class="avatar-circle responsible-view" style="@($"width: {Size}px; height: {Size}px;")">
             @if (ShowTooltip)
             {
-                <Tooltip Title="@User.DisplayName" Placement="TooltipPlacement.Bottom" >
-                    <img src=@($"{proxyUrl}/api/people{User.AvatarSmall}") />
-                </Tooltip>
+                <img title="@User.DisplayName" src=@($"{proxyUrl}/api/people{User.AvatarSmall}") />
             }
             else
             {

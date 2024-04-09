@@ -2,19 +2,19 @@
 using Cardmngr.Components.ProjectAggregate;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Domain.Entities;
-using Blazored.Modal;
-using Cardmngr.Components.Modals;
 using Cardmngr.Components.Modals.Base;
 using Cardmngr.Shared.Extensions;
 using Onlyoffice.Api.Models;
 using Cardmngr.Application.Clients.Milestone;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Extensions;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.MilestoneAggregate.Modals;
 
 public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, MilestoneUpdateData>, IDisposable
 {
+    string proxyUrl = null!;
     private readonly Guid lockGuid = Guid.NewGuid();
     Offcanvas currentModal = null!;
 
@@ -29,6 +29,8 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
     [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     [Inject] IMilestoneClient MilestoneClient { get; set; } = null!;
+    
+    [Inject] IConfiguration Config { get; set; } = null!;
 
     private IEnumerable<OnlyofficeTask> milestoneTasks = [];
 
@@ -37,6 +39,7 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
         base.OnInitialized();
 
         State.RefreshService.Lock(lockGuid);
+        proxyUrl = Config.CheckKey("proxy-url");
 
         if (IsAdd)
         {
@@ -76,20 +79,17 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
         }
     }
 
-    private async Task ShowResponsibleSelectionModal()
+    private IEnumerable<UserInfo> SelectedResponsible
     {
-        var parameters = new ModalParameters
-        {
-            { "Items", State.Model!.Team },
-            { "ItemRender", UserInfoRenderFragment }
-        };
+        get => State.Model!.Team.FirstOrDefault(x => x.Id == buffer.Responsible) is { } 
+            ? [State.Model!.Team.Single(x => x.Id == buffer.Responsible)] 
+            : [];
+        set => buffer.Responsible = value.FirstOrDefault()?.Id;
+    }
 
-        var answer = await Modal.Show<SelectionModal<UserInfo>>("Выберите ответственного", parameters, MiddleModal).Result;
-
-        if (answer.Confirmed)
-        {
-            buffer.Responsible = (answer.Data as UserInfo)!.Id;
-        }
+    private void OnSearchResponsible(OptionsSearchEventArgs<UserInfo> e)
+    {
+        e.Items = State.Model!.Team.Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase));
     }
 
     public void Dispose() => State.RefreshService.RemoveLock(lockGuid);

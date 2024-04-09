@@ -5,7 +5,6 @@
 
 <FluentAutocomplete @ref="ResponsibleList"
     TOption="UserInfo"
-    class="both-gradient"
     Disabled="Disabled"
     OptionStyle="min-height: 40px;"
     OnOptionsSearch="OnSearch"
@@ -62,12 +61,12 @@
     protected override void OnInitialized()
     {
         proxyUrl = Config.CheckKey("proxy-url");
-        SelectedResponsibles = State.Model.Team.Where(x => Task.Responsibles.Any(id => id == x.Id));
+        SelectedResponsibles = State.Model!.Team.Where(x => Task.Responsibles.Any(id => id == x.Id));
     }
 
     void OnSearch(OptionsSearchEventArgs<UserInfo> e)
     {
-        e.Items = State.Model.Team
+        e.Items = State.Model!.Team
             .Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
             .OrderBy(x => x.DisplayName);
     }

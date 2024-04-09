@@ -6,28 +6,23 @@
 {
     @foreach (var milestone in State.Model.Milestones.OrderByMilestoneCriteria())
     {
-        <div @key="milestone.Id" class="mt-2 w-100">
-            <div class="row">
-                <div class="col-md-6 d-flex flex-row">
-                    <MilestoneLabel OnClick="() => ShowModal(milestone)" Milestone="milestone" />
-                </div>
-                <div class="col-md-5 align-self-center">
-                    <i class="d-flex flex-row" style="font-size: 11px;">
-                        <span>@State.GetMilestoneStart(milestone).ToShortDateString()</span>
-                        <span class="ms-1">-</span>
-                        <span class="ms-1 @(milestone.IsDeadlineOut() ? "text-danger fw-bolder" : "")">
-                            @milestone.Deadline.ToShortDateString()
-                        </span>
-                    </i>
-                </div>
-                <div class="col-md-1 d-flex justify-content-end">
-                    <Tooltip Title="@(milestone.IsDeadlineOut() ? "Веха просрочена" : "Открытых задач")">
-                        <FluentBadge BackgroundColor="@(milestone.IsDeadlineOut() ? "red" : "blue")" 
-                            class="p-1" style="margin-right: 2px; font-size: 11px;" >
-                            @State.GetMilestoneTasks(milestone).Count(x => !x.IsClosed())
-                            </FluentBadge>
-                    </Tooltip>
-                </div>
+        <div @key="milestone.Id" class="mt-2">
+            <div class="d-flex align-items-center">
+                <MilestoneLabel OnClick="() => ShowModal(milestone)" Milestone="milestone" />
+                <FluentSpacer />
+                <i class="d-flex flex-row" style="font-size: 11px;">
+                    <span>@State.GetMilestoneStart(milestone).ToShortDateString()</span>
+                    <span class="ms-1">-</span>
+                    <span class="ms-1 @(milestone.IsDeadlineOut() ? "text-danger fw-bolder" : "")">
+                        @milestone.Deadline.ToShortDateString()
+                    </span>
+                </i>
+                <FluentSpacer Width="15" />
+                <FluentBadge Fill="val" title="@(milestone.IsDeadlineOut() ? "Веха просрочена" : "Открытых задач")"
+                    BackgroundColor="@(milestone.IsDeadlineOut() ? "rgb(218, 96, 96)" : "rgb(111, 83, 190)")"
+                    style="font-size: 11px;" >
+                    @State.GetMilestoneTasks(milestone).Count(x => !x.IsClosed())
+                </FluentBadge>
             </div>
         </div>        
     }

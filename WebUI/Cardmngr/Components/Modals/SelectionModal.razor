@@ -3,7 +3,7 @@
 @if (Items is { })
 {
     <FluentCard>
-        <CardBody style="max-height: 250px; overflow-y: scroll;">
+        <div style="max-height: 250px; overflow-y: scroll;">
             @foreach (var item in Items)
             {
                 <div @key="item" @onclick="async () => await Modal.CloseAsync(ModalResult.Ok(item))"
@@ -11,7 +11,7 @@
                     @ItemRender?.Invoke(item)
                 </div>
             }
-        </CardBody>
+        </div>
     </FluentCard>
 }
 

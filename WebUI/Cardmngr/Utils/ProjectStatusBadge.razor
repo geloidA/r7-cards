@@ -1,10 +1,10 @@
 ﻿
 @code {
     public static RenderFragment<ProjectStatusData> RenderStatus => data =>
-        @<FluentBadge Color="data.BadgeColor" class="user-select-none">
+        @<FluentBadge BackgroundColor="@data.BadgeColor" Fill="val" class="user-select-none">
             <div class="d-flex align-items-center" >
-                <span style="font-size: xx-small;">@data.Title</span>
-                <Icon class="ms-1 d-flex" Name="data.IconName" />
+                <span style="font-size: x-small;">@data.Title</span>
+                <FluentIcon class="ms-1 d-flex" Value="data.IconName" Color="@Color.Neutral" />
             </div>
         </FluentBadge>;
 }

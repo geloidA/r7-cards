@@ -6,21 +6,21 @@
 @inject AuthenticationStateProvider AuthenticationState
 
 <div @onmouseenter="@(() => isHover = true)" @onmouseleave="@(() => isHover = false)" >
-    <FluentBadge class="p-0 w-100 overflow-hidden" BackgroundColor="@BadgeColor" @onclick="() => ToggleMilestone(Milestone)" >
-        <div class="position-absolute selection-opt hided-opt @CssShowOptions" style="margin-left: 5px; margin-top: 3.5px; width: 17px;">
-            <Tooltip Title="Фильтр по вехе">
-                <Icon class="clickable" Name="IconName.EyeFill" Color="IconColor.Dark" />
-            </Tooltip>
+    <div class="w-100 overflow-hidden timeline-badge" BackgroundColor="@BadgeColor" 
+        @onclick="() => ToggleMilestone(Milestone)" Fill="val">
+        <div class="position-absolute hided-opt @CssShowOptions" 
+            style="margin-left: 5px; width: 16px;">
+            <FluentIcon Title="Фильтр по вехе" class="clickable"
+                Value="@(new Icons.Filled.Size16.Eye())" Color="Color.Fill" />
         </div>
-        <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Right">
-            <div class="@CssSelected p-1 timeline-milestone">
-                @Milestone.Title
-            </div>
-        </Tooltip>
-    </FluentBadge>
-    <div class="d-flex justify-content-center hided-opt @CssShowOptions" style="margin-top: -8px;">
+        <div title="@Milestone.Title" class="@CssSelected timeline-milestone">
+            @Milestone.Title
+        </div>
+    </div>
+    <div class="d-flex justify-content-center hided-opt @CssShowOptions" >
         <div @onclick:preventDefault @onclick:stopPropagation>
-            <Icon class="clickable" @onclick="ShowDetailsModal" Name="IconName.InfoCircleFill" />
+            <FluentIcon class="clickable" @onclick="@ShowDetailsModal" 
+                Value="@(new Icons.Filled.Size16.Info())" />
         </div>
     </div>
 </div>
@@ -49,7 +49,7 @@
         get
         {
             if (Milestone.IsClosed()) return "green";
-            return Milestone.IsDeadlineOut() ? "gray" : "yellow";
+            return Milestone.IsDeadlineOut() ? "gray" : "orange";
         }
     }
 

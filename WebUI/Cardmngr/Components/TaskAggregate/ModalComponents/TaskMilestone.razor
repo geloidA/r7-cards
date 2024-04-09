@@ -15,7 +15,7 @@
     </LabelTemplate>
 
     <SelectedOptionTemplate>
-        <FluentBadge Appearance="Appearance.Neutral">
+        <FluentBadge Appearance="Appearance.Accent">
             @context.Title
         </FluentBadge>
     </SelectedOptionTemplate>
@@ -25,7 +25,7 @@
     </MaximumSelectedOptionsMessage>
 
     <OptionTemplate>
-        <FluentBadge Appearance="Appearance.Neutral">
+        <FluentBadge Appearance="Appearance.Accent">
             @context.Title
         </FluentBadge>
     </OptionTemplate>
@@ -58,7 +58,7 @@
 
     protected override void OnInitialized()
     {
-        var selected = State.Model.Milestones.SingleOrDefault(x => x.Id == Task.MilestoneId);
+        var selected = State.Model!.Milestones.SingleOrDefault(x => x.Id == Task.MilestoneId);
         if (selected is { })
         {
             SelectedMilestone = [selected];
@@ -73,7 +73,7 @@
 
     void OnSearch(OptionsSearchEventArgs<Milestone> e)
     {
-        e.Items = State.Model.Milestones
+        e.Items = State.Model!.Milestones
             .Where(x => x.Title.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
             .OrderBy(m => m.Title);
     }

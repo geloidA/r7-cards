@@ -1,0 +1,55 @@
+﻿
+<Cardmngr.Components.Modals.MyBlazored.Offcanvas ShowCloseBtn="false" Width="300"
+    Class="my-offcanvas my-offcanvas-right" Placement="MyOffcanvasPlacement.End" >
+    <OffcanvasHeader>
+        <span class="fw-bold fs-4 user-select-none">
+            <FluentIcon Value="@(new Icons.Regular.Size24.Settings())" />
+            <span>Настройки сайта</span>
+        </span>
+    </OffcanvasHeader>
+    <OffcanvasBody Class="d-flex flex-column h-50">
+        <FluentDesignTheme @bind-Mode="@Mode"
+                   @bind-OfficeColor="@OfficeColor"
+                   StorageName="theme" />
+
+        <FluentGrid class="h-100">
+            <FluentGridItem>
+                <FluentSelect Label="Тема" OptionText="GetThemeModeLabel"
+                            Items="@(Enum.GetValues<DesignThemeModes>())"
+                            @bind-SelectedOption="@Mode" />
+            </FluentGridItem>
+
+            <FluentGridItem>
+                <FluentSelect Label="Цвет" Height="250px"
+                            Items="@(Enum.GetValues<OfficeColor>().Select(i => (OfficeColor?)i))"
+                            @bind-SelectedOption="@OfficeColor">
+                    <OptionTemplate>  
+                        <FluentStack>
+                            <FluentIcon Value="@(new Icons.Filled.Size20.RectangleLandscape())"
+                                        Color="Color.Custom"
+                                        CustomColor="@(@context.ToAttributeValue() != "default" ? context.ToAttributeValue() : "#036ac4" )" />
+                            <FluentLabel>@context</FluentLabel>  
+                        </FluentStack>
+                    </OptionTemplate> 
+                </FluentSelect>
+            </FluentGridItem>
+        </FluentGrid>
+    </OffcanvasBody>
+</Cardmngr.Components.Modals.MyBlazored.Offcanvas>
+
+@code {
+    [Parameter] public object? Nothing { get; set; } // TODO: ??? close animation only with parameter ???
+
+    public DesignThemeModes Mode { get; set; }
+    public OfficeColor? OfficeColor { get; set; }
+
+    private string GetThemeModeLabel(DesignThemeModes mode) =>
+        mode switch
+        {
+            DesignThemeModes.System => "Системная",
+            DesignThemeModes.Light => "Светлая",
+            DesignThemeModes.Dark => "Темная",
+            _ => "Unknown"
+        };
+
+}

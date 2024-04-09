@@ -37,16 +37,3 @@ else
         }
     </div>
 }
-
-@code {
-    private RenderFragment DropDown => 
-        @<Dropdown Size="Size.ExtraSmall" AutoClose="true" >
-            <DropdownToggleButton Color="ButtonColor.Light">
-                <Icon Name="IconName.ThreeDots" />
-            </DropdownToggleButton>
-            <DropdownMenu>
-                <DropdownItem @onclick="ShowCreateTaskModal"
-                    >Добавить карточку</DropdownItem>
-            </DropdownMenu>
-        </Dropdown>;
-}

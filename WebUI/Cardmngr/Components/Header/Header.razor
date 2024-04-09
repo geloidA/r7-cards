@@ -10,22 +10,38 @@
 <ProjectNavigator />
 <FilterCustomizer />
 <div style="flex-grow: 1;"></div>
-<Toolbar />
-<div class="ms-2"></div>
-@if (currentUser is { })
-{
-    <FluentProfileMenu Initials="@($"{currentUser.LastName[0]}{currentUser.FirstName[0]}")" 
-        Image="@($"{proxyUrl}/api/people{currentUser.AvatarSmall}")"
-        OnHeaderButtonClick="LogoutAsync">
-        <UserAvatar User="@currentUser" />
-    </FluentProfileMenu>
-    <FluentIcon class="ms-2"
-        Value="@(new Icons.Regular.Size20.Settings())"
-        />
-}
+<div class="d-flex gap-2">
+    <Toolbar />
+    @if (currentUser is { })
+    {
+        <FluentIcon OnClick="OpenSettings"
+            Value="@(new Icons.Regular.Size24.Settings())"
+            />
+
+        <FluentProfileMenu Image="@($"{proxyUrl}/api/people{currentUser.Avatar}")"
+                        HeaderLabel="УПКБ Деталь" HeaderButton="Выйти" OnHeaderButtonClick="LogoutAsync"
+                        Initials="@($"{currentUser.LastName[0]}{currentUser.FirstName[0]}")" 
+                        FullName="@currentUser.DisplayName"
+                        EMail="@currentUser.Email" class="ms-2"
+                        Style="border-radius: 5px; min-width: 300px;" >                       
+            <FooterTemplate>
+                <FluentStack>
+                    <FluentSpacer />
+                    <FluentAnchor Appearance="@Appearance.Hypertext"
+                                Href="@($"{onlyofficeUrl}/Products/People/Profile.aspx?user={currentUser.UserName}")">
+                        Профиль
+                    </FluentAnchor>
+                </FluentStack>
+            </FooterTemplate>
+
+        </FluentProfileMenu>
+    }
+</div>
 
 @code {
     string proxyUrl = null!;
+    string onlyofficeUrl = null!;
+
     private UserProfile? currentUser;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
@@ -36,6 +52,7 @@
         if (AuthenticationState is { })
         {
             proxyUrl = Config.CheckKey("proxy-url");
+            onlyofficeUrl = Config.CheckKey("onlyoffice-url");
             var provider = AuthenticationState.ToCookieProvider();
             currentUser = JsonSerializer.Deserialize<UserProfile>(provider["Data"]);
         }
@@ -43,8 +60,13 @@
 
     private async Task OpenSidebar()
     {
-        await Modal.Show<HeaderMenuModal>("", new ModalParameters { { "Nothing", Enumerable.Empty<object>() } }, Options).Result;
+        await Modal.Show<HeaderMenuModal>("", new ModalParameters { { "Nothing", new object() } }, Options).Result;
             // TODO: ??? close animation only with parameter ???
+    }
+
+    private async Task OpenSettings()
+    {
+        await Modal.Show<SettingsModal>("", new ModalParameters { { "Nothing", new object() } }, Options).Result;
     }
 
     async Task LogoutAsync()

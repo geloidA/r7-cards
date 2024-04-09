@@ -13,7 +13,7 @@ public static class OnlyofficeTaskExtensions
 
     public static bool IsDeadlineOut(this OnlyofficeTask task)
     {
-        return !task.IsClosed() && DateTime.Now > task.Deadline;
+        return !task.IsClosed() && DateTime.Now.Date > task.Deadline?.Date;
     }
 
     public static bool IsSevenDaysDeadlineOut(this OnlyofficeTask task)

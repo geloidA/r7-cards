@@ -1,10 +1,20 @@
 .selected {
-    border: 1px solid rgb(32, 23, 2);
-    border-radius: 6px;
+    background-color: var(--accent-fill-active);
 }
 
 .timeline-milestone {
     cursor: pointer;
+    justify-content: center;
+    display: flex;
+}
+
+.timeline-badge {
+    background-color: var(--accent-fill-rest) !important;
+    border-radius: 5px;
+    padding: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;    
 }
 
 .hided-opt {
@@ -14,9 +24,4 @@
 
 .hided-opt.show-opt {
     opacity: 1;
-}
-
-.selection-opt {
-    background-color: wheat;
-    border-radius: 5px;
 }

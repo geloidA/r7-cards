@@ -31,7 +31,7 @@
                     ReadOnly="!CanEdit" @bind-Value="buffer.Deadline" Label="Крайний срок:" />
                 <FluentValidationMessage For="() => buffer.Deadline" />
                 <FluentTextArea Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100" Rows="6"
-                    @bind-Value="buffer.Description" Spellcheck="true" />
+                    @bind-Value="buffer.Description" Spellcheck="true" ReadOnly="!CanEdit" />
                 <CascadingValue Value="State" IsFixed="true">
                     <TaskResponsibles Task="buffer" Disabled="!CanEdit" />
                     <TaskMilestone Disabled="!CanEdit" Task="buffer" />

@@ -3,31 +3,13 @@
 
 @if (OnClick.HasDelegate)
 {
-    <div style="max-width: 135px;" @onclick:stopPropagation @ondblclick:stopPropagation >
-        @if (Milestone.Title?.Length > 20)
-        {
-            <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Bottom">
-                @FluentBadge
-            </Tooltip>
-        }
-        else
-        {
-            @FluentBadge
-        }
+    <div @onclick:stopPropagation @ondblclick:stopPropagation >
+        @FluentBadge
     </div>
 }
 else
 {
-    @if (Milestone.Title?.Length > 20)
-    {
-        <Tooltip Title="@Milestone.Title" Placement="TooltipPlacement.Bottom">
-            @FluentBadge
-        </Tooltip>
-    }
-    else
-    {
-        @FluentBadge
-    }
+    @FluentBadge
 }
 
 @code {
@@ -35,8 +17,8 @@ else
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     RenderFragment FluentBadge =>
-        @<FluentBadge @onclick="OnClick" class=@($"{Class} {(OnClick.HasDelegate ? "clickable" : "")}") 
-            BackgroundColor="yellow" >
+        @<FluentBadge title="@Milestone.Title" @onclick="OnClick" class=@($"{Class} {(OnClick.HasDelegate ? "clickable" : "")}") 
+            Appearance="Appearance.Accent" >
             <span style="font-size: 12px; font-weight: 500;" class="hide-max-140 user-select-none">
                 @Milestone.Title
             </span>

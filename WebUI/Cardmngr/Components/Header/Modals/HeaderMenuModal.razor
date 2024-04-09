@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager NavigationManager
 
 <Cardmngr.Components.Modals.MyBlazored.Offcanvas ShowCloseBtn="false"
-    Class="my-offcanvas my-offcanvas-left" Style="max-width: 300px;">
+    Class="my-offcanvas my-offcanvas-left" Width="300">
     <OffcanvasHeader>
         <a class="fw-bold fs-4 user-select-none" href="/">
             <FluentIcon Width="36" Value="@(new Icons.Regular.Size24.Layer())" />
@@ -25,5 +25,5 @@
 </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
 
 @code {
-    [Parameter] public IEnumerable<object>? Nothing { get; set; } // TODO: ??? close animation only with parameter ???
+    [Parameter] public object? Nothing { get; set; } // TODO: ??? close animation only with parameter ???
 }

@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components/UserAggregate/Modals/" />
     <Folder Include="wwwroot/images/" />
   </ItemGroup>
 

@@ -1,9 +1,9 @@
 ﻿@inject NavigationManager NavigationManager
 
-<a class="text-dark fw-light small py-1" title="@Project.Title" href=@($"/project/{Project.Id}")>
+<a class="fw-light small py-1" title="@Project.Title" href=@($"/project/{Project.Id}")>
     <div class="ref-container">
         @Project.Title
-        <Icon Name="IconName.ArrowRight" />
+        <FluentIcon Value="@(new Icons.Regular.Size12.ArrowRight())" />
     </div>
 </a>
 

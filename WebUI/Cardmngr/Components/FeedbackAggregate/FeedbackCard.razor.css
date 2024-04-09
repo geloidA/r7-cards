@@ -2,5 +2,5 @@
     border: 1px solid var(--boarder-color);
     border-radius: 5px;
     min-height: 100px;
-    background-color: #87f7ed;
+    background-color: var(--main-card-bg);
 }

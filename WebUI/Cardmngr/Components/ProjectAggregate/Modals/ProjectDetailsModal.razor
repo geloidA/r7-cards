@@ -5,15 +5,13 @@
 <Cardmngr.Components.Modals.MyBlazored.Offcanvas Class="my-offcanvas my-offcanvas-left" @ref="currentModal">
     <OffcanvasHeader Class="py-1 d-flex flex-column" Style="padding-top: 20px !important;" >
         <div class="d-flex flex-row align-self-start mb-2">
-            <span>@State.Model!.Project!.Title</span>
-            @* <Tooltip Title="Кол-во открытых задач">
-                <FluentBadge class="p-1 ms-1 user-select-none" Color="BadgeColor.Info">
-                    @State.Model!.Tasks.Count
-                </FluentBadge>
-            </Tooltip> *@
+            <span class="align-self-center">@State.Model!.Project!.Title</span>
+            <FluentBadge title="Открытых задач" class="p-1 ms-1 user-select-none" Appearance="Appearance.Accent" >
+                @State.Model!.Tasks.Count
+            </FluentBadge>
             @if (State.Model!.Project.IsPrivate)
             {
-                <div class="ms-1">
+                <div class="ms-1 align-self-center">
                     <Tool Icon="@(new Icons.Filled.Size20.LockClosed())" TooltipTitle="Приватный проект" />
                 </div>
             }
@@ -30,47 +28,50 @@
             @ProjectStatusBadge.RenderStatus(State.Model!.Project.Status.GetBadgeData())
         </div>
     </div>
-    <OffcanvasBody Class="d-flex flex-column px-3">
-        <WorkContainerDateProgress Start="@State.Start()" Deadline="@State.Deadline()"
-            ClosedText="Закрыт" Closed="@(State.Model!.Project.Status == ProjectStatus.Closed)"
-            ActiveWorks="@State.Model.Tasks.Count(x => !x.IsClosed())" TotalWorks="@State.Model.Tasks.Count" />
-        <span class="mt-3">@State.Model!.Project.Description</span>
-        <div class="px-2">
-            <FluentCard >
-                <div class="d-flex align-items-center">
-                    <FluentIcon Value="@(new Icons.Filled.Size20.Sparkle())" />
-                    Вехи
-                    <FluentBadge class="p-1" Color="BadgeColor.Info">@State.Model!.Milestones.Count</FluentBadge>
-                    <FluentSpacer />
-                    <Tool Disabled="@(!State.Model!.Project.CanEdit)"
-                        Icon="@(new Icons.Regular.Size16.Add())" Color="Color.Success"
-                        OnClick="ShowMilestoneCreation" TooltipTitle="Добавить веху" />
-                </div>
-                <div class="m-0 user-select-none" style="max-height: 190px; overflow: auto;">
-                    @if (currentModal is { })
-                    {
-                        <CascadingValue Value="ProjectHubClient" IsFixed="true">
-                            <MilestoneList State="State" />
-                        </CascadingValue>
-                    }
-                </div>
-            </FluentCard>
-            <FluentCard class="mt-4">
-                <div>
-                    <FluentIcon Value="@(new Icons.Filled.Size20.People())" />
-                    Команда 
-                    <FluentBadge class="p-1" Appearance="Appearance.Accent">@State.Model!.Team.Count</FluentBadge>
-                </div>
-                <div style="max-height: 255px; overflow: auto;">
-                    <UserList Users="@State.Model!.Team" />
-                </div>
-            </FluentCard>
+    <OffcanvasBody Class="d-flex flex-column gap-2">
+        <div class="d-flex mt-1 mb-1">
+            <FluentBadge Appearance="Appearance.Lightweight">
+                Начало - @(State.Start()?.ToShortDateString() ?? "???")
+            </FluentBadge>
+            <FluentSpacer />
+            <FluentBadge Appearance="Appearance.Lightweight">
+                Конец - @(State.Deadline()?.ToShortDateString() ?? "???")
+            </FluentBadge>
         </div>
-        <div class="mt-4 d-flex align-items-center ">
-            <h6 class="col mt-1">
-                <FluentIcon Value="@(new Icons.Filled.Size20.Person())" />
-                Менеджер проекта
-            </h6>
+        <span>@State.Model!.Project.Description</span>
+        <FluentCard >
+            <div class="d-flex align-items-center">
+                <FluentIcon Value="@(new Icons.Filled.Size20.Sparkle())" />
+                Вехи
+                <FluentBadge class="p-1" Color="BadgeColor.Info">@State.Model!.Milestones.Count</FluentBadge>
+                <FluentSpacer />
+                <Tool Disabled="@(!State.Model!.Project.CanEdit)"
+                    Icon="@(new Icons.Regular.Size16.Add())" Color="Color.Success"
+                    OnClick="ShowMilestoneCreation" TooltipTitle="Добавить веху" />
+            </div>
+            <div class="m-0 user-select-none" style="max-height: 190px; overflow: auto;">
+                @if (currentModal is { })
+                {
+                    <CascadingValue Value="ProjectHubClient" IsFixed="true">
+                        <MilestoneList State="State" />
+                    </CascadingValue>
+                }
+            </div>
+        </FluentCard>
+        <FluentCard >
+            <div>
+                <FluentIcon Value="@(new Icons.Filled.Size20.People())" />
+                Команда 
+                <FluentBadge class="p-1" Appearance="Appearance.Accent">@State.Model!.Team.Count</FluentBadge>
+            </div>
+            <div style="max-height: 255px; overflow: auto;">
+                <UserList Users="@State.Model!.Team" />
+            </div>
+        </FluentCard>
+        <div class="d-flex align-items-center mt-2">
+            <FluentIcon Value="@(new Icons.Filled.Size20.Person())" />
+            Менеджер проекта
+            <FluentSpacer />
             <UserBadge User="@State.Model!.Project.Responsible" />
         </div>
     </OffcanvasBody>

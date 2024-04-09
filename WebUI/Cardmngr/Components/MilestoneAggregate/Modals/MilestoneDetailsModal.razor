@@ -14,35 +14,70 @@
         <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
             <FluentValidationValidator />
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
-                <TitleChanger Disabled="@(!CanEdit)" @bind-Title="@buffer.Title" />
+                <FluentTextField style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
+                    @bind-Value="buffer.Title" class="p-0 w-100" />
             </OffcanvasHeader>
-            <ValidationMessage For="() => buffer.Title" class="ms-3 validation-msg" />
-            <OffcanvasBody Class="d-flex flex-column">
-                <div class="mb-2" >
-                    <WorkContainerDateProgress Start="@Start" Deadline="@buffer.Deadline"
-                        Closed="@(Model?.IsClosed() ?? false)" 
-                        ActiveWorks="ActiveTasks" TotalWorks="TotalTasks"/>
+            <FluentValidationMessage For="() => buffer.Title" class="ms-3" />
+            <OffcanvasBody Class="d-flex flex-column gap-2">                
+                <div class="d-flex">
+                    <FluentBadge Appearance="Appearance.Lightweight">
+                        Начало - @(Start?.ToShortDateString() ?? "???")
+                    </FluentBadge>
+                    <FluentSpacer />
+                    <FluentBadge Appearance="Appearance.Lightweight">
+                        Конец - @(buffer.Deadline?.ToShortDateString() ?? "???")
+                    </FluentBadge>
                 </div>
-                <div class="d-flex justify-content-end">
-                    @if (Model?.CanDelete ?? true)
-                    {
-                        <UserBadge Title="Ответственный" User="State.Model!.Team.SingleOrDefault(x => x.Id == buffer.Responsible)"
-                            OnClick="@ShowResponsibleSelectionModal" />
-                    }
-                    else
-                    {
-                        <UserBadge Title="Ответственный" User="State.Model!.Team.SingleOrDefault(x => x.Id == buffer.Responsible)" />
-                    }
-                </div>
-                <ValidationMessage For="() => buffer.Responsible" class="validation-msg" />
-                <FluentCard class="p-1 mt-3">
-                    <DateChanger Title="Крайний срок:" InputId="Deadline" Disabled="!CanEdit" EmptyText="Не установлен" @bind-Date="@buffer.Deadline" />
-                    <ValidationMessage For="() => buffer.Deadline" class="validation-msg" />
-                </FluentCard>
-                <DescriptionChanger Disabled="!CanEdit" Class="mt-2" @bind-Description="@buffer.Description" />
+                <FluentDatePicker Placeholder="Не установлен"
+                    ReadOnly="!CanEdit" @bind-Value="buffer.Deadline" Label="Крайний срок:" />
+                <FluentValidationMessage For="() => buffer.Deadline" />
+
+                <FluentAutocomplete TOption="UserInfo" MaximumSelectedOptions="1"
+                    @bind-SelectedOptions="SelectedResponsible" Context="user"
+                    OnOptionsSearch="OnSearchResponsible" Placeholder="Не установлен">
+
+                    <LabelTemplate>
+                        Ответственный
+                        <FluentIcon Value="@(new Icons.Regular.Size20.Person())" Style="margin: 0 4px;" />
+                    </LabelTemplate>
+
+                    <SelectedOptionTemplate>
+                        <FluentPersona Name="@user.DisplayName" 
+                            ImageSize="22px"
+                            Class="p-1"
+                            Style="height: 26px; background: var(--main-responsibles-bg)"
+                            Image="@($"{proxyUrl}/api/people{user.AvatarSmall}")" />
+                    </SelectedOptionTemplate>
+
+                    <OptionTemplate>
+                        <FluentPersona Name="@user.DisplayName"
+                            ImageSize="22px"
+                            Image="@($"{proxyUrl}/api/people{user.AvatarSmall}")" />
+                    </OptionTemplate>
+
+                    <HeaderContent>
+                        <FluentLabel Color="Color.Accent"
+                            Style="padding: 8px; font-size: 11px; border-bottom: 1px solid var(--neutral-fill-stealth-hover);">
+                            Команда проекта
+                        </FluentLabel>
+                    </HeaderContent>
+
+                    <FooterContent>
+                        @if (!user.Any())
+                        {
+                            <FluentLabel Style="font-size: 11px; text-align: center; width: 200px;">
+                                Нет результатов
+                            </FluentLabel>
+                        }
+                    </FooterContent>
+                </FluentAutocomplete>
+                <FluentValidationMessage For="() => buffer.Responsible" />
+
+                <FluentTextArea Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100 mb-2" Rows="6"
+                    @bind-Value="buffer.Description" Spellcheck="true" ReadOnly="!CanEdit" />
                 @if (!IsAdd)
                 {
-                    <div class="mt-2">
+                    <div>
                         <CascadingValue Value="State" IsFixed="true">
                             <CascadingValue Value="ProjectHubClient" IsFixed="true">
                                 <MelistoneShortTasks MilestoneTasks="milestoneTasks" />
@@ -50,7 +85,7 @@
                         </CascadingValue>
                     </div>
                 }
-                <div class="d-flex mt-2 flex-row">
+                <div class="d-flex flex-row">
                     <FluentButton Disabled="!CanEdit" Type="ButtonType.Submit" >
                         @SubmitText
                     </FluentButton>

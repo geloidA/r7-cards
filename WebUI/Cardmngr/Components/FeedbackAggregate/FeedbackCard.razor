@@ -19,7 +19,8 @@
             {
                 <div class="col-3 d-flex ms-1" @onclick:stopPropagation >
                     <div @onclick="ToggleLike">
-                        @* <Icon Name="IconName.HandThumbsUpFill" Color="@(likePressed ? IconColor.Success : IconColor.None)" /> *@
+                        <FluentIcon Value="@(new Icons.Filled.Size16.ThumbLike())" 
+                            Color="@(likePressed ? Color.Success : Color.Info)" />
                         <span class="ms-2">@Feedback.LikedUsers.Count</span>
                     </div>
                 </div>
@@ -27,7 +28,8 @@
             <div class="col d-flex justify-content-end">
                 @if (Feedback.Status == FeedbackStatus.Finished)
                 {
-                    <Icon class="d-flex align-items-center" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
+                    <FluentIcon class="d-flex align-items-center" 
+                        Value="@(new Icons.Filled.Size16.CheckmarkCircle())" Color="Color.Success" />
                     <span class="ms-1">
                         Выполнено:
                         @Feedback.Finished!.Value.ToShortDateString()
@@ -35,7 +37,8 @@
                 }
                 else
                 {
-                    <Icon class="d-flex align-items-center" Name="IconName.PencilSquare" Color="IconColor.Primary" />
+                    <FluentIcon class="d-flex align-items-center" 
+                        Value="@(new Icons.Regular.Size16.DocumentEdit())" Color="Color.Accent" />
                     <span class="ms-1">
                         Создано:
                         @Feedback.Created.ToShortDateString()

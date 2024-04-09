@@ -16,13 +16,15 @@
             <div class="d-flex info-text">
                 @if (Task.Priority == Domain.Enums.Priority.High)
                 {
-                    <Icon Name="IconName.ArrowUpCircleFill" Color="IconColor.Primary" />
+                    <FluentIcon Value="@(new Icons.Filled.Size16.ArrowCircleUp())" 
+                        Color="Color.Accent" />
                 }
             </div>
             <div class="info-text align-items-end">
                 @if (Task.IsDeadlineOut())
                 {
-                    <Icon Name="IconName.Fire" Color="IconColor.Danger" />
+                    <FluentIcon Value="@(new Icons.Regular.Size16.Fire())" 
+                        Color="Color.Error" />
                     <span class="text-danger ms-1" style="font-size: 14px;">@Task.Deadline?.ToShortDateString()</span>
                 }
                 else
@@ -31,11 +33,13 @@
                 }
                 @if (Task.Status == Domain.Enums.Status.Open)
                 {
-                    <Icon class="ms-1" Name="IconName.ForwardFill" Color="IconColor.Secondary" />
+                    <FluentIcon Value="@(new Icons.Filled.Size16.ArrowForward())" 
+                        Color="Color.Info" class="ms-1" />
                 }
                 else
                 {
-                    <Icon class="ms-1" Name="IconName.CheckCircleFill" Color="IconColor.Success" />
+                    <FluentIcon Value="@(new Icons.Filled.Size16.CheckmarkCircle())" 
+                        Color="Color.Success" class="ms-1" />
                 }
             </div>
         </div>
