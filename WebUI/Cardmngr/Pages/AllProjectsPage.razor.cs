@@ -20,7 +20,7 @@ public partial class AllProjectsPage : AuthorizedPage, IDisposable
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        SummaryService.FilterManager.OnFilterChanged += OnFilterChangedAsync;
+        SummaryService.FilterManager.FilterChanged += OnFilterChangedAsync;
         if (SummaryService.FilterManager.Responsible == null)
         {
             SummaryService.FilterManager.Responsible = IdOnInitialization;
@@ -47,6 +47,6 @@ public partial class AllProjectsPage : AuthorizedPage, IDisposable
     public void Dispose()
     {
         SummaryService.LeftPage();
-        SummaryService.FilterManager.OnFilterChanged -= OnFilterChangedAsync;
+        SummaryService.FilterManager.FilterChanged -= OnFilterChangedAsync;
     }
 }

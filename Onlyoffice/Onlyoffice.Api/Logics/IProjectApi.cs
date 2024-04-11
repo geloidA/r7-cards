@@ -96,11 +96,11 @@ public interface IProjectApi
     /// Api doc: <see cref="https://api.onlyoffice.com/portals/method/project/post/api/2.0/project/%7bprojectid%7d/task"/>
     /// </remarks>
     /// <param name="projectId">ProjectDto ID</param>
-    /// <param name="state">responsible user ID, task description, deadline time, etc</param>
+    /// <param name="updateData">responsible user ID, task description, deadline time, etc</param>
     /// <param name="status">New task status</param>
     /// <param name="statusId">Custom status ID</param>
     /// <returns>Added task</returns>
-    Task<TaskDto> CreateTaskAsync(int projectId, TaskUpdateData state, Status status, int? statusId = null);
+    Task<TaskDto> CreateTaskAsync(int projectId, TaskUpdateData updateData);
 
     /// <summary>
     /// Returns a list with the detailed information about all the tasks for the current user.

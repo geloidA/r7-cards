@@ -41,7 +41,6 @@ public partial class App : ComponentBase
             }
             else 
             {
-                Console.WriteLine("Can't authenticate");
                 await LocalStorage.RemoveItemAsync("isauthenticated");
             }
         }
@@ -53,7 +52,8 @@ public partial class App : ComponentBase
         NotificationHubConnection.TaskReceived += ReceiveTask;
         var appVersion = await AppInfoService.GetVersionAsync();
 
-        ProjectSummaryService.FollowedProjectIds = new HashSet<int>(await ProjectClient.GetFollowedProjectsAsync().Select(x => x.Id).ToListAsync());
+        ProjectSummaryService.FollowedProjectIds = new HashSet<int>(await ProjectClient.GetFollowedProjectsAsync()
+                                                                                       .Select(x => x.Id).ToListAsync());
         
         await JS.InvokeVoidAsync("updateVersion", appVersion);
 
@@ -85,7 +85,6 @@ public partial class App : ComponentBase
             RequireInteraction = true
         };
 
-        await NotificationService.CreateAsync("Для вас появилась новая задача", options);
+        await NotificationService.CreateAsync("Появилась новая задача!", options);
     }
-
 }

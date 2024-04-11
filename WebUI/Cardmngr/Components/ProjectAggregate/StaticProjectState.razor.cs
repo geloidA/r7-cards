@@ -9,7 +9,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
-public sealed partial class StaticProjectState : ProjectStateBase, IProjectState, IDisposable // TODO: Rename
+public sealed partial class StaticProjectState : ProjectStateBase, IProjectState, IDisposable
 {
     private string CssHeight => ViewModel?.IsCollapsed ?? true 
         ? "min-height: 50px;" 

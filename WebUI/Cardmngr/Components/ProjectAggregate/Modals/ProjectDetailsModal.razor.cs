@@ -2,7 +2,7 @@
 using Blazored.Modal.Services;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Components.MilestoneAggregate.Modals;
-using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas;
+using Cardmngr.Components.Modals.MyBlazored;
 using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
 
@@ -19,7 +19,7 @@ public partial class ProjectDetailsModal : IDisposable
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     Icon IconFollow => State.Model?.Project?.IsFollow ?? false 
-        ? new Icons.Filled.Size20.Heart() : new Icons.Regular.Size20.Heart();
+        ? new Icons.Filled.Size20.Star() : new Icons.Regular.Size20.Star();
 
     protected override void OnInitialized()
     {

@@ -2,7 +2,7 @@
 
 @implements IDisposable
 
-<Cardmngr.Components.Modals.MyBlazored.Offcanvas Class="my-offcanvas my-offcanvas-left" @ref="currentModal">
+<Offcanvas Class="my-offcanvas my-offcanvas-left" @ref="currentModal">
     <OffcanvasHeader Class="py-1 d-flex flex-column" Style="padding-top: 20px !important;" >
         <div class="d-flex flex-row align-self-start mb-2 w-100">
             <span class="align-self-center w-75">@State.Model!.Project!.Title</span>
@@ -18,11 +18,7 @@
             }
             <FluentSpacer />
             <FluentIcon id="follow-icon" class="user-select-none ms-1" OnClick="() => State.ToggleFollowAsync()"
-                Value="IconFollow" Color="@(State.Model!.Project!.IsFollow ? Color.Error : Color.Accent)" />
-
-            <FluentTooltip Anchor="follow-icon">
-                @(State.Model!.Project!.IsFollow ? "Перестать отслеживать" : "Отслеживать")
-            </FluentTooltip>
+                Value="IconFollow" Title="@(State.Model!.Project!.IsFollow ? "Перестать отслеживать" : "Отслеживать")" />
         </div>            
         <div class="w-100 header"></div>
     </OffcanvasHeader>
@@ -51,7 +47,7 @@
             <div class="d-flex align-items-center">
                 <FluentIcon Value="@(new Icons.Filled.Size20.Sparkle())" />
                 Вехи
-                <FluentBadge class="p-1" Color="BadgeColor.Info">@State.Model!.Milestones.Count</FluentBadge>
+                <FluentBadge class="p-1" >@State.Model!.Milestones.Count</FluentBadge>
                 <FluentSpacer />
                 <Tool Disabled="@(!State.Model!.Project.CanEdit)"
                     Icon="@(new Icons.Regular.Size16.Add())" Color="Color.Success"
@@ -83,4 +79,4 @@
             <UserBadge User="@State.Model!.Project.Responsible" />
         </div>
     </OffcanvasBody>
-</Cardmngr.Components.Modals.MyBlazored.Offcanvas>
+</Offcanvas>

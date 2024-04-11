@@ -9,11 +9,8 @@ public class PeopleClient(IPeopleApi peopleApi, IMapper mapper) : IPeopleClient
     private readonly IPeopleApi peopleApi = peopleApi;
     private readonly IMapper mapper = mapper;
 
-    public async IAsyncEnumerable<UserProfile> GetUsersAsync()
+    public IAsyncEnumerable<UserProfile> GetUsersAsync()
     {
-        await foreach (var user in peopleApi.GetUsersAsync())
-        {
-            yield return mapper.Map<UserProfile>(user);
-        }
+        return peopleApi.GetUsersAsync().Select(mapper.Map<UserProfile>);
     }
 }

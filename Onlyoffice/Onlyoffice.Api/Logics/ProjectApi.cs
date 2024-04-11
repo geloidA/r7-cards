@@ -54,8 +54,8 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
 
     public async IAsyncEnumerable<TaskDto> GetSelfTasksAsync()
     {
-        var selfTasksDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<TaskDao>("api/project/task/@self"));
-        await foreach (var task in selfTasksDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<TaskDto>())
+        var tasksDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<TaskDao>("api/project/task/@self"));
+        await foreach (var task in tasksDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<TaskDto>())
         {
             yield return task;
         }
@@ -92,9 +92,9 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         }
     }
 
-    public async Task<TaskDto> CreateTaskAsync(int projectId, TaskUpdateData state, Status status, int? statusId = null)
+    public async Task<TaskDto> CreateTaskAsync(int projectId, TaskUpdateData updateData)
     {
-        var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/task/status", new { state, status, statusId }));
+        var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/{projectId}/task/status", updateData));
         if (response.IsSuccessStatusCode)
         {
             var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
@@ -133,15 +133,9 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
     {
         var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"api/project/task/{taskId}/comment", comment));
 
-        if (response.IsSuccessStatusCode)
-        {
-            var commentsDao = await response.Content.ReadFromJsonAsync<SingleCommentDao>();
-            return commentsDao?.Response ?? throw new NullReferenceException("Task was not created");
-        }
-        else
-        {
-            throw new Exception(response.ReasonPhrase);
-        }
+        response.EnsureSuccessStatusCode();
+        var commentsDao = await response.Content.ReadFromJsonAsync<SingleCommentDao>();
+        return commentsDao?.Response ?? throw new NullReferenceException("Task was not created");
     }
 
     public async Task RemoveTaskCommentAsync(string commentId)

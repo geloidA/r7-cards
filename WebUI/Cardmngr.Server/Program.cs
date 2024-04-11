@@ -4,6 +4,7 @@ using Cardmngr.Shared.Extensions;
 using Cardmngr.Server.Extensions;
 using Microsoft.AspNetCore.ResponseCompression;
 using Serilog;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.WebHost.UseKestrel(opt =>
     opt.Listen(IPAddress.Parse(config["IPAddress"]!), port);
     opt.Listen(IPAddress.Parse(config["IPAddress"]!), port + 1, listenOptions =>
     {
+        listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
         listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
     });
 });

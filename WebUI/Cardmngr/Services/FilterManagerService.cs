@@ -2,47 +2,13 @@
 
 namespace Cardmngr.Services;
 
-public class FilterManagerService // TODO: Refactor
+public class FilterManagerService
 {
-    private readonly object locker = new();
-    private readonly Timer timer;
     private bool onlyClosed;
     private bool onlyDeadlined;
-    private bool settingsChanged;
 
-    public FilterManagerService()
-    {
-        // Создаем таймер с интервалом в 1 секунду
-        timer = new Timer(TimerCallback, null, Timeout.Infinite, Timeout.Infinite);
-    }
-
-    // Метод, вызываемый при изменении настроек
-    private void SettingsChanged()
-    {
-        lock (locker)
-        {
-            settingsChanged = true;
-            // Перезапускаем таймер при каждом изменении настроек
-            timer.Change(1000, Timeout.Infinite);
-        }
-    }
-
-    // Callback метод для таймера
-    private void TimerCallback(object? state)
-    {
-        lock (locker)
-        {
-            // Если прошло более 1 секунды с последнего изменения настроек
-            if (settingsChanged)
-            {
-                OnFilterChangedInternal();
-                settingsChanged = false;
-            }
-        }
-    }
-
-    public event Action<FilterTasksBuilder>? OnFilterChanged;
-    private void OnFilterChangedInternal() => OnFilterChanged?.Invoke(GenerateFilter());
+    public event Action<FilterTasksBuilder>? FilterChanged;
+    private void OnFilterChanged() => FilterChanged?.Invoke(GenerateFilter());
 
     public FilterTasksBuilder GenerateFilter()
     {
@@ -63,14 +29,14 @@ public class FilterManagerService // TODO: Refactor
     public bool ToggleClosedFilter()
     {
         onlyClosed = !onlyClosed;
-        SettingsChanged();
+        OnFilterChanged();
         return onlyClosed;
     }
 
     public bool ToggleDeadlineFilter()
     {
         onlyDeadlined = !onlyDeadlined;
-        SettingsChanged();
+        OnFilterChanged();
         return onlyDeadlined;
     }
 
@@ -81,7 +47,7 @@ public class FilterManagerService // TODO: Refactor
         set
         {
             withResponsible = value;
-            SettingsChanged();
+            OnFilterChanged();
         }
     }
 
@@ -92,15 +58,8 @@ public class FilterManagerService // TODO: Refactor
         set
         {
             withCreatedBy = value;
-            SettingsChanged();
+            OnFilterChanged();
         }
-    }
-    
-    public string? SetCreatedBy(string? createdByGuid)
-    {
-        withCreatedBy = createdByGuid;
-        SettingsChanged();
-        return withCreatedBy;
     }
 
     private int? projectId;
@@ -110,7 +69,7 @@ public class FilterManagerService // TODO: Refactor
         set
         {
             projectId = value;
-            SettingsChanged();
+            OnFilterChanged();
         }
     }
 }

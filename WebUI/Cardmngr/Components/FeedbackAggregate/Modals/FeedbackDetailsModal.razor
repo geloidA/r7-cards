@@ -4,7 +4,7 @@
 
 @if (buffer is { })
 {
-    <Cardmngr.Components.Modals.MyBlazored.Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
+    <Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
         @ref="currentModal">
         <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
             <FluentValidationValidator />
@@ -36,5 +36,5 @@
                 }
             </div>
         </EditForm>
-    </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
+    </Offcanvas>
 }

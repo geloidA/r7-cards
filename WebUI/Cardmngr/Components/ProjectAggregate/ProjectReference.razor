@@ -1,7 +1,12 @@
-﻿@inject NavigationManager NavigationManager
+﻿@inject ProjectSummaryService ProjectSummaryService
 
 <a class="fw-light small py-1" title="@Project.Title" href=@($"/project/{Project.Id}")>
     <div class="ref-container">
+        @if (ProjectSummaryService.FollowedProjectIds.Contains(Project.Id))
+        {
+            <FluentIcon Value="new Icons.Filled.Size12.Star()" style="margin-bottom: 2px;" />
+            <FluentSpacer Width="1" />
+        }
         @Project.Title
         <FluentIcon Value="@(new Icons.Regular.Size12.ArrowRight())" />
     </div>

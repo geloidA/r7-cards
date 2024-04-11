@@ -15,7 +15,7 @@ public class TaskClient(IProjectApi projectApi, IMapper mapper) : ITaskClient
 
     public async Task<OnlyofficeTask> CreateAsync(int projectId, TaskUpdateData task)
     {
-        var createdTask = await projectApi.CreateTaskAsync(projectId, task, (Status)task.Status!, task.CustomTaskStatus);
+        var createdTask = await projectApi.CreateTaskAsync(projectId, task);
         return mapper.Map<OnlyofficeTask>(createdTask);
     }
 

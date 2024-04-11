@@ -104,50 +104,39 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
     #endregion
 
     [HttpPost("api/[controller]/{projectId}/task/status")]
-    public async Task CreateTaskWithStatus(int projectId)
+    public async Task CreateTaskWithStatus(int projectId, [FromBody] TaskUpdateData updateData)
     {
-        var body = await ConvertStreamToDynamicAsync(HttpContext.Request.Body);
-        var state = (TaskUpdateData)body.state.ToObject<TaskUpdateData>();
-
         var cookieCollection = HttpContext.Request.Cookies;
 
-        var task = await CreateTaskAsync(projectId, state, cookieCollection);
-        var response = await UpdateTaskStatus(task.Id, (int)body.status, (int?)body.statusId, cookieCollection);
-        var str = await response.Content.ReadAsStringAsync();
-
-        await HttpContext.Response.Body.WriteAsync(Encoding.UTF8.GetBytes(str));
-    }
-
-    private static async Task<dynamic> ConvertStreamToDynamicAsync(Stream stream)
-    {
-        using var reader = new StreamReader(stream);
-        var requestBody = await reader.ReadToEndAsync();
-        return JsonConvert.DeserializeObject(requestBody) ?? throw new NullReferenceException("Request body is null");
+        var task = await CreateTaskAsync(projectId, updateData, cookieCollection);
+        var response = await UpdateTaskStatus(task.Id, updateData.Status, updateData.CustomTaskStatus, cookieCollection);
+        
+        await response.Content.CopyToAsync(HttpContext.Response.Body);
     }
 
     private async Task<TaskDto> CreateTaskAsync(int projectId, TaskUpdateData state, IRequestCookieCollection cookie)
     {
-        using var client = cookie.GetClientFor(apiUrl);
-        var httpContent = new StringContent(JsonConvert.SerializeObject(state), Encoding.UTF8, "application/json");
         var request = new HttpRequestMessage(HttpMethod.Post, $"{apiUrl}/project/{projectId}/task")
         {
-            Content = httpContent
+            Content = new StringContent(JsonConvert.SerializeObject(state), Encoding.UTF8, "application/json")
         };
+
+        using var client = cookie.GetClientFor(apiUrl);
         var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
+
         var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
-        return taskDao?.Response ?? throw new NullReferenceException("Task was not created");
+        return taskDao!.Response!;
     }
 
-    private async Task<HttpResponseMessage> UpdateTaskStatus(int id, int status, int? statusId, IRequestCookieCollection cookie)
+    private async Task<HttpResponseMessage> UpdateTaskStatus(int id, int? status, int? statusId, IRequestCookieCollection cookie)
     {
-        using var client = cookie.GetClientFor(apiUrl);
-        var httpContent = new StringContent(JsonConvert.SerializeObject(new { status, statusId }), Encoding.UTF8, "application/json");
         var request = new HttpRequestMessage(HttpMethod.Put, $"{apiUrl}/project/task/{id}/status")
         {
-            Content = httpContent
+            Content = new StringContent(JsonConvert.SerializeObject(new { status, statusId }), Encoding.UTF8, "application/json")
         };
-        var response = await client.SendAsync(request);
-        return response;
+        
+        using var client = cookie.GetClientFor(apiUrl);
+        return await client.SendAsync(request);
     }
 }

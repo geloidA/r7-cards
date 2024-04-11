@@ -61,13 +61,13 @@ public sealed class NotificationHubConnection(IServiceProvider serviceProvider) 
 
     public async Task NotifyAboutCreatedTaskAsync(OnlyofficeTask task)
     {
+        if (!Connected)
+        {
+            await ReconnectAsync();
+        }
+
         if (connection is { })
         {
-            if (connection.State == HubConnectionState.Disconnected)
-            {
-                await ReconnectAsync();
-            }
-
             await connection.SendAsync(nameof(NotifyAboutCreatedTaskAsync), task, lastUserId);
         }
     }

@@ -4,11 +4,9 @@
 @inherits AddEditModalBase<OnlyofficeTask, TaskUpdateData>
 @implements IDisposable
 
-@using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas
-
 @if (buffer is { })
 {
-    <Cardmngr.Components.Modals.MyBlazored.Offcanvas Width="520" Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
+    <Offcanvas Width="520" Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
         @ref="currentModal">
         <FluentEditForm Model="buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown" >
             <FluentValidationValidator />
@@ -60,7 +58,7 @@
                 </div>
             </OffcanvasBody>
         </FluentEditForm>
-    </Cardmngr.Components.Modals.MyBlazored.Offcanvas>
+    </Offcanvas>
 }
 
 @code {
