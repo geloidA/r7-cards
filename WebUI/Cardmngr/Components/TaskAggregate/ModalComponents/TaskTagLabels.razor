@@ -1,5 +1,5 @@
 ﻿<FluentAutocomplete
-        TOption="TaskTag"
+        TOption="TaskTag" AutoComplete="off"
         Disabled="Disabled"
         MaximumSelectedOptions="4"
         SelectedOptions="SelectedTags"
@@ -21,12 +21,15 @@
     </SelectedOptionTemplate>
 
     <HeaderContent>
-        <div class="d-flex" style="font-size: small;">
-            <FluentTextField Placeholder="Название метки" @bind-Value="newTagText" />
-            <FluentButton Disabled="!CanCreate" class="ms-1" Appearance="Appearance.Outline" Type="ButtonType.Button" @onclick="CreateTag">
-                <FluentIcon Value="@(new Icons.Regular.Size12.Add())" Color="Color.Success" />
-            </FluentButton>
-        </div>
+        @if (!IsAdd)
+        {
+            <div class="d-flex" style="font-size: small;">
+                <FluentTextField Placeholder="Название метки" @bind-Value="newTagText" />
+                <FluentButton Disabled="!CanCreate" class="ms-1" Appearance="Appearance.Outline" Type="ButtonType.Button" @onclick="CreateTag">
+                    <FluentIcon Value="@(new Icons.Regular.Size12.Add())" Color="Color.Success" />
+                </FluentButton>
+            </div>
+        }
     </HeaderContent>
 
     <MaximumSelectedOptionsMessage>

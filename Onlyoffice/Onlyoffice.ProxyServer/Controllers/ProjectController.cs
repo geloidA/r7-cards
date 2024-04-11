@@ -21,6 +21,9 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
 
     [Route("api/[controller]/{projectId}/team")]
     public Task ProxyGetSelfProjectById(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/team");
+
+    [HttpPut("api/[controller]/{projectId}/follow")]
+    public Task ProxyFollowProject(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/follow");
     #endregion
 
     #region Task Proxy
@@ -38,6 +41,9 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
 
     [Route("api/[controller]/task/@self")]
     public Task ProxyGetSelfTasks() => ProxyRequestAsync($"{apiUrl}/project/task/@self");
+
+    [HttpGet("api/[controller]/@follow")]
+    public Task ProxyGetFollowedProjects() => ProxyRequestAsync($"{apiUrl}/project/@follow");
 
     [HttpPost("api/[controller]/{projectId}/task")]
     public Task ProxyCreateTask(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/task");

@@ -35,12 +35,11 @@
                 <CascadingValue Value="State" IsFixed="true">
                     <TaskResponsibles Task="buffer" Disabled="!CanEdit" />
                     <TaskMilestone Disabled="!CanEdit" Task="buffer" />
+                    <TaskTagLabels TaskTags="TaskTags" OnlyofficeTask="Model"
+                                   Disabled="@(!CanEdit)" IsAdd="IsAdd" />
                     @if (!IsAdd)
-                    {                        
+                    {
                         <CascadingValue Value="Model" IsFixed="true">
-                            <CascadingValue Value="TaskTags" IsFixed="true">
-                                <TaskTagLabels Disabled="@(!CanEdit)" />
-                            </CascadingValue>
                             <TaskSubtasks />
                         </CascadingValue>
                     }

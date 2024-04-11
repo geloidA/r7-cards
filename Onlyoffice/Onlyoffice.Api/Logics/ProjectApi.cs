@@ -221,5 +221,21 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
         var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
         return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not created " + response.ReasonPhrase);
     }
+
+    public async Task<ProjectDto> FollowProjectAsync(int projectId)
+    {
+        var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync<object>($"api/project/{projectId}/follow", null!));
+        var projectDao = await response.Content.ReadFromJsonAsync<SingleProjectDao>();
+        return projectDao?.Response ?? throw new NullReferenceException("Project was not followed");
+    }
+
+    public async IAsyncEnumerable<ProjectDto> GetFollowProjectsAsync()
+    {
+        var followProjectsDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<ProjectDao>("api/project/@follow"));
+        await foreach (var proj in followProjectsDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<ProjectDto>())
+        {
+            yield return proj;
+        }
+    }
     #endregion
 }

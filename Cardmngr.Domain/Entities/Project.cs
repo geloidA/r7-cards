@@ -12,6 +12,7 @@ namespace Cardmngr.Domain.Entities
         public bool CanEdit { get; init; }
         public bool CanDelete { get; init; }
         public bool IsPrivate { get; init; }
+        public bool IsFollow { get; set; }
 
         public bool Equals(Project other)
         {

@@ -14,6 +14,7 @@ public partial class AllProjectsPage : AuthorizedPage, IDisposable
     private List<StaticProjectVm> allProjects = [];
 
     [Inject] IProjectClient ProjectClient { get; set; } = null!;
+    [Inject] ProjectSummaryService ProjectSummaryService { get; set; } = null!;
     [Inject] AllProjectsPageSummaryService SummaryService { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
@@ -35,6 +36,7 @@ public partial class AllProjectsPage : AuthorizedPage, IDisposable
     {
         allProjects = await ProjectClient.GetGroupedFilteredTasksAsync(builder)
             .Select(x => new StaticProjectVm(x.Key, x.Value))
+            .OrderByDescending(x => ProjectSummaryService.FollowedProjectIds.Contains(x.ProjectInfo.Id))
             .ToListAsync();
 
         SummaryService.SetTasks(allProjects.SelectMany(x => x.Tasks).ToList());

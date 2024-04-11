@@ -1,9 +1,10 @@
 ﻿@page "/"
+@page "/home"
 
 @inherits AuthorizedPage
 
 @inject IProjectClient ProjectClient
-@inject IToastService ToastService
+@inject ProjectSummaryService ProjectSummaryService
 
 <PageTitle>Главная</PageTitle>
 
@@ -37,7 +38,10 @@
         await base.OnInitializedAsync();
         if (IsAuthenticated)
         {
-            userProjects = await ProjectClient.GetSelfProjectsAsync().ToListAsync();
+            userProjects = await ProjectClient
+                .GetSelfProjectsAsync()
+                .OrderByDescending(x => ProjectSummaryService.FollowedProjectIds.Contains(x.Id))
+                .ToListAsync();
         }
     }
 }

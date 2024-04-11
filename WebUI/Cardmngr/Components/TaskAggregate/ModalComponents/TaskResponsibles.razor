@@ -4,7 +4,7 @@
 @inject IConfiguration Config
 
 <FluentAutocomplete @ref="ResponsibleList"
-    TOption="UserInfo"
+    TOption="UserInfo" AutoComplete="off"
     Disabled="Disabled"
     OptionStyle="min-height: 40px;"
     OnOptionsSearch="OnSearch"
@@ -67,7 +67,7 @@
     void OnSearch(OptionsSearchEventArgs<UserInfo> e)
     {
         e.Items = State.Model!.Team
-            .Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+            .Where(x => x.DisplayName.Contains(e.Text, StringComparison.OrdinalIgnoreCase))
             .OrderBy(x => x.DisplayName);
     }
 

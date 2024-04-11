@@ -14,6 +14,7 @@ public partial class FilterCustomizer : ComponentBase
 
     [Inject] AllProjectsPageSummaryService SummaryService { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] ProjectSummaryService ProjectSummaryService { get; set; } = null!;
 
     protected override void OnInitialized()
     {        
@@ -50,8 +51,8 @@ public partial class FilterCustomizer : ComponentBase
     {
         e.Items = SummaryService
             .GetProjects()
-            .Where(x => x.Title.StartsWith(e.Text, StringComparison.CurrentCultureIgnoreCase))
-            .OrderBy(x => x.Title);
+            .Where(x => x.Title.Contains(e.Text, StringComparison.CurrentCultureIgnoreCase))
+            .OrderByDescending(x => ProjectSummaryService.FollowedProjectIds.Contains(x.Id));
     }
 
     private IEnumerable<UserInfo> SelectedResponsible = [];
@@ -68,7 +69,7 @@ public partial class FilterCustomizer : ComponentBase
     {
         e.Items = SummaryService
             .GetResponsibles()
-            .Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.CurrentCultureIgnoreCase))
+            .Where(x => x.DisplayName.Contains(e.Text, StringComparison.CurrentCultureIgnoreCase))
             .OrderBy(x => x.DisplayName);
     }
 
@@ -86,7 +87,7 @@ public partial class FilterCustomizer : ComponentBase
     {
         e.Items = SummaryService
             .GetCreatedBys()
-            .Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.CurrentCultureIgnoreCase))
+            .Where(x => x.DisplayName.Contains(e.Text, StringComparison.CurrentCultureIgnoreCase))
             .OrderBy(x => x.DisplayName);
     }
 

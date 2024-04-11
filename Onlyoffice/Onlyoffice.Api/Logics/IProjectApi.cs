@@ -253,4 +253,8 @@ public interface IProjectApi
     Task<CommentDto> CreateTaskCommentAsync(int taskId, CommentUpdateData comment);
 
     Task RemoveTaskCommentAsync(string commentId);
+
+    Task<ProjectDto> FollowProjectAsync(int projectId);
+
+    IAsyncEnumerable<ProjectDto> GetFollowProjectsAsync();
 }

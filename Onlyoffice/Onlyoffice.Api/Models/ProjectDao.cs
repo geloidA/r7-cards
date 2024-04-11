@@ -25,6 +25,7 @@ public class ProjectDto
     public bool CanEdit { get; set; }
     public bool CanDelete { get; set; }
     public bool IsPrivate { get; set; }
+    public bool IsFollow { get; set; }
     public DateTime Updated { get; set; }
     public UserDto? CreatedBy { get; set; }
     public DateTime Created { get; set; }

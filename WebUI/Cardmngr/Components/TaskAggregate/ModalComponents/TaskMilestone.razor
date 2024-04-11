@@ -2,7 +2,7 @@
 
 <FluentAutocomplete @ref="MilestoneList"
         TOption="Milestone"
-        Disabled="Disabled"
+        Disabled="Disabled" AutoComplete="off"
         MaximumSelectedOptions="1"
         SelectedOptions="SelectedMilestone"
         SelectedOptionsChanged="OnSelectionChanged"
@@ -74,7 +74,7 @@
     void OnSearch(OptionsSearchEventArgs<Milestone> e)
     {
         e.Items = State.Model!.Milestones
-            .Where(x => x.Title.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+            .Where(x => x.Title.Contains(e.Text, StringComparison.OrdinalIgnoreCase))
             .OrderBy(m => m.Title);
     }
 }

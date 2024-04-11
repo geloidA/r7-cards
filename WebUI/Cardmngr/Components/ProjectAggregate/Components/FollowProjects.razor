@@ -1,0 +1,36 @@
+﻿@inject IProjectClient ProjectClient
+@inject ProjectSummaryService ProjectSummaryService
+
+<FluentCard class="border-0" style="background-color: var(--neutral-layer-1); box-shadow: none;">
+    <div class="d-flex justify-content-start mb-2">
+        <FluentIcon Value="@(new Icons.Regular.Size20.ClipboardHeart())" Color="Color.Error" />
+        <FluentSpacer Width="10" />
+        <b>Отслеживаемые проекты</b>
+    </div>
+    <div style="max-height: 250px;" class="overflow-auto">
+        @if (followProjects.Count == 0)
+        {
+            <i style="font-size: small;">Нет отслеживаемых проектов</i>
+        }
+        else
+        {
+            foreach (var proj in followProjects)
+            {
+                <div class="mt-2">
+                    <ProjectReference Project="proj" />
+                </div>
+            }
+        }
+    </div>
+</FluentCard>
+
+@code {
+    List<Project> followProjects = [];
+
+    protected async override Task OnInitializedAsync()
+    {
+        followProjects = await ProjectClient.GetFollowedProjectsAsync().ToListAsync();
+        ProjectSummaryService.FollowedProjectIds = new HashSet<int>(followProjects.Select(x => x.Id));
+    }
+
+}

@@ -24,6 +24,7 @@
 
     void TogglePriority()
     {
+        if (Disabled) return;
         Task.Priority = IsHigh ? (int)Domain.Enums.Priority.Regular : (int)Domain.Enums.Priority.High;
     }
 }

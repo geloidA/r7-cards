@@ -6,7 +6,7 @@ namespace Cardmngr.Services;
 public class AllProjectsPageSummaryService
 {
     private List<OnlyofficeTask>? tasks = [];
-    
+
     public FilterManagerService FilterManager { get; } = new();
 
     public event Action? OnProjectsChanged;
@@ -16,7 +16,7 @@ public class AllProjectsPageSummaryService
         this.tasks = tasks;
         
         if (notify)
-        {            
+        {
             OnProjectsChanged?.Invoke();
         }
     }
@@ -26,7 +26,7 @@ public class AllProjectsPageSummaryService
         .Distinct() ?? [];
 
     public IEnumerable<ProjectInfo> GetProjects() => tasks?
-        .Select(x => x.ProjectOwner) 
+        .Select(x => x.ProjectOwner)
         .Distinct() ?? [];
 
     public IEnumerable<UserInfo> GetCreatedBys() => tasks?

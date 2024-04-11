@@ -17,6 +17,7 @@
     private ICollection<Feedback> Items => State.Model!.Feedbacks
         .Where(x => x.Status == Status)
         .OrderByDescending(x => x.LikedUsers.Count)
+        .ThenBy(x => x.DislikedUsers.Count)
         .ToList();
 
     [Parameter] public RenderFragment? HeaderTemplate { get; set; }

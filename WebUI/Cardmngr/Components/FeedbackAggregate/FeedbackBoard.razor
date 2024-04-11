@@ -4,7 +4,8 @@
             <HeaderTemplate>
                 <div class="d-flex">
                     <div style="font-size: 13px;">
-                        Предложения и найденные ошибки 📝
+                        Предложения и найденные ошибки 
+                        <FluentEmoji Value="@(new Emojis.SmileysEmotion.Flat.Default.ShushingFace())" Width="22px" />
                     </div>
                     <FluentSpacer />
                     <FluentButton OnClick="OpenCreateModalAsync"
@@ -18,13 +19,19 @@
 
         <FeedbackColumn Status="FeedbackStatus.InProgress">
             <HeaderTemplate>
-                <div style="margin-top: 1px;">В работе 👨‍💻</div>
+                <div style="margin-top: 1px;">
+                    В работе 
+                    <FluentEmoji Value="@(new Emojis.SmileysEmotion.Flat.Default.ThinkingFace())" Width="22px" />
+                </div>
             </HeaderTemplate>
         </FeedbackColumn>
 
         <FeedbackColumn Status="FeedbackStatus.Finished">
             <HeaderTemplate >
-                <div style="margin-top: 1px;">Готово 🏁</div>
+                <div style="margin-top: 1px;">
+                    Готово 
+                    <FluentEmoji Value="@(new Emojis.SmileysEmotion.Flat.Default.LyingFace())" Width="22px" />
+                </div>
             </HeaderTemplate>
         </FeedbackColumn>
     </Columns>

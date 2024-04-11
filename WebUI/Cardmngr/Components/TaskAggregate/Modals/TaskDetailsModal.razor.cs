@@ -26,7 +26,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
     [Parameter] public IProjectState State { get; set; } = null!;
     [Parameter] public ProjectHubClient? ProjectHubClient { get; set; }
     [Parameter] public int TaskStatusId { get; set; }
-    [Parameter] public List<TaskTag>? TaskTags { get; set; }
+    [Parameter] public List<TaskTag> TaskTags { get; set; } = [];
 
     protected override void OnInitialized()
     {
@@ -86,6 +86,10 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
         if (IsAdd)
         {
             var created = await TaskClient.CreateAsync(State.Model!.Project!.Id, buffer);
+            
+            var tagsTasks = TaskTags.Select(x => TaskClient.CreateTagAsync(created.Id, x.Name));
+            await Task.WhenAll(tagsTasks);
+
             State.AddTask(created);
 
             ProjectHubClient?.SendCreatedTaskAsync(created.ProjectOwner.Id, created.Id).Forget();

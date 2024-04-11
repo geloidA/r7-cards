@@ -24,6 +24,7 @@ builder.Services
     .AddScoped<AppInfoService>()
     .AddSingleton<TagColorGetter>()
     .AddSingleton<AllProjectsPageSummaryService>()
+    .AddSingleton<ProjectSummaryService>()
     .AddTransient<RefreshService>()
     .ConfigureServices()
     .AddScoped<TeamMemberSelectionDialog>()

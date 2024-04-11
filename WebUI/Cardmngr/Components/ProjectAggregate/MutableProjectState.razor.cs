@@ -35,6 +35,15 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
         RefreshService.Start(TimeSpan.FromSeconds(7));
     }
 
+    public async Task ToggleFollowAsync()
+    {
+        if (Model?.Project is { })
+        {
+            await ProjectClient.FollowProjectAsync(Model.Project.Id);
+            Model.Project.IsFollow = !Model.Project.IsFollow;
+        }
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         Initialized = false;

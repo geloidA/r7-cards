@@ -11,10 +11,11 @@ public partial class TaskTagLabels : ComponentBase
 {
     private readonly IEqualityComparer<TaskTag> comparer = new TaskTagNameEqualityComparer();
     private string newTagText = "";
-    private IEnumerable<TaskTag> SelectedTags = [];
+    private IEnumerable<TaskTag> SelectedTags = null!;
 
-    [CascadingParameter] List<TaskTag>? TaskTags { get; set; }
-    [CascadingParameter] OnlyofficeTask OnlyofficeTask { get; set; } = null!;
+    [Parameter] public List<TaskTag> TaskTags { get; set; } = null!;
+    [Parameter] public OnlyofficeTask OnlyofficeTask { get; set; } = null!;
+    [Parameter] public bool IsAdd { get; set; }
 
     [Inject] TagColorGetter TagColorGetter { get; set; } = null!;
     [Inject] ITaskClient TaskClient { get; set; } = null!;
@@ -22,34 +23,32 @@ public partial class TaskTagLabels : ComponentBase
 
     protected override void OnInitialized()
     {
-        SelectedTags = TaskTags ?? [];
+        SelectedTags = TaskTags;
     }
 
     private void OnSearch(OptionsSearchEventArgs<TaskTag> e)
     {
         e.Items = TagColorGetter.Tags?
-            .Where(x => x.Name.StartsWith(e.Text, StringComparison.CurrentCultureIgnoreCase))
+            .Where(x => x.Name.Contains(e.Text, StringComparison.CurrentCultureIgnoreCase))
             .OrderBy(x => x.Name);
     }
 
     private async Task SelectedTagsChanged(IEnumerable<TaskTag> selectedTags)
     {
-        var deleted = SelectedTags.Except(selectedTags, comparer);
-        var added = selectedTags.Except(SelectedTags, comparer);
+        var deleted = TaskTags.Except(selectedTags, comparer).ToList();
+        var added = selectedTags.Except(TaskTags, comparer);
 
-        if (deleted is { })
+        if (deleted.Count != 0)
         {
             var deletedTasks = deleted.Select(x => RemoveTag(x));
             await Task.WhenAll(deletedTasks);
         }
 
-        if (added is { })
+        if (added.Any())
         {
             var addedTasks = added.Select(x => AddTag(x));
             await Task.WhenAll(addedTasks);
         }
-
-        SelectedTags = selectedTags;
     }
 
     private bool CanCreate => !string.IsNullOrEmpty(newTagText) && !TagColorGetter.Contains(newTagText);
@@ -67,7 +66,11 @@ public partial class TaskTagLabels : ComponentBase
 
     private async Task AddTag(TaskTag newTag)
     {
-        await TaskClient.CreateTagAsync(OnlyofficeTask.Id, newTag.Name);
+        if (!IsAdd)
+        {
+            await TaskClient.CreateTagAsync(OnlyofficeTask.Id, newTag.Name);
+        }
+
         TaskTags?.Add(newTag);
     }
 
@@ -75,7 +78,11 @@ public partial class TaskTagLabels : ComponentBase
     {
         if (Disabled) return;
         
-        await TaskClient.RemoveTagAsync(tag.Id);
+        if (!IsAdd)
+        {
+            await TaskClient.RemoveTagAsync(tag.Id);
+        }
+
         TagColorGetter.RemoveTag(tag);
         TaskTags?.Remove(tag);
     }

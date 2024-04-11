@@ -4,6 +4,7 @@ using Cardmngr.Application.Extensions;
 using Cardmngr.Domain;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Project;
+using Onlyoffice.Api;
 using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Logics;
 
@@ -102,7 +103,7 @@ public class ProjectClient(IProjectApi projectApi, ITaskClient taskClient, IMapp
         }
     }
 
-    public async IAsyncEnumerable<KeyValuePair<ProjectInfo, ICollection<OnlyofficeTask>>> GetGroupedFilteredTasksAsync(FilterTasksBuilder filter)
+    public async IAsyncEnumerable<KeyValuePair<ProjectInfo, ICollection<OnlyofficeTask>>> GetGroupedFilteredTasksAsync(FilterBuilder filter)
     {
         await foreach (var project in projectApi.GetFiltredTasksAsync(filter).GroupBy(x => x.ProjectOwner))
         {
@@ -112,12 +113,9 @@ public class ProjectClient(IProjectApi projectApi, ITaskClient taskClient, IMapp
         }
     }
 
-    public async IAsyncEnumerable<Project> GetSelfProjectsAsync()
+    public IAsyncEnumerable<Project> GetSelfProjectsAsync()
     {
-        await foreach (var project in projectApi.GetUserProjectsAsync())
-        {
-            yield return mapper.Map<Project>(project);
-        }
+        return projectApi.GetUserProjectsAsync().Select(mapper.Map<Project>);
     }
 
     public async Task<ProjectStateVm> CreateProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks)
@@ -142,5 +140,15 @@ public class ProjectClient(IProjectApi projectApi, ITaskClient taskClient, IMapp
             Tasks = [.. tasks],
             Statuses = statuses
         };
+    }
+
+    public async Task<Project> FollowProjectAsync(int projectId)
+    {
+        return mapper.Map<Project>(await projectApi.FollowProjectAsync(projectId));
+    }
+
+    public IAsyncEnumerable<Project> GetFollowedProjectsAsync()
+    {
+        return projectApi.GetFollowProjectsAsync().Select(mapper.Map<Project>);
     }
 }

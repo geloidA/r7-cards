@@ -78,6 +78,22 @@ public class FeedbackController(IFeedbackService feedbackService) : Controller
         return Ok(updated);
     }
 
+    [HttpPost("dislike/{feedbackId}/{requestGuid}")]
+    public async Task<ActionResult<Feedback>> ToggleDislikeFeedbackAsync(int feedbackId, string requestGuid)
+    {
+        logger.Information("ToggleDislikeFeedback. Id: {feedbackId}", feedbackId);
+        var feedback = await feedbackService.FindFeedbackAsync(feedbackId);
+        if (feedback == null) 
+        {
+            logger.Information($"Can't find feedback by id - {feedbackId}");
+            return NotFound($"Can't find feedback by id - {feedbackId}");
+        }
+
+        var updated = await feedbackService.ToggleFeedbackDislikeAsync(feedback, requestGuid);
+
+        return Ok(updated);
+    }
+
     [HttpPut("{requestGuid}/{id}")]
     public async Task<ActionResult<Feedback>> UpdateFeedback(string requestGuid, int id, [FromBody] FeedbackUpdateData data)
     {

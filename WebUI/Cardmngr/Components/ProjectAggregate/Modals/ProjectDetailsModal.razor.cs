@@ -4,6 +4,7 @@ using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Components.MilestoneAggregate.Modals;
 using Offcanvas = Cardmngr.Components.Modals.MyBlazored.Offcanvas;
 using Microsoft.AspNetCore.Components;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.Modals;
 
@@ -16,6 +17,9 @@ public partial class ProjectDetailsModal : IDisposable
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
+
+    Icon IconFollow => State.Model?.Project?.IsFollow ?? false 
+        ? new Icons.Filled.Size20.Heart() : new Icons.Regular.Size20.Heart();
 
     protected override void OnInitialized()
     {

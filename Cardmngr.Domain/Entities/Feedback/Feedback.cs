@@ -14,6 +14,7 @@ public sealed record class Feedback : ResponseEntityBase<int>
     public DateTime Created { get; init; }
     public DateTime? Finished { get; init; }
     public List<string> LikedUsers { get; init; } = [];
+    public List<string> DislikedUsers { get; init; } = [];
 
     public bool Equals(Feedback other)
     {

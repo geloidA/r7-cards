@@ -12,4 +12,5 @@ public interface IFeedbackClient
     Task<Feedback?> UpdateFeedbackAsync(int feedbackId, FeedbackUpdateData data);
     Task<Feedback> UpdateFeedbackStatusAsync(int feedbackId, FeedbackStatus status);
     Task<Feedback?> ToggleFeedbackLikeAsync(int feedbackId);
+    Task<Feedback?> ToggleFeedbackDislikeAsync(int feedbackId);
 }

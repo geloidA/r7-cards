@@ -124,6 +124,34 @@ public class FeedbackService : IFeedbackService
 
     public async Task<Feedback?> ToggleFeedbackLikeAsync(Feedback feedback, string requestGuid)
     {
+        return await ToggleFeedbackAsync(feedback, requestGuid, ToggleLike);
+
+        void ToggleLike(Feedback f)
+        {
+            if (!f.LikedUsers.Remove(requestGuid))
+            {
+                f.LikedUsers.Add(requestGuid);
+                f.DislikedUsers.Remove(requestGuid);
+            }
+        }
+    }
+
+    public async Task<Feedback?> ToggleFeedbackDislikeAsync(Feedback feedback, string requestGuid)
+    {
+        return await ToggleFeedbackAsync(feedback, requestGuid, ToggleDislike);
+
+        void ToggleDislike(Feedback f)
+        {
+            if (!f.DislikedUsers.Remove(requestGuid))
+            {
+                f.DislikedUsers.Add(requestGuid);
+                f.LikedUsers.Remove(requestGuid);
+            }
+        }
+    }
+
+    private async Task<Feedback?> ToggleFeedbackAsync(Feedback feedback, string requestGuid, Action<Feedback> toggleAction)
+    {
         var feedbacks = await GetFeedbacksAsync();
 
         if (!feedbacks.Remove(feedback))
@@ -131,10 +159,7 @@ public class FeedbackService : IFeedbackService
             throw new FeedbackNotFoundException(feedback);
         }
 
-        if (!feedback.LikedUsers.Remove(requestGuid))
-        {
-            feedback.LikedUsers.Add(requestGuid);
-        }
+        toggleAction(feedback);
         
         feedbacks.Add(feedback);
 

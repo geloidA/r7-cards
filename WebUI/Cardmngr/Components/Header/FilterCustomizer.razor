@@ -7,7 +7,7 @@
             TOption="Domain.ProjectInfo"
             SelectedOptionsChanged="SelectionProjectChanged"
             MaximumSelectedOptions="1"
-            Style="width: 190px;"
+            Style="width: 190px;" AutoComplete="off"
             IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())"
             SelectedOptions="SelectedProject"
             OptionText="@(p => p.Title)"
@@ -16,7 +16,7 @@
         </FluentAutocomplete>      
         <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.Person())"
             TOption="UserInfo" Placeholder="Ответственный"
-            Style="width: 190px;"
+            Style="width: 190px;" AutoComplete="off"
             SelectedOptionsChanged="SelectionResponsibleChanged"
             MaximumSelectedOptions="1"
             OptionText="@(u => u.DisplayName)"
@@ -28,7 +28,7 @@
             TOption="UserInfo" Placeholder="Автор"
             SelectedOptionsChanged="SelectionCreatedByChanged"
             MaximumSelectedOptions="1"
-            Style="width: 190px;"
+            Style="width: 190px;" AutoComplete="off"
             OptionText="@(u => u.DisplayName)"
             SelectedOptions="SelectedCreatedBy"
             OnOptionsSearch="OnCreatedBySearch">

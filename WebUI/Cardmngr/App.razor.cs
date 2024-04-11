@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
 using Onlyoffice.Api.Providers;
 using Onlyoffice.Api.Logics;
+using Cardmngr.Application.Clients;
 
 namespace Cardmngr;
 
@@ -19,6 +20,8 @@ public partial class App : ComponentBase
     [Inject] IAuthApiLogic AuthApiLogic { get; set; } = null!;
     [Inject] AppInfoService AppInfoService { get; set; } = null!;
     [Inject] NotificationService NotificationService { get; set; } = null!;
+    [Inject] IProjectClient ProjectClient { get; set; } = null!;
+    [Inject] ProjectSummaryService ProjectSummaryService { get; set; } = null!;
     [Inject] NotificationHubConnection NotificationHubConnection { get; set; } = null!;
     [Inject] IJSRuntime JS { get; set; } = null!;
 
@@ -49,6 +52,8 @@ public partial class App : ComponentBase
         AuthenticationProvider.AuthenticationStateChanged += RequestPermission;
         NotificationHubConnection.TaskReceived += ReceiveTask;
         var appVersion = await AppInfoService.GetVersionAsync();
+
+        ProjectSummaryService.FollowedProjectIds = new HashSet<int>(await ProjectClient.GetFollowedProjectsAsync().Select(x => x.Id).ToListAsync());
         
         await JS.InvokeVoidAsync("updateVersion", appVersion);
 
