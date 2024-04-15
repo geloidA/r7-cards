@@ -21,6 +21,7 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
 
     [Parameter] public StaticProjectVm? ViewModel { get; set; }
     [Inject] IProjectClient ProjectClient { get; set; } = null!;
+    [Inject] ProjectSummaryService ProjectSummaryService { get; set; } = null!;
     [Inject] AllProjectsPageSummaryService SummaryService { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
@@ -31,6 +32,8 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
             Model = await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks);
             Initialized = true;
         }
+
+        isFollow = ProjectSummaryService.FollowedProjectIds.Contains(ViewModel?.ProjectInfo.Id ?? -1);
 
         SummaryService.OnProjectsChanged += ToggleIfSelected;
     }
@@ -58,6 +61,27 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
 
             Model = ViewModel.IsCollapsed ? null : await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks);
             Initialized = Model is { };
+        }
+    }
+
+    private bool isFollow;
+
+    private Icon IconFollow => isFollow ? new Icons.Filled.Size16.Star() : new Icons.Regular.Size16.Star();
+
+    public async Task ToggleFollowAsync()
+    {
+        if (ViewModel?.ProjectInfo is { })
+        {
+            await ProjectClient.FollowProjectAsync(ViewModel.ProjectInfo.Id);
+            
+            if (isFollow = !isFollow)
+            {
+                ProjectSummaryService.FollowedProjectIds.Add(ViewModel.ProjectInfo.Id);
+            }
+            else
+            {
+                ProjectSummaryService.FollowedProjectIds.Remove(ViewModel.ProjectInfo.Id);
+            }
         }
     }
 

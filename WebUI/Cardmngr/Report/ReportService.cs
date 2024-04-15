@@ -2,10 +2,15 @@
 
 namespace Cardmngr.Report;
 
-public abstract class ReportService(IReportGenerator generator, ReportJSModule jsModule)
+public abstract class ReportService(IReportGenerator generator, ReportJSModule jsModule) : IAsyncDisposable
 {
     protected readonly IReportGenerator generator = generator;
     private readonly ReportJSModule jsModule = jsModule;
+
+    public ValueTask DisposeAsync()
+    {
+        return jsModule.DisposeAsync();
+    }
 
     /// <summary>
     /// Generates report
@@ -14,6 +19,7 @@ public abstract class ReportService(IReportGenerator generator, ReportJSModule j
     /// <returns></returns>
     protected async Task GenerateReport(string fileName)
     {
-        await jsModule.SaveAsAsync($"{fileName}.xlsx", generator.GenerateReport());
+        var bytes = await Task.Run(() => generator.GenerateReport());
+        await jsModule.SaveAsAsync($"{fileName}.xlsx", bytes);
     }
 }

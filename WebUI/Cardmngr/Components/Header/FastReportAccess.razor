@@ -1,0 +1,36 @@
+﻿@using Cardmngr.Report
+@using Onlyoffice.Api.Common
+
+@inject IServiceProvider ServiceProvider
+@inject IProjectClient ProjClient
+
+<FluentCard class="border-0" style="background-color: var(--neutral-layer-1); box-shadow: none;">
+    <div class="d-flex justify-content-start mb-2">
+        <FluentIcon Value="@(new Icons.Filled.Size20.DataBarVerticalAscending())" />
+        <FluentSpacer Width="10" />
+        <b>Отчеты</b>
+    </div>
+    <FluentButton IconStart="@(new Icons.Filled.Size16.ArrowDownload())" 
+        Loading="busy" class="w-100 mt-2" Appearance="Appearance.Stealth" @onclick="GenerateReport" >
+        Задачи проектов
+    </FluentButton>
+</FluentCard>
+
+@code {
+    bool busy;
+
+    async Task GenerateReport()
+    {
+        busy = true;
+
+        var scope = ServiceProvider.CreateScope(); // for escape downloading saveFile.js when sidebar is opening
+        var taskReportService = scope.ServiceProvider.GetRequiredService<TaskReportService>();
+
+        var tasks = await ProjClient.GetFilteredTasksAsync(FilterTasksBuilder.Instance.MyProjects(true)).ToListAsync();
+        var statuses = await ProjClient.GetTaskStatusesAsync().ToListAsync();
+        await taskReportService.GenerateReport($"Задачи_проектов {DateTime.Now.AddHours(5):dd.MM.yyyy HH_mm}", tasks, statuses);
+        await taskReportService.DisposeAsync();
+
+        busy = false;
+    }
+}

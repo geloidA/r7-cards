@@ -1,6 +1,7 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Cardmngr.Components.Modals.MyBlazored;
 
@@ -16,6 +17,25 @@ public partial class Offcanvas : OffcanvasBase
     [Parameter] public MyOffcanvasPlacement Placement { get; set; }
     [Parameter] public bool ShowCloseBtn { get; set; } = true;
     [Parameter] public int Width { get; set; } = 450;
+
+    private ElementReference myOffcanvas;
+
+    private async Task HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape")
+        {
+            await CloseAsync(ModalResult.Cancel());
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await Task.Delay(100);
+            await myOffcanvas.FocusAsync();
+        }
+    }
 
     public async Task CloseAsync(ModalResult? result = null)
     {

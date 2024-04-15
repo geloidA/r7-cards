@@ -9,15 +9,17 @@
                 <div class="col d-flex fw-bold">
                     @if (ViewModel is { })
                     {
+                        <FluentIcon class="user-select-none" OnClick="() => ToggleFollowAsync()"
+                            Value="IconFollow" Title="@(isFollow ? "Перестать отслеживать" : "Отслеживать")" />
                         @if (ViewModel.ProjectInfo.IsPrivate)
                         {
-                            <div class="align-self-center">
+                            <div class="align-self-center ms-2">
                                 <FluentIcon
                                     Value="@(new Icons.Filled.Size16.LockClosed())"
                                     title="Приватный проект"
                                     Color="Color.Warning" />
                             </div>
-                        }
+                        }                        
                         <div class="ms-2 align-self-center">
                             @ViewModel.ProjectInfo.Title
                         </div>
