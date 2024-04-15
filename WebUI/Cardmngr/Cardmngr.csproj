@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
@@ -26,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot/fonts/" />
     <Folder Include="wwwroot/images/" />
     <Folder Include="wwwroot/js/Decompression/" />
   </ItemGroup>
@@ -53,6 +55,7 @@
     <ProjectReference Include="../../Onlyoffice/Onlyoffice.Api/Onlyoffice.Api.csproj" />
     <ProjectReference Include="..\..\..\KolBlazor\KolBlazor\KolBlazor.csproj" />
     <ProjectReference Include="..\..\Cardmngr.Application\Cardmngr.Application.csproj" />
+    <ProjectReference Include="..\..\Cardmngr.Reports\Cardmngr.Reports.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,7 +4,7 @@
 @inject IFeedbackClient FeedbackClient
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<li class="feedback-card clickable" style="font-size: 13px;" @onclick="OpenModal" >
+<li class="feedback-card clickable" style="font-size: 13px;" @onclick="openModalFunc" >
     <div class="py-1 px-2 h-100" >
         <span class="fw-bold" style="overflow: hidden;">@Feedback.Title</span>
         @if (Feedback.Description is { })
@@ -70,11 +70,14 @@
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     protected override void OnInitialized()
-    {        
+    {
+        openModalFunc = OpenModal;
         var userId = AuthenticationStateProvider.ToCookieProvider().UserId;
         likePressed = Feedback.LikedUsers.Contains(userId);
         dislikePressed = Feedback.DislikedUsers.Contains(userId);
     }
+
+    Func<Task> openModalFunc = null!;
 
     async Task OpenModal()
     {

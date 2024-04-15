@@ -25,6 +25,7 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
 
     protected override async Task OnInitializedAsync()
     {
+        toggleCollapsedFunc = ToggleCollapsed;
         if (ViewModel is { IsCollapsed: false })
         {
             Model = await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks);
@@ -46,6 +47,8 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
 
     private readonly TaskFilterManager taskFilterManager = new();
     public override IFilterManager<OnlyofficeTask> TaskFilter => taskFilterManager;
+
+    private Func<Task> toggleCollapsedFunc = null!;
 
     private async Task ToggleCollapsed()
     {

@@ -30,7 +30,7 @@
                 <FluentValidationMessage For="() => buffer.Deadline" />
 
                 <FluentAutocomplete TOption="UserInfo" MaximumSelectedOptions="1"
-                    @bind-SelectedOptions="SelectedResponsible" Context="user"
+                    @bind-SelectedOptions="SelectedResponsible" Context="user" AutoComplete="off"
                     OnOptionsSearch="OnSearchResponsible" Placeholder="Не установлен">
 
                     <LabelTemplate>

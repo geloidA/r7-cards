@@ -2,11 +2,12 @@
 using Cardmngr.Domain.Entities;
 using Cardmngr.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.Header;
 
-public partial class FilterCustomizer : ComponentBase
+public partial class FilterCustomizer : ComponentBase, IDisposable
 {
     private bool show;
     private bool onlyDeadlined;
@@ -34,7 +35,14 @@ public partial class FilterCustomizer : ComponentBase
             StateHasChanged();
         };
         show = IsFilterPage(NavigationManager.Uri);
-        NavigationManager.LocationChanged += (_, args) => UpdateStateByLocation(args.Location);
+        NavigationManager.LocationChanged += UpdateStateByLocation;
+    }
+
+    private void UpdateStateByLocation(object? sender, LocationChangedEventArgs args)
+    {
+        show = IsFilterPage(args.Location);
+
+        StateHasChanged();
     }
 
     private IEnumerable<ProjectInfo> SelectedProject = [];
@@ -103,10 +111,8 @@ public partial class FilterCustomizer : ComponentBase
 
     private static bool IsFilterPage(string uri) => uri.EndsWith("/all-projects", StringComparison.OrdinalIgnoreCase);
 
-    private void UpdateStateByLocation(string uri)
+    public void Dispose()
     {
-        show = IsFilterPage(uri);
-
-        StateHasChanged();
+        NavigationManager.LocationChanged -= UpdateStateByLocation;
     }
 }

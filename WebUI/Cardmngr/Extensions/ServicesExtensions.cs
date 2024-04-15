@@ -1,5 +1,7 @@
 ﻿using Blazored.Modal;
 using Cardmngr.Notification;
+using Cardmngr.Report;
+using Cardmngr.Reports;
 using Cardmngr.Services;
 using Cardmngr.Shared.Feedbacks;
 using Cardmngr.Validators;
@@ -46,6 +48,14 @@ public static class ServicesExtensions
             .AddSingleton<NotificationHubConnection>()
             .AddScoped<NotificationService>()
             .AddScoped<NotificationJSModule>();
+    }
+
+    public static IServiceCollection AddReports(this IServiceCollection services)
+    {
+        return services
+            .AddScoped<TaskReportService>()
+            .AddScoped<TaskReportGenerator>()
+            .AddScoped<ReportJSModule>();
     }
 
     public static void ConfigureHttpClients(this WebAssemblyHostBuilder builder)    

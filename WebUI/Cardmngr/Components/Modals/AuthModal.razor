@@ -13,13 +13,16 @@
         </FluentMessageBar>
 
         <div class="d-flex flex-column mt-2">
-            <FluentTextField id="UserName" @bind-Value="loginData.UserName" Label="Почта / Логин" />
+            <FluentTextField id="UserName" @bind-Value="loginData.UserName" Label="Почта" />
             <FluentValidationMessage For="() => loginData.UserName" />
         </div>
 
         <div class="d-flex flex-column mt-4">
-            <FluentTextField id="Password" TextFieldType="TextFieldType.Password"
-                 @bind-Value="loginData.Password" Label="Пароль" />
+            <FluentTextField id="Password" TextFieldType="@(showPassword ? TextFieldType.Text : TextFieldType.Password)"
+                @bind-Value="loginData.Password" Label="Пароль" Immediate >
+                <FluentIcon Slot="end" Value="ShowPasswordIcon" 
+                    @onclick="() => showPassword = !showPassword" />
+            </FluentTextField>
             <FluentValidationMessage For="() => loginData.Password" />
         </div>
 
@@ -34,8 +37,11 @@
 
 @code {
     readonly LoginData loginData = new();
+    bool showPassword;
     bool busy;
-    
+
+    Icon ShowPasswordIcon => showPassword ? new Icons.Regular.Size16.EyeOff() : new Icons.Regular.Size16.Eye();
+
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
 
     async Task SumbitAuth()

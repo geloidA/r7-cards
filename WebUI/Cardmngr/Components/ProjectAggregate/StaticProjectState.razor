@@ -4,7 +4,7 @@
 
 <CascadingValue Value="this" IsFixed="true">
     <div class="proj-state scrollbar-none" style="@CssHeight">
-        <div class="proj-header clickable" @ondblclick="@ToggleCollapsed">
+        <div class="proj-header clickable" @ondblclick="@toggleCollapsedFunc">
             <div class="row user-select-none">
                 <div class="col d-flex fw-bold">
                     @if (ViewModel is { })
@@ -30,7 +30,7 @@
                     <i class="tip-hide" style="font-size: small;">
                         Двойной клик для рыскрытия/закрытия
                     </i>
-                    <FluentIcon class="ms-2" OnClick="@ToggleCollapsed"
+                    <FluentIcon class="ms-2" OnClick="@toggleCollapsedFunc"
                         Value="CollapsedIcon" />
                 </div>
             </div>
@@ -48,7 +48,7 @@
             else
             {
                 <div class="d-flex justify-content-center align-content-center user-select-none">
-                    @* <Spinner class="fs-6" style="height: 20px; width: 20px;"/> *@
+                    <FluentProgressRing />
                     <span class="ms-2">Загрузка...</span>
                 </div>
             }

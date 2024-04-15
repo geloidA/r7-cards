@@ -13,6 +13,8 @@ public class EntityMappingProfile : Profile
         CreateMap<ProjectInfoDto, Project>();
         
         CreateMap<MilestoneDto, Milestone>();
+        CreateMap<MilestoneDto, MilestoneInfo>();
+
         CreateMap<SubtaskDto, Subtask>();
 
         CreateMap<TaskDto, OnlyofficeTask>()

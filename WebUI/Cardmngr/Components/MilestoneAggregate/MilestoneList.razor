@@ -18,8 +18,8 @@
                     </span>
                 </i>
                 <FluentSpacer Width="15" />
-                <FluentBadge Fill="val" title="@(milestone.IsDeadlineOut() ? "Веха просрочена" : "Открытых задач")"
-                    BackgroundColor="@(milestone.IsDeadlineOut() ? "rgb(218, 96, 96)" : "rgb(111, 83, 190)")"
+                <FluentBadge title="@(milestone.IsDeadlineOut() ? "Веха просрочена" : "Открытых задач")"
+                    Appearance="@(milestone.IsDeadlineOut() ? Appearance.Neutral : Appearance.Accent)"
                     style="font-size: 11px;" >
                     @State.GetMilestoneTasks(milestone).Count(x => !x.IsClosed())
                 </FluentBadge>

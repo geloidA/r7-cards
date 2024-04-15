@@ -35,6 +35,7 @@ public partial class TaskCard : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
+        openModalAction = OpenModal;
         await InitializeTaskTagsAsync();
     }
 
@@ -50,6 +51,7 @@ public partial class TaskCard : ComponentBase
         }
     }
 
+    private Func<Task> openModalAction = null!; // TODO: maybe remove, because not improve performance too much
     private async Task OpenModal()
     {
         var parameters = new ModalParameters

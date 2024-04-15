@@ -32,6 +32,7 @@ builder.Services
     .AddKolBlazor()
     .AddFluentUIComponents()
     .AddNotifications()
+    .AddReports()
     .AddCascadingAuthenticationState()
     .AddBlazoredLocalStorage()
     .AddAuthorizationCore()

@@ -2,6 +2,7 @@
 @inject IProjectClient ProjectClient
 
 @inherits KolComponentBase
+@implements IDisposable
 
 @if (showTitle)
 {
@@ -42,16 +43,16 @@
             .ToListAsync())
             .ToDictionary(x => x.Id, x => x);
 
-        UpdateStateByLocation(NavigationManager.Uri);
-        NavigationManager.LocationChanged += (_, args) => UpdateStateByLocation(args.Location);
+        UpdateStateByLocation(null, new LocationChangedEventArgs(NavigationManager.Uri, true));
+        NavigationManager.LocationChanged += UpdateStateByLocation;
     }
 
-    private void UpdateStateByLocation(string uri)
+    private void UpdateStateByLocation(object? sender, LocationChangedEventArgs args)
     {
-        showTitle = IsProjectUri(uri);
+        showTitle = IsProjectUri(args.Location);
         if (showTitle)
         {
-            var projectInfo = projectsByIds[GetIdByUrl(uri)];
+            var projectInfo = projectsByIds[GetIdByUrl(args.Location)];
             selectedProjectTitle = projectInfo.Title;
         }
         StateHasChanged();
@@ -66,5 +67,10 @@
     {
         var lastSlashIndex = uri.LastIndexOf('/');
         return int.Parse(uri.Substring(lastSlashIndex + 1));
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= UpdateStateByLocation;
     }
 }

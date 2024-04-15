@@ -11,7 +11,7 @@
         <FluentEditForm Model="buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown" >
             <FluentValidationValidator />
             <OffcanvasHeader Class="py-0 d-flex" Style="padding-top: 20px !important;">
-                <FluentTextField style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
+                <FluentTextField Name="Title" style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
                     @bind-Value="buffer.Title" class="p-0 w-100" />
             </OffcanvasHeader>
             <FluentValidationMessage For="() => buffer.Title" class="ms-3" />
@@ -23,13 +23,13 @@
                     </i>
                 }
                 <TaskPriorityChanger Class="justify-content-end" Task="buffer" Disabled="@(!CanEdit)" />
-                <FluentDatePicker Placeholder="Не установленa"
+                <FluentDatePicker Name="StartDate" Placeholder="Не установленa"
                     ReadOnly="!CanEdit" @bind-Value="buffer.StartDate" Label="Дата начала:" />
-                <FluentDatePicker Placeholder="Не установлен"
+                <FluentDatePicker Name="Deadline" Placeholder="Не установлен"
                     ReadOnly="!CanEdit" @bind-Value="buffer.Deadline" Label="Крайний срок:" />
                 <FluentValidationMessage For="() => buffer.Deadline" />
-                <FluentTextArea Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100" Rows="6"
-                    @bind-Value="buffer.Description" Spellcheck="true" ReadOnly="!CanEdit" />
+                <FluentTextArea Name="Description" Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100" Rows="6"
+                    @bind-Value="buffer.Description" Spellcheck="true" Immediate ReadOnly="!CanEdit" />
                 <CascadingValue Value="State" IsFixed="true">
                     <TaskResponsibles Task="buffer" Disabled="!CanEdit" />
                     <TaskMilestone Disabled="!CanEdit" Task="buffer" />

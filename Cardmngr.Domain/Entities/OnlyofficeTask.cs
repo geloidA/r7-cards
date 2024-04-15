@@ -23,6 +23,7 @@ namespace Cardmngr.Domain.Entities
         public int? TaskStatusId { get; init; }
         public Status Status { get; init; }
         public ProjectInfo ProjectOwner { get; init; }
+        public MilestoneInfo Milestone { get; init; }
 
         public bool Equals(OnlyofficeTask other)
         {

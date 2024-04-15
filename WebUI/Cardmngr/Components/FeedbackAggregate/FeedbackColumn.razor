@@ -1,5 +1,6 @@
 ﻿<div class="feedback-col">
-    <KolBoardColumn TValue="Feedback" Width="Width" OnDropItem="DropFeedback" Items="Items">
+    <KolBoardColumn TValue="Feedback" Width="Width" 
+        OnDropItem="DropFeedback" Items="Items" KeySelector="f => f.Id">
         <HeaderTemplate>
             <div class="d-flex mb-2">
                 <div class="col col-sm-1">

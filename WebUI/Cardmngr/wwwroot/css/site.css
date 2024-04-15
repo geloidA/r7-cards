@@ -71,7 +71,7 @@ ul {
 }
 
 .hide-max-140 {
-    max-width: 140px;
+    max-width: 200px;
     display: -webkit-box;
     overflow: hidden;
     text-overflow: ellipsis;

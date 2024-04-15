@@ -12,7 +12,7 @@
                 <div @key="status" >
                     <KolBoardColumn Width="365" TValue="OnlyofficeTask" CanCollapse="true"
                         OnDropItem="@(async task => await OnChangeTaskStatus(task, status))"
-                        Items="GetTasksForStatus(status)">
+                        Items="GetTasksForStatus(status)" KeySelector="t => t.Id">
                         <HeaderTemplate Context="isCollapsed">
                             <TaskStatusHeader IsCollapsed="isCollapsed" TaskStatus="status" />
                             @if (State.TaskFilter.Filters.Any())
