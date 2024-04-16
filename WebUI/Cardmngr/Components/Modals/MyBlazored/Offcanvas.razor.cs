@@ -17,6 +17,7 @@ public partial class Offcanvas : OffcanvasBase
     [Parameter] public MyOffcanvasPlacement Placement { get; set; }
     [Parameter] public bool ShowCloseBtn { get; set; } = true;
     [Parameter] public int Width { get; set; } = 450;
+    [Parameter] public Func<Task<ModalResult>>? OnClose { get; set; }
 
     private ElementReference myOffcanvas;
 
@@ -39,6 +40,14 @@ public partial class Offcanvas : OffcanvasBase
 
     public async Task CloseAsync(ModalResult? result = null)
     {
+        if (OnClose is { })
+        {
+            if ((await OnClose()).Cancelled)
+            {
+                return;
+            }
+        }
+
         await ToggleDelayShowAsync();
         await CurrentModel.CloseAsync(result ?? ModalResult.Ok());
     }

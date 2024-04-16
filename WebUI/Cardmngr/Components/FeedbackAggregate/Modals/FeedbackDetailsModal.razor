@@ -5,7 +5,7 @@
 @if (buffer is { })
 {
     <Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
-        @ref="currentModal">
+        @ref="currentModal" OnClose="ShowCloseConfirm" >
         <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
             <FluentValidationValidator />
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">

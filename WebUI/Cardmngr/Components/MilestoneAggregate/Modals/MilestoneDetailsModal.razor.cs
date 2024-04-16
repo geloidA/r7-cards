@@ -9,10 +9,12 @@ using Cardmngr.Application.Clients.Milestone;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Extensions;
 using Microsoft.FluentUI.AspNetCore.Components;
+using Cardmngr.Shared.Utils.Comparer;
 
 namespace Cardmngr.Components.MilestoneAggregate.Modals;
 
-public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, MilestoneUpdateData>, IDisposable
+public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, MilestoneUpdateData>(new MilestoneMilestoneUpdateDataEqualityComparer()), 
+    IDisposable
 {
     string proxyUrl = null!;
     private readonly Guid lockGuid = Guid.NewGuid();
@@ -64,6 +66,7 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
             State.UpdateMilestone(updated);
         }
 
+        SkipConfirmation = true;
         await currentModal.CloseAsync();
     }
 
@@ -75,6 +78,8 @@ public partial class MilestoneDetailsModal : AddEditModalBase<Milestone, Milesto
         {
             await MilestoneClient.RemoveAsync(Model!.Id);
             State.RemoveMilestone(Model);
+            
+            SkipConfirmation = true;
             await currentModal.CloseAsync();
         }
     }

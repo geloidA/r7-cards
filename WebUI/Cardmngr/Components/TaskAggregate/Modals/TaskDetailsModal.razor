@@ -7,7 +7,7 @@
 @if (buffer is { })
 {
     <Offcanvas Width="520" Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
-        @ref="currentModal">
+        @ref="currentModal" OnClose="ShowCloseConfirm">
         <FluentEditForm Model="buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown" >
             <FluentValidationValidator />
             <OffcanvasHeader Class="py-0 d-flex" Style="padding-top: 20px !important;">
@@ -29,7 +29,7 @@
                     ReadOnly="!CanEdit" @bind-Value="buffer.Deadline" Label="Крайний срок:" />
                 <FluentValidationMessage For="() => buffer.Deadline" />
                 <FluentTextArea Name="Description" Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100" Rows="6"
-                    @bind-Value="buffer.Description" Spellcheck="true" Immediate ReadOnly="!CanEdit" />
+                    @bind-Value="buffer.Description" Spellcheck="true" ReadOnly="!CanEdit" />
                 <CascadingValue Value="State" IsFixed="true">
                     <TaskResponsibles Task="buffer" Disabled="!CanEdit" />
                     <TaskMilestone Disabled="!CanEdit" Task="buffer" />
@@ -62,10 +62,10 @@
 }
 
 @code {
-    bool shiftEnter;
+    bool enterPressed;
 
     void HandleKeyDown(KeyboardEventArgs e)
     {
-        shiftEnter = e.Key == "Enter" && e.ShiftKey;
+        enterPressed = e.Key == "Enter";
     }
 }

@@ -9,10 +9,12 @@ using Cardmngr.Shared.Extensions;
 using Cardmngr.Notification;
 using Cardmngr.Services;
 using Microsoft.FluentUI.AspNetCore.Components;
+using Cardmngr.Shared.Utils.Comparer;
 
 namespace Cardmngr.Components.TaskAggregate.Modals;
 
-public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpdateData>, IDisposable
+public partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskUpdateData>(new OnlyofficeTaskUpdateDataEqualityComparer()), 
+    IDisposable
 {
     private readonly Guid lockGuid = Guid.NewGuid();
     Components.Modals.MyBlazored.Offcanvas currentModal = null!;
@@ -61,6 +63,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
         {
             ToastService.ShowInfo("Задача была изменена кем-то другим");
 
+            SkipConfirmation = true;
             currentModal.CloseAsync().Forget();
         }
     }
@@ -71,15 +74,16 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
         {
             ToastService.ShowInfo("Задача была удалена кем-то другим");
 
+            SkipConfirmation = true;
             currentModal.CloseAsync().Forget();
         }
     }
 
     private async Task SubmitAsync()
     {
-        if (shiftEnter)
+        if (enterPressed)
         {
-            shiftEnter = false;
+            enterPressed = false;
             return;
         }
 
@@ -103,6 +107,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
             ProjectHubClient?.SendUpdatedTaskAsync(updated.ProjectOwner.Id, updated.Id).Forget();
         }
 
+        SkipConfirmation = true;
         await currentModal.CloseAsync();
     }
 
@@ -120,6 +125,7 @@ public partial class TaskDetailsModal : AddEditModalBase<OnlyofficeTask, TaskUpd
             
             ProjectHubClient?.SendDeletedTaskAsync(Model.ProjectOwner.Id, Model!.Id).Forget();
 
+            SkipConfirmation = true;
             await currentModal.CloseAsync();
         }
     }

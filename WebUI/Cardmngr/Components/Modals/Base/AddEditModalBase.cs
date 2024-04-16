@@ -2,13 +2,15 @@
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using Cardmngr.Components.Modals.ConfirmModals;
+using Cardmngr.Shared.Utils.Comparer;
 using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.Modals.Base;
 
-public abstract class AddEditModalBase<TModel, TUpdateData> : ComponentBase
+public abstract class AddEditModalBase<TModel, TUpdateData>(IEqualityComparer<TModel, TUpdateData> comparer) : ComponentBase
     where TUpdateData : new()
-{    
+{
+    private readonly IEqualityComparer<TModel, TUpdateData> comparer = comparer;
     protected TUpdateData buffer = new();
 
     [CascadingParameter(Name = "MiddleModal")] protected ModalOptions MiddleModal { get; set; } = null!;
@@ -28,6 +30,29 @@ public abstract class AddEditModalBase<TModel, TUpdateData> : ComponentBase
     }
 
     public virtual string SubmitText => IsAdd ? "Создать" : "Сохранить";
+
+    /// <summary>
+    /// Use to skip <see cref="ShowCloseConfirm"/> before closing
+    /// </summary>
+    protected bool SkipConfirmation { get; set; }
+
+    protected Task<ModalResult> ShowCloseConfirm()
+    {
+        if (SkipConfirmation)
+        {
+            return Task.FromResult(ModalResult.Ok());
+        }
+
+        if (!comparer.Equals(Model, buffer))
+        {
+            return Modal.Show<DefaultConfirmModal>(
+                "Состояние не сохранено", 
+                new ModalParameters { { "AdditionalText", "Вы уверены, что хотите закрыть без сохранения?" } }, 
+                MiddleModal).Result;
+        }
+
+        return Task.FromResult(ModalResult.Ok());
+    }
 
     protected Task<ModalResult> ShowDeleteConfirm(string title, string message = "Вы уверены? Действие необратимо.")
     {

@@ -1,11 +1,12 @@
 ﻿using Cardmngr.Components.Modals.Base;
 using Cardmngr.Domain.Feedback;
 using Cardmngr.Shared.Feedbacks;
+using Cardmngr.Shared.Utils.Comparer;
 using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.FeedbackAggregate.Modals;
 
-public partial class FeedbackDetailsModal : AddEditModalBase<Feedback, FeedbackUpdateData>
+public partial class FeedbackDetailsModal() : AddEditModalBase<Feedback, FeedbackUpdateData>(new FeedbackFeedbackUpdateDataEqualityComparer())
 {
     Components.Modals.MyBlazored.Offcanvas currentModal = null!;
 
@@ -34,6 +35,7 @@ public partial class FeedbackDetailsModal : AddEditModalBase<Feedback, FeedbackU
             await State.UpdateFeedbackAsync(Model!.Id, buffer);
         }
 
+        SkipConfirmation = true;
         await currentModal.CloseAsync();
     }
 
@@ -44,6 +46,8 @@ public partial class FeedbackDetailsModal : AddEditModalBase<Feedback, FeedbackU
         if (answer.Confirmed)
         {
             await State.RemoveFeedbackAsync(Model!.Id);
+
+            SkipConfirmation = true;
             await currentModal.CloseAsync();
         }
     }

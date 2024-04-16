@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Cardmngr.Domain\Cardmngr.Domain.csproj" />
+    <ProjectReference Include="..\..\Onlyoffice\Onlyoffice.Api\Onlyoffice.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
