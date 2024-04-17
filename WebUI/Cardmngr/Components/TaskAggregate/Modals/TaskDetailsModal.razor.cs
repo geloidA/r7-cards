@@ -21,7 +21,7 @@ public partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskU
     private bool CanEdit => Model == null || Model.CanEdit;
 
     [Inject] ITaskClient TaskClient { get; set; } = null!;
-    [Inject] TagColorGetter TagColorGetter { get; set; } = null!;
+    [Inject] ITagColorManager TagColorGetter { get; set; } = null!;
     [Inject] IToastService ToastService { get; set; } = null!;
     [Inject] NotificationHubConnection NotificationHubConnection { get; set; } = null!;
 
@@ -79,6 +79,8 @@ public partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskU
         }
     }
 
+    private bool submitting;
+
     private async Task SubmitAsync()
     {
         if (enterPressed)
@@ -87,6 +89,7 @@ public partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskU
             return;
         }
 
+        submitting = true;
         if (IsAdd)
         {
             var created = await TaskClient.CreateAsync(State.Model!.Project!.Id, buffer);

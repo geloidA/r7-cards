@@ -4,7 +4,7 @@
 @inherits AuthorizedPage
 
 @inject IProjectClient ProjectClient
-@inject ProjectSummaryService ProjectSummaryService
+@inject IProjectFollowChecker ProjectFollowChecker
 
 <PageTitle>Главная</PageTitle>
 
@@ -40,7 +40,7 @@
         {
             userProjects = await ProjectClient
                 .GetSelfProjectsAsync()
-                .OrderByDescending(x => ProjectSummaryService.FollowedProjectIds.Contains(x.Id))
+                .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.Id))
                 .ToListAsync();
         }
     }

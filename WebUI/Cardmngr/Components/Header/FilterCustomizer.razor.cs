@@ -15,7 +15,7 @@ public partial class FilterCustomizer : ComponentBase, IDisposable
 
     [Inject] AllProjectsPageSummaryService SummaryService { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
-    [Inject] ProjectSummaryService ProjectSummaryService { get; set; } = null!;
+    [Inject] IProjectFollowChecker ProjectFollowChecker { get; set; } = null!;
 
     protected override void OnInitialized()
     {        
@@ -60,7 +60,7 @@ public partial class FilterCustomizer : ComponentBase, IDisposable
         e.Items = SummaryService
             .GetProjects()
             .Where(x => x.Title.Contains(e.Text, StringComparison.CurrentCultureIgnoreCase))
-            .OrderByDescending(x => ProjectSummaryService.FollowedProjectIds.Contains(x.Id));
+            .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.Id));
     }
 
     private IEnumerable<UserInfo> SelectedResponsible = [];

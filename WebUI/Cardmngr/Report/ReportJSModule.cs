@@ -12,8 +12,5 @@ public class ReportJSModule(IJSRuntime jsRuntime) : IAsyncDisposable
         return module.InvokeVoidAsync("saveAs", Convert.ToBase64String(fileData), fileName);
     }
 
-    public ValueTask DisposeAsync()
-    {
-        return module.DisposeAsync();
-    }
+    public ValueTask DisposeAsync() => module.DisposeAsync();
 }

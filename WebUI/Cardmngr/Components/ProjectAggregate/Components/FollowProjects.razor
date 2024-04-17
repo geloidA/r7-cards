@@ -1,5 +1,5 @@
 ﻿@inject IProjectClient ProjectClient
-@inject ProjectSummaryService ProjectSummaryService
+@inject IFollowedProjectManager FollowedProjectManager
 
 <FluentCard class="border-0" style="background-color: var(--neutral-layer-1); box-shadow: none;">
     <div class="d-flex justify-content-start mb-2">
@@ -30,7 +30,7 @@
     protected async override Task OnInitializedAsync()
     {
         followProjects = await ProjectClient.GetFollowedProjectsAsync().ToListAsync();
-        ProjectSummaryService.FollowedProjectIds = new HashSet<int>(followProjects.Select(x => x.Id));
+        FollowedProjectManager.Refresh(followProjects.Select(x => x.Id));
     }
 
 }

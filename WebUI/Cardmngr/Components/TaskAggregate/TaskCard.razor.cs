@@ -17,7 +17,7 @@ public partial class TaskCard : ComponentBase
     private List<TaskTag> taskTags = [];
 
     [Inject] ITaskClient TaskClient { get; set; } = null!;
-    [Inject] TagColorGetter TagColorGetter { get; set; } = null!;
+    [Inject] ITagColorManager TagColorGetter { get; set; } = null!;
 
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] ProjectHubClient? ProjectHubClient { get; set; }

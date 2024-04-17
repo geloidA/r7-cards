@@ -7,7 +7,19 @@ public class OnlyofficeTaskUpdateDataEqualityComparer : IEqualityComparer<Onlyof
 {
     public bool Equals(OnlyofficeTask? x, TaskUpdateData? y)
     {
-        if (x == null || y == null) return false;
+        if (y == null) return false;
+
+        if (x == null)
+        {
+            return y.Title == "Новая задача" &&
+                   string.IsNullOrEmpty(y.Description) &&
+                   y.Deadline == null &&
+                   y.Priority == 0 &&
+                   y.MilestoneId == null &&
+                   y.StartDate == null &&
+                   y.Responsibles.Count == 0;
+        }
+
         return x.Title == y.Title &&
                x.Description == y.Description &&
                x.Deadline == y.Deadline &&

@@ -33,8 +33,5 @@ public class AllProjectsPageSummaryService
         .Select(x => x.CreatedBy)
         .Distinct() ?? [];
     
-    public void LeftPage()
-    {
-        tasks = null;
-    }
+    public void LeftPage() => tasks = null;
 }

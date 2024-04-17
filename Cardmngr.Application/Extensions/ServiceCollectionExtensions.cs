@@ -17,16 +17,10 @@ public static class ServiceCollectionExtensions
     {
         return services
             .AddScoped<IPeopleApi, PeopleApi>()
-            .AddFeedbackClient()
+            .AddScoped<IFeedbackClient, FeedbackClient>()
             .AddProjectClient();
     }
-
-    private static IServiceCollection AddFeedbackClient(this IServiceCollection services)
-    {
-        return services
-            .AddScoped<IFeedbackClient, FeedbackClient>();
-    }
-
+    
     private static IServiceCollection AddProjectClient(this IServiceCollection services)
     {
         return services

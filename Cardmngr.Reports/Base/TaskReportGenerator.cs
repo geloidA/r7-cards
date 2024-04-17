@@ -1,13 +1,10 @@
 ﻿using System.Reflection;
 using Cardmngr.Domain;
 using Cardmngr.Domain.Entities;
-using Cardmngr.Domain.Enums;
 using Cardmngr.Reports.Base;
 using Cardmngr.Reports.Extensions;
 using ClosedXML.Excel;
 using ClosedXML.Graphics;
-
-using GroupedTask = System.Collections.Generic.IEnumerable<System.Linq.IGrouping<Cardmngr.Domain.ProjectInfo, System.Linq.IGrouping<Cardmngr.Domain.MilestoneInfo, Cardmngr.Domain.Entities.OnlyofficeTask>>>;
 
 namespace Cardmngr.Reports;
 
@@ -26,7 +23,7 @@ public class TaskReportGenerator : IReportGenerator
         LoadOptions.DefaultGraphicEngine = DefaultGraphicEngine.CreateOnlyWithFonts(fallbackFontStream);
     }
 
-    public IEnumerable<OnlyofficeTask>? Tasks { get; set; }
+    public IEnumerable<OnlyofficeTask> Tasks { get; set; } = [];
     public IEnumerable<OnlyofficeTaskStatus>? Statuses { get; set; }
 
     public byte[] GenerateReport()
@@ -45,18 +42,21 @@ public class TaskReportGenerator : IReportGenerator
         GenerageHeader(ws);
         var row = 1;
         
-        foreach (var groupedTask in GroupByProject(Tasks))
+        foreach (var groupedByProject in TaskReportData.Create(Tasks, x => new OnlyofficeTaskReportData(x, Statuses)).GroupedTasks)
         {
-            ws.Cell(row, 1).Style.Font.Bold = true;
-            ws.Cell(row, 1).Value = groupedTask.Key.Title;
+            ws.Row(row).Style.Fill.SetBackgroundColor(XLColor.FromHtml("#1294b7"));
+            ws.Cell(row, 1).Style.Font.SetBold();
+            
+            ws.Cell(row, 1).Value = groupedByProject.Key.Title;
 
             row++;
-            foreach (var milestone in groupedTask.OrderBy(x => x.Key != null))
+            foreach (var milestone in groupedByProject.OrderBy(x => x.Key != null))
             {
                 GenerageMilestonePart(ws, milestone, ref row);
-                row++;
+                ws.Row(++row).Height = 15;
             }
-            row--;
+
+            ws.Row(row).Delete();
         }
 
         ws.Columns().AdjustToContents();
@@ -78,22 +78,23 @@ public class TaskReportGenerator : IReportGenerator
         ws.Cell("D1").Value = DateTime.Now.ToShortDateString();
     }
 
-    private void GenerageMilestonePart(IXLWorksheet ws, IGrouping<MilestoneInfo, OnlyofficeTask> groupedTasks, ref int row)
+    private static void GenerageMilestonePart(IXLWorksheet ws, IGrouping<MilestoneInfo, IOnlyofficeTaskReportData> groupedByMilestone, ref int row)
     {
-        if (groupedTasks.Key?.Title is { })
+        if (groupedByMilestone.Key?.Title is { })
         {
             ws.Row(row).Style
+                .Fill.SetBackgroundColor(XLColor.FromHtml("#23b4b4"))
                 .Alignment.SetIndent(1)
                 .Font.SetBold();
 
-            ws.Cell(row, 1).Value = groupedTasks.Key.Title;
+            ws.Cell(row, 1).Value = groupedByMilestone.Key.Title;
             row++;
         }
 
         GenerateTasksHeader(ws, row);
         row++;
 
-        foreach (var task in groupedTasks.OrderBy(x => x.Deadline))
+        foreach (var task in groupedByMilestone.OrderBy(x => x.Deadline))
         {
             GenerateTaskPart(ws, task, row);
             row++;
@@ -102,9 +103,9 @@ public class TaskReportGenerator : IReportGenerator
 
     private static void GenerateTasksHeader(IXLWorksheet ws, int row)
     {
-        ws.Row(row).Height = 30;
+        ws.Row(row).Height = 25;
 
-        ws.Row(row).Style            
+        ws.Row(row).Style
             .Border.SetBottomBorder(XLBorderStyleValues.Thin)
             .Border.SetBottomBorderColor(XLColor.Gray)
             .Font.SetFontColor(XLColor.Gray);
@@ -116,7 +117,7 @@ public class TaskReportGenerator : IReportGenerator
         ws.Cell(row, 4).Value = "Статус";
     }
 
-    private void GenerateTaskPart(IXLWorksheet ws, OnlyofficeTask task, int row)
+    private static void GenerateTaskPart(IXLWorksheet ws, IOnlyofficeTaskReportData task, int row)
     {
         ws.Row(row).Style
             .Border.SetBottomBorder(XLBorderStyleValues.Thin)
@@ -124,42 +125,9 @@ public class TaskReportGenerator : IReportGenerator
 
         ws.Cell(row, 1).Style.Alignment.Indent = 3;
         ws.Cell(row, 1).Value = task.Title;
-        ws.Cell(row, 2).Value = string.Join(", ", task.Responsibles.Select(x => x.DisplayName));
+        ws.Cell(row, 2).Value = task.Responsibles;
         ws.Cell(row, 2).Style.Alignment.WrapText = true;
-        ws.Cell(row, 3).Value = task.Deadline?.ToShortDateString() ?? "0";
-        ws.Cell(row, 4).Value = GetStatusTitle(task);
-    }
-
-    private string GetStatusTitle(OnlyofficeTask task)
-    {
-        return task.TaskStatusId is null
-            ? task.Status == Status.Open ? "Открыта" : "Закрыта"
-            : Statuses?.Single(x => x.Id == task.TaskStatusId).Title ?? "Неизвестен";
-    }
-
-    private static GroupedTask GroupByProject(IEnumerable<OnlyofficeTask>? tasks)
-    {
-        return tasks?
-            .GroupBy(x => x.ProjectOwner)
-            .Select(projTasks => new ProjGrouping(projTasks.Key, projTasks))
-            ?? [];
-    }
-
-    private class ProjGrouping(ProjectInfo key, IEnumerable<OnlyofficeTask> tasks) 
-        : IGrouping<ProjectInfo, IGrouping<MilestoneInfo, OnlyofficeTask>>
-    {
-        public ProjectInfo Key => key;
-
-        public IEnumerator<IGrouping<MilestoneInfo, OnlyofficeTask>> GetEnumerator()
-        {
-            return tasks
-                .GroupBy(x => x.Milestone)
-                .GetEnumerator();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        ws.Cell(row, 3).Value = task.Deadline;
+        ws.Cell(row, 4).Value = task.StatusString;
     }
 }

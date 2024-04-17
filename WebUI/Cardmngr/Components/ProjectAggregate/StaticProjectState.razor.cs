@@ -21,7 +21,7 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
 
     [Parameter] public StaticProjectVm? ViewModel { get; set; }
     [Inject] IProjectClient ProjectClient { get; set; } = null!;
-    [Inject] ProjectSummaryService ProjectSummaryService { get; set; } = null!;
+    [Inject] AppProjectsInfoService ProjectSummaryService { get; set; } = null!;
     [Inject] AllProjectsPageSummaryService SummaryService { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
@@ -33,7 +33,7 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
             Initialized = true;
         }
 
-        isFollow = ProjectSummaryService.FollowedProjectIds.Contains(ViewModel?.ProjectInfo.Id ?? -1);
+        isFollow = ProjectSummaryService.IsFollow(ViewModel?.ProjectInfo.Id ?? -1);
 
         SummaryService.OnProjectsChanged += ToggleIfSelected;
     }
@@ -76,11 +76,11 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
             
             if (isFollow = !isFollow)
             {
-                ProjectSummaryService.FollowedProjectIds.Add(ViewModel.ProjectInfo.Id);
+                ProjectSummaryService.Follow(ViewModel.ProjectInfo.Id);
             }
             else
             {
-                ProjectSummaryService.FollowedProjectIds.Remove(ViewModel.ProjectInfo.Id);
+                ProjectSummaryService.Unfollow(ViewModel.ProjectInfo.Id);
             }
         }
     }

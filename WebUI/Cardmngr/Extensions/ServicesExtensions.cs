@@ -50,6 +50,14 @@ public static class ServicesExtensions
             .AddScoped<NotificationJSModule>();
     }
 
+    public static IServiceCollection AddProjectsInfo(this IServiceCollection services)
+    {
+        return services
+            .AddSingleton<AppProjectsInfoService>()
+            .AddSingleton<IProjectFollowChecker>(x => x.GetRequiredService<AppProjectsInfoService>())
+            .AddSingleton<IFollowedProjectManager>(x => x.GetRequiredService<AppProjectsInfoService>());
+    }
+
     public static IServiceCollection AddReports(this IServiceCollection services)
     {
         return services

@@ -20,10 +20,10 @@ public sealed class NotificationService(NotificationJSModule notification) : IAs
 
     public ValueTask CreateAsync(string title, NotificationOptions? options = null)
     {
-        return notification.CreateAsync(title, options); 
+        return notification.CreateAsync(title, options);
     }
 
     public ValueTask<bool> IsSupportedByBrowserAsync() => notification.IsSupportedByBrowserAsync();
 
-    public async ValueTask DisposeAsync() => await notification.DisposeAsync();
+    public ValueTask DisposeAsync() => notification.DisposeAsync();
 }

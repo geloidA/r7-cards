@@ -17,7 +17,7 @@ public partial class TaskTagLabels : ComponentBase
     [Parameter] public OnlyofficeTask OnlyofficeTask { get; set; } = null!;
     [Parameter] public bool IsAdd { get; set; }
 
-    [Inject] TagColorGetter TagColorGetter { get; set; } = null!;
+    [Inject] ITagColorManager TagColorGetter { get; set; } = null!;
     [Inject] ITaskClient TaskClient { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
 

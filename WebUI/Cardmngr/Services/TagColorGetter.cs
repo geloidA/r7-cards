@@ -5,7 +5,7 @@ using Cardmngr.Utils;
 
 namespace Cardmngr.Services;
 
-public class TagColorGetter : IDisposable
+public class TagColorGetter : ITagColorManager, IDisposable
 {
     private readonly IEqualityComparer<TaskTag> nameComparer = new TaskTagNameEqualityComparer();
     private readonly ConcurrentDictionary<string, (Color Color, ConcurrentHashSet<TaskTag> Tags)> colorByTagName = [];

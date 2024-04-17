@@ -18,13 +18,10 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
 
         var response = await client.PostAsJsonAsync($"api/feedback", data);
 
-        if (response.IsSuccessStatusCode)
-        {
-            return await response.Content.ReadFromJsonAsync<Feedback>() 
-                ?? throw new NullReferenceException("Something went wrong while creating feedback");
-        }
+        response.EnsureSuccessStatusCode();
 
-        throw new Exception(response.ReasonPhrase);
+        return await response.Content.ReadFromJsonAsync<Feedback>() 
+                ?? throw new NullReferenceException("Something went wrong while creating feedback");
     }
 
     public async Task<Feedback?> DeleteFeedbackAsync(int feedbackId)
@@ -47,15 +44,12 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
 
         var response = await client.GetAsync($"api/feedback/all/{userGuid}");
 
-        if (response.IsSuccessStatusCode)
-        {
-            var feedbacks = await response.Content.ReadFromJsonAsAsyncEnumerable<Feedback>().ToListAsync();
-            return feedbacks == null
-                ? throw new NullReferenceException("Something went wrong while getting feedbacks")
-                : new FeedbacksVm { Feedbacks = feedbacks! };
-        }
+        response.EnsureSuccessStatusCode();
 
-        throw new Exception(response.ReasonPhrase);
+        var feedbacks = await response.Content.ReadFromJsonAsAsyncEnumerable<Feedback>().ToListAsync();
+        return feedbacks == null
+            ? throw new NullReferenceException("Something went wrong while getting feedbacks")
+            : new FeedbacksVm { Feedbacks = feedbacks! };
     }
 
     public async Task<Feedback?> ToggleFeedbackDislikeAsync(int feedbackId)
@@ -109,12 +103,9 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
 
         var response = await client.PutAsJsonAsync($"api/feedback/status/{userGuid}/{feedbackId}", status);
 
-        if (response.IsSuccessStatusCode)
-        {
-            return await response.Content.ReadFromJsonAsync<Feedback>()
-                ?? throw new NullReferenceException("Can't deserialize Update feedback response");
-        }
+        response.EnsureSuccessStatusCode();
 
-        throw new Exception(response.ReasonPhrase);
+        return await response.Content.ReadFromJsonAsync<Feedback>()
+            ?? throw new NullReferenceException("Can't deserialize Update feedback response");
     }
 }

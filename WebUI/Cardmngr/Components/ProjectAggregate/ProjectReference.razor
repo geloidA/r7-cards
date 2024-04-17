@@ -1,8 +1,8 @@
-﻿@inject ProjectSummaryService ProjectSummaryService
+﻿@inject IProjectFollowChecker ProjectFollowChecker
 
 <a class="fw-light small py-1" title="@Project.Title" href=@($"/project/{Project.Id}")>
     <div class="ref-container">
-        @if (ProjectSummaryService.FollowedProjectIds.Contains(Project.Id))
+        @if (ProjectFollowChecker.IsFollow(Project.Id))
         {
             <FluentIcon Value="new Icons.Filled.Size12.Star()" style="margin-bottom: 2px;" />
             <FluentSpacer Width="1" />
