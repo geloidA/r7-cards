@@ -26,7 +26,9 @@ public class TaskReportData
                         projTasks.Key, 
                         projTasks
                             .GroupBy(x => x.Milestone)
-                            .Select(x => new Grouping<MilestoneInfo, IOnlyofficeTaskReportData>(x.Key, x.Select(mapper)))));
+                            .Select(x => new Grouping<MilestoneInfo, IOnlyofficeTaskReportData>(x.Key, 
+                                x.Select(mapper)
+                                .OrderBy(x => x.Deadline)))));
         }
     }
 }

@@ -1,14 +1,15 @@
-﻿using Blazored.Modal;
-using Cardmngr.Notification;
-using Cardmngr.Report;
-using Cardmngr.Reports;
-using Cardmngr.Services;
-using Cardmngr.Shared.Feedbacks;
-using Cardmngr.Validators;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Onlyoffice.Api.Handlers;
 using Onlyoffice.Api.Validations;
+using Cardmngr.Shared.Feedbacks;
+using Cardmngr.Notification;
+using Onlyoffice.Api.Handlers;
+using Cardmngr.Validators;
+using Cardmngr.Services;
+using Cardmngr.Reports;
+using Cardmngr.Report;
+using Blazored.Modal;
+using Cardmngr.Utils;
 
 namespace Cardmngr;
 
@@ -30,7 +31,8 @@ public static class ServicesExtensions
                         DisableBackgroundCancel = true,
                         UseCustomLayout = true
                     },
-                    true));
+                    true))
+            .AddCascadingValue(sp => new CascadingValueSource<HeaderProjectInfo>(new HeaderProjectInfo(), true));
     }
 
     public static IServiceCollection AddValidators(this IServiceCollection services)

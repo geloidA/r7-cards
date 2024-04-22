@@ -6,34 +6,31 @@
         <FluentAutocomplete Placeholder="Проект"
             TOption="Domain.ProjectInfo"
             SelectedOptionsChanged="SelectionProjectChanged"
-            MaximumSelectedOptions="1"
+            MaximumSelectedOptions="1" MaximumOptionsSearch="100"
             Style="width: 190px;" AutoComplete="off"
             IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())"
             SelectedOptions="SelectedProject"
             OptionText="@(p => p.Title)"
-            OnOptionsSearch="OnProjectSearch">
+            OnOptionsSearch="OnProjectSearch" />
 
-        </FluentAutocomplete>      
         <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.Person())"
             TOption="UserInfo" Placeholder="Ответственный"
             Style="width: 190px;" AutoComplete="off"
             SelectedOptionsChanged="SelectionResponsibleChanged"
-            MaximumSelectedOptions="1"
+            MaximumSelectedOptions="1" MaximumOptionsSearch="100"
             OptionText="@(u => u.DisplayName)"
             SelectedOptions="SelectedResponsible"
-            OnOptionsSearch="OnResponsibleSearch">
+            OnOptionsSearch="OnResponsibleSearch" />
 
-        </FluentAutocomplete>
         <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())"
             TOption="UserInfo" Placeholder="Автор"
             SelectedOptionsChanged="SelectionCreatedByChanged"
-            MaximumSelectedOptions="1"
+            MaximumSelectedOptions="1" MaximumOptionsSearch="100"
             Style="width: 190px;" AutoComplete="off"
             OptionText="@(u => u.DisplayName)"
             SelectedOptions="SelectedCreatedBy"
-            OnOptionsSearch="OnCreatedBySearch">
-
-        </FluentAutocomplete>
+            OnOptionsSearch="OnCreatedBySearch" />
+            
         <div class="user-select-none">
             <FluentBadge class="clickable" BackgroundColor="@(onlyDeadlined ? "black" : "white")">
                 <div class="d-flex align-items-center" @onclick="@ToggleDeadlineFilter">

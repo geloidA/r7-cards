@@ -80,15 +80,27 @@ public sealed class FilterTasksBuilder : FilterBuilder
         return this;
     }
 
-    public FilterTasksBuilder DeadlineStart(DateTime startDate)
+    /// <summary>
+    /// Ignore if null
+    /// </summary>
+    /// <param name="startDate"></param>
+    /// <returns></returns>
+    public FilterTasksBuilder DeadlineStart(DateTime? startDate)
     {
-        _filters["deadlineStart"] = startDate.ToString("yyyy-MM-dd");
+        if (startDate is null) return this;
+        _filters["deadlineStart"] = startDate.Value.ToString("yyyy-MM-dd");
         return this;
     }
 
-    public FilterTasksBuilder DeadlineStop(DateTime endDate)
+    /// <summary>
+    /// Ignore if null
+    /// </summary>
+    /// <param name="endDate"></param>
+    /// <returns></returns>
+    public FilterTasksBuilder DeadlineStop(DateTime? endDate)
     {
-        _filters["deadlineStop"] = endDate.ToString("yyyy-MM-dd");
+        if (endDate is null) return this;
+        _filters["deadlineStop"] = endDate.Value.ToString("yyyy-MM-dd");
         return this;
     }
 

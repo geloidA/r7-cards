@@ -7,6 +7,7 @@
 <div class="flex-row">
     <FluentTextField Label="Название" id="subtask-name-input" @bind-Value="subtask.Title" Style="width: 300px;" />
     <FluentAutocomplete TOption="UserInfo" MaximumSelectedOptions="1" Width="300px"
+                    MaximumOptionsSearch="100"
                     @bind-SelectedOptions="Responsible" Context="user" AutoComplete="off"
                     OnOptionsSearch="OnSearchResponsible" Placeholder="Не установлен">
 

@@ -4,11 +4,18 @@
 @inherits KolComponentBase
 @implements IDisposable
 
-@if (showTitle)
+@if (ProjectInfo.Title is { })
 {
-    <FluentButton Id="btn-pj-nav" @onclick="() => openPopover = !openPopover" Appearance="Appearance.Outline" >
-        @selectedProjectTitle
-    </FluentButton>
+    <div class="d-flex">
+        <FluentButton Id="btn-pj-nav" @onclick="() => openPopover = !openPopover" Appearance="Appearance.Outline" >
+            @ProjectInfo.Title
+        </FluentButton>
+        @if (ProjectInfo.OpenInfoFunc is { })
+        {
+            <FluentIcon Value="@(new Icons.Filled.Size20.Info())" 
+                OnClick="ProjectInfo.OpenInfoFunc" class="ms-2" Title="О проекте" />
+        }
+    </div>
 
     <FluentPopover Style="width: 500px; height: 150px; border-radius: 5px;" 
         AnchorId="btn-pj-nav" @bind-Open="openPopover" class="overflow-auto" >
@@ -33,8 +40,8 @@
 @code {
     bool openPopover;
     Dictionary<int, Project> projectsByIds = [];
-    bool showTitle;
-    string? selectedProjectTitle;
+
+    [CascadingParameter] HeaderProjectInfo ProjectInfo { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,34 +50,27 @@
             .ToListAsync())
             .ToDictionary(x => x.Id, x => x);
 
+        ProjectInfo.TitleChanged += StateHasChanged;
+
         UpdateStateByLocation(null, new LocationChangedEventArgs(NavigationManager.Uri, true));
         NavigationManager.LocationChanged += UpdateStateByLocation;
     }
 
     private void UpdateStateByLocation(object? sender, LocationChangedEventArgs args)
     {
-        showTitle = IsProjectUri(args.Location);
-        if (showTitle)
+        if (!IsProjectUri(args.Location))
         {
-            var projectInfo = projectsByIds[GetIdByUrl(args.Location)];
-            selectedProjectTitle = projectInfo.Title;
+            ProjectInfo.Clean();
         }
+
         StateHasChanged();
     }
 
-    private static bool IsProjectUri(string uri)
-    {
-        return uri.Contains("/project/");
-    }
-
-    private static int GetIdByUrl(string uri)
-    {
-        var lastSlashIndex = uri.LastIndexOf('/');
-        return int.Parse(uri.Substring(lastSlashIndex + 1));
-    }
+    private static bool IsProjectUri(string uri) => uri.Contains("/project/");
 
     public void Dispose()
     {
         NavigationManager.LocationChanged -= UpdateStateByLocation;
+        ProjectInfo.TitleChanged -= StateHasChanged;
     }
 }

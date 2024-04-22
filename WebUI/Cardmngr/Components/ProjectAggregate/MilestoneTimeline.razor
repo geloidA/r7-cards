@@ -5,35 +5,27 @@
 @inherits KolComponentBase
 @implements IAsyncDisposable
 
-<div class="d-flex @Class">
-    <div @ref="element" class="overflow-scroll scrollbar-none milestone-timeline" >
-        <div @onwheel="ScaleTimeline" class="timeline-animation scrollbar-none" style=@($"width: {Width}px; {@Style}") >
-            <KolTimeline ShowTodayLine="true" Class="scrollbar-none py-0" >
-                @if (State.Initialized)
-                {
-                    <CascadingValue Value="milestoneTaskFilter" IsFixed="true">
-                        @foreach (var milestone in State.Model!.Milestones)
-                        {
-                            <KolTimelineItem @key="milestone.Id" End="milestone.Deadline" Start="State.GetMilestoneStart(milestone)">
-                                <TimelineMilestone Milestone="milestone" />
-                            </KolTimelineItem>
-                        }
-                    </CascadingValue>
-                }
-            </KolTimeline>
-        </div>
+<div class="d-flex @Class" >
+    <div @ref="scrollElement" class="overflow-scroll scrollbar-none" >
+        <KolTimeline MinWidth="1860" UncollapsedHeight="@(State.Model!.Milestones.Count * 36)" 
+            ShowTodayLine="true" Class="scrollbar-none py-0" >
+            @if (State.Initialized)
+            {
+                <CascadingValue Value="milestoneTaskFilter" IsFixed="true">
+                    @foreach (var milestone in State.Model!.Milestones.OrderBy(x => x.Deadline))
+                    {
+                        <KolTimelineItem @key="milestone.Id" End="milestone.Deadline" Start="State.GetMilestoneStart(milestone)">
+                            <TimelineMilestone Milestone="milestone" />
+                        </KolTimelineItem>
+                    }
+                </CascadingValue>
+            }
+        </KolTimeline>
     </div>
-    <KolScaleSwitcher Class="ms-5" MinValue="MinScale" MaxValue="MaxScale" Step="Step" 
-        @bind-CurrentValue="Width" />
 </div>
 
 @code {
-    private ElementReference element;
-    public const int MinScale = 1800;
-    public const int MaxScale = 10000;
-    public const int Step = 300;
-
-    public int Width { get; set; } = 1800;
+    private ElementReference scrollElement;
     
     [CascadingParameter] IProjectState State { get; set; } = null!;
 
@@ -66,21 +58,7 @@
     {
         if (firstRender)
         {
-            await TimelineInterop.RegisterScrollHandler(element);
-        }
-    }
-
-    private void ScaleTimeline(WheelEventArgs args)
-    {
-        if (Width >= MinScale && Width <= MaxScale)
-            Width -= (int)(args.DeltaY * 1.5);
-        else if (args.DeltaY > 0)
-        {
-            Width = Width >= MaxScale ? Width - Step : Width;
-        }
-        else
-        {
-            Width = Width <= MinScale ? Width + Step : Width;
+            await TimelineInterop.RegisterScrollHandler(scrollElement);
         }
     }
     

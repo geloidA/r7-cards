@@ -1,11 +1,5 @@
 .selected {
-    background-color: var(--accent-fill-active);
-}
-
-.timeline-milestone {
-    cursor: pointer;
-    justify-content: center;
-    display: flex;
+    filter: brightness(0.5);
 }
 
 .timeline-badge {

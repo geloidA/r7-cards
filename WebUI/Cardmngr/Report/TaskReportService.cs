@@ -5,7 +5,9 @@ namespace Cardmngr.Report;
 
 public class TaskReportService(TaskReportGenerator taskGenerator, ReportJSModule jsModule) : ReportService(taskGenerator, jsModule)
 {
-    public async Task GenerateReport(string fileName, IEnumerable<OnlyofficeTask> tasks, IEnumerable<OnlyofficeTaskStatus> statuses)
+    public async Task GenerateReport(string fileName, 
+        IEnumerable<OnlyofficeTask> tasks, 
+        IEnumerable<OnlyofficeTaskStatus> statuses)
     {
         if (generator is TaskReportGenerator taskGenerator)
         {

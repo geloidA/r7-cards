@@ -5,23 +5,23 @@
 
 @inject AuthenticationStateProvider AuthenticationState
 
-<div @onmouseenter="@(() => isHover = true)" @onmouseleave="@(() => isHover = false)" >
-    <div class="w-100 overflow-hidden timeline-badge" BackgroundColor="@BadgeColor" 
+<div @onmouseenter="@(() => isHover = true)" @onmouseleave="@(() => isHover = false)"
+    @onclick:preventDefault @onclick:stopPropagation @ondblclick:stopPropagation >
+    <div class="w-100 d-flex overflow-hidden clickable timeline-badge @CssSelected" BackgroundColor="@BadgeColor" 
         @onclick="() => ToggleMilestone(Milestone)" Fill="val">
-        <div class="position-absolute hided-opt @CssShowOptions" 
-            style="margin-left: 5px; width: 16px;">
-            <FluentIcon Title="Фильтр по вехе" class="clickable"
+        <div class="position-relative hided-opt ms-1 @CssShowOptions" >
+            <FluentIcon Title="Фильтр по вехе"
                 Value="@(new Icons.Filled.Size16.Eye())" Color="Color.Fill" />
         </div>
-        <div title="@Milestone.Title" class="@CssSelected timeline-milestone" style="color: var(--fill-color);">
+        <FluentSpacer />
+        <div title="@Milestone.Title" style="color: var(--fill-color);">
             @Milestone.Title
         </div>
+        <FluentSpacer />
     </div>
     <div class="d-flex justify-content-center hided-opt @CssShowOptions" >
-        <div @onclick:preventDefault @onclick:stopPropagation>
-            <FluentIcon class="clickable" @onclick="@ShowDetailsModal" 
-                Value="@(new Icons.Filled.Size16.Info())" />
-        </div>
+        <FluentIcon @onclick="@ShowDetailsModal" 
+            Value="@(new Icons.Filled.Size16.Info())" />
     </div>
 </div>
 

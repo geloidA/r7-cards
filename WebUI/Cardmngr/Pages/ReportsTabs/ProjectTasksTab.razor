@@ -1,0 +1,169 @@
+﻿@using Cardmngr.Application.Clients.People
+@using Cardmngr.Report
+@using Onlyoffice.Api
+@using Onlyoffice.Api.Common
+
+@inject IProjectClient ProjectClient
+@inject IPeopleClient PeopleClient
+@inject IServiceProvider ServiceProvider
+@inject IToastService ToastService
+
+<div class="d-flex h-100">
+    <div class="col col-9">
+        <h4>Задачи проектов</h4>
+        <p>Отчет <i>'Задачи проекта'</i> отобразит список задач, сгруппированных по проекту и вехе, с которыми они связаны.</p>
+        <p>Пример отчета:</p>
+        <img src="images/project-tasks-report-example.png" width="800" 
+            style="border-radius: 10px; opacity: 0.8; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);" />
+    </div>
+    <div class="col">
+        <FluentCard AreaRestricted="false"
+            style="background-color: var(--neutral-layer-3); box-shadow: none; border: none;">
+            <FluentEditForm Model="reportRequest" >
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-column gap-3">
+                        <FluentAutocomplete Placeholder="Все"
+                            OptionText="@(p => p.Title)" Label="Проект:"
+                            OnOptionsSearch="OnProjectSearch"
+                            Style="width: 380px;" AutoComplete="off"
+                            TOption="Project" MaximumOptionsSearch="100"
+                            @bind-SelectedOptions="reportRequest.Projects"
+                            IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())" >
+
+                            <OptionTemplate Context="project">
+                                <span title="@project.Title" class="ellipsis-truncate">@project.Title</span>
+                            </OptionTemplate>
+
+                        </FluentAutocomplete>
+
+                        <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())"
+                            TOption="UserInfo" Placeholder="Все"
+                            Style="width: 380px;" AutoComplete="off"
+                            @bind-SelectedOptions="reportRequest.Creators"
+                            MaximumOptionsSearch="100" Label="Автор:"
+                            OptionText="@(u => u.DisplayName)"
+                            OnOptionsSearch="OnUserSearch" />
+
+                        <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.Person())"
+                            TOption="UserInfo" Placeholder="Все"
+                            Style="width: 380px;" AutoComplete="off"
+                            @bind-SelectedOptions="reportRequest.Responsibles"
+                            MaximumOptionsSearch="100" Label="Ответственный:"
+                            OptionText="@(u => u.DisplayName)"
+                            OnOptionsSearch="OnUserSearch" />
+                    </div>
+                    <div class="col d-flex flex-column mt-3 gap-3">
+                        <IntervalPicker Label="Интервал по началу:"
+                            @bind-Start="reportRequest.StartDateRange.Start" 
+                            @bind-End="reportRequest.StartDateRange.End" />
+
+                        <IntervalPicker Disabled="reportRequest.OnlyDeadline" Label="Интервал по крайнему сроку:"
+                            @bind-Start="reportRequest.DeadlineRange.Start" 
+                            @bind-End="reportRequest.DeadlineRange.End" />
+                        
+                        <FluentCheckbox Label="Только просроченные"
+                            @bind-Value="reportRequest.OnlyDeadline" />
+                    </div>
+                </div>
+            </FluentEditForm>
+            <div class="d-flex mt-4">
+                <FluentSpacer />
+                <FluentButton IconStart="@(new Icons.Filled.Size16.ArrowDownload())" 
+                    Loading="busy" Appearance="Appearance.Stealth" @onclick="GenerateReport" >
+                    Сгенерировать отчет
+                </FluentButton>
+            </div>
+        </FluentCard>
+    </div>
+</div>
+
+@code {
+    readonly ProjectTaskReportRequest reportRequest = new();
+    List<Project> projectsData = [];
+    List<UserInfo> usersData = [];
+    
+
+    protected async override Task OnInitializedAsync()
+    {
+        projectsData = await ProjectClient.GetProjectsAsync().ToListAsync();
+        usersData = await PeopleClient.GetUsersAsync()
+            .Cast<UserInfo>()
+            .ToListAsync();
+    }
+
+    private void OnProjectSearch(OptionsSearchEventArgs<Project> e)
+    {
+        e.Items = projectsData.Where(x => x.Title.Contains(e.Text, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private void OnUserSearch(OptionsSearchEventArgs<UserInfo> e)
+    {
+        e.Items = usersData.Where(x => x.DisplayName.Contains(e. Text, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    bool busy;
+
+    async Task GenerateReport()
+    {
+        busy = true;
+
+        var scope = ServiceProvider.CreateScope(); // for escape downloading saveFile.js when sidebar is opening
+        var taskReportService = scope.ServiceProvider.GetRequiredService<TaskReportService>();
+
+        var tasks = await GetFilteredTasksAsync().ToListAsync();
+
+        if (tasks.Count == 0)
+        {
+            ToastService.ShowError("Данные не найдены");
+            busy = false;
+            return;
+        }
+
+        var statuses = await ProjectClient.GetTaskStatusesAsync().ToListAsync();
+        await taskReportService.GenerateReport($"Задачи_проектов {DateTime.Now.AddHours(5):dd.MM.yyyy HH_mm}", tasks, statuses);
+        await taskReportService.DisposeAsync();
+
+        busy = false;
+    }
+
+    async IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync()
+    {
+        await foreach (var task in FilterTasksByUserRequest(ProjectClient.GetFilteredTasksAsync(CreateFilter())))
+            yield return task;
+    }
+
+    IAsyncEnumerable<OnlyofficeTask> FilterTasksByUserRequest(IAsyncEnumerable<OnlyofficeTask> tasks)
+    {
+        return tasks
+            .Where(x => !reportRequest.Responsibles.Any() || reportRequest.Responsibles.Any(r => x.Responsibles.Any(tR => tR.Id == r.Id)))
+            .Where(x => !reportRequest.Projects.Any() || reportRequest.Projects.Any(p => p.Id == x.ProjectOwner.Id))
+            .Where(x => !reportRequest.Creators.Any() || reportRequest.Creators.Any(c => c.Id == x.CreatedBy.Id))
+            .Where(InStartRange);
+    }
+
+    FilterBuilder CreateFilter()
+    {
+        var filter = FilterTasksBuilder.Instance.MyProjects(true);
+
+        if (reportRequest.OnlyDeadline)
+        {
+            filter = filter.Status(Onlyoffice.Api.Common.Status.Open).DeadlineStop(DateTime.Now);
+        }
+        else
+        {
+            filter = filter
+                .DeadlineStart(reportRequest.DeadlineRange.Start)
+                .DeadlineStop(reportRequest.DeadlineRange.End);
+        }
+
+        return filter;
+    }
+
+    bool InStartRange(OnlyofficeTask task)
+    {
+        return !reportRequest.StartDateRange.Start.HasValue || 
+            reportRequest.StartDateRange.Start >= task.StartDate &&
+            !reportRequest.StartDateRange.End.HasValue ||
+            reportRequest.StartDateRange.End <= task.StartDate;
+    }
+}

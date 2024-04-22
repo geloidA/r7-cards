@@ -1,0 +1,21 @@
+﻿@inject IJSRuntime JS
+
+
+<FluentBadge Circular Fill="val" BackgroundColor="var(--neutral-layer-3)">
+    <FluentIcon Value="@(new Icons.Regular.Size20.ArrowCircleLeft())"
+    OnClick="GoBack" Title="Вернуться назад" />
+    <FluentIcon class="ms-1" Value="@(new Icons.Regular.Size20.ArrowCircleRight())"
+        OnClick="GoForward" Title="Перейти вперед" />
+</FluentBadge>
+
+@code {
+    async Task GoBack()
+    {
+        await JS.InvokeVoidAsync("history.back");
+    }
+
+    async Task GoForward()
+    {
+        await JS.InvokeVoidAsync("history.forward");
+    }
+}

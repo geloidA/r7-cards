@@ -3,6 +3,7 @@ using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Components.ProjectAggregate.Modals;
 using Cardmngr.Application.Clients.SignalRHubClients;
+using Cardmngr.Utils;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
@@ -13,6 +14,14 @@ public partial class ProjectBoardHeader : ComponentBase
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
+    [CascadingParameter] HeaderProjectInfo ProjectInfo { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ProjectInfo.OpenInfoFunc = ShowProjectMenu;
+        ProjectInfo.Title = State.Model!.Project!.Title;
+    }
 
     private async Task ShowProjectMenu()
     {
