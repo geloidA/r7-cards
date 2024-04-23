@@ -7,18 +7,18 @@
             TOption="Domain.ProjectInfo"
             SelectedOptionsChanged="SelectionProjectChanged"
             MaximumSelectedOptions="1" MaximumOptionsSearch="100"
-            Style="width: 190px;" AutoComplete="off"
+            Style="width: 290px;" AutoComplete="off"
             IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())"
             SelectedOptions="SelectedProject"
-            OptionText="@(p => p.Title)"
+            OptionText="@(p => p.Title)" ShowOverlayOnEmptyResults="false"
             OnOptionsSearch="OnProjectSearch" />
 
         <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.Person())"
             TOption="UserInfo" Placeholder="Ответственный"
-            Style="width: 190px;" AutoComplete="off"
+            Style="width: 290px;" AutoComplete="off"
             SelectedOptionsChanged="SelectionResponsibleChanged"
             MaximumSelectedOptions="1" MaximumOptionsSearch="100"
-            OptionText="@(u => u.DisplayName)"
+            OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
             SelectedOptions="SelectedResponsible"
             OnOptionsSearch="OnResponsibleSearch" />
 
@@ -26,8 +26,8 @@
             TOption="UserInfo" Placeholder="Автор"
             SelectedOptionsChanged="SelectionCreatedByChanged"
             MaximumSelectedOptions="1" MaximumOptionsSearch="100"
-            Style="width: 190px;" AutoComplete="off"
-            OptionText="@(u => u.DisplayName)"
+            Style="width: 290px;" AutoComplete="off"
+            OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
             SelectedOptions="SelectedCreatedBy"
             OnOptionsSearch="OnCreatedBySearch" />
             

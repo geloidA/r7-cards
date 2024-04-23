@@ -2,6 +2,7 @@
 @using Cardmngr.Application.Clients.Subtask
 @using AutoMapper
 
+@inject KolTimelineJsInterop TimelineJsInterop
 @inject IMapper Mapper
 
 <div class="d-flex align-items-center fs-6">
@@ -10,29 +11,27 @@
     <Tool Icon="@(new Icons.Regular.Size16.Add())" Class="ms-1" TooltipTitle="Добавить"
         Disabled="@(!Task.CanEdit || Task.IsClosed())" @onclick="ShowCreationModal" />
 </div>
-@if (Task.Subtasks.Any())
-{
-    <CascadingValue Value="hasEditingSubtask" >
-        <FluentHorizontalScroll FlippersHiddenFromAt="true" class="both-gradient" Easing="ScrollEasing.EaseInOut">
-            @foreach (var subtask in Task.Subtasks)
-            {
-                var updateData = Mapper.Map<SubtaskUpdateData>(subtask);
-
-                <SubtaskView Subtask="updateData" UpdateCallback="StateHasChanged"
-                    Disabled="!subtask.CanEdit" Id="subtask.Id"
-                    EditModeChanged="next => hasEditingSubtask = next"
-                    @key="subtask.Id" />
-            }
-        </FluentHorizontalScroll>
-    </CascadingValue>
-}
-else
+@if (Task.Subtasks.Count == 0)
 {
     <span>Список пуст</span>
 }
+<CascadingValue Value="hasEditingSubtask" >
+    <div @ref="scrollElement" class="d-flex gap-1 overflow-auto scrollbar-none">
+        @foreach (var subtask in Task.Subtasks)
+        {
+            var updateData = Mapper.Map<SubtaskUpdateData>(subtask);
+
+            <SubtaskView Subtask="updateData" UpdateCallback="StateHasChanged"
+                Disabled="!subtask.CanEdit" Id="subtask.Id"
+                EditModeChanged="next => hasEditingSubtask = next"
+                @key="subtask.Id" />
+        }
+    </div>
+</CascadingValue>
 
 @code {
-    private bool hasEditingSubtask;
+    bool hasEditingSubtask;
+    ElementReference scrollElement;
 
     [Inject] public ISubtaskClient SubtaskClient { get; set; } = null!;
     
@@ -41,7 +40,15 @@ else
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
-    private async Task ShowCreationModal()
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {            
+            await TimelineJsInterop.RegisterScrollHandler(scrollElement);
+        }
+    }
+
+    async Task ShowCreationModal()
     {
         var res = await Modal.Show<SubtaskCreationModal>("Добавление подзадачи", 
             new ModalParameters { { "Team", State.Model!.Team } }, ModalOptions).Result;

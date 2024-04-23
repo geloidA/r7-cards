@@ -109,7 +109,7 @@ public class TaskReportGenerator : IReportGenerator
 
         var taskCounter = 1;
 
-        foreach (var task in groupedByMilestone.OrderBy(x => x.Deadline))
+        foreach (var task in groupedByMilestone)
         {
             GenerateTaskPart(ws, task, row, taskCounter);
             taskCounter++;

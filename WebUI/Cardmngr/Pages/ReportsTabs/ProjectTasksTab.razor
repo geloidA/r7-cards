@@ -8,15 +8,17 @@
 @inject IServiceProvider ServiceProvider
 @inject IToastService ToastService
 
-<div class="d-flex h-100">
-    <div class="col col-9">
+<div class="d-flex row flex-wrap">
+    <div class="col">
         <h4>Задачи проектов</h4>
         <p>Отчет <i>'Задачи проекта'</i> отобразит список задач, сгруппированных по проекту и вехе, с которыми они связаны.</p>
+        <p>Чтобы посмотреть список всех задач во всех ваших проектах, сразу нажмите <i>'Сгенерировать отчет'.</i></p>
+        <p>Настройка интервалов начала и крайнего срока позволит сделать выборку интересующих вас задач, входящих в определенные временные границы.</p>
         <p>Пример отчета:</p>
-        <img src="images/project-tasks-report-example.png" width="800" 
+        <img src="images/project-tasks-report-example.png" class="mb-2" width="800" 
             style="border-radius: 10px; opacity: 0.8; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);" />
     </div>
-    <div class="col">
+    <div class="col overflow-hidden">
         <FluentCard AreaRestricted="false"
             style="background-color: var(--neutral-layer-3); box-shadow: none; border: none;">
             <FluentEditForm Model="reportRequest" >
@@ -24,8 +26,7 @@
                     <div class="d-flex flex-column gap-3">
                         <FluentAutocomplete Placeholder="Все"
                             OptionText="@(p => p.Title)" Label="Проект:"
-                            OnOptionsSearch="OnProjectSearch"
-                            Style="width: 380px;" AutoComplete="off"
+                            OnOptionsSearch="OnProjectSearch" AutoComplete="off" style="max-width: 500px;"
                             TOption="Project" MaximumOptionsSearch="100"
                             @bind-SelectedOptions="reportRequest.Projects"
                             IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())" >
@@ -37,23 +38,21 @@
                         </FluentAutocomplete>
 
                         <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())"
-                            TOption="UserInfo" Placeholder="Все"
-                            Style="width: 380px;" AutoComplete="off"
+                            TOption="UserInfo" Placeholder="Все" AutoComplete="off"
                             @bind-SelectedOptions="reportRequest.Creators"
-                            MaximumOptionsSearch="100" Label="Автор:"
+                            MaximumOptionsSearch="100" Label="Автор:" style="max-width: 500px;"
                             OptionText="@(u => u.DisplayName)"
                             OnOptionsSearch="OnUserSearch" />
 
                         <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.Person())"
-                            TOption="UserInfo" Placeholder="Все"
-                            Style="width: 380px;" AutoComplete="off"
+                            TOption="UserInfo" Placeholder="Все" AutoComplete="off"
                             @bind-SelectedOptions="reportRequest.Responsibles"
                             MaximumOptionsSearch="100" Label="Ответственный:"
-                            OptionText="@(u => u.DisplayName)"
+                            OptionText="@(u => u.DisplayName)" style="max-width: 500px;"
                             OnOptionsSearch="OnUserSearch" />
                     </div>
                     <div class="col d-flex flex-column mt-3 gap-3">
-                        <IntervalPicker Label="Интервал по началу:"
+                        <IntervalPicker Label="Интервал по началу задачи:"
                             @bind-Start="reportRequest.StartDateRange.Start" 
                             @bind-End="reportRequest.StartDateRange.End" />
 
@@ -138,7 +137,7 @@
             .Where(x => !reportRequest.Responsibles.Any() || reportRequest.Responsibles.Any(r => x.Responsibles.Any(tR => tR.Id == r.Id)))
             .Where(x => !reportRequest.Projects.Any() || reportRequest.Projects.Any(p => p.Id == x.ProjectOwner.Id))
             .Where(x => !reportRequest.Creators.Any() || reportRequest.Creators.Any(c => c.Id == x.CreatedBy.Id))
-            .Where(InStartRange);
+            .Where(InStartDateRange);
     }
 
     FilterBuilder CreateFilter()
@@ -159,11 +158,11 @@
         return filter;
     }
 
-    bool InStartRange(OnlyofficeTask task)
+    bool InStartDateRange(OnlyofficeTask task)
     {
-        return !reportRequest.StartDateRange.Start.HasValue || 
-            reportRequest.StartDateRange.Start >= task.StartDate &&
-            !reportRequest.StartDateRange.End.HasValue ||
-            reportRequest.StartDateRange.End <= task.StartDate;
+        var startDate = task.StartDate?.Date;
+        return startDate is null ||
+            (!reportRequest.StartDateRange.Start.HasValue || reportRequest.StartDateRange.Start?.Date <= startDate &&
+                !reportRequest.StartDateRange.End.HasValue || reportRequest.StartDateRange.End?.Date >= startDate);
     }
 }
