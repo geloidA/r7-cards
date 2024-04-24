@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Domain.Tests", "te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Reports", "Cardmngr.Reports\Cardmngr.Reports.csproj", "{E5C6EAE4-8303-4F5A-B694-A0381A2ABBEC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "games", "games", "{89AB476E-597A-4080-A890-CCE04CF41303}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Tetris", "games\Cardmngr.Tetris\Cardmngr.Tetris.csproj", "{074A86B1-540B-411C-A7C1-0B3491DE1AA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +97,10 @@ Global
 		{E5C6EAE4-8303-4F5A-B694-A0381A2ABBEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5C6EAE4-8303-4F5A-B694-A0381A2ABBEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5C6EAE4-8303-4F5A-B694-A0381A2ABBEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{074A86B1-540B-411C-A7C1-0B3491DE1AA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{074A86B1-540B-411C-A7C1-0B3491DE1AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{074A86B1-540B-411C-A7C1-0B3491DE1AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{074A86B1-540B-411C-A7C1-0B3491DE1AA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -108,6 +116,7 @@ Global
 		{BDB52C86-076A-4F10-882C-996BDB06DB55} = {8A654A56-8728-41A7-ADB2-3567D139EE24}
 		{65C4632E-EF7E-4B83-A8BE-E2041620DF6E} = {8A654A56-8728-41A7-ADB2-3567D139EE24}
 		{6EBF0361-398E-4593-BC59-DD582133A3BE} = {8A654A56-8728-41A7-ADB2-3567D139EE24}
+		{074A86B1-540B-411C-A7C1-0B3491DE1AA5} = {89AB476E-597A-4080-A890-CCE04CF41303}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8D91AF76-3660-4B86-8114-3695A76CE202}

@@ -5,12 +5,16 @@
 
 @using System.Text.Json
 
-<NavigateButtons />
-<FluentButton Class="py-0 ms-3" style="margin-right: 20px;" Appearance="Appearance.Outline"
-    OnClick="OpenSidebar" IconEnd="@(new Icons.Regular.Size20.TextAlignJustify())" />
-<ProjectNavigator />
-<FilterCustomizer />
-<div style="flex-grow: 1;"></div>
+<div class="d-flex gap-1 align-items-center">
+    <FluentButton Class="py-0" Appearance="Appearance.Outline"
+        OnClick="OpenSidebar" IconEnd="@(new Icons.Regular.Size20.TextAlignJustify())" />
+    <FluentSpacer Width="5" />
+    <NavigateButtons />
+    <FluentSpacer Width="25" />
+    <ProjectNavigator />
+    <FilterCustomizer />
+</div>
+<FluentSpacer />
 <div class="d-flex gap-2">
     <Toolbar />
     @if (currentUser is { })

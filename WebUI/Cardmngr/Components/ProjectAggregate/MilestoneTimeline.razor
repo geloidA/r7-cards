@@ -6,27 +6,23 @@
 @implements IAsyncDisposable
 
 <div class="d-flex @Class" >
-    <div @ref="scrollElement" class="overflow-scroll scrollbar-none" >
-        <KolTimeline MinWidth="1860" UncollapsedHeight="@(State.Model!.Milestones.Count * 36)" 
-            ShowTodayLine="true" Class="scrollbar-none py-0" >
-            @if (State.Initialized)
-            {
-                <CascadingValue Value="milestoneTaskFilter" IsFixed="true">
-                    @foreach (var milestone in State.Model!.Milestones.OrderBy(x => x.Deadline))
-                    {
-                        <KolTimelineItem @key="milestone.Id" End="milestone.Deadline" Start="State.GetMilestoneStart(milestone)">
-                            <TimelineMilestone Milestone="milestone" />
-                        </KolTimelineItem>
-                    }
-                </CascadingValue>
-            }
-        </KolTimeline>
-    </div>
+    <KolTimeline MinWidth="1860" MaxWidth="25000" UncollapsedHeight="@(State.Model!.Milestones.Count * 36)" 
+        ShowTodayLine="true" Class="scrollbar-none py-0" >
+        @if (State.Initialized)
+        {
+            <CascadingValue Value="milestoneTaskFilter" IsFixed="true">
+                @foreach (var milestone in State.Model!.Milestones.OrderBy(x => x.Deadline))
+                {
+                    <KolTimelineItem @key="milestone.Id" End="milestone.Deadline" Start="State.GetMilestoneStart(milestone)">
+                        <TimelineMilestone Milestone="milestone" />
+                    </KolTimelineItem>
+                }
+            </CascadingValue>
+        }
+    </KolTimeline>
 </div>
 
-@code {
-    private ElementReference scrollElement;
-    
+@code {    
     [CascadingParameter] IProjectState State { get; set; } = null!;
 
     private bool firstFilterItemFlag = true;
@@ -54,13 +50,13 @@
         State.StateChanged += StateHasChanged;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    @* protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await TimelineInterop.RegisterScrollHandler(scrollElement, 1.5);
         }
-    }
+    } *@
     
     public ValueTask DisposeAsync()
     {
