@@ -1,0 +1,45 @@
+﻿@implements IDisposable
+
+@using Timer = System.Timers.Timer;
+@using System.Globalization
+
+<div class="time-tableau font-jetbrainsmono">
+    <div style="font-size: xxx-large;" class="fw-bold">@showedTime.ToLongTimeString()</div>
+    <div class="fs-5 align-self-center">@showedTime.ToString("dddd",culture), 
+        @showedTime.Day @genitiveCasesByMonthNum[showedTime.Month]</div>
+</div>
+
+@code {
+    readonly Dictionary<int, string> genitiveCasesByMonthNum = new()
+    {
+        { 1, "января" },
+        { 2, "февраля" },
+        { 3, "марта" },
+        { 4, "апреля" },
+        { 5, "мая" },
+        { 6, "июня" },
+        { 7, "июля" },
+        { 8, "августа" },
+        { 9, "сентября" },
+    };
+
+    DateTime showedTime = DateTime.Now;
+
+    readonly CultureInfo culture = new("ru-RU");
+    readonly Timer timeRefresher = new(TimeSpan.FromSeconds(1));
+
+    protected override void OnInitialized()
+    {
+        timeRefresher.Elapsed += (_, _) => 
+        {
+            showedTime = DateTime.Now;
+            StateHasChanged();
+        };
+        timeRefresher.Start();
+    }
+
+    public void Dispose()
+    {
+        timeRefresher.Dispose();
+    }
+}

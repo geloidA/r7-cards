@@ -2,24 +2,28 @@
 
 namespace Cardmngr.Report;
 
-public abstract class ReportService(IReportGenerator generator, ReportJSModule jsModule) : IAsyncDisposable
+public class ReportService(ReportJSModule jsModule) : IReportService
 {
-    protected readonly IReportGenerator generator = generator;
+    private IReportGenerator? generator;
     private readonly ReportJSModule jsModule = jsModule;
 
-    public ValueTask DisposeAsync()
-    {
-        return jsModule.DisposeAsync();
-    }
+    public IReportGenerator? Generator { set => generator = value; }
+
+    public ValueTask DisposeAsync() => jsModule.DisposeAsync();
 
     /// <summary>
     /// Generates report
     /// </summary>
     /// <param name="fileName">File name without extension</param>
     /// <returns></returns>
-    protected async Task GenerateReport(string fileName)
+    public async Task GenerateReport(string fileName)
     {
-        var bytes = await Task.Run(() => generator.GenerateReport());
+        if (generator is null)
+        {
+            throw new InvalidOperationException("Report generator is not set");
+        }
+
+        var bytes = await Task.Run(generator.GenerateReport);
         await jsModule.SaveAsAsync($"{fileName}.xlsx", bytes);
     }
 }

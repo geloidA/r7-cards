@@ -1,9 +1,11 @@
 ﻿@inherits KolComponentBase
 
-<FluentCard class="@Class" style="@Style" MinimalStyle="true" >
-    <FluentIcon Value="@(new Icons.Filled.Size20.ClipboardBulletList())" />
-    Мои проекты
-    <div class="p-1 overflow-auto" style=@($"max-height: {MaxHeight}px;")>
+<div class=@($"d-flex flex-column gap-3 {Class}") style="@Style" >
+    <div>
+        <FluentIcon Value="@(new Icons.Filled.Size20.ClipboardBulletList())" />
+        Ваши проекты
+    </div>
+    <div class="p-1 overflow-auto" style=@($"max-height: {MaxHeight}px; {Style}")>
         @if (UserProjects is { } && UserProjects.Any())
         { 
             @foreach (var proj in UserProjects)
@@ -18,7 +20,7 @@
             <span>Вы не состоите ни в одном из проектов</span>
         }
     </div>
-</FluentCard>
+</div>
 
 @code {
     [Parameter] public List<Project>? UserProjects { get; set; }

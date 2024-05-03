@@ -8,6 +8,7 @@ using Cardmngr.Components.Modals.ConfirmModals;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Extensions;
+using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace Cardmngr.Components.ProjectAggregate;
 

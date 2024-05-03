@@ -2,6 +2,7 @@
 @using Cardmngr.Report
 @using Onlyoffice.Api
 @using Onlyoffice.Api.Common
+@using Cardmngr.Reports
 
 @inject IProjectClient ProjectClient
 @inject IPeopleClient PeopleClient
@@ -18,7 +19,7 @@
         <img src="images/project-tasks-report-example.png" class="mb-2" width="800" 
             style="border-radius: 10px; opacity: 0.8; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);" />
     </div>
-    <div class="col overflow-hidden">
+    <div class="col">
         <FluentCard AreaRestricted="false"
             style="background-color: var(--neutral-layer-3); box-shadow: none; border: none;">
             <FluentEditForm Model="reportRequest" >
@@ -59,16 +60,24 @@
                         <IntervalPicker Disabled="reportRequest.OnlyDeadline" Label="Интервал по крайнему сроку:"
                             @bind-Start="reportRequest.DeadlineRange.Start" 
                             @bind-End="reportRequest.DeadlineRange.End" />
-                        
+
                         <FluentCheckbox Label="Только просроченные"
-                            @bind-Value="reportRequest.OnlyDeadline" />
+                                @bind-Value="reportRequest.OnlyDeadline" />
+
+                        <FluentCombobox 
+                            Items="statusTypes"
+                            Disabled="reportRequest.OnlyDeadline"
+                            OptionText="s => s.GetDesc()"
+                            Label="Статус задач" style="max-width: 500px;" 
+                            OptionDisabled="s => reportRequest.OnlyDeadline"
+                            @bind-SelectedOption="reportRequest.TaskStatusType" />
                     </div>
                 </div>
             </FluentEditForm>
             <div class="d-flex mt-4">
                 <FluentSpacer />
                 <FluentButton IconStart="@(new Icons.Filled.Size16.ArrowDownload())" 
-                    Loading="busy" Appearance="Appearance.Stealth" @onclick="GenerateReport" >
+                    Loading="generating" Appearance="Appearance.Stealth" @onclick="GenerateReport" >
                     Сгенерировать отчет
                 </FluentButton>
             </div>
@@ -80,7 +89,8 @@
     readonly ProjectTaskReportRequest reportRequest = new();
     List<Project> projectsData = [];
     List<UserInfo> usersData = [];
-    
+    readonly IEnumerable<TaskStatusType> statusTypes = Enum.GetValues(typeof(TaskStatusType))
+        .Cast<TaskStatusType>();    
 
     protected async override Task OnInitializedAsync()
     {
@@ -90,39 +100,44 @@
             .ToListAsync();
     }
 
-    private void OnProjectSearch(OptionsSearchEventArgs<Project> e)
+    void OnProjectSearch(OptionsSearchEventArgs<Project> e)
     {
         e.Items = projectsData.Where(x => x.Title.Contains(e.Text, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    private void OnUserSearch(OptionsSearchEventArgs<UserInfo> e)
+    void OnUserSearch(OptionsSearchEventArgs<UserInfo> e)
     {
         e.Items = usersData.Where(x => x.DisplayName.Contains(e. Text, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    bool busy;
+    bool generating;
 
     async Task GenerateReport()
     {
-        busy = true;
+        generating = true;
 
         var scope = ServiceProvider.CreateScope(); // for escape downloading saveFile.js when sidebar is opening
-        var taskReportService = scope.ServiceProvider.GetRequiredService<TaskReportService>();
+        var reportService = scope.ServiceProvider.GetRequiredService<IReportService>();        
 
         var tasks = await GetFilteredTasksAsync().ToListAsync();
 
         if (tasks.Count == 0)
         {
             ToastService.ShowError("Данные не найдены");
-            busy = false;
+            generating = false;
             return;
         }
 
-        var statuses = await ProjectClient.GetTaskStatusesAsync().ToListAsync();
-        await taskReportService.GenerateReport($"Задачи_проектов {DateTime.Now.AddHours(5):dd.MM.yyyy HH_mm}", tasks, statuses);
-        await taskReportService.DisposeAsync();
+        reportService.Generator = new TaskReportGenerator 
+        {
+            Tasks = tasks,
+            Statuses = await ProjectClient.GetTaskStatusesAsync().ToListAsync()
+        };
 
-        busy = false;
+        await reportService.GenerateReport($"Задачи_проектов {DateTime.Now:dd.MM.yyyy HH_mm}");
+        await reportService.DisposeAsync();
+
+        generating = false;
     }
 
     async IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync()
@@ -153,6 +168,11 @@
             filter = filter
                 .DeadlineStart(reportRequest.DeadlineRange.Start)
                 .DeadlineStop(reportRequest.DeadlineRange.End);
+            
+            if (reportRequest.TaskStatusType != TaskStatusType.None)
+            {
+                filter = filter.Status(reportRequest.TaskStatusType.ToDomainStatus());
+            }
         }
 
         return filter;

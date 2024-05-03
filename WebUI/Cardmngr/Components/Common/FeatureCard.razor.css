@@ -1,0 +1,36 @@
+.feature-card {
+    width: 300px;
+    height: 75px;
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    user-select: none;
+
+    text-decoration: none;
+    color: var(--neutral-foreground-rest);
+
+    cursor: pointer;
+
+    background-color: var(--main-card-bg);
+    border-radius: 5px;
+    border: 1px solid var(--bs-gray-600);
+
+    transition: scale 0.2s ease-in-out;
+}
+
+.feature-card:hover {
+    scale: 1.03;
+}
+
+.feature-card:active {
+    scale: 1;
+}
+
+.feature-card .title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.feature-card .description {
+    font-size: small;
+}

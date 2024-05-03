@@ -63,8 +63,7 @@ public static class ServicesExtensions
     public static IServiceCollection AddReports(this IServiceCollection services)
     {
         return services
-            .AddScoped<TaskReportService>()
-            .AddScoped<TaskReportGenerator>()
+            .AddScoped<IReportService, ReportService>()
             .AddScoped<ReportJSModule>();
     }
 

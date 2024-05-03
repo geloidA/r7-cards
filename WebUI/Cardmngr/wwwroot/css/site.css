@@ -7,6 +7,16 @@
     --main-responsibles-bg: var(--neutral-layer-2);
 }
 
+@font-face {
+    font-family: "JetBrainsMono";
+    src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2"),
+         url("/fonts/JetBrainsMono-Regular.woff") format("woff");
+}
+
+.font-jetbrainsmono {
+    font-family: "JetBrainsMono", sans-serif;
+}
+
 .my-modal {
     background-color: var(--neutral-layer-2) !important;
     padding: 20px;

@@ -11,23 +11,32 @@
 <AuthorizeView>
     <div class="h-100 w-100 detal-background" >
         <div class="row w-100 h-100">
-            <div class="col d-flex align-items-end">
-                <FluentAnchor Style="margin-bottom: 4em;" Appearance="Appearance.Lightweight"
-                    Href="feedback-board" IconStart="@(new Icons.Filled.Size20.Lightbulb())">
-                    <span class="fs-5">Пожелания и предложения</span>
-                </FluentAnchor>
-            </div>
-            <div class="col d-flex align-items-center">
+            <div class="col d-flex">
                 <div class="row w-100">
-                    <div class="col">
-                        <UserProjectsView UserProjects="userProjects" MaxHeight="500" />
+                    <div class="col justify-content-center align-self-baseline d-flex">
+                        <TimeTableau />
+                    </div>
+                    <div class="col"></div>
+                </div>
+            </div>
+            <div class="col d-flex flex-column">
+                <div class="row h-100 row-cols-1">
+                    <div class="col d-flex flex-column align-items-end">
+                        <FeatureCard Title="Проекты" Desc="Поиск в проектах" Style="width: 300px;" Class="mb-3"
+                            Icon="@(new Icons.Regular.Size20.Library())" Href="all-projects" />
+                            <UserProjectsView Style="width: 300px;" UserProjects="userProjects"
+                                MaxHeight="500" />
+                    </div>
+                    <div class="col mb-5 d-flex align-items-end justify-content-end gap-2">
+                        <FeatureCard Title="Отчеты" Desc="Создание отчетов по проектам" Href="reports"
+                            Icon="@(new Icons.Regular.Size20.DataBarVerticalAscending())" Style="width: 300px;" />
+                        <FeatureCard Title="Пожелания и предложения" Style="width: 300px;"
+                            Icon="@(new Icons.Regular.Size20.Lightbulb())" Href="feedback-board" />
                     </div>
                 </div>
             </div>
-            <div class="col">
-            </div>
         </div>
-    </div>
+        </div>
 </AuthorizeView>
 
 @code {

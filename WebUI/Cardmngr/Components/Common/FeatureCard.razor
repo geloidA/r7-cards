@@ -1,0 +1,19 @@
+﻿@inherits KolComponentBase
+
+<a href="@Href" class="feature-card @Class" style="@Style">
+    <FluentIcon Value="Icon" Width="48px" />
+    <FluentSpacer Width="15"/>
+    <div class="d-flex flex-column">
+        <span class="title">@Title</span>
+        <span style="description">@Desc</span>
+    </div>
+</a>
+
+@code {
+
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Desc { get; set; }
+    [Parameter] public Icon Icon { get; set; } = null!;
+    [Parameter] public string? Href { get; set; }
+
+}

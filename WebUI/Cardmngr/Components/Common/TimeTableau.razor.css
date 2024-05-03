@@ -1,0 +1,8 @@
+.time-tableau {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    justify-content: center;
+    user-select: none;
+    margin-top: 40%;
+}

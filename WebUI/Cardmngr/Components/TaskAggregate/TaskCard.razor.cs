@@ -33,10 +33,17 @@ public partial class TaskCard : ComponentBase
         Task.IsDeadlineOut() ? "red-border" :
         Task.IsSevenDaysDeadlineOut() ? "warning-border" : "";
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         openModalAction = OpenModal;
-        await InitializeTaskTagsAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await InitializeTaskTagsAsync();
+        }
     }
 
     private async Task InitializeTaskTagsAsync()

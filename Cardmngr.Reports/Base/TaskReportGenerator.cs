@@ -1,48 +1,31 @@
-﻿using System.Reflection;
-using Cardmngr.Domain;
+﻿using Cardmngr.Domain;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Reports.Base;
 using Cardmngr.Reports.Extensions;
 using ClosedXML.Excel;
-using ClosedXML.Graphics;
 
 namespace Cardmngr.Reports;
 
-public class TaskReportGenerator : IReportGenerator
+public class TaskReportGenerator : ReportGeneratorBase
 {
-    static TaskReportGenerator()
-    {
-        ConfigureFonts();
-    }
-
-    private static void ConfigureFonts()
-    {
-        var fallbackFontStream = Assembly
-            .GetExecutingAssembly()
-            .GetManifestResourceStream("mainFont.ttf");
-        LoadOptions.DefaultGraphicEngine = DefaultGraphicEngine.CreateOnlyWithFonts(fallbackFontStream);
-    }
-
     public IEnumerable<OnlyofficeTask> Tasks { get; set; } = [];
     public IEnumerable<OnlyofficeTaskStatus>? Statuses { get; set; }
 
-    private (int Project, int Milestone) Counter = (0, 0);
+    private (int Project, int Milestone) Counter;
 
-    public byte[] GenerateReport()
+    public override byte[] GenerateReport()
     {
+        Counter = (0, 0);
+
         using XLWorkbook wb = new();
 
-        wb.PageOptions
-            .SetPageOrientation(XLPageOrientation.Landscape);
-        wb.Style
-            .Font.SetFontSize(14)
-            .Font.SetFontName("Times New Roman");
+        ConfigureWorkbook(wb);
 
         var ws = wb.Worksheets.Add("Задачи проектов");
 
         ConfigureWorksheet(ws);
-        GenerateHeader(ws);
-        var row = 2;
+        
+        var row = GenerateHeader(ws, "Задачи проектов");
         
         foreach (var groupedByProject in TaskReportData.Create(Tasks, x => new OnlyofficeTaskReportData(x, Statuses)).GroupedTasks)
         {
@@ -65,31 +48,7 @@ public class TaskReportGenerator : IReportGenerator
 
         ws.Columns().AdjustToContents();
 
-        Counter = (0, 0);
-
         return wb.ToArray();
-    }
-
-    private static void ConfigureWorksheet(IXLWorksheet ws)
-    {
-        ws.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);        
-        ws.PageSetup.SetPaperSize(XLPaperSize.A4Paper);
-        ws.SetShowGridLines(false);
-    }
-
-    private static void GenerateHeader(IXLWorksheet ws)
-    {
-        ws.Row(1).Height = 60;
-        ws.Range(1, 1, 1, 2).Merge();
-        ws.Cell("A1").Style
-            .Font.SetBold()
-            .Font.SetFontSize(24)
-            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-        ws.Cell("A1").Value = "Задачи проектов";
-        
-        ws.Cell("C1").Style.Font.Bold = true;
-        ws.Cell("C1").Value = "Отчет создан:";
-        ws.Cell("D1").Value = DateTime.Now.ToShortDateString();
     }
 
     private void GenerageMilestonePart(IXLWorksheet ws, IGrouping<MilestoneInfo, IOnlyofficeTaskReportData> groupedByMilestone, ref int row)

@@ -1,5 +1,6 @@
 ﻿@using Cardmngr.Report
 @using Onlyoffice.Api.Common
+@using Cardmngr.Reports
 
 @inject IServiceProvider ServiceProvider
 @inject IProjectClient ProjClient
@@ -24,12 +25,16 @@
         busy = true;
 
         var scope = ServiceProvider.CreateScope(); // for escape downloading saveFile.js when sidebar is opening
-        var taskReportService = scope.ServiceProvider.GetRequiredService<TaskReportService>();
+        var reportService = scope.ServiceProvider.GetRequiredService<IReportService>();
 
-        var tasks = await ProjClient.GetFilteredTasksAsync(FilterTasksBuilder.Instance.MyProjects(true)).ToListAsync();
-        var statuses = await ProjClient.GetTaskStatusesAsync().ToListAsync();
-        await taskReportService.GenerateReport($"Задачи_проектов {DateTime.Now.AddHours(5):dd.MM.yyyy HH_mm}", tasks, statuses);
-        await taskReportService.DisposeAsync();
+        reportService.Generator = new TaskReportGenerator
+        {
+            Tasks = await ProjClient.GetFilteredTasksAsync(FilterTasksBuilder.Instance.MyProjects(true)).ToListAsync(),
+            Statuses = await ProjClient.GetTaskStatusesAsync().ToListAsync()
+        };        
+
+        await reportService.GenerateReport($"Задачи_проектов {DateTime.Now:dd.MM.yyyy HH_mm}");
+        await reportService.DisposeAsync();
 
         busy = false;
     }
