@@ -20,19 +20,20 @@ public class CreatedTaskReportGenerator : ReportGeneratorBase
 
         var row = GenerateHeader(ws, "Созданные задачи");
 
-        foreach (var groupByUser in Tasks.GroupBy(x => x.CreatedBy))
+        foreach (var groupByUser in Tasks.GroupBy(x => x.CreatedBy).OrderBy(x => x.Key.DisplayName))
         {
-            GenerateUserHeader(ws, row);
+            row = GenerateUserHeader(ws, row, groupByUser);
         }
 
         return wb.ToArray();
     }
 
-    private static void GenerateUserHeader(IXLWorksheet ws, int row, IGrouping<UserInfo, OnlyofficeTask> groupByUser)
+    private static int GenerateUserHeader(IXLWorksheet ws, int row, IGrouping<UserInfo, OnlyofficeTask> groupByUser)
     {
         ws.Row(row).Style.Fill.SetBackgroundColor(XLColor.LightGray);
         ws.Cell(row, 1).Style.Font.SetBold();
 
         ws.Cell(row, 1).Value = $"{groupByUser.Key.DisplayName} ({groupByUser.Count()})";
+        return row + 1;
     }
 }
