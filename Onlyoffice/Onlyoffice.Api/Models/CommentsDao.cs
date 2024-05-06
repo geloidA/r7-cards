@@ -1,14 +1,8 @@
 ﻿namespace Onlyoffice.Api.Models;
 
-public class CommentsDao : HttpResponseDaoBase
-{
-    public List<CommentDto> Response { get; set; } = [];
-}
+public class CommentsDao : MultiResponseDao<CommentDto> { }
 
-public class SingleCommentDao : HttpResponseDaoBase
-{
-    public CommentDto? Response { get; set; }
-}
+public class SingleCommentDao : SingleResponseDao<CommentDto> { }
 
 public class CommentDto
 {

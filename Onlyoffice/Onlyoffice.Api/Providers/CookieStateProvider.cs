@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Task = System.Threading.Tasks.Task;
 using System.Text.Json;
 using Cardmngr.Domain.Entities;
+using AutoMapper;
 
 namespace Onlyoffice.Api.Providers;
 
-public class CookieStateProvider : AuthenticationStateProvider
+public class CookieStateProvider(IMapper mapper) : AuthenticationStateProvider
 {
     private ClaimsPrincipal claimsPrincipal = new(new ClaimsIdentity());
 
@@ -45,24 +46,13 @@ public class CookieStateProvider : AuthenticationStateProvider
 
     public string UserId => this[ClaimTypes.NameIdentifier];
 
-    public UserInfo? UserInfo
+    public UserProfile? UserInfo
     {
         get
         {
             var userProfile = JsonSerializer.Deserialize<UserProfileDto>(this["Data"]);
             
-            if (userProfile is null)
-            {
-                return null;
-            }
-            
-            return new UserInfo
-            {
-                Id = userProfile.Id,
-                AvatarSmall = userProfile.AvatarSmall,
-                ProfileUrl = userProfile.ProfileUrl,
-                DisplayName = userProfile.DisplayName
-            };
+            return userProfile != null ? mapper.Map<UserProfile>(userProfile) : null;
         }
     }
 

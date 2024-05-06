@@ -1,14 +1,8 @@
 ﻿namespace Onlyoffice.Api.Models;
 
-public class UserProfilesDao : HttpResponseDaoBase
-{
-    public List<UserProfileDto>? Response { get; set; }
-}
+public class UserProfilesDao : MultiResponseDao<UserProfileDto> { }
 
-public class UserProfileDao : HttpResponseDaoBase
-{
-    public UserProfileDto? Response { get; set; }
-}
+public class UserProfileDao : SingleResponseDao<UserProfileDto> { }
 
 public class UserProfileDto : IUser
 {

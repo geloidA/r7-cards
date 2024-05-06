@@ -1,19 +1,10 @@
 ﻿namespace Onlyoffice.Api.Models;
 
-public class SingleProjectDao : HttpResponseDaoBase
-{
-    public ProjectDto? Response { get; set; }
-}
+public class SingleProjectDao : SingleResponseDao<ProjectDto> { }
 
-public class ProjectDao : HttpResponseDaoBase
-{
-    public List<ProjectDto>? Response { get; set; }
-}
+public class ProjectDao : MultiResponseDao<ProjectDto> { }
 
-public class ProjectInfoDao : HttpResponseDaoBase
-{
-    public List<ProjectInfoDto>? Response { get; set; }
-}
+public class ProjectInfoDao : MultiResponseDao<ProjectInfoDto> { }
 
 public class ProjectDto
 {

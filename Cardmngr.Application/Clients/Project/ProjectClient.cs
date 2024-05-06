@@ -163,4 +163,6 @@ public class ProjectClient(IProjectApi projectApi, ITaskClient taskClient, IMapp
     {
         return projectApi.GetAllTaskStatusesAsync().Select(mapper.Map<OnlyofficeTaskStatus>);
     }
+
+    public IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync() => GetFilteredTasksAsync(FilterBuilder.Empty);
 }

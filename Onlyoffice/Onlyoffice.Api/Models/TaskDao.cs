@@ -2,20 +2,11 @@
 
 namespace Onlyoffice.Api.Models;
 
-public class SingleSubtaskDao : HttpResponseDaoBase
-{
-    public SubtaskDto? Response { get; set; }
-}
+public class SingleSubtaskDao : SingleResponseDao<SubtaskDto> { }
 
-public class SingleTaskDao : HttpResponseDaoBase
-{
-    public TaskDto? Response { get; set; }
-}
+public class SingleTaskDao : SingleResponseDao<TaskDto> { }
 
-public class TaskDao : HttpResponseDaoBase
-{
-    public List<TaskDto>? Response { get; set; }
-}
+public class TaskDao : MultiResponseDao<TaskDto> { }
 
 public class TaskDto
 {

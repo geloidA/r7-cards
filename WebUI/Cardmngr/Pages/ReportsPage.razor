@@ -4,15 +4,13 @@
 
 <PageTitle>Отчеты</PageTitle>
 
-<FluentTabs class="h-100" Height="100%" Width="100%" Orientation="Orientation.Vertical" ActiveTabId="tab-1" >
-    <FluentTab Label="Задачи проектов" class="px-5" Id="tab-1">
-        <ProjectTasksTab />
-    </FluentTab>
-    <FluentTab Label="Созданные задачи" class="px-5" Id="tab-2">
-        <CreatedTaskTab />
-    </FluentTab>
-</FluentTabs>
-
-@code {
-
-}
+<AuthorizeView>
+    <FluentTabs class="h-100" Height="100%" Width="100%" Orientation="Orientation.Vertical" ActiveTabId="tab-1" >
+        <FluentTab Label="Задачи проектов" class="px-5" Id="tab-1">
+            <ProjectTasksTab />
+        </FluentTab>
+        <FluentTab Label="Созданные задачи" class="px-5" Id="tab-2">
+            <EfficiencyFactorTab />
+        </FluentTab>
+    </FluentTabs>
+</AuthorizeView>

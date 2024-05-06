@@ -129,4 +129,9 @@ public sealed class FilterTasksBuilder : FilterBuilder
         
         return $"filter/{string.Join("&", _filters.Select(x => $"{x.Key}={x.Value}"))}";
     }
+
+    public FilterTasksBuilder Department(object value)
+    {
+        throw new NotImplementedException();
+    }
 }

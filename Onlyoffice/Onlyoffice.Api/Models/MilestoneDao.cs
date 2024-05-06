@@ -1,14 +1,8 @@
 ﻿namespace Onlyoffice.Api.Models;
 
-public class SingleMilestoneDao : HttpResponseDaoBase
-{
-    public MilestoneDto? Response { get; set; }
-}
+public class SingleMilestoneDao : SingleResponseDao<MilestoneDto> { }
 
-public class MilestoneDao : HttpResponseDaoBase
-{
-    public List<MilestoneDto>? Response { get; set; }
-}
+public class MilestoneDao : MultiResponseDao<MilestoneDto> { }
 
 public class MilestoneDto
 {

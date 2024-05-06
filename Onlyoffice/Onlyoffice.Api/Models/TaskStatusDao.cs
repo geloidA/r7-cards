@@ -1,9 +1,6 @@
 ﻿namespace Onlyoffice.Api.Models;
 
-public class TaskStatusDao : HttpResponseDaoBase
-{
-    public List<TaskStatusDto>? Response { get; set; }
-}
+public class TaskStatusDao : MultiResponseDao<TaskStatusDto> { }
 
 public class TaskStatusDto
 {

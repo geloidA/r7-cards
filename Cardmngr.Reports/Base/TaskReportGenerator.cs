@@ -24,7 +24,7 @@ public class TaskReportGenerator : ReportGeneratorBase
         var ws = wb.Worksheets.Add("Задачи проектов");
 
         ConfigureWorksheet(ws);
-        
+
         var row = GenerateHeader(ws, "Задачи проектов");
         
         foreach (var groupedByProject in TaskReportData.Create(Tasks, x => new OnlyofficeTaskReportData(x, Statuses)).GroupedTasks)

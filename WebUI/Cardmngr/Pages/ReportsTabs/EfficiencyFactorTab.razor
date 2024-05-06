@@ -1,0 +1,97 @@
+﻿@using Cardmngr.Application.Clients.People
+@using Cardmngr.Application.Group
+@using Cardmngr.Exceptions
+@using Cardmngr.Report
+@using Cardmngr.Reports
+@using Onlyoffice.Api
+@using Onlyoffice.Api.Common
+
+@inject IProjectClient ProjectClient
+@inject IGroupClient GroupClient
+@inject IPeopleClient PeopleClient
+@inject IToastService ToastService
+@inject IServiceProvider ServiceProvider
+
+<div class="d-flex flex-wrap">
+    <div class="col">
+        <h4>Созданные задачи</h4>
+    </div>
+    <div class="col">
+        <FluentCard AreaRestricted="false" style="background-color: var(--neutral-layer-3); box-shadow: none; border: none;">
+            <div class="d-flex flex-column">
+                <div class="d-flex flex-column gap-3">
+                    
+                    <FluentAutocomplete
+                        Label="Проект:" 
+                        Placeholder="Все" 
+                        TOption="Project" 
+                        AutoComplete="off"
+                        style="max-width: 500px;"
+                        OptionText="x => x.Title"
+                        MaximumOptionsSearch="100"
+                        OnOptionsSearch="OnProjectSearch"                        
+                        @bind-SelectedOptions="reportRequest.Projects"
+                        IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())" >
+
+                        <OptionTemplate Context="project">
+                            <span title="@project.Title" class="ellipsis-truncate">@project.Title</span>
+                        </OptionTemplate>
+                    </FluentAutocomplete>
+
+                    <div class="d-flex gap-3">
+                        <FluentAutocomplete 
+                            Placeholder="Все" 
+                            AutoComplete="off"
+                            TOption="UserInfo" 
+                            Label="Ответственные:" 
+                            style="max-width: 500px;"
+                            MaximumOptionsSearch="100"
+                            OnOptionsSearch="OnUserSearch"
+                            OptionText="x => x.DisplayName"
+                            Disabled="reportRequest.Group.Any()"
+                            @bind-SelectedOptions="reportRequest.Responsibles"
+                            IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())" >
+
+                            <OptionTemplate Context="user">
+                                <span title="@user.DisplayName" class="ellipsis-truncate">@user.DisplayName</span>
+                            </OptionTemplate>
+                        </FluentAutocomplete>
+
+                        <FluentAutocomplete
+                            Label="Группа:" 
+                            TOption="Group" 
+                            Placeholder="Все" 
+                            AutoComplete="off"
+                            OptionText="x => x.Name"
+                            style="max-width: 500px;" 
+                            MaximumSelectedOptions="1"
+                            MaximumOptionsSearch="100"
+                            OnOptionsSearch="OnGroupSearch"
+                            @bind-SelectedOptions="reportRequest.Group"
+                            IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())" >
+
+                            <OptionTemplate Context="group">
+                                <span title="@group.Name" class="ellipsis-truncate">@group.Name</span>
+                            </OptionTemplate>
+                        </FluentAutocomplete>
+                    </div>
+
+                    <IntervalPicker Label="Крайний срок"
+                        @bind-Start="@reportRequest.Deadline.Start"
+                        @bind-End="@reportRequest.Deadline.End" />
+                </div>
+                <div class="d-flex mt-4">
+
+                    <FluentSpacer />
+                    <FluentButton 
+                        Loading="generating" 
+                        IconStart="@(new Icons.Filled.Size16.ArrowDownload())" 
+                        @onclick="GenerateReport" >
+
+                        Сгенерировать отчет
+                    </FluentButton>
+                </div>
+            </div>
+        </FluentCard>
+    </div>
+</div>

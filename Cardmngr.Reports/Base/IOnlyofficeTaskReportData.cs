@@ -2,8 +2,9 @@
 
 public interface IOnlyofficeTaskReportData
 {
-    string Title { get; set; }
-    string Responsibles { get; set; }
-    string Deadline { get; set; }
-    string StatusString { get; set; }
+    string Title { get; }
+    string Responsibles { get; }
+    string Deadline { get; }
+    string StatusString { get; }
+    bool IsDeadlineOverdue { get; }
 }

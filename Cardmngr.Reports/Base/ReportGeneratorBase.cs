@@ -41,20 +41,24 @@ public abstract class ReportGeneratorBase : IReportGenerator
     /// </summary>
     /// <param name="ws"></param>
     /// <param name="title"></param>
+    /// <param name="lastCellRow">Last cell row</param>
+    /// <param name="lastCellColumn">Last cell column</param>
     /// <returns>Begin of empty row</returns>
-    protected static int GenerateHeader(IXLWorksheet ws, string title)
+    protected static int GenerateHeader(IXLWorksheet ws, string title,
+        int lastCellRow = 1,
+        int lastCellColumn = 2)
     {
         ws.Row(1).Height = 60;
-        ws.Range(1, 1, 1, 2).Merge();
+        ws.Range(1, 1, lastCellRow, lastCellColumn).Merge();
         ws.Cell("A1").Style
             .Font.SetBold()
             .Font.SetFontSize(24)
             .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
         ws.Cell("A1").Value = title;
         
-        ws.Cell("C1").Style.Font.Bold = true;
-        ws.Cell("C1").Value = "Отчет создан:";
-        ws.Cell("D1").Value = DateTime.Now.ToShortDateString();
+        ws.Cell(1, lastCellColumn).Style.Font.Bold = true;
+        ws.Cell(1, lastCellColumn + 1).Value = "Отчет создан:";
+        ws.Cell(1, lastCellColumn + 2).Value = DateTime.Now.ToShortDateString();
 
         return 2;
     }

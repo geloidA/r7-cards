@@ -27,5 +27,6 @@ public class EntityMappingProfile : Profile
         CreateMap<UserProfileDto, UserProfile>();
         CreateMap<UserProfileDto, UserInfo>();
         CreateMap<CommentDto, Comment>();
+        CreateMap<GroupDto, Domain.Entities.Group>();
     }
 }

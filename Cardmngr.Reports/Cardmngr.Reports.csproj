@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cardmngr.Domain\Cardmngr.Domain.csproj" />
+    <ProjectReference Include="..\WebUI\Cardmngr.Shared\Cardmngr.Shared.csproj" />
   </ItemGroup>
 
 </Project>
