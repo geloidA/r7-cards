@@ -51,6 +51,7 @@ public partial class TaskCard : ComponentBase
         try
         {
             taskTags = await TaskClient.GetTaskTagsAsync(Task.Id).ToListAsync();
+            StateHasChanged();
         }
         catch (HttpRequestException e) when (e.StatusCode != HttpStatusCode.BadGateway)
         {

@@ -1,0 +1,65 @@
+﻿@inherits KolComponentBase
+@implements IAsyncDisposable
+
+@inject IJSRuntime JSRuntime
+
+<FluentTextArea 
+    Id="@guid" 
+    @oninput="AutoGrow" 
+    Class="@Class" 
+    Style="@Style" 
+    ReadOnly="ReadOnly"
+    Value="@Value"
+    ValueChanged="ValueChanged"
+    Immediate="Immediate"
+    Placeholder="@Placeholder"
+    Resize="Resize"
+    Name="@Name"
+    Autofocus="Autofocus"
+    Spellcheck="Spellcheck"
+    ImmediateDelay="ImmediateDelay" >
+
+</FluentTextArea>
+
+@code {
+    IJSObjectReference? module;
+    readonly string guid = Guid.NewGuid().ToString();
+
+    [Parameter] public bool ReadOnly { get; set; }
+    [Parameter] public bool Immediate { get; set; }
+    [Parameter] public bool Autofocus { get; set; }
+    [Parameter] public int ImmediateDelay { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public bool Spellcheck { get; set; }
+    [Parameter] public TextAreaResize Resize { get; set; }
+    [Parameter] public string? Name { get; set; }
+
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", 
+                "/js/GeneratedJS/autogrowtextarea.js");
+            await module.InvokeVoidAsync("autoGrowHeight", guid);
+        }
+    }
+
+    async Task AutoGrow()
+    {
+        if (module is { })
+        {
+            await module.InvokeVoidAsync("autoGrowHeight", guid);
+        }
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (module is { })
+        {
+            await module.DisposeAsync();
+        }
+    }
+}

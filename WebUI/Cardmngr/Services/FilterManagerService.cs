@@ -7,12 +7,12 @@ public class FilterManagerService
     private bool onlyClosed;
     private bool onlyDeadlined;
 
-    public event Action<FilterTasksBuilder>? FilterChanged;
+    public event Action<TaskFilterBuilder>? FilterChanged;
     private void OnFilterChanged() => FilterChanged?.Invoke(GenerateFilter());
 
-    public FilterTasksBuilder GenerateFilter()
+    public TaskFilterBuilder GenerateFilter()
     {
-        var builder = FilterTasksBuilder.Instance
+        var builder = TaskFilterBuilder.Instance
             .Creator(withCreatedBy)
             .Participant(withResponsible);
 

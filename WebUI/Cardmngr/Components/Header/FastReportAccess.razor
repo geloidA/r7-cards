@@ -29,7 +29,7 @@
 
         reportService.Generator = new TaskReportGenerator
         {
-            Tasks = await ProjClient.GetFilteredTasksAsync(FilterTasksBuilder.Instance.MyProjects(true)).ToListAsync(),
+            Tasks = await ProjClient.GetFilteredTasksAsync(TaskFilterBuilder.Instance.MyProjects(true)).ToListAsync(),
             Statuses = await ProjClient.GetTaskStatusesAsync().ToListAsync()
         };        
 

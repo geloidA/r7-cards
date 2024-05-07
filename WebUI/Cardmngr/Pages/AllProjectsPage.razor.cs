@@ -32,7 +32,7 @@ public partial class AllProjectsPage : AuthorizedPage, IDisposable
         initialized = true;
     }
 
-    private async void OnFilterChangedAsync(FilterTasksBuilder builder)
+    private async void OnFilterChangedAsync(TaskFilterBuilder builder)
     {
         allProjects = await ProjectClient.GetGroupedFilteredTasksAsync(builder)
             .Select(x => new StaticProjectVm(x.Key, x.Value))

@@ -85,7 +85,7 @@ public class ProjectApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(htt
 
     public async IAsyncEnumerable<TaskDto> GetFiltredTasksAsync(FilterBuilder builder)
     {
-        var filterTasksDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<FilterTasksDao>($"api/project/task/{builder.Build()}"));
+        var filterTasksDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<FilterTasksDao>($"api/project/task/filter/{builder.Build()}"));
         await foreach (var task in filterTasksDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<Models.TaskDto>())
         {
             yield return task;

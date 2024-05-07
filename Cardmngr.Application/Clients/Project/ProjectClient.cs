@@ -18,7 +18,7 @@ public class ProjectClient(IProjectApi projectApi, ITaskClient taskClient, IMapp
 
     public async Task<ProjectStateVm> GetProjectAsync(int projectId)
     {
-        var tasks = projectApi.GetFiltredTasksAsync(FilterTasksBuilder.Instance.ProjectId(projectId))
+        var tasks = projectApi.GetFiltredTasksAsync(TaskFilterBuilder.Instance.ProjectId(projectId))
                               .ToListAsync(mapper.Map<OnlyofficeTask>);
 
         var team = projectApi.GetProjectTeamAsync(projectId)
@@ -84,7 +84,7 @@ public class ProjectClient(IProjectApi projectApi, ITaskClient taskClient, IMapp
         }
     }
 
-    public async IAsyncEnumerable<IProjectStateVm> GetFilteredTasksAsync(FilterTasksBuilder filter)
+    public async IAsyncEnumerable<IProjectStateVm> GetFilteredTasksAsync(TaskFilterBuilder filter)
     {
         var statuses = projectApi.GetAllTaskStatusesAsync().ToListAsync(mapper.Map<OnlyofficeTaskStatus>);
 

@@ -44,6 +44,12 @@ public class FilterBuilder
         return this;
     }
 
+    public FilterBuilder Simple()
+    {
+        _filters["simple"] = "true";
+        return this;
+    }
+
     public FilterBuilder FilterValue(string filterValue)
     {
         _filters["filterValue"] = filterValue;
@@ -52,6 +58,11 @@ public class FilterBuilder
 
     public virtual string Build()
     {
-        return $"?{string.Join("&", _filters.Select(x => $"{x.Key}={x.Value}"))}";
+        return $"{string.Join("&", _filters.Select(x => $"{x.Key}={x.Value}"))}";
+    }
+
+    public T AsChild<T>() where T : FilterBuilder
+    {
+        return (T)this;
     }
 }

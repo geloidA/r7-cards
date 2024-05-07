@@ -157,7 +157,7 @@
 
     FilterBuilder CreateFilter()
     {
-        var filter = FilterTasksBuilder.Instance.MyProjects(true);
+        var filter = TaskFilterBuilder.Instance.MyProjects(true);
 
         if (reportRequest.OnlyDeadline)
         {

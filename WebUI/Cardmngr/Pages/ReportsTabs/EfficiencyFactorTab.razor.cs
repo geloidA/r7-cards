@@ -1,6 +1,7 @@
 ﻿using Cardmngr.Domain.Entities;
 using Cardmngr.Report;
 using Cardmngr.Reports;
+using Cardmngr.Shared.Extensions;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Onlyoffice.Api;
 using Onlyoffice.Api.Common;
@@ -14,6 +15,7 @@ public partial class EfficiencyFactorTab
     private List<Group> groups = [];
     private List<Project> projectsData = [];
     private List<UserInfo> usersData = [];
+    private List<UserInfo> groupUsers = [];
 
 
     protected override async Task OnInitializedAsync()
@@ -61,39 +63,44 @@ public partial class EfficiencyFactorTab
         reportService.Generator = new EfficiencyFactorReport 
         { 
             Tasks = tasks,
-            Statuses = await ProjectClient.GetTaskStatusesAsync().ToListAsync()
+            Users = reportRequest.Group.Any() ? groupUsers : reportRequest.Responsibles
         };
 
-        await reportService.GenerateReport($"Коэффициент эффективности-{DateTime.Now:dd.MM.yyyy HH_mm}");
+        await reportService.GenerateReport($"Эффективность пользователей-{DateTime.Now:dd.MM.yyyy HH_mm}");
 
         generating = false;
     }
 
-    private ValueTask<List<OnlyofficeTask>> GetFilteredTasksAsync()
+    private async ValueTask<List<OnlyofficeTask>> GetFilteredTasksAsync()
     {
-        return ProjectClient.GetFilteredTasksAsync(GetFilterBuilder())
-            .Where(x => reportRequest.Group.Any() || 
-                !reportRequest.Responsibles.Any() || 
-                reportRequest.Responsibles.Any(r => x.Responsibles.Any(tR => tR.Id == r.Id)))
-
-            .Where(x => !reportRequest.Projects.Any() || 
-                reportRequest.Projects.Any(p => p.Id == x.ProjectOwner.Id))
-
-            .ToListAsync();
-    }
-
-    private FilterBuilder GetFilterBuilder()
-    {
-        var filter = FilterTasksBuilder.Instance
-            .DeadlineStart(reportRequest.Deadline.Start)
-            .DeadlineStop(reportRequest.Deadline.End);
+        var tasks = ProjectClient.GetFilteredTasksAsync(GetFilterBuilder());
 
         if (reportRequest.Group.Any())
         {
-            Console.WriteLine("Group: " + reportRequest.Group.Single().Name);
-            filter = filter.Department(reportRequest.Group.Single().Id);
+            groupUsers = await PeopleClient.GetFilteredUsersAsync(PeopleFilterBuilder.Instance
+                .GroupId(reportRequest.Group.Single().Id).Simple())
+                    .Cast<UserInfo>()
+                    .ToListAsync();
+
+            tasks = tasks.Where(x => x.Responsibles.Any(tR => groupUsers.Any(u => u.Id == tR.Id)));
+        }
+        else
+        {
+            tasks = tasks.Where(x => !reportRequest.Responsibles.Any() || 
+                x.Responsibles.Any(tR => reportRequest.Responsibles.Any(r => r.Id == tR.Id)));
         }
 
-        return filter;
+        return await tasks
+            .Where(x => !reportRequest.Projects.Any() || 
+                reportRequest.Projects.Any(p => p.Id == x.ProjectOwner.Id))
+            .Where(x => x.IsDeadlineOut() || x.Status == Domain.Enums.Status.Closed)
+            .ToListAsync();
+    }
+
+    private TaskFilterBuilder GetFilterBuilder()
+    {
+        return TaskFilterBuilder.Instance
+            .DeadlineStart(reportRequest.Deadline.Start)
+            .DeadlineStop(reportRequest.Deadline.End);
     }
 }

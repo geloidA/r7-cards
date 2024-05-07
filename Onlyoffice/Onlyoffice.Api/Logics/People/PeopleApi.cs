@@ -5,6 +5,16 @@ namespace Onlyoffice.Api.Logics.People;
 
 public class PeopleApi(IHttpClientFactory httpClientFactory) : ApiLogicBase(httpClientFactory), IPeopleApi
 {
+    public async IAsyncEnumerable<UserProfileDto> GetFiltredPeopleAsync(FilterBuilder builder)
+    {
+        var response = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<UserProfilesDao>($"api/people/filter/{builder.Build()}"));
+
+        foreach (var user in response?.Response ?? [])
+        {
+            yield return user;
+        }
+    }
+
     public async Task<UserProfileDto?> GetProfileByIdAsync(string userId)
     {
         var response = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<UserProfileDao>($"api/people/{userId}"));

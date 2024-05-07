@@ -11,8 +11,8 @@
         <FluentEditForm Model="buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown" >
             <FluentValidationValidator />
             <OffcanvasHeader Class="py-0 d-flex" Style="padding-top: 20px !important;">
-                <FluentTextField Name="Title" style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
-                    @bind-Value="buffer.Title" class="p-0 w-100" />
+                <AutoGrowTextArea Name="Title" Style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
+                    @bind-Value="buffer.Title" Class="p-0 w-100" />
             </OffcanvasHeader>
             <FluentValidationMessage For="() => buffer.Title" class="ms-3" />
             <OffcanvasBody Class="d-flex flex-column form-group gap-2">
@@ -28,7 +28,7 @@
                 <FluentDatePicker Name="Deadline" Placeholder="Не установлен"
                     ReadOnly="!CanEdit" @bind-Value="buffer.Deadline" Label="Крайний срок:" />
                 <FluentValidationMessage For="() => buffer.Deadline" />
-                <FluentTextArea Name="Description" Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100" Rows="6"
+                <AutoGrowTextArea Name="Description" Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100"
                     @bind-Value="buffer.Description" ImmediateDelay="500" Immediate Spellcheck="true" ReadOnly="!CanEdit" />
                 <CascadingValue Value="State" IsFixed="true">
                     <TaskResponsibles Task="buffer" Disabled="!CanEdit" />

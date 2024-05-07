@@ -5,5 +5,6 @@ namespace Onlyoffice.Api.Logics.People;
 public interface IPeopleApi
 {
     Task<UserProfileDto?> GetProfileByIdAsync(string userId);
+    IAsyncEnumerable<UserProfileDto> GetFiltredPeopleAsync(FilterBuilder builder);
     IAsyncEnumerable<UserProfileDto> GetUsersAsync();
 }
