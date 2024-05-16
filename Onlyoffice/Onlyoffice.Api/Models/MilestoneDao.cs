@@ -4,7 +4,7 @@ public class SingleMilestoneDao : SingleResponseDao<MilestoneDto> { }
 
 public class MilestoneDao : MultiResponseDao<MilestoneDto> { }
 
-public class MilestoneDto
+public class MilestoneDto : IEntityDto<int>
 {
     public bool CanEdit { get; set; }
     public bool CanDelete { get; set; }

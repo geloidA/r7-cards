@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
+using Onlyoffice.Api.Providers;
 
-namespace Onlyoffice.Api.Providers;
+namespace Onlyoffice.Api.Extensions;
 
 public static class AuthenticationStateProviderExtensions
 {

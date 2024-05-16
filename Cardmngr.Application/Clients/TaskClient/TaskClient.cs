@@ -1,55 +1,58 @@
 ﻿using AutoMapper;
 using Cardmngr.Domain.Entities;
 using Onlyoffice.Api.Common;
-using Onlyoffice.Api.Logics;
 using Onlyoffice.Api.Models;
 using Cardmngr.Domain.Extensions;
 using Onlyoffice.Api;
+using Onlyoffice.Api.Logics.Repository;
 
 namespace Cardmngr.Application.Clients.TaskClient;
 
-public class TaskClient(IProjectApi projectApi, IMapper mapper) : ITaskClient
+public class TaskClient(ITaskRepository taskRepository, IMapper mapper) : ITaskClient
 {
-    private readonly IProjectApi projectApi = projectApi;
-    private readonly IMapper mapper = mapper;
-
     public async Task<OnlyofficeTask> CreateAsync(int projectId, TaskUpdateData task)
     {
-        var createdTask = await projectApi.CreateTaskAsync(projectId, task);
-        return mapper.Map<OnlyofficeTask>(createdTask);
+        return mapper.Map<OnlyofficeTask>(await taskRepository.CreateAsync(projectId, task));
     }
 
     public async Task<TaskTag> CreateTagAsync(int taskId, string name)
     {
-        var commentDto = await projectApi.CreateTaskCommentAsync(taskId, new CommentUpdateData { Content = name.ToCommentContent() });
+        var commentDto = await taskRepository.CreateCommentAsync(taskId, new CommentUpdateData { Content = name.ToCommentContent() });
         return new TaskTag(commentDto.Id, name, commentDto.CanEdit);
+    }
+
+    public IAsyncEnumerable<OnlyofficeTask> GetAllAsync()
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<OnlyofficeTask> GetAsync(int entityId)
     {
-        var taskDto = await projectApi.GetTaskByIdAsync(entityId);
-        return mapper.Map<OnlyofficeTask>(taskDto);
+        return mapper.Map<OnlyofficeTask>(await taskRepository.GetByIdAsync(entityId));
     }
 
-    public async IAsyncEnumerable<OnlyofficeTask> GetEntitiesAsync(FilterBuilder? filterBuilder = null)
+    public IAsyncEnumerable<OnlyofficeTask> GetEntitiesAsync(FilterBuilder? filterBuilder = null)
     {
-        await foreach (var tasksDto in projectApi.GetFiltredTasksAsync(filterBuilder ?? FilterBuilder.Empty))
-        {
-            yield return mapper.Map<OnlyofficeTask>(tasksDto);
-        }
+        return taskRepository
+            .GetFiltredAsync(filterBuilder ?? FilterBuilder.Empty)
+            .Select(mapper.Map<OnlyofficeTask>);
     }
 
-    public async IAsyncEnumerable<OnlyofficeTask> GetSelfTasksAsync()
+    public IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync(FilterBuilder filter)
     {
-        await foreach (var tasksDto in projectApi.GetSelfTasksAsync())
-        {
-            yield return mapper.Map<OnlyofficeTask>(tasksDto);
-        }
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<OnlyofficeTask> GetSelfTasksAsync()
+    {
+        return taskRepository
+            .GetAllSelfAsync()
+            .Select(mapper.Map<OnlyofficeTask>);
     }
 
     public async IAsyncEnumerable<Comment> GetTaskCommentsAsync(int taskId)
     {
-        await foreach (var comment in projectApi.GetTaskCommentsAsync(taskId))
+        await foreach (var comment in taskRepository.GetCommentsAsync(taskId))
         {
             yield return mapper.Map<Comment>(comment);
         }
@@ -57,33 +60,28 @@ public class TaskClient(IProjectApi projectApi, IMapper mapper) : ITaskClient
 
     public async IAsyncEnumerable<TaskTag> GetTaskTagsAsync(int taskId)
     {
-        await foreach (var comment in projectApi.GetTaskCommentsAsync(taskId))
+        await foreach (var comment in taskRepository.GetCommentsAsync(taskId))
         {
             if (comment.Text.TryParseToTagName(out var tagName))
-            {
                 yield return new TaskTag(comment.Id, tagName, comment.CanEdit);
-            }
         }
-        yield break;
     }
 
     public async Task<OnlyofficeTask> RemoveAsync(int taskId)
     {
-        var taskDto = await projectApi.DeleteTaskAsync(taskId);
-        return mapper.Map<OnlyofficeTask>(taskDto);
+        return mapper.Map<OnlyofficeTask>(await taskRepository.DeleteAsync(taskId));
     }
 
-    public Task RemoveTagAsync(string tagId) => projectApi.RemoveTaskCommentAsync(tagId);
+    public Task RemoveTagAsync(string tagId) => taskRepository.RemoveCommentAsync(tagId);
 
     public async Task<OnlyofficeTask> UpdateAsync(int taskId, TaskUpdateData task)
     {
-        var taskDto = await projectApi.UpdateTaskAsync(taskId, task);
-        return mapper.Map<OnlyofficeTask>(taskDto);
+        return mapper.Map<OnlyofficeTask>(await taskRepository.UpdateAsync(taskId, task));
     }
 
     public async Task<OnlyofficeTask> UpdateTaskStatusAsync(int taskId, OnlyofficeTaskStatus status)
     {
-        var taskDto = await projectApi.UpdateTaskStatusAsync(taskId, mapper.Map<Status>(status.StatusType), status.Id);
+        var taskDto = await taskRepository.UpdateStatusAsync(taskId, mapper.Map<Status>(status.StatusType), status.Id);
         return mapper.Map<OnlyofficeTask>(taskDto);
     }
 }

@@ -5,7 +5,7 @@ using Cardmngr.Shared.Feedbacks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Onlyoffice.Api.Providers;
+using Onlyoffice.Api.Extensions;
 
 namespace Cardmngr.Components.FeedbackAggregate;
 

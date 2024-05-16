@@ -26,6 +26,12 @@ public partial class FeedbackDetailsModal() : AddEditModalBase<Feedback, Feedbac
 
     private async Task SubmitAsync()
     {
+        if (enterPressed)
+        {
+            enterPressed = false;
+            return;
+        }
+
         if (IsAdd)
         {
             await State.CreateFeedbackAsync(buffer);

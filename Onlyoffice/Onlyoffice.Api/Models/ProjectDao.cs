@@ -6,7 +6,7 @@ public class ProjectDao : MultiResponseDao<ProjectDto> { }
 
 public class ProjectInfoDao : MultiResponseDao<ProjectInfoDto> { }
 
-public class ProjectDto
+public class ProjectDto : IEntityDto<int>
 {
     public int Id { get; set; }
     public string? Title { get; set; }
@@ -24,7 +24,7 @@ public class ProjectDto
     public int TaskCountTotal { get; set; }    
 }
 
-public class ProjectInfoDto
+public class ProjectInfoDto : IEntityDto<int>
 {
     public int Id { get; set; }
     public string? Title { get; set; }

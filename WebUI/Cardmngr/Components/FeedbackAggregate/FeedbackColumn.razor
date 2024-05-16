@@ -1,5 +1,7 @@
 ﻿<div class="feedback-col">
-    <KolBoardColumn TValue="Feedback" Width="Width" 
+    <KolBoardColumn TValue="Feedback" 
+        ItemSpacing="5" Width="Width" @ref="column"
+        HeightPredictor="ItemHeightCalculator.CalculateFeedbackHeight"
         OnDropItem="DropFeedback" Items="Items" KeySelector="f => f.Id">
         <HeaderTemplate>
             <div class="d-flex mb-2">
@@ -13,23 +15,3 @@
         </HeaderTemplate>
     </KolBoardColumn>
 </div>
-
-@code {
-    private ICollection<Feedback> Items => State.Model!.Feedbacks
-        .Where(x => x.Status == Status)
-        .OrderByDescending(x => x.LikedUsers.Count)
-        .ThenBy(x => x.DislikedUsers.Count)
-        .ToList();
-
-    [Parameter] public RenderFragment? HeaderTemplate { get; set; }
-    [Parameter] public int Width { get; set; } = 324;
-    [Parameter, EditorRequired] public FeedbackStatus Status { get; set; }
-
-    [CascadingParameter] FeedbacksState State { get; set; } = null!;
-
-    private async Task DropFeedback(Feedback dropped)
-    {
-        if (dropped.Status == Status) return;
-        await State.UpdateFeedbackStatusAsync(dropped.Id, Status);
-    }
-}

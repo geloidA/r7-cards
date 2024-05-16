@@ -6,15 +6,12 @@
 
 <li class="feedback-card clickable" style="font-size: 13px;" @onclick="openModalFunc" >
     <div class="py-1 px-2 h-100" >
-        <span class="fw-bold" style="overflow: hidden;">@Feedback.Title</span>
-        @if (Feedback.Description is { })
-        {
-            <div class="mt-1 max-height-100 fw-light desc-text">
-                @Feedback.Description
-            </div>
-        }
+        <span class="fw-bold title max-height-100 " >@Feedback.Title</span>
+        <div class="mt-1 max-height-100 fw-light desc-text" style="min-height: 20px;">
+            @Feedback.Description
+        </div>
         <UserAvatar User="@Feedback.Creator" Size="25" ShowName="true" />
-        <div class="mt-2 d-flex">
+        <div class="mt-2 d-flex" style="max-height: 20px;">
             @if (Feedback.Status == FeedbackStatus.Todo)
             {
                 <FluentBadge @onclick:stopPropagation>
@@ -59,50 +56,3 @@
         </div>
     </div>
 </li>
-
-@code {
-    bool likePressed;
-    bool dislikePressed;
-
-    [CascadingParameter] FeedbacksState State { get; set; } = null!;
-    [Parameter] public Feedback Feedback { get; set; } = null!;    
-    [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsModal { get; set; } = null!;
-    [CascadingParameter] IModalService Modal { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        openModalFunc = OpenModal;
-        var userId = AuthenticationStateProvider.ToCookieProvider().UserId;
-        likePressed = Feedback.LikedUsers.Contains(userId);
-        dislikePressed = Feedback.DislikedUsers.Contains(userId);
-    }
-
-    Func<Task> openModalFunc = null!;
-
-    async Task OpenModal()
-    {
-        var parameters = new ModalParameters
-        {
-            { "State", State },
-            { "Model", Feedback }
-        };
-
-        await Modal.Show<FeedbackDetailsModal>("", parameters, DetailsModal).Result;
-    }
-
-    async Task ToggleLike()
-    {
-        likePressed = !likePressed;
-        dislikePressed = false;
-
-        await State.ToggleFeedbackLikeAsync(Feedback.Id);
-    }
-
-    async Task ToggleDislike()
-    {
-        dislikePressed = !dislikePressed;
-        likePressed = false;
-
-        await State.ToggleFeedbackDislikeAsync(Feedback.Id);
-    }
-}

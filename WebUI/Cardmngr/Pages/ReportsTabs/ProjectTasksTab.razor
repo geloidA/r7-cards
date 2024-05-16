@@ -1,4 +1,6 @@
-﻿@using Cardmngr.Application.Clients.People
+﻿@using Cardmngr.Application
+@using Cardmngr.Application.Clients.People
+@using Cardmngr.Application.Clients.TaskClient
 @using Cardmngr.Report
 @using Onlyoffice.Api
 @using Onlyoffice.Api.Common
@@ -6,6 +8,8 @@
 
 @inject IProjectClient ProjectClient
 @inject IPeopleClient PeopleClient
+@inject ITaskClient TaskClient
+@inject ITaskStatusClient TaskStatusClient
 @inject IServiceProvider ServiceProvider
 @inject IToastService ToastService
 
@@ -33,7 +37,9 @@
                             IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())" >
 
                             <OptionTemplate Context="project">
-                                <span title="@project.Title" class="ellipsis-truncate">@project.Title</span>
+                                <span title="@project.Title" 
+                                    style="max-width: 450px;"
+                                    class="ellipsis-truncate">@project.Title</span>
                             </OptionTemplate>
 
                         </FluentAutocomplete>
@@ -131,7 +137,7 @@
         reportService.Generator = new TaskReportGenerator 
         {
             Tasks = tasks,
-            Statuses = await ProjectClient.GetTaskStatusesAsync().ToListAsync()
+            Statuses = await TaskStatusClient.GetAllAsync().ToListAsync()
         };
 
         await reportService.GenerateReport($"Задачи_проектов {DateTime.Now:dd.MM.yyyy HH_mm}");
@@ -142,7 +148,7 @@
 
     async IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync()
     {
-        await foreach (var task in FilterTasksByUserRequest(ProjectClient.GetFilteredTasksAsync(CreateFilter())))
+        await foreach (var task in FilterTasksByUserRequest(TaskClient.GetEntitiesAsync(CreateFilter())))
             yield return task;
     }
 

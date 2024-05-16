@@ -4,7 +4,7 @@ public class GroupsDao : MultiResponseDao<GroupDto> { }
 
 public class GroupDao : SingleResponseDao<GroupDto> { }
 
-public class GroupDto
+public class GroupDto : IEntityDto<string?>
 {
       public string? Id { get; set; }
       public string? Name { get; set; }

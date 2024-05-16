@@ -7,9 +7,14 @@ using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Group;
 using Cardmngr.Application.Mappers;
 using Microsoft.Extensions.DependencyInjection;
-using Onlyoffice.Api.Logics;
+using Onlyoffice.Api;
 using Onlyoffice.Api.Logics.Group;
+using Onlyoffice.Api.Logics.Milestone;
+using Onlyoffice.Api.Logics.MyTask;
 using Onlyoffice.Api.Logics.People;
+using Onlyoffice.Api.Logics.Project;
+using Onlyoffice.Api.Logics.Repository;
+using Onlyoffice.Api.Logics.Subtask;
 
 namespace Cardmngr.Application.Extensions;
 
@@ -18,9 +23,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection ConfigureServices(this IServiceCollection services)
     {
         return services
-            .AddScoped<IPeopleApi, PeopleApi>()
+            .AddScoped<IPeopleRepository, ApiPeopleRepository>()
             .AddScoped<IFeedbackClient, FeedbackClient>()
-            .AddScoped<IGroupApi, GroupApi>()
+            .AddScoped<IGroupRepository, ApiGroupRepository>()
             .AddScoped<IGroupClient, GroupClient>()
             .AddProjectClient();
     }
@@ -29,7 +34,12 @@ public static class ServiceCollectionExtensions
     {
         return services
             .AddAutoMapper(typeof(EntityMappingProfile), typeof(EnumMappingProfile), typeof(UpdateStatesMappingProfile))
-            .AddScoped<IProjectApi, ProjectApi>()
+            .AddScoped<IProjectRepository, ApiProjectRepository>()
+            .AddScoped<ITaskRepository, ApiTaskRepository>()
+            .AddScoped<ITaskStatusRepository, ApiTaskStatusRepository>()
+            .AddScoped<IMilestoneRepository, ApiMilestoneRepository>()
+            .AddScoped<ISubtaskRepository, ApiSubtaskRepository>()
+            .AddScoped<ITaskStatusClient, TaskStatusClient>()
             .AddScoped<IPeopleClient, PeopleClient>()
             .AddScoped<IUserClient, UserClient>()
             .AddScoped<IProjectClient, ProjectClient>()

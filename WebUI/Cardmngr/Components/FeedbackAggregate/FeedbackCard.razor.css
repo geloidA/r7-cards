@@ -4,3 +4,9 @@
     min-height: 100px;
     background-color: var(--main-card-bg);
 }
+
+.feedback-card .title {
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}

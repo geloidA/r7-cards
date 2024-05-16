@@ -3,7 +3,7 @@ using Cardmngr.Domain.Enums;
 using Cardmngr.Domain.Feedback;
 using Cardmngr.Shared.Feedbacks;
 using Microsoft.AspNetCore.Components.Authorization;
-using Onlyoffice.Api.Providers;
+using Onlyoffice.Api.Extensions;
 
 namespace Cardmngr.Application.Clients.FeedbackClient;
 

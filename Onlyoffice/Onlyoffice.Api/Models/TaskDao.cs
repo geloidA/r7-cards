@@ -8,7 +8,7 @@ public class SingleTaskDao : SingleResponseDao<TaskDto> { }
 
 public class TaskDao : MultiResponseDao<TaskDto> { }
 
-public class TaskDto
+public class TaskDto : IEntityDto<int>
 {
     public bool CanEdit { get; set; }
     public bool CanCreateSubtask { get; set; }
@@ -51,7 +51,7 @@ public class TaskUpdateData
     public int? CustomTaskStatus { get; set; }
 }
 
-public class SubtaskDto
+public class SubtaskDto : IEntityDto<int>
 {
     public bool CanEdit { get; set; }
     public int TaskId { get; set; }
@@ -74,7 +74,7 @@ public class SubtaskUpdateData
     public string? Title { get; set; }
 }
 
-public class UserDto : IUser
+public class UserDto : IUser, IEntityDto<string?>
 {
     public string? Id { get; set; }
     public string? DisplayName { get; set; }

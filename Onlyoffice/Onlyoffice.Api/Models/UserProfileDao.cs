@@ -4,7 +4,7 @@ public class UserProfilesDao : MultiResponseDao<UserProfileDto> { }
 
 public class UserProfileDao : SingleResponseDao<UserProfileDto> { }
 
-public class UserProfileDto : IUser
+public class UserProfileDto : IUser, IEntityDto<string?>
 {
     public string? Id { get; set; }
     public string? UserName { get; set; }

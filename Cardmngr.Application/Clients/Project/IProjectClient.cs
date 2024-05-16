@@ -13,9 +13,6 @@ public interface IProjectClient
     IAsyncEnumerable<ProjectStateVm> GetProjectsWithSelfTasksAsync();
     IAsyncEnumerable<Project> GetProjectsAsync();
     IAsyncEnumerable<KeyValuePair<ProjectInfo, ICollection<OnlyofficeTask>>> GetGroupedFilteredTasksAsync(FilterBuilder filter);
-    IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync(FilterBuilder filter);
-    IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync();
-    IAsyncEnumerable<OnlyofficeTaskStatus> GetTaskStatusesAsync();
     Task<ProjectStateVm> CreateProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks);
     Task<Project> FollowProjectAsync(int projectId);
 }

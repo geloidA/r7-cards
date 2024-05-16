@@ -48,7 +48,7 @@ public partial class EfficiencyFactorTab
     {
         generating = true;
 
-        var scope = ServiceProvider.CreateScope(); // for escape downloading saveFile.js when sidebar is opening
+        var scope = ServiceProvider.CreateScope(); // for escape downloading saveFile.js
         var reportService = scope.ServiceProvider.GetRequiredService<IReportService>();
 
         var tasks = await GetFilteredTasksAsync();
@@ -73,7 +73,7 @@ public partial class EfficiencyFactorTab
 
     private async ValueTask<List<OnlyofficeTask>> GetFilteredTasksAsync()
     {
-        var tasks = ProjectClient.GetFilteredTasksAsync(GetFilterBuilder());
+        var tasks = TaskClient.GetEntitiesAsync(GetFilterBuilder());
 
         if (reportRequest.Group.Any())
         {

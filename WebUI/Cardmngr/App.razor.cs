@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
-using Onlyoffice.Api.Providers;
+using Onlyoffice.Api.Extensions;
 using Onlyoffice.Api.Logics;
 using Cardmngr.Application.Clients;
 

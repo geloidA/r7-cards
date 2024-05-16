@@ -8,7 +8,6 @@ using Cardmngr.Components.Modals.ConfirmModals;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Extensions;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
@@ -29,7 +28,7 @@ public partial class ProjectBoard : ComponentBase
         State.MilestonesChanged += StateHasChanged;
     }
 
-    private ICollection<OnlyofficeTask> GetTasksForStatus(OnlyofficeTaskStatus status)
+    private IList<OnlyofficeTask> GetTasksForStatus(OnlyofficeTaskStatus status)
     {
         var filtered = State
             .FilteredTasks()

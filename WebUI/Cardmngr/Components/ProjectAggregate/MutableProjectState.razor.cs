@@ -7,7 +7,7 @@ using Cardmngr.Shared.Utils.Filter;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Onlyoffice.Api.Providers;
+using Onlyoffice.Api.Extensions;
 
 namespace Cardmngr.Components.ProjectAggregate;
 

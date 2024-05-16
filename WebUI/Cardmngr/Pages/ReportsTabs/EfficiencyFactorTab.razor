@@ -1,4 +1,5 @@
 ﻿@using Cardmngr.Application.Clients.People
+@using Cardmngr.Application.Clients.TaskClient
 @using Cardmngr.Application.Group
 @using Cardmngr.Exceptions
 @using Cardmngr.Report
@@ -7,6 +8,7 @@
 @using Onlyoffice.Api.Common
 
 @inject IProjectClient ProjectClient
+@inject ITaskClient TaskClient
 @inject IGroupClient GroupClient
 @inject IPeopleClient PeopleClient
 @inject IToastService ToastService
@@ -14,32 +16,10 @@
 
 <div class="d-flex flex-wrap">
     <div class="col">
-        <h4>Коэффициент эффективности</h4>
-        <p>Отчет <i>'Коэффициент эффективности'</i> отобразит список выполненных и просроченных задач, сгруппированных по ответственным за них пользователям и проектам.</p>
+        <h4>Эффективность пользователей</h4>
+        <p>Отчет <i>'Эффективность пользователей'</i> отобразит список выполненных и просроченных задач, сгруппированных по ответственным за них пользователям и проектам.</p>
         <p>Чтобы посмотреть список всех пользователей во всех проектах, сразу нажмите <i>'Сгенерировать отчет'.</i></p>
         <p>Настройте интервал дат крайнего срока задач для выборки интересующего вас периода.</p>
-        <p>
-            <FluentMessageBar Title="Примечание." Intent="@MessageIntent.Warning" AllowDismiss="false" >
-                Подсчет процентных значений выполняется по формуле: 
-                <math class="fs-5 ms-1">
-                    <mrow>
-                        <mfrac>
-                            <mrow>
-                                <mi>x</mi>
-                            </mrow>
-                            <mrow>
-                                <mi>y</mi>
-                            </mrow>
-                        </mfrac>
-                        <mo>∙</mo>
-                        <mi style="font-size: 15px;">100 %</mi>
-                    </mrow>
-                </math>
-            , где <math class="fs-5 ms-1"><mi>x</mi></math> - кол-во выполненных/просроченных задач, а <math class="fs-5 ms-1"><mi>y</mi></math>
-            общее их кол-во.
-            Что некорректно, но это будет исправлено в будущем. <FluentEmoji Width="22px" Value="@(new Emojis.SmileysEmotion.Flat.Default.UpsideDownFace())" />
-            </FluentMessageBar>
-        </p>
         <p>Пример отчета:</p>
         <img src="images/efficiency-factor-report-example.png" class="mb-2" width="800" 
             style="border-radius: 10px; opacity: 0.8; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);" />
@@ -62,13 +42,14 @@
                         IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())" >
 
                         <OptionTemplate Context="project">
-                            <span title="@project.Title" class="ellipsis-truncate">@project.Title</span>
+                            <span title="@project.Title" style="max-width: 450px;" 
+                                class="ellipsis-truncate">@project.Title</span>
                         </OptionTemplate>
                     </FluentAutocomplete>
 
                     <div class="d-flex gap-3">
-                        <FluentAutocomplete 
-                            Placeholder="Все" 
+                        <FluentAutocomplete
+                            Placeholder="Все"
                             AutoComplete="off"
                             TOption="UserInfo" 
                             Label="Ответственные:" 
@@ -80,8 +61,9 @@
                             @bind-SelectedOptions="reportRequest.Responsibles"
                             IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())" >
 
-                            <OptionTemplate Context="user">
-                                <span title="@user.DisplayName" class="ellipsis-truncate">@user.DisplayName</span>
+                            <OptionTemplate Context="user" >
+                                <span title="@user.DisplayName" style="max-width: 250px;" 
+                                    class="ellipsis-truncate">@user.DisplayName</span>
                             </OptionTemplate>
                         </FluentAutocomplete>
 

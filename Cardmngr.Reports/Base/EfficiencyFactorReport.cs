@@ -48,19 +48,16 @@ public class EfficiencyFactorReport : ReportGeneratorBase
             .Fill.SetBackgroundColor(XLColor.FromHtml("#999999"))
             .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
         ws.Cell(row, 1).Style.Font.SetBold();
-
         ws.Cell(row, 1).Value = $"{user.DisplayName}";
+
         ws.Cell(row, 2).Value = "Всего:";
+        ws.Cell(row, 3).Value = tasks.Count();
 
-        var count = (double)tasks.Count();
-        var closed = tasks.Count(x => x.Status == Status.Closed);
-        var deadlineOverdue = tasks.Count(x => x.IsDeadlineOut());
+        ws.Cell(row, 4).Value = "Выполнено:";
+        ws.Cell(row, 5).Value = $"{tasks.Count(x => x.Status == Status.Closed)}";
 
-        ws.Cell(row, 3).Value = count;
-        ws.Cell(row, 4).Value = "Процент выполнения:";
-        ws.Cell(row, 5).Value = $"{closed / count:0.00%} ({closed})";      
-        ws.Cell(row, 6).Value = "Процент просрочки:";
-        ws.Cell(row, 7).Value = $"{deadlineOverdue / count:0.00%} ({deadlineOverdue})";
+        ws.Cell(row, 6).Value = "Просрочено:";
+        ws.Cell(row, 7).Value = $"{tasks.Count(x => x.IsDeadlineOut())}";
        
         return row + 1;
     }
@@ -72,25 +69,15 @@ public class EfficiencyFactorReport : ReportGeneratorBase
         ws.Cell(++row, 1).Value = "Задачи";
         ws.Cell(row, 1).Style.Alignment.SetIndent(2);
 
-        ws.Cell(row, 2).Value = "Крайний срок";        
+        ws.Cell(row, 2).Value = "Крайний срок";
         ws.Row(row).Height = 35;
         ws.Row(row).Style.Font.SetFontColor(XLColor.Gray);
         ws.Cell(row++, 3).Value = "Статус";
 
         foreach (var task in groupByProject)
         {
-            ws.Cell(row, 1).Style
-                .Alignment.SetIndent(3)
-                .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-
-            ws.Cell(row, 1).Value = task.IsDeadlineOut() ? $"☹️{task.Title}" : task.Title;
-
-            var deadlineString = $"{task.Deadline:dd.MM.yyyy}";
-            ws.Cell(row, 2).Value = string.IsNullOrEmpty(deadlineString) ? "—" : deadlineString;
-            ws.Cell(row, 3).Value = task.Status.GetDesc();
-
-            row++;
-        }        
+            row = GenerateTaskPart(ws, task, row);
+        }
 
         return row + 1;
     }
@@ -108,9 +95,63 @@ public class EfficiencyFactorReport : ReportGeneratorBase
         
         ws.Cell(row, 2).Value = "Всего:";
         ws.Cell(row, 3).Value = $"{groupByProject.Count()}";
+
         ws.Cell(row, 4).Value = "Выполнено:";
         ws.Cell(row, 5).Value = $"{groupByProject.Count(x => x.Status == Status.Closed)}";
+
         ws.Cell(row, 6).Value = "Просрочено:";
         ws.Cell(row, 7).Value = $"{groupByProject.Count(x => x.IsDeadlineOut())}";
+    }
+
+    private static int GenerateTaskPart(IXLWorksheet ws, OnlyofficeTask task, int row)
+    {
+        ws.Cell(row, 1).Style
+                .Alignment.SetIndent(3)
+                .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+
+        ws.Cell(row, 1).Value = task.IsDeadlineOut() ? $"{task.Title}" : task.Title;
+
+        ws.Cell(row, 1).Style.Alignment.SetWrapText(true);
+
+        var deadlineString = $"{task.Deadline:dd.MM.yyyy}";
+        ws.Cell(row, 2).Value = string.IsNullOrEmpty(deadlineString) ? "—" : deadlineString;
+        if (task.IsDeadlineOut())
+        {
+            ws.Cell(row, 2).Style
+                .Fill.SetBackgroundColor(XLColor.FromHtml("#cd6968"));
+        }
+        ws.Cell(row, 3).Value = task.Status.GetDesc();
+
+        if (task.Subtasks.Count != 0)
+        {
+            var start = ++row;
+            row = GenerateSubtasksPart(ws, task, row) - 1;
+            ws.Rows(start, row).Group();
+            ws.Rows(start, row).Collapse();
+            ws.Rows(start, row).Style.Font.SetFontSize(12);
+        }
+
+        return row + 1;
+    }
+
+    private static int GenerateSubtasksPart(IXLWorksheet ws, OnlyofficeTask task, int row)
+    {
+        ws.Rows(row, task.Subtasks.Count + row).Style
+            .Alignment.SetIndent(4)
+            .Alignment.SetWrapText(true)
+            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+
+        ws.Row(row).Style.Font.SetFontColor(XLColor.Gray);
+        ws.Row(row).Height = 20;
+        ws.Cell(row, 2).Value = "Статус";
+        ws.Cell(row++, 1).Value = "Подзадача";
+
+        foreach (var subtask in task.Subtasks.OrderByDescending(x => x.Status))
+        {
+            ws.Cell(row, 1).Value = subtask.Title;
+            ws.Cell(row++, 2).Value = subtask.Status.GetDesc();
+        }
+
+        return row;
     }
 }

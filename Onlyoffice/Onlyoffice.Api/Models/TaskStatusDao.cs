@@ -2,7 +2,7 @@
 
 public class TaskStatusDao : MultiResponseDao<TaskStatusDto> { }
 
-public class TaskStatusDto
+public class TaskStatusDto : IEntityDto<int>
 {
     public int StatusType { get; set; }
     public bool CanChangeAvailable { get; set; }

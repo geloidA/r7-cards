@@ -1,4 +1,4 @@
-﻿<KolBoard TValue="OnlyofficeTask" CanItemDrag="@(x => x.CanEdit)" Gap="20" >
+﻿<KolBoard TValue="OnlyofficeTask" CanItemDrag="@(x => x.CanEdit)" >
     <Columns>
         @if (State.Initialized)
         {
@@ -12,7 +12,7 @@
                 <div @key="status" >
                     <KolBoardColumn Width="365" TValue="OnlyofficeTask" CanCollapse="true"
                         OnDropItem="@(async task => await OnChangeTaskStatus(task, status))"
-                        Items="GetTasksForStatus(status)" KeySelector="t => t.Id" >
+                        Items="GetTasksForStatus(status)" KeySelector="t => t.Id" HeightPredictor="x => 150" >
                         <HeaderTemplate Context="isCollapsed">
                             <TaskStatusHeader IsCollapsed="isCollapsed" TaskStatus="status" />
                             @if (State.TaskFilter.Filters.Any())

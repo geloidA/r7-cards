@@ -6,7 +6,7 @@
 {
     <Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
         @ref="currentModal" OnClose="ShowCloseConfirm" >
-        <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
+        <EditForm Model="buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown">
             <FluentValidationValidator />
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
                 <AutoGrowTextArea style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
@@ -37,4 +37,13 @@
             </div>
         </EditForm>
     </Offcanvas>
+}
+
+@code {
+    bool enterPressed;
+
+    void HandleKeyDown(KeyboardEventArgs e)
+    {
+        enterPressed = e.Key == "Enter";
+    }
 }

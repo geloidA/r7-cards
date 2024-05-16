@@ -4,7 +4,7 @@ public class CommentsDao : MultiResponseDao<CommentDto> { }
 
 public class SingleCommentDao : SingleResponseDao<CommentDto> { }
 
-public class CommentDto
+public class CommentDto : IEntityDto<string>
 {
     public string Id { get; set; } = "";
     public UserDto? CreatedBy { get; set; }
