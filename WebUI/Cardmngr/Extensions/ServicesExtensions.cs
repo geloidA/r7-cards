@@ -9,6 +9,8 @@ using Cardmngr.Services;
 using Cardmngr.Report;
 using Blazored.Modal;
 using Cardmngr.Utils;
+using System.Collections.Concurrent;
+using Cardmngr.Domain.Entities;
 
 namespace Cardmngr;
 

@@ -1,0 +1,23 @@
+﻿<KolBoardColumn 
+    Width="365" 
+    @ref="column" 
+    @key="Status.Id"
+    CanCollapse="true" 
+    ItemSpacing="10"
+    Style="height: 99%;"
+    KeySelector="t => t.Id" 
+    TValue="OnlyofficeTask" 
+    HeightPredictor="GetTaskHeight" 
+    Items="GetTasksForStatus(Status)" 
+    OnDropItem="@(async task => await OnChangeTaskStatus(task, Status))" >
+    
+    <HeaderTemplate Context="isCollapsed">
+        <TaskStatusHeader IsCollapsed="@isCollapsed" TaskStatus="@Status" />
+        @if (State.TaskFilter.Filters.Any())
+        {
+            <div class="mt-1 d-flex justify-content-center fw-light" style="font-size: small;">
+                @GetTasksForStatus(Status).Count() результатов
+            </div>
+        }
+    </HeaderTemplate>
+</KolBoardColumn>

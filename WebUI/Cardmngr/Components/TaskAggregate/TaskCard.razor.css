@@ -23,3 +23,9 @@
 .default-text {
     color: var(--col-title-color);
 }
+
+.task-card .title {
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}

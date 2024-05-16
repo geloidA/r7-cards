@@ -8,7 +8,7 @@ using Cardmngr.Components.TaskAggregate.Modals;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Services;
-using System.Net;
+using System.Collections.Concurrent;
 
 namespace Cardmngr.Components.TaskAggregate;
 
@@ -21,6 +21,7 @@ public partial class TaskCard : ComponentBase
 
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] ProjectHubClient? ProjectHubClient { get; set; }
+    [CascadingParameter] ConcurrentDictionary<int, List<TaskTag>> TagsByTaskId { get; set; } = null!;
     [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsModal { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
@@ -33,29 +34,17 @@ public partial class TaskCard : ComponentBase
         Task.IsDeadlineOut() ? "red-border" :
         Task.IsSevenDaysDeadlineOut() ? "warning-border" : "";
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         openModalAction = OpenModal;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
+        if (TagsByTaskId.TryGetValue(Task.Id, out var tagsByTaskId))
         {
-            await InitializeTaskTagsAsync();
+            taskTags = tagsByTaskId;
         }
-    }
-
-    private async Task InitializeTaskTagsAsync()
-    {
-        try
+        else
         {
             taskTags = await TaskClient.GetTaskTagsAsync(Task.Id).ToListAsync();
-            StateHasChanged();
-        }
-        catch (HttpRequestException e) when (e.StatusCode != HttpStatusCode.BadGateway)
-        {
-            throw;
+            TagsByTaskId.TryAdd(Task.Id, taskTags);
         }
     }
 
