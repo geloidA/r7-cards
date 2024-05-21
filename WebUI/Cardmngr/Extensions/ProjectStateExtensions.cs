@@ -8,12 +8,12 @@ public static class ProjectStateExtensions
 {
     public static IEnumerable<OnlyofficeTask> GetMilestoneTasks(this IProjectState projectState, Milestone milestone)
     {
-        return projectState.Model?.Tasks.Where(x => x.MilestoneId == milestone.Id) ?? [];
+        return projectState.Tasks.Where(x => x.MilestoneId == milestone.Id);
     }
 
     public static IEnumerable<OnlyofficeTask> GetMilestoneTasks(this IProjectState projectState, int milestoneId)
     {
-        return projectState.Model?.Tasks.Where(x => x.MilestoneId == milestoneId) ?? [];
+        return projectState.Tasks.Where(x => x.MilestoneId == milestoneId);
     }
 
     /// <summary>
@@ -24,22 +24,22 @@ public static class ProjectStateExtensions
     /// <returns>Filtered tasks</returns>
     public static IEnumerable<OnlyofficeTask> FilteredTasks(this IProjectState projectState)
     {
-        return projectState.Model?.Tasks.Filter(projectState.TaskFilter) ?? [];
+        return projectState.Tasks.Filter(projectState.TaskFilter);
     }
 
     public static DateTime? Start(this IProjectState projectState)
     {
-        return projectState.Model?.Tasks.Min(x => x.StartDate);
+        return projectState.Tasks.Min(x => x.StartDate);
     }
 
     public static DateTime? Deadline(this IProjectState projectState)
     {
-        return projectState.Model?.Tasks.Max(x => x.Deadline);
+        return projectState.Tasks.Max(x => x.Deadline);
     }
 
     public static DateTime GetMilestoneStart(this IProjectState projectState, Milestone milestone)
     {
-        var minStart = projectState.Model?.Tasks
+        var minStart = projectState.Tasks
             .Where(x => x.MilestoneId == milestone.Id)
             .Min(x => x.StartDate);
         
@@ -53,16 +53,16 @@ public static class ProjectStateExtensions
     public static Milestone? GetMilestone(this IProjectState projectState, int? milestoneId)
     {
         if (milestoneId == null) return null;
-        return projectState.Model?.Milestones.FirstOrDefault(x => x.Id == milestoneId);
+        return projectState.Milestones.FirstOrDefault(x => x.Id == milestoneId);
     }
 
     public static int CountOpenTasks(this IProjectState projectState)
     {
-        return projectState.Model?.Tasks.Count(x => x.Status == Domain.Enums.Status.Open) ?? 0;
+        return projectState.Tasks.Count(x => x.Status == Domain.Enums.Status.Open);
     }
 
     public static int CountClosedTasks(this IProjectState projectState)
     {
-        return projectState.Model?.Tasks.Count(x => x.Status == Domain.Enums.Status.Closed) ?? 0;
+        return projectState.Tasks.Count(x => x.Status == Domain.Enums.Status.Closed);
     }
 }

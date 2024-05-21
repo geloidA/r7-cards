@@ -9,15 +9,12 @@ using Cardmngr.Extensions;
 using Cardmngr.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
 using KolBlazor.Components;
-using Cardmngr.Services;
-using System.Collections.Concurrent;
 
 namespace Cardmngr.Components.ProjectAggregate.Components;
 
-public partial class StatusColumn : ComponentBase
+public partial class StatusColumn : ComponentBase, IDisposable
 {
-    private bool isStateChangedFollowed;
-    private KolBoardColumn<OnlyofficeTask> column = null!;
+    private KolBoardColumn<OnlyofficeTask> boardColumnComponent = null!;
 
     [Inject] 
     private ITaskClient TaskClient { get; set; } = null!;
@@ -37,28 +34,37 @@ public partial class StatusColumn : ComponentBase
     [CascadingParameter(Name = "MiddleModal")] 
     ModalOptions ModalOptions { get; set; } = null!;
 
+    private int _opacity;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && !isStateChangedFollowed)
+        if (firstRender)
         {
-            isStateChangedFollowed = true;
-            State.TasksChanged += () => column.RefreshDataAsync().Forget();
-            await Task.Delay(500); // wait for tasks tags loaded. TODO: remove
-            column.RefreshDataAsync().Forget();
+            await Task.Delay(1);
+            _opacity = 1;
+            State.TasksChanged += RefreshColumn;
+            StateHasChanged();
         }
 
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private IList<OnlyofficeTask> GetTasksForStatus(OnlyofficeTaskStatus status)
+    private void RefreshColumn()
     {
-        var filtered = State
-            .FilteredTasks()
-            .FilterByStatus(status);
+        boardColumnComponent.RefreshDataAsync();
+    }
 
-        return status.StatusType == StatusType.Open
-            ? [.. filtered.OrderByTaskCriteria()]
-            : [.. filtered.OrderByDescending(x => x.Updated)];
+    protected override void OnInitialized()
+    {
+        State.TasksChanged += StateHasChanged;
+        base.OnInitialized();
+    }
+
+    private static IList<OnlyofficeTask> GetTasksForStatus(IProjectState state, OnlyofficeTaskStatus status)
+    {
+        return [.. state.FilteredTasks()
+            .FilterByStatus(status)
+            .OrderByTaskCriteria()];
     }
 
     private async Task OnChangeTaskStatus(OnlyofficeTask task, OnlyofficeTaskStatus status)
@@ -77,12 +83,9 @@ public partial class StatusColumn : ComponentBase
             ProjectHubClient?.SendUpdatedTaskAsync(task.ProjectOwner.Id, task.Id).Forget();
         }
     }
-    
-    [CascadingParameter] ConcurrentDictionary<int, List<TaskTag>> TagsByTaskId { get; set; } = null!;
 
-    private int GetTaskHeight(OnlyofficeTask task)
+    public void Dispose()
     {
-        TagsByTaskId.TryGetValue(task.Id, out var tagsByTaskId);
-        return ItemHeightCalculator.CalculateHeight(task, tagsByTaskId);
+        State.TasksChanged -= RefreshColumn;
     }
 }

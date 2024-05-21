@@ -6,22 +6,16 @@ using Cardmngr.Shared.Extensions;
 using Cardmngr.Components.ProjectAggregate;
 using Cardmngr.Components.TaskAggregate.Modals;
 using Cardmngr.Application.Clients.SignalRHubClients;
-using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Services;
-using System.Collections.Concurrent;
 
 namespace Cardmngr.Components.TaskAggregate;
 
 public partial class TaskCard : ComponentBase
 {
-    private List<TaskTag> taskTags = [];
-
-    [Inject] ITaskClient TaskClient { get; set; } = null!;
     [Inject] ITagColorManager TagColorGetter { get; set; } = null!;
 
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] ProjectHubClient? ProjectHubClient { get; set; }
-    [CascadingParameter] ConcurrentDictionary<int, List<TaskTag>> TagsByTaskId { get; set; } = null!;
     [CascadingParameter(Name = "DetailsModal")] ModalOptions DetailsModal { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
@@ -34,18 +28,24 @@ public partial class TaskCard : ComponentBase
         Task.IsDeadlineOut() ? "red-border" :
         Task.IsSevenDaysDeadlineOut() ? "warning-border" : "";
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         openModalAction = OpenModal;
-        if (TagsByTaskId.TryGetValue(Task.Id, out var tagsByTaskId))
+    }
+    
+    private int _opacity;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
         {
-            taskTags = tagsByTaskId;
+            // opacity animation
+            _opacity = 1;
+            await System.Threading.Tasks.Task.Delay(1);
+            StateHasChanged();
         }
-        else
-        {
-            taskTags = await TaskClient.GetTaskTagsAsync(Task.Id).ToListAsync();
-            TagsByTaskId.TryAdd(Task.Id, taskTags);
-        }
+
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     private Func<Task> openModalAction = null!; // TODO: maybe remove, because not improve performance too much
@@ -56,7 +56,7 @@ public partial class TaskCard : ComponentBase
             { "Model", Task },
             { "State", State },
             { "ProjectHubClient", ProjectHubClient },
-            { "TaskTags", taskTags }
+            { "TaskTags", Task.Tags }
         };
 
         await Modal.Show<TaskDetailsModal>("", parameters, DetailsModal).Result;

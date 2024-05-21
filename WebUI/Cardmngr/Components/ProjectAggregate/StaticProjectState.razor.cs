@@ -12,8 +12,8 @@ namespace Cardmngr.Components.ProjectAggregate;
 public sealed partial class StaticProjectState : ProjectStateBase, IProjectState, IDisposable
 {
     private string CssHeight => ViewModel?.IsCollapsed ?? true 
-        ? "min-height: 50px;" 
-        : "max-height: 650px; min-height: 650px;";
+        ? "height: 50px;" 
+        : "height: 650px;";
 
     private Icon CollapsedIcon => ViewModel?.IsCollapsed ?? true 
         ? new Icons.Regular.Size16.ChevronDown() 
@@ -29,7 +29,7 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
         toggleCollapsedFunc = ToggleCollapsed;
         if (ViewModel is { IsCollapsed: false })
         {
-            Model = await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks);
+            await SetModelAsync(await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks), cleanCache: false);
             Initialized = true;
         }
 
@@ -53,14 +53,23 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
 
     private Func<Task> toggleCollapsedFunc = null!;
 
+    private bool isTagsInitialized;
+
     private async Task ToggleCollapsed()
     {
         if (ViewModel is { })
         {
             ViewModel.IsCollapsed = !ViewModel.IsCollapsed;
 
-            Model = ViewModel.IsCollapsed ? null : await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks);
-            Initialized = Model is { };
+            if (!ViewModel.IsCollapsed)
+            {
+                Initialized = false;
+                var model = await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks);
+                await SetModelAsync(model, initTags: !isTagsInitialized, cleanCache:!isTagsInitialized);
+                Initialized = true;
+
+                isTagsInitialized = true;
+            }
         }
     }
 

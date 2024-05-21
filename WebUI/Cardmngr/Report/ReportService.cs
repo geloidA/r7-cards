@@ -23,7 +23,6 @@ public class ReportService(ReportJSModule jsModule) : IReportService
             throw new InvalidOperationException("Report generator is not set");
         }
 
-        var bytes = generator.GenerateReport();
-        await jsModule.SaveAsAsync($"{fileName}.xlsx", bytes);
+        await jsModule.SaveAsAsync($"{fileName}.xlsx", await Task.Run(generator.GenerateReport));
     }
 }

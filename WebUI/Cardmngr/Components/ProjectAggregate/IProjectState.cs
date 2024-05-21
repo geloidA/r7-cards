@@ -1,5 +1,4 @@
 ﻿using Cardmngr.Domain.Entities;
-using Cardmngr.Shared.Project;
 using Cardmngr.Shared.Utils.Filter;
 using Cardmngr.Utils;
 
@@ -7,9 +6,6 @@ namespace Cardmngr.Components.ProjectAggregate;
 
 public interface IProjectState
 {
-    IProjectStateVm? Model { get; }
-
-    event Action? StateChanged;
     event Action? MilestonesChanged;
     event Action? TasksChanged;
     event Action? SubtasksChanged;
@@ -20,9 +16,16 @@ public interface IProjectState
 
     IFilterManager<OnlyofficeTask> TaskFilter { get; }
 
+    Project Project { get; }
+    IReadOnlyList<OnlyofficeTaskStatus> Statuses { get; }
+    IReadOnlyList<UserProfile> Team { get; }
+    IReadOnlyList<OnlyofficeTask> Tasks { get; }
+
     void AddTask(OnlyofficeTask created);
     void UpdateTask(OnlyofficeTask task);
     void RemoveTask(OnlyofficeTask taskId);
+
+    IReadOnlyList<Milestone> Milestones { get; }
 
     void AddMilestone(Milestone milestone);
     void UpdateMilestone(Milestone milestone);

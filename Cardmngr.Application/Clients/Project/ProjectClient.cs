@@ -17,7 +17,7 @@ public class ProjectClient(
     IMilestoneRepository milestoneRepository,
     IMapper mapper) : IProjectClient
 {
-    public async Task<ProjectStateVm> GetProjectAsync(int projectId)
+    public async Task<ProjectStateDto> GetProjectAsync(int projectId)
     {
         var tasks = taskRepository
             .GetFiltredAsync(TaskFilterBuilder.Instance.ProjectId(projectId))
@@ -37,7 +37,7 @@ public class ProjectClient(
             .GetAllAsync()
             .ToListAsync(mapper.Map<OnlyofficeTaskStatus>);
 
-        return new ProjectStateVm
+        return new ProjectStateDto
         {
             Statuses = await statuses,
             Project = mapper.Map<Project>(await project),
@@ -52,46 +52,35 @@ public class ProjectClient(
         return projectRepository.GetAllAsync().Select(mapper.Map<Project>);
     }
 
-    public async IAsyncEnumerable<ProjectStateVm> GetProjectsWithSelfTasksAsync()
+    public async IAsyncEnumerable<ProjectStateDto> GetProjectsWithSelfTasksAsync()
     {
         var tasks = taskRepository.GetAllSelfAsync()
             .Select(mapper.Map<OnlyofficeTask>);
         var statuses = taskStatusRepository.GetAllAsync()
             .ToListAsync(mapper.Map<OnlyofficeTaskStatus>);
 
-        await foreach (var tasksByProject in tasks.GroupBy(x => x.ProjectOwner?.Id))
+        await foreach (var tasksByProject in tasks.GroupBy(x => x.ProjectOwner.Id))
         {
-            if (tasksByProject.Key != null)
+            var team = projectRepository.GetTeamAsync(tasksByProject.Key)
+                .ToListAsync(mapper.Map<UserProfile>);
+
+            var milestones = milestoneRepository.GetAllByProjectIdAsync(tasksByProject.Key)
+                                        .ToListAsync(mapper.Map<Domain.Entities.Milestone>);
+
+            var project = projectRepository.GetByIdAsync(tasksByProject.Key);
+
+            yield return new ProjectStateDto
             {
-                var team = projectRepository.GetTeamAsync(tasksByProject.Key.Value)
-                    .ToListAsync(mapper.Map<UserProfile>);
-
-                var milestones = milestoneRepository.GetAllByProjectIdAsync(tasksByProject.Key.Value)
-                                           .ToListAsync(mapper.Map<Domain.Entities.Milestone>);
-
-                var project = projectRepository.GetByIdAsync(tasksByProject.Key.Value);
-
-                yield return new ProjectStateVm
-                {
-                    Statuses = await statuses,
-                    Project = mapper.Map<Project>(await project),
-                    Milestones = await milestones,
-                    Team = await team,
-                    Tasks = await tasksByProject.ToListAsync()
-                };
-            }
-            else
-            {
-                yield return new ProjectStateVm
-                {
-                    Statuses = await statuses,
-                    Tasks = await tasksByProject.ToListAsync()
-                };
-            }
+                Statuses = await statuses,
+                Project = mapper.Map<Project>(await project),
+                Milestones = await milestones,
+                Team = await team,
+                Tasks = await tasksByProject.ToListAsync()
+            };
         }
     }
 
-    public async IAsyncEnumerable<IProjectStateVm> GetFilteredTasksAsync(TaskFilterBuilder filter)
+    public async IAsyncEnumerable<ProjectStateDto> GetFilteredTasksAsync(TaskFilterBuilder filter)
     {
         var statuses = taskStatusRepository
             .GetAllAsync()
@@ -109,7 +98,7 @@ public class ProjectClient(
                 .GetAllByProjectIdAsync(projectTasks.Key)
                 .ToListAsync(mapper.Map<Domain.Entities.Milestone>);
 
-            yield return new ProjectStateVm
+            yield return new ProjectStateDto
             {
                 Project = mapper.Map<Project>(await project),
                 Team = await team,
@@ -135,7 +124,7 @@ public class ProjectClient(
         return projectRepository.GetUserProjectsAsync().Select(mapper.Map<Project>);
     }
 
-    public async Task<ProjectStateVm> CreateProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks)
+    public async Task<ProjectStateDto> CreateProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks)
     {
         var projectId = tasks.First().ProjectOwner.Id;
 
@@ -157,7 +146,7 @@ public class ProjectClient(
             .GetAllByProjectIdAsync(projectId)
             .ToListAsync(mapper.Map<Domain.Entities.Milestone>);
         
-        return new ProjectStateVm
+        return new ProjectStateDto
         {
             Tasks = [.. tasks],
             Statuses = await statuses,

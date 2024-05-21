@@ -57,7 +57,7 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
     {
         if (IsAdd)
         {
-            var added = await MilestoneClient.CreateAsync(State.Model!.Project!.Id, buffer);
+            var added = await MilestoneClient.CreateAsync(State.Project.Id, buffer);
             State.AddMilestone(added);
         }
         else
@@ -86,15 +86,15 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
 
     private IEnumerable<UserInfo> SelectedResponsible
     {
-        get => State.Model!.Team.FirstOrDefault(x => x.Id == buffer.Responsible) is { } 
-            ? [State.Model!.Team.Single(x => x.Id == buffer.Responsible)] 
+        get => State.Team.FirstOrDefault(x => x.Id == buffer.Responsible) is { } 
+            ? [State.Team.Single(x => x.Id == buffer.Responsible)] 
             : [];
         set => buffer.Responsible = value.FirstOrDefault()?.Id;
     }
 
     private void OnSearchResponsible(OptionsSearchEventArgs<UserInfo> e)
     {
-        e.Items = State.Model!.Team.Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase));
+        e.Items = State.Team.Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase));
     }
 
     public void Dispose() => State.RefreshService.RemoveLock(lockGuid);

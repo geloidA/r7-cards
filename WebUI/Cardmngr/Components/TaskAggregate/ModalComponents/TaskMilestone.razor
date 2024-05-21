@@ -58,7 +58,7 @@
 
     protected override void OnInitialized()
     {
-        var selected = State.Model!.Milestones.SingleOrDefault(x => x.Id == Task.MilestoneId);
+        var selected = State.Milestones.SingleOrDefault(x => x.Id == Task.MilestoneId);
         if (selected is { })
         {
             SelectedMilestone = [selected];
@@ -73,7 +73,7 @@
 
     void OnSearch(OptionsSearchEventArgs<Milestone> e)
     {
-        e.Items = State.Model!.Milestones
+        e.Items = State.Milestones
             .Where(x => x.Title.Contains(e.Text, StringComparison.OrdinalIgnoreCase))
             .OrderBy(m => m.Title);
     }

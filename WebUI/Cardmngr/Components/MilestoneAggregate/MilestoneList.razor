@@ -2,9 +2,9 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-@if (State.Model!.Milestones.Any())
+@if (State.Milestones.Count > 0)
 {
-    @foreach (var milestone in State.Model.Milestones.OrderByMilestoneCriteria())
+    @foreach (var milestone in State.Milestones.OrderByMilestoneCriteria())
     {
         <div @key="milestone.Id" class="mt-2">
             <div class="d-flex align-items-center">

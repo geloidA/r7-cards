@@ -8,7 +8,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.Modals;
 
-public partial class ProjectDetailsModal : IDisposable
+public partial class ProjectDetailsModal : ComponentBase, IDisposable
 {
     private readonly Guid lockGuid = Guid.NewGuid();
     private Offcanvas currentModal = null!;
@@ -18,8 +18,7 @@ public partial class ProjectDetailsModal : IDisposable
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    Icon IconFollow => State.Model?.Project?.IsFollow ?? false 
-        ? new Icons.Filled.Size20.Star() : new Icons.Regular.Size20.Star();
+    Icon IconFollow => State.Project.IsFollow ? new Icons.Filled.Size20.Star() : new Icons.Regular.Size20.Star();
 
     protected override void OnInitialized()
     {

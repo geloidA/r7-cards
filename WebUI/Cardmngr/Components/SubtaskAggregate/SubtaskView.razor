@@ -117,13 +117,13 @@
         proxyUrl = Config.CheckKey("proxy-url");
         if (Subtask.Responsible is { })
         {
-            SelectedResponsible = [State.Model!.Team.Single(x => x.Id == Subtask.Responsible)];
+            SelectedResponsible = [State.Team.Single(x => x.Id == Subtask.Responsible)];
         }
     }
 
     void OnSearch(OptionsSearchEventArgs<UserInfo> e)
     {
-        e.Items = State.Model!.Team
+        e.Items = State.Team
             .Where(u => u.DisplayName.StartsWith(e.Text, StringComparison.InvariantCultureIgnoreCase))
             .OrderBy(u => u.DisplayName);
     }

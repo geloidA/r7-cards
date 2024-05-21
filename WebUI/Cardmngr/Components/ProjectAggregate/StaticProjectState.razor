@@ -24,7 +24,7 @@
                             @ViewModel.ProjectInfo.Title
                         </div>
                         <a class="align-self-center" href=@($"/project/{ViewModel.ProjectInfo.Id}")>
-                            <FluentIcon class="ms-1" Width="18" Value="@(new Icons.Regular.Size20.ArrowCircleUpRight())" />
+                            <FluentIcon class="ms-1" Width="23" Value="@(new Icons.Regular.Size20.ArrowCircleUpRight())" />
                         </a>
                     }
                 </div>
@@ -39,7 +39,7 @@
         </div>
         @if (!(ViewModel?.IsCollapsed ?? true))
         {
-            if (Model is { })
+            if (Initialized)
             {
                 <div class="d-flex flex-column position-relative" style="flex: auto !important;">
                     <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
@@ -49,10 +49,7 @@
             }
             else
             {
-                <div class="d-flex justify-content-center align-content-center user-select-none">
-                    <FluentProgressRing />
-                    <span class="ms-2">Загрузка...</span>
-                </div>
+                <ProjectProgressIndicator Progress="Progress" />
             }
         }
     </div>

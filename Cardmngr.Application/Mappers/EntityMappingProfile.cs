@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cardmngr.Domain;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Domain.Enums;
 using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Application;
@@ -12,7 +13,8 @@ public class EntityMappingProfile : Profile
         CreateMap<ProjectDto, Project>();
         CreateMap<ProjectInfoDto, Project>();
         
-        CreateMap<MilestoneDto, Milestone>();
+        CreateMap<MilestoneDto, Milestone>()
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status == 0 ? Status.Open : Status.Closed));
         CreateMap<MilestoneDto, MilestoneInfo>();
 
         CreateMap<SubtaskDto, Subtask>();

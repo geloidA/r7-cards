@@ -6,8 +6,8 @@
 
 <li class="feedback-card clickable" style="font-size: 13px;" @onclick="openModalFunc" >
     <div class="py-1 px-2 h-100" >
-        <span class="fw-bold title max-height-100 " >@Feedback.Title</span>
-        <div class="mt-1 max-height-100 fw-light desc-text" style="min-height: 20px;">
+        <span class="fw-bold title max-height-100 pre-wrap" >@Feedback.Title</span>
+        <div class="mt-1 max-height-100 fw-light pre-wrap" style="min-height: 20px;">
             @Feedback.Description
         </div>
         <UserAvatar User="@Feedback.Creator" Size="25" ShowName="true" />

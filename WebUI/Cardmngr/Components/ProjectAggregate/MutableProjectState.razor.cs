@@ -37,11 +37,8 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
 
     public async Task ToggleFollowAsync()
     {
-        if (Model?.Project is { })
-        {
-            await ProjectClient.FollowProjectAsync(Model.Project.Id);
-            Model.Project.IsFollow = !Model.Project.IsFollow;
-        }
+        await ProjectClient.FollowProjectAsync(Project.Id);
+        Project.IsFollow = !Project.IsFollow;
     }
 
     protected override async Task OnParametersSetAsync()
@@ -50,7 +47,7 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
 
         if (previousId != Id)
         {
-            Model = await ProjectClient.GetProjectAsync(Id);
+            await SetModelAsync(await ProjectClient.GetProjectAsync(Id), true);
             TaskFilter.Clear();
             previousId = Id;
 
@@ -63,7 +60,7 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
 
     private async void OnRefreshModelAsync()
     {
-        Model = await ProjectClient.GetProjectAsync(Id);
+        await SetModelAsync(await ProjectClient.GetProjectAsync(Id), false, false);
     }
 
     private async Task<ProjectHubClient> GetNewHubClientAsync()

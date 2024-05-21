@@ -51,7 +51,7 @@
     async Task ShowCreationModal()
     {
         var res = await Modal.Show<SubtaskCreationModal>("Добавление подзадачи", 
-            new ModalParameters { { "Team", State.Model!.Team } }, ModalOptions).Result;
+            new ModalParameters { { "Team", State.Team } }, ModalOptions).Result;
 
         if (res.Confirmed)
         {

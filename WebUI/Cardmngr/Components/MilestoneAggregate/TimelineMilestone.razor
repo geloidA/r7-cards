@@ -8,6 +8,7 @@
 <div @onmouseenter="@(() => isHover = true)" @onmouseleave="@(() => isHover = false)"
     @onclick:preventDefault @onclick:stopPropagation @ondblclick:stopPropagation >
     <div class="w-100 d-flex overflow-hidden clickable timeline-badge @CssSelected" 
+        style="background-color: @BadgeColor;"
         @onclick="() => ToggleMilestone(Milestone)" >
         <div class="position-relative hided-opt ms-1 @CssShowOptions" >
             <FluentIcon Title="Фильтр по вехе"
@@ -48,8 +49,8 @@
     {
         get
         {
-            if (Milestone.IsClosed()) return "green";
-            return Milestone.IsDeadlineOut() ? "gray" : "orange";
+            if (Milestone.IsClosed()) return "rgb(64, 165, 120)";
+            return Milestone.IsDeadlineOut() ? "rgb(96, 114, 116)" : "var(--accent-fill-rest)";
         }
     }
 

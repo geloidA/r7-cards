@@ -5,11 +5,11 @@
 <Offcanvas Class="my-offcanvas my-offcanvas-left" @ref="currentModal">
     <OffcanvasHeader Class="py-1 d-flex flex-column" Style="padding-top: 20px !important;" >
         <div class="d-flex flex-row align-self-start mb-2 w-100">
-            <span class="align-self-center w-75">@State.Model!.Project!.Title</span>
+            <span class="align-self-center w-75">@State.Project.Title</span>
             <FluentBadge title="Открытых задач" class="p-1 ms-1 user-select-none align-self-center" Appearance="Appearance.Accent" >
-                @State.Model!.Tasks.Count
+                @State.Tasks.Count
             </FluentBadge>
-            @if (State.Model!.Project.IsPrivate)
+            @if (State.Project.IsPrivate)
             {
                 <div class="ms-1 align-self-center">
                     <Tool Color="Color.Warning" TooltipTitle="Приватный проект"
@@ -18,18 +18,18 @@
             }
             <FluentSpacer />
             <FluentIcon id="follow-icon" class="user-select-none ms-1" OnClick="() => State.ToggleFollowAsync()"
-                Value="IconFollow" Title="@(State.Model!.Project!.IsFollow ? "Перестать отслеживать" : "Отслеживать")" />
+                Value="IconFollow" Title="@(State.Project.IsFollow ? "Перестать отслеживать" : "Отслеживать")" />
         </div>            
         <div class="w-100 header"></div>
     </OffcanvasHeader>
     <div class="row mt-2 align-items-center px-3">
         <div class="col">
             <i class="fw-light" style="font-size: 13px;">
-                Создан - @State.Model!.Project!.Created.ToShortDateString()
+                Создан - @State.Project.Created.ToShortDateString()
             </i>
         </div>
         <div class="col d-flex justify-content-end">                
-            @ProjectStatusBadge.RenderStatus(State.Model!.Project.Status.GetBadgeData())
+            @ProjectStatusBadge.RenderStatus(State.Project.Status.GetBadgeData())
         </div>
     </div>
     <OffcanvasBody Class="d-flex flex-column gap-2">
@@ -42,14 +42,14 @@
                 Конец - @(State.Deadline()?.ToShortDateString() ?? "???")
             </FluentBadge>
         </div>
-        <span>@State.Model!.Project.Description</span>
+        <span>@State.Project.Description</span>
         <FluentCard >
             <div class="d-flex align-items-center">
                 <FluentIcon Value="@(new Icons.Filled.Size20.Sparkle())" />
                 Вехи
-                <FluentBadge class="p-1" >@State.Model!.Milestones.Count</FluentBadge>
+                <FluentBadge class="p-1" >@State.Milestones.Count</FluentBadge>
                 <FluentSpacer />
-                <Tool Disabled="@(!State.Model!.Project.CanEdit)"
+                <Tool Disabled="@(!State.Project.CanEdit)"
                     Icon="@(new Icons.Regular.Size16.Add())" Color="Color.Success"
                     OnClick="ShowMilestoneCreation" TooltipTitle="Добавить веху" />
             </div>
@@ -66,17 +66,17 @@
             <div>
                 <FluentIcon Value="@(new Icons.Filled.Size20.People())" />
                 Команда 
-                <FluentBadge class="p-1" Appearance="Appearance.Accent">@State.Model!.Team.Count</FluentBadge>
+                <FluentBadge class="p-1" Appearance="Appearance.Accent">@State.Team.Count</FluentBadge>
             </div>
             <div style="max-height: 255px; overflow: auto;">
-                <UserList Users="@State.Model!.Team" />
+                <UserList Users="@State.Team" />
             </div>
         </FluentCard>
         <div class="d-flex align-items-center mt-2">
             <FluentIcon Value="@(new Icons.Filled.Size20.Person())" />
             Менеджер проекта
             <FluentSpacer />
-            <UserBadge User="@State.Model!.Project.Responsible" />
+            <UserBadge User="@State.Project.Responsible" />
         </div>
     </OffcanvasBody>
 </Offcanvas>

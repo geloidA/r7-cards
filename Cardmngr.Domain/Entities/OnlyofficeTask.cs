@@ -24,6 +24,7 @@ namespace Cardmngr.Domain.Entities
         public Status Status { get; init; }
         public ProjectInfo ProjectOwner { get; init; }
         public MilestoneInfo Milestone { get; init; }
+        public List<TaskTag> Tags { get; set; } = [];
 
         public bool Equals(OnlyofficeTask other)
         {

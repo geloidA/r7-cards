@@ -4,6 +4,7 @@
     background-color: var(--main-card-bg);
     border-radius: 5px;
     width: 100%;
+    transition: opacity 0.25s ease-in-out;
 }
 
 .board .board-column .task-card.dragged {
@@ -27,5 +28,4 @@
 .task-card .title {
     overflow-wrap: break-word;
     word-break: break-word;
-    white-space: normal;
 }

@@ -2,21 +2,18 @@
 
 <KolBoard TValue="OnlyofficeTask" CanItemDrag="@(x => x.CanEdit)" >    
     <Columns>
-        <CascadingValue Value="_tagsByTaskId" IsFixed="true">
-            @if (State.Initialized)
+        @{
+            var isFirst = true;
+            foreach (var status in State.Statuses.InLogicalOrder() ?? [])
             {
-                var isFirst = true;
-                foreach (var status in State.Model?.Statuses.InLogicalOrder() ?? [])
+                @if (!isFirst)
                 {
-                    @if (!isFirst)
-                    {
-                        <div class="status-column" style="width: 1px;"/>
-                    }
-                    <StatusColumn Status="status" />
-                    isFirst = false;
+                    <div class="status-column" style="width: 1px;"/>
                 }
-            }
-        </CascadingValue>
+                <StatusColumn Status="status" />
+                isFirst = false;
+            }   
+        }
     </Columns>
     <ItemTemplate Context="task">
         <TaskCard Task="task" />

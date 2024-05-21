@@ -1,6 +1,6 @@
 ﻿@using Domain.Enums
 
-<li class="task-card @CssDeadline" @onclick="openModalAction" >
+<li class="task-card @CssDeadline" @onclick="openModalAction" style="opacity: @_opacity;" >
     <div class="container py-1 px-4 default-text" style="min-height: 150px;">
         <div class="row py-1 @CssMarginTitle">
             <div class="px-0 d-flex">
@@ -11,20 +11,20 @@
                             TooltipTitle="Приоритет - Высокий" Style="margin-right: 5px;" />
                     </div>
                 }
-                <div class="fw-bold fs-6 max-height-100 title">@Task.Title</div>
+                <div class="fw-bold fs-6 max-height-100 title pre-wrap">@Task.Title</div>
             </div>
         </div>
         @if (Task.Description is { })
         {
-            <div class="row fw-light max-height-100 desc-text" >
+            <div class="row fw-light max-height-100 title pre-wrap" >
                 @Task.Description
             </div>
         }
-        @if (Task.Subtasks.Any())
+        @if (Task.Subtasks.Count > 0)
         {
             <div class="row py-1">
                 <div class="d-flex justify-content-end">
-                    + @Task.Subtasks.Count() подзадачи
+                    + @Task.Subtasks.Count подзадачи
                 </div>
             </div>
         }
@@ -36,7 +36,7 @@
                 </div>
             </div>
         }
-        @if (Task.Responsibles.Any())
+        @if (Task.Responsibles.Count > 0)
         {
             <div class="row py-1">
                 <div class="px-0">
@@ -44,11 +44,11 @@
                 </div>
             </div>
         }
-        @if (taskTags.Count > 0)
+        @if (Task.Tags.Count > 0)
         {
             <div class="row py-1">
                 <div class="d-flex flex-wrap gap-1 px-0">
-                    @foreach (var tag in taskTags)
+                    @foreach (var tag in Task.Tags)
                     {
                         <TaskTagLabel Tag="tag" Color="TagColorGetter.GetColor(tag)" />
                     }

@@ -31,9 +31,7 @@ else
 
     protected override void OnInitialized()
     {
-        filterItems = State.Model!.Milestones
-            .Select(x => new MilestoneFilterItem(x))
-            .ToList() ?? [];
+        filterItems = [.. State.Milestones.Select(x => new MilestoneFilterItem(x))];
     }
 
     void ToggleMilestone(Milestone milestone)

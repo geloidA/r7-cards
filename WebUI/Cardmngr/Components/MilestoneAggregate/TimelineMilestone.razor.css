@@ -3,7 +3,6 @@
 }
 
 .timeline-badge {
-    background-color: var(--accent-fill-rest) !important;
     border-radius: 5px;
     padding: 0;
     white-space: nowrap;

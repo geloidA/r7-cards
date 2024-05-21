@@ -92,7 +92,7 @@ public partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskU
         submitting = true;
         if (IsAdd)
         {
-            var created = await TaskClient.CreateAsync(State.Model!.Project!.Id, buffer);
+            var created = await TaskClient.CreateAsync(State.Project.Id, buffer);
             
             var tagsTasks = TaskTags.Select(x => TaskClient.CreateTagAsync(created.Id, x.Name));
             await Task.WhenAll(tagsTasks);

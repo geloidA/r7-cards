@@ -20,7 +20,7 @@ public partial class ProjectBoardHeader : ComponentBase
     {
         base.OnInitialized();
         ProjectInfo.OpenInfoFunc = ShowProjectMenu;
-        ProjectInfo.Title = State.Model!.Project!.Title;
+        ProjectInfo.Title = State.Project.Title;
     }
 
     private async Task ShowProjectMenu()

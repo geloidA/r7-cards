@@ -7,12 +7,12 @@ namespace Cardmngr.Application.Clients;
 
 public interface IProjectClient
 {
-    Task<ProjectStateVm> GetProjectAsync(int projectId);
+    Task<ProjectStateDto> GetProjectAsync(int projectId);
     IAsyncEnumerable<Project> GetSelfProjectsAsync();
     IAsyncEnumerable<Project> GetFollowedProjectsAsync();
-    IAsyncEnumerable<ProjectStateVm> GetProjectsWithSelfTasksAsync();
+    IAsyncEnumerable<ProjectStateDto> GetProjectsWithSelfTasksAsync();
     IAsyncEnumerable<Project> GetProjectsAsync();
     IAsyncEnumerable<KeyValuePair<ProjectInfo, ICollection<OnlyofficeTask>>> GetGroupedFilteredTasksAsync(FilterBuilder filter);
-    Task<ProjectStateVm> CreateProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks);
+    Task<ProjectStateDto> CreateProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks);
     Task<Project> FollowProjectAsync(int projectId);
 }

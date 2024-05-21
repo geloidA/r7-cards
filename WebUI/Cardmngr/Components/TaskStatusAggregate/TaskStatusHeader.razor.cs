@@ -21,7 +21,7 @@ public partial class TaskStatusHeader
 
     [Parameter] public bool IsCollapsed { get; set; }
 
-    public int TaskCount => State.Model?.Tasks.FilterByStatus(TaskStatus).Count() ?? 0;
+    public int TaskCount => State.Tasks.FilterByStatus(TaskStatus).Count();
 
     private async Task ShowCreateTaskModal()
     {

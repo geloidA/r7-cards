@@ -1,10 +1,14 @@
 ﻿@inject IConfiguration Config
 @inject NavigationManager NavigationManager
+@inject IJSRuntime Js
 
 @inherits KolComponentBase
 
 <div class="d-flex align-items-center @Class" style="@Style">
-    <Tool Icon="@(new Icons.Regular.Size24.ArrowCircleUpRight())" TooltipTitle="Перейти в Р7-Офис" OnClick=@NavigateToR7Office 
+    <FluentIcon Value="@(new Icons.Regular.Size24.ArrowClockwise())"
+        Title="Обновить страницу"
+        @onclick="@(async () => await Js.InvokeVoidAsync("reload"))" />
+    <Tool Icon="@(new Icons.Regular.Size24.ArrowCircleUpRight())" Class="ms-2" TooltipTitle="Перейти в Р7-Офис" OnClick=@NavigateToR7Office 
         />
 </div>
 

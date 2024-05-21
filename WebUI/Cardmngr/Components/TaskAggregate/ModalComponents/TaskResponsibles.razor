@@ -61,12 +61,12 @@
     protected override void OnInitialized()
     {
         proxyUrl = Config.CheckKey("proxy-url");
-        SelectedResponsibles = State.Model!.Team.Where(x => Task.Responsibles.Any(id => id == x.Id));
+        SelectedResponsibles = State.Team.Where(x => Task.Responsibles.Any(id => id == x.Id));
     }
 
     void OnSearch(OptionsSearchEventArgs<UserInfo> e)
     {
-        e.Items = State.Model!.Team
+        e.Items = State.Team
             .Where(x => x.DisplayName.Contains(e.Text, StringComparison.OrdinalIgnoreCase))
             .OrderBy(x => x.DisplayName);
     }
