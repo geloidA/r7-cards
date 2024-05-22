@@ -31,8 +31,8 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
 
     protected override void OnInitialized()
     {
-        RefreshService.Refreshed += OnRefreshModelAsync;
-        RefreshService.Start(TimeSpan.FromSeconds(7));
+        // RefreshService.Refreshed += OnRefreshModelAsync;
+        // RefreshService.Start(TimeSpan.FromSeconds(7));
     }
 
     public async Task ToggleFollowAsync()
@@ -73,7 +73,7 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
         var client = new ProjectHubClient(NavigationManager, TaskClient, Id, AuthenticationStateProvider.ToCookieProvider());
 
         client.OnUpdatedTask += UpdateTask;
-        client.OnDeletedTask += RemoveTask;
+        client.OnDeletedTask += id => RemoveTask(id);
         client.OnCreatedTask += AddTask;
 
         return client;

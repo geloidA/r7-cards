@@ -1,7 +1,7 @@
 ﻿using Cardmngr.Domain;
 using Cardmngr.Domain.Entities;
 
-namespace Cardmngr.Components.ProjectAggregate.Vms;
+namespace Cardmngr.Components.ProjectAggregate.Models;
 
 public class StaticProjectVm(ProjectInfo projectInfo, ICollection<OnlyofficeTask> tasks)
 {

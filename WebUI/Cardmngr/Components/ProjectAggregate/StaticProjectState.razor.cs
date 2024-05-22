@@ -1,5 +1,5 @@
 ﻿using Cardmngr.Application.Clients;
-using Cardmngr.Components.ProjectAggregate.Vms;
+using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Services;
 using Cardmngr.Shared;

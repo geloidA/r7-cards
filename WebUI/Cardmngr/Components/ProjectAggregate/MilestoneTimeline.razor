@@ -48,7 +48,7 @@
         };
 
         State.MilestonesChanged += StateHasChanged;
-        State.TasksChanged += StateHasChanged;
+        State.TasksChanged += _ => StateHasChanged();
     }
 
     public ValueTask DisposeAsync()

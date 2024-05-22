@@ -1,4 +1,5 @@
-﻿using Cardmngr.Domain.Entities;
+﻿using Cardmngr.Components.ProjectAggregate.Models;
+using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Utils.Filter;
 using Cardmngr.Utils;
 
@@ -7,7 +8,7 @@ namespace Cardmngr.Components.ProjectAggregate;
 public interface IProjectState
 {
     event Action? MilestonesChanged;
-    event Action? TasksChanged;
+    event Action<TaskChangedEventArgs?>? TasksChanged;
     event Action? SubtasksChanged;
 
     bool Initialized { get; }
@@ -23,6 +24,7 @@ public interface IProjectState
 
     void AddTask(OnlyofficeTask created);
     void UpdateTask(OnlyofficeTask task);
+    void ChangeTaskStatus(OnlyofficeTask task);
     void RemoveTask(OnlyofficeTask taskId);
 
     IReadOnlyList<Milestone> Milestones { get; }

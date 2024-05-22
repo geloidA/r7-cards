@@ -17,10 +17,15 @@ else
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     RenderFragment FluentBadge =>
-        @<FluentBadge title="@Milestone.Title" @onclick="OnClick" class=@($"{Class} {(OnClick.HasDelegate ? "clickable" : "")}") 
-            Appearance="Appearance.Accent" >
-            <span style="font-size: 12px; font-weight: 500;" class="hide-max-140 user-select-none">
-                @Milestone.Title
-            </span>
-        </FluentBadge>;
+        @<div>
+            @if (Milestone is { })
+            {
+                <FluentBadge title="@Milestone.Title" @onclick="OnClick" class=@($"{Class} {(OnClick.HasDelegate ? "clickable" : "")}") 
+                    Appearance="Appearance.Accent" >
+                    <span style="font-size: 12px; font-weight: 500;" class="hide-max-140 user-select-none">
+                        @Milestone.Title
+                    </span>
+                </FluentBadge>
+            }
+        </div>;
 }

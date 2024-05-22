@@ -11,6 +11,6 @@
 
     protected override void OnInitialized()
     {
-        State.TasksChanged += StateHasChanged;
+        State.TasksChanged += _ => StateHasChanged();
     }
 }

@@ -2,7 +2,7 @@
 
 <KolBoard TValue="OnlyofficeTask" CanItemDrag="@(x => x.CanEdit)" >    
     <Columns>
-        @{
+        @{ 
             var isFirst = true;
             foreach (var status in State.Statuses.InLogicalOrder() ?? [])
             {
@@ -10,7 +10,7 @@
                 {
                     <div class="status-column" style="width: 1px;"/>
                 }
-                <StatusColumn Status="status" />
+                <StatusColumn CommonHeightByKey="_commonHeightByKey" Status="status" />
                 isFirst = false;
             }   
         }

@@ -9,12 +9,14 @@ using Cardmngr.Extensions;
 using Cardmngr.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
 using KolBlazor.Components;
+using Cardmngr.Components.ProjectAggregate.Models;
 
 namespace Cardmngr.Components.ProjectAggregate.Components;
 
 public partial class StatusColumn : ComponentBase, IDisposable
 {
     private KolBoardColumn<OnlyofficeTask> boardColumnComponent = null!;
+    private IList<OnlyofficeTask> _tasks = [];
 
     [Inject] 
     private ITaskClient TaskClient { get; set; } = null!;
@@ -34,6 +36,9 @@ public partial class StatusColumn : ComponentBase, IDisposable
     [CascadingParameter(Name = "MiddleModal")] 
     ModalOptions ModalOptions { get; set; } = null!;
 
+    [Parameter]
+    public Dictionary<object, int>? CommonHeightByKey { get; set; }
+
     private int _opacity;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -42,22 +47,29 @@ public partial class StatusColumn : ComponentBase, IDisposable
         {
             await Task.Delay(1);
             _opacity = 1;
-            State.TasksChanged += RefreshColumn;
             StateHasChanged();
         }
 
         await base.OnAfterRenderAsync(firstRender);
     }
 
-    private void RefreshColumn()
-    {
-        boardColumnComponent.RefreshDataAsync();
-    }
-
     protected override void OnInitialized()
     {
-        State.TasksChanged += StateHasChanged;
+        _tasks = GetTasksForStatus(State, Status);
+        State.TasksChanged += RefreshColumn;
+        
         base.OnInitialized();
+    }
+
+    private void RefreshColumn(TaskChangedEventArgs? args)
+    {
+        if (args is { Action: TaskAction.Add or TaskAction.Remove } && args.Task?.TaskStatusId != Status.Id)
+        {
+            return;
+        }
+
+        _tasks = GetTasksForStatus(State, Status);
+        StateHasChanged();
     }
 
     private static IList<OnlyofficeTask> GetTasksForStatus(IProjectState state, OnlyofficeTaskStatus status)
@@ -78,7 +90,7 @@ public partial class StatusColumn : ComponentBase, IDisposable
         if (!task.HasStatus(status))
         {
             var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, status);
-            State.UpdateTask(updated);
+            State.ChangeTaskStatus(updated);
 
             ProjectHubClient?.SendUpdatedTaskAsync(task.ProjectOwner.Id, task.Id).Forget();
         }

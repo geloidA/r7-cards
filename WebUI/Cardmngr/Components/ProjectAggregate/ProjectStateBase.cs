@@ -1,5 +1,6 @@
 ﻿using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Components.Common;
+using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
 using Cardmngr.Shared.Extensions;
@@ -58,40 +59,47 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState
     public bool Initialized { get; protected set; }
 
     public abstract IFilterManager<OnlyofficeTask> TaskFilter { get; }
-    
+
     public event Action? MilestonesChanged;
     protected void OnMilestonesChanged() => MilestonesChanged?.Invoke();
 
-    public event Action? TasksChanged;
-    public void OnTasksChanged() => TasksChanged?.Invoke();
+    public event Action<TaskChangedEventArgs?>? TasksChanged;
+    private void OnTasksChanged(TaskAction action, OnlyofficeTask task) 
+        => TasksChanged?.Invoke(new TaskChangedEventArgs(action, task));
+
+    public void OnTasksChanged() => TasksChanged?.Invoke(null);
 
     public event Action? SubtasksChanged;
     protected void OnSubtasksChanged() => SubtasksChanged?.Invoke();
 
-    public void UpdateTask(OnlyofficeTask task)
+    public void UpdateTask(OnlyofficeTask task) => UpdateTask(task, TaskAction.Update);
+    
+    public void ChangeTaskStatus(OnlyofficeTask task) => UpdateTask(task, TaskAction.ChangeStatus);
+
+    private void UpdateTask(OnlyofficeTask task, TaskAction action)
     {
         _tasks.RemoveSingle(x => x.Id == task.Id);
         task.Tags = _taskTags.TryGetValue(task.Id, out var tags) ? tags : [];
         _tasks.Add(task);
 
-        OnTasksChanged();
+        OnTasksChanged(action, task);
     }
 
     public void AddTask(OnlyofficeTask created)
     {
         _tasks.Add(created);
 
-        OnTasksChanged();
+        OnTasksChanged(TaskAction.Add, created);
     }
 
-    public void RemoveTask(OnlyofficeTask task) => RemoveTask(task.Id);
+    public void RemoveTask(OnlyofficeTask task) => RemoveTask(task.Id, task);
 
-    public void RemoveTask(int taskId)
+    public void RemoveTask(int taskId, OnlyofficeTask? task = null)
     {
         _tasks.RemoveSingle(x => x.Id == taskId);
         _taskTags.Remove(taskId);
 
-        OnTasksChanged();
+        OnTasksChanged(TaskAction.Remove, task ?? new OnlyofficeTask { Id = taskId });
     }
 
     public void AddMilestone(Milestone milestone)

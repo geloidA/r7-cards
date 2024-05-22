@@ -2,6 +2,7 @@
 
 <div style="opacity: @_opacity;" class="smooth-appear">
     <KolBoardColumn @ref="boardColumnComponent"
+        CommonHeightByKey="CommonHeightByKey"
         Width="365"
         @key="Status.Id"
         CanCollapse="true" 
@@ -12,7 +13,7 @@
         EstimateHeight="150"
         Overscan="5"
         KeySelector="x => x.Id"
-        Items="GetTasksForStatus(State, Status)" 
+        Items="_tasks" 
         OnDropItem="@(async task => await OnChangeTaskStatus(task, Status))" >
         
         <HeaderTemplate Context="isCollapsed">
@@ -20,7 +21,7 @@
             @if (State.TaskFilter.Filters.Any())
             {
                 <div class="mt-1 d-flex justify-content-center fw-light" style="font-size: small;">
-                    @GetTasksForStatus(State, Status).Count результатов
+                    @_tasks.Count результатов
                 </div>
             }
         </HeaderTemplate>
