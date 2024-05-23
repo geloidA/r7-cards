@@ -4,13 +4,8 @@
 
 @inherits KolComponentBase
 @implements IAsyncDisposable
-<div class="user-select-none d-flex p-1" style="font-size: small;" >
-    <FluentIcon Value="@(new Icons.Filled.Size16.Sparkle())" Color="Color.Accent"/>
-    Вехи
-    <FluentSwitch @bind-Value="collapsed" title="Развернуть / Свернуть"/>
-</div>
 <div class="d-flex @Class" >
-    <KolTimeline Collapsed="!collapsed" MinWidth="1860" MaxWidth="25000" UncollapsedHeight="@(State.Milestones.Count * 36)" 
+    <KolTimeline Collapsed="!Collapsed" MinWidth="1860" MaxWidth="25000" UncollapsedHeight="@(State.Milestones.Count * 36)" 
         ShowTodayLine="true" Class="scrollbar-none py-0" >
         <CascadingValue Value="milestoneTaskFilter" IsFixed="true">
             @foreach (var milestone in State.Milestones.OrderBy(x => x.Deadline))
@@ -24,11 +19,13 @@
 </div>
 
 @code {
-    bool collapsed = false;
     [CascadingParameter] IProjectState State { get; set; } = null!;
 
     private bool firstFilterItemFlag = true;
     private readonly MilestoneTaskFilter milestoneTaskFilter = new();
+
+    [Parameter]
+    public bool Collapsed { get; set; }
 
     protected override void OnInitialized()
     {

@@ -5,4 +5,5 @@
     justify-content: center;
     user-select: none;
     margin-top: 40%;
+    color: var(--accent-fill-rest);
 }

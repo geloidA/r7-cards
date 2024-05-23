@@ -63,11 +63,6 @@ public partial class StatusColumn : ComponentBase, IDisposable
 
     private void RefreshColumn(TaskChangedEventArgs? args)
     {
-        if (args is { Action: TaskAction.Add or TaskAction.Remove } && args.Task?.TaskStatusId != Status.Id)
-        {
-            return;
-        }
-
         _tasks = GetTasksForStatus(State, Status);
         StateHasChanged();
     }

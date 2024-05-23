@@ -1,6 +1,8 @@
 ﻿<div class="feedback-col">
     <KolBoardColumn TValue="Feedback" 
         ItemSpacing="10" Width="Width"
+        EstimateHeight="113" Virtualized
+        Overscan="4"
         OnDropItem="DropFeedback" Items="Items" KeySelector="f => f.Id">
         <HeaderTemplate>
             <div class="d-flex mb-2">

@@ -9,6 +9,8 @@ namespace Cardmngr.Components.ProjectAggregate;
 
 public partial class ProjectBoardHeader : ComponentBase
 {
+    private bool collapsed;
+
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
 

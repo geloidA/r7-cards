@@ -2,7 +2,7 @@
 
 @if(show)
 {
-    <div class="d-flex gap-1 align-items-center">
+    <FluentToolbar id="toolbar-fluent-components" style="background-color: var(--neutral-layer-4);">
         <FluentAutocomplete Placeholder="Проект"
             TOption="Domain.ProjectInfo"
             SelectedOptionsChanged="SelectionProjectChanged"
@@ -30,20 +30,12 @@
             OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
             SelectedOptions="SelectedCreatedBy"
             OnOptionsSearch="OnCreatedBySearch" />
-            
-        <div class="user-select-none">
-            <FluentBadge class="clickable" BackgroundColor="@(onlyDeadlined ? "black" : "white")">
-                <div class="d-flex align-items-center" @onclick="@ToggleDeadlineFilter">
-                    <InputCheckbox class="form-check-input" style="margin-bottom: 2px;" @bind-Value="onlyDeadlined" />
-                    <span class="ms-1">Только просроченные</span>
-                </div>
-            </FluentBadge>
-            <FluentBadge class="clickable" BackgroundColor="@(onlyClosed ? "black" : "white")">
-                <div class="d-flex align-items-center" @onclick="@ToggleClosedFilter">
-                    <InputCheckbox class="form-check-input" style="margin-bottom: 2px;" @bind-Value="onlyClosed"  />
-                    <span class="ms-1">Только закрытые</span>
-                </div>
-            </FluentBadge>
-        </div>
-    </div>
+
+        <FluentRadioGroup @bind-Value="SelectorType" >
+            <FluentRadio Checked="true" Value=@(TaskSelectorType.None)>Все</FluentRadio>
+            <FluentRadio Value=@(TaskSelectorType.InProgress)>Активные</FluentRadio>
+            <FluentRadio Value=@(TaskSelectorType.Closed)>Закрытые</FluentRadio>
+            <FluentRadio Value=@(TaskSelectorType.Deadlined)>Просроченные</FluentRadio>
+        </FluentRadioGroup>
+    </FluentToolbar>
 }

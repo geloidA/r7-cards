@@ -1,0 +1,20 @@
+﻿<FluentSearch
+    Id="proj-filter-search"
+    autocomplete="off"
+    @onfocusin="_ => _popupVisible = !_popupVisible"
+    Placeholder="Фильтр по карточкам"
+    Style="width: 300px;"
+    Appearance="FluentInputAppearance.Outline" >
+
+</FluentSearch>
+
+<FluentPopover Class="popup-filter-tool" style="padding: 0;"
+    VerticalThreshold="170" 
+    AutoFocus="false"    
+    AnchorId="proj-filter-search" 
+    @bind-Open="_popupVisible" >
+    <Body >
+        <div class="narrow-tip">Cузьте область поиска</div>
+        <ProjectNarrowTip Title="label:" />
+    </Body>
+</FluentPopover>

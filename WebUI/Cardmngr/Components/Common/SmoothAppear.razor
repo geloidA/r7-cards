@@ -1,0 +1,27 @@
+@using System.Globalization
+<div style="opacity: @_opacity; transition: opacity @(DelayString)s ease-in-out;">
+    @ChildContent
+</div>
+
+@code {
+    private int _opacity;
+    private string DelayString => SmoothDelay.TotalSeconds.ToString(CultureInfo.InvariantCulture);
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _opacity = 1;
+            await System.Threading.Tasks.Task.Delay(1);
+            StateHasChanged();
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    [Parameter]
+    public TimeSpan SmoothDelay { get; set; } = TimeSpan.FromMilliseconds(250);
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

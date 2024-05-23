@@ -31,8 +31,8 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
 
     protected override void OnInitialized()
     {
-        // RefreshService.Refreshed += OnRefreshModelAsync;
-        // RefreshService.Start(TimeSpan.FromSeconds(7));
+        RefreshService.Refreshed += OnRefreshModelAsync;
+        RefreshService.Start(TimeSpan.FromSeconds(7));
     }
 
     public async Task ToggleFollowAsync()

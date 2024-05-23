@@ -1,12 +1,10 @@
-﻿using Onlyoffice.Api.Common;
+﻿using System.ComponentModel;
+using Onlyoffice.Api.Common;
 
 namespace Cardmngr.Services;
 
 public class FilterManagerService
 {
-    private bool onlyClosed;
-    private bool onlyDeadlined;
-
     public event Action<TaskFilterBuilder>? FilterChanged;
     private void OnFilterChanged() => FilterChanged?.Invoke(GenerateFilter());
 
@@ -16,28 +14,15 @@ public class FilterManagerService
             .Creator(withCreatedBy)
             .Participant(withResponsible);
 
-        if (onlyClosed) builder = builder.Status(Status.Closed);
         builder = projectId != null ? builder.ProjectId(projectId.Value) : builder.MyProjects(true);
 
-        return onlyDeadlined
-            ? builder
-                .DeadlineStop(DateTime.Now)
-                .Status(Status.Open)
-            : builder;
-    }
-
-    public bool ToggleClosedFilter()
-    {
-        onlyClosed = !onlyClosed;
-        OnFilterChanged();
-        return onlyClosed;
-    }
-
-    public bool ToggleDeadlineFilter()
-    {
-        onlyDeadlined = !onlyDeadlined;
-        OnFilterChanged();
-        return onlyDeadlined;
+        return taskSelectorType switch 
+        {
+            TaskSelectorType.InProgress => builder.Status(Status.Open),
+            TaskSelectorType.Deadlined => builder.DeadlineStop(DateTime.Now).Status(Status.Open),
+            TaskSelectorType.Closed => builder.Status(Status.Closed),
+            _ => builder
+        };
     }
 
     private string? withResponsible;
@@ -72,4 +57,27 @@ public class FilterManagerService
             OnFilterChanged();
         }
     }
+
+    private TaskSelectorType taskSelectorType;
+    public TaskSelectorType TaskSelectorType
+    {
+        get => taskSelectorType;
+        set
+        {
+            taskSelectorType = value;
+            OnFilterChanged();
+        }
+    }
+}
+
+public enum TaskSelectorType
+{
+    [Description("Все")]
+    None,
+    [Description("Закрытые")]
+    Closed,
+    [Description("Просроченные")]
+    Deadlined,
+    [Description("Активные")]
+    InProgress
 }

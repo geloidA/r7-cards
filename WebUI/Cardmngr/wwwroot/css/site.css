@@ -153,3 +153,14 @@ ul {
     text-overflow: ellipsis;
     max-width: 200px;
 }
+
+.popup-filter-tool {
+    width: 300px;
+    margin-top: 5px;
+    border-radius: 5px;
+}
+
+.popup-filter-tool .narrow-tip {
+    border-bottom: 1px solid var(--neutral-layer-2); 
+    padding-bottom: 5px;
+}

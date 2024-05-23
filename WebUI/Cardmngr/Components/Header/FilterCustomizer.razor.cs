@@ -10,8 +10,6 @@ namespace Cardmngr.Components.Header;
 public partial class FilterCustomizer : ComponentBase, IDisposable
 {
     private bool show;
-    private bool onlyDeadlined;
-    private bool onlyClosed;
 
     [Inject] AllProjectsPageSummaryService SummaryService { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
@@ -99,14 +97,14 @@ public partial class FilterCustomizer : ComponentBase, IDisposable
             .OrderBy(x => x.DisplayName);
     }
 
-    private void ToggleDeadlineFilter()
+    private TaskSelectorType _selectorType;
+    private TaskSelectorType SelectorType
     {
-        onlyDeadlined = SummaryService.FilterManager.ToggleDeadlineFilter();
-    }
-
-    private void ToggleClosedFilter()
-    {
-        onlyClosed = SummaryService.FilterManager.ToggleClosedFilter();
+        get => _selectorType;
+        set
+        {
+            SummaryService.FilterManager.TaskSelectorType = _selectorType = value;
+        }
     }
 
     private static bool IsFilterPage(string uri) => uri.EndsWith("/all-projects", StringComparison.OrdinalIgnoreCase);

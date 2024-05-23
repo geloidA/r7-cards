@@ -1,0 +1,12 @@
+﻿<div class="">
+    <span class="fw-bold">@Title</span>
+    <span class="text-secondary">@Example</span>
+</div>
+
+@code {
+    [Parameter, EditorRequired] 
+    public string Title { get; set; } = null!;
+
+    [Parameter]
+    public string? Example { get; set; }
+}

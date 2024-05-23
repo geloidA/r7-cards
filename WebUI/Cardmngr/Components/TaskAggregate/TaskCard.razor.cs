@@ -32,23 +32,9 @@ public partial class TaskCard : ComponentBase
     {
         openModalAction = OpenModal;
     }
-    
-    private int _opacity;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // opacity animation
-            _opacity = 1;
-            await System.Threading.Tasks.Task.Delay(1);
-            StateHasChanged();
-        }
-
-        await base.OnAfterRenderAsync(firstRender);
-    }
 
     private Func<Task> openModalAction = null!; // TODO: maybe remove, because not improve performance too much
+    
     private async Task OpenModal()
     {
         var parameters = new ModalParameters
