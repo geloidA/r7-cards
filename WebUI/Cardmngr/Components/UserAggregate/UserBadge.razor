@@ -1,6 +1,6 @@
 ﻿@inherits KolComponentBase
 
-<div class="d-flex flex-column @(OnClick.HasDelegate ? "clickable" : "") @Class" style="@Style" @onclick="OnClick" >    
+<div class="d-flex flex-column @(OnClick.HasDelegate ? "clickable" : "") @Class" style="@Style" @onclick="HandleClick" >    
     <FluentBadge class="@(User is { } ? "py-0" : "")" Circular="true" BackgroundColor="@BadgeColor" >
         @if (User is { })
         {
@@ -19,7 +19,4 @@
     [Parameter] public UserInfo? User { get; set; }
     [Parameter] public string? Title { get; set; }
     [Parameter] public string BadgeColor { get; set; } = "green";
-
-    [Parameter] public EventCallback OnClick { get; set; }
-
 }

@@ -3,7 +3,7 @@
 
 @if (TooltipTitle is { })
 {
-    <div id="@tooltipGuid.ToString()" class="d-flex align-items-center tool @Class @СssDisabled" style="@Style" @onclick="OnClickHandler">
+    <div id="@tooltipGuid.ToString()" class="d-flex align-items-center tool @Class @СssDisabled" style="@Style" @onclick="HandleClick">
         <FluentIcon Value="Icon" Color="Color"/>
         @if (Text is { })
         {
@@ -16,7 +16,7 @@
 }
 else
 {
-    <div class="d-flex justify-content-center align-items-center tool @Class @СssDisabled" style="@Style" @onclick="OnClickHandler">
+    <div class="d-flex justify-content-center align-items-center tool @Class @СssDisabled" style="@Style" @onclick="HandleClick">
         <FluentIcon Value="Icon" Color="Color"/>
         @if (Text is { })
         {
@@ -34,13 +34,4 @@ else
     [Parameter] public Color? Color { get; set; }
     [Parameter] public string? Text { get; set; }
     [Parameter] public string? TooltipTitle { get; set; }
-    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
-
-    private async Task OnClickHandler(MouseEventArgs args)
-    {
-        if (OnClick.HasDelegate && !Disabled)
-        {
-            await OnClick.InvokeAsync(args);
-        }
-    }
 }

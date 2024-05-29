@@ -1,9 +1,10 @@
 ﻿@implements IDisposable
 
-<div style="opacity: @_opacity;" class="smooth-appear">
+<SmoothAppear >
     <KolBoardColumn @ref="boardColumnComponent"
         CommonHeightByKey="CommonHeightByKey"
         Width="365"
+        CollapsedWidth="150"
         @key="Status.Id"
         CanCollapse="true" 
         ItemSpacing="10"
@@ -17,7 +18,7 @@
         OnDropItem="@(async task => await OnChangeTaskStatus(task, Status))" >
         
         <HeaderTemplate Context="isCollapsed">
-            <TaskStatusHeader IsCollapsed="@isCollapsed" TaskStatus="@Status" />
+            <TaskStatusHeader TaskStatus="@Status" />
             @if (State.TaskFilter.Filters.Any())
             {
                 <div class="mt-1 d-flex justify-content-center fw-light" style="font-size: small;">
@@ -26,4 +27,4 @@
             }
         </HeaderTemplate>
     </KolBoardColumn>
-</div>
+</SmoothAppear>

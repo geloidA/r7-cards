@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
-public abstract class ProjectStateBase : ComponentBase, IProjectState
+public abstract class ProjectStateBase : ComponentBase, IProjectState, IDisposable
 {
     private Project _project = null!;
     private List<UserProfile> _team = [];
@@ -19,30 +19,40 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState
     private List<OnlyofficeTaskStatus> _statuses = [];
     private List<OnlyofficeTask> _tasks = [];
     private readonly Dictionary<int, List<TaskTag>> _taskTags = [];
+    
+    protected readonly Dictionary<int, int> _commonHeightByKey = [];
+    private CancellationTokenSource? _cts;
 
-    public async Task SetModelAsync(ProjectStateDto model, bool initTags = false, bool cleanCache = true)
+    public async Task SetModelAsync(ProjectStateDto model, bool firstRender = false)
     {
-        _project = model.Project;
         _team = model.Team;
+        _project = model.Project;
         _statuses = model.Statuses;
         _milestones = model.Milestones;
 
-        if (cleanCache) _taskTags.Clear();
+        if (firstRender)
+        {
+            _tasks = [];
+            Initialized = true;
+            StateHasChanged();
 
-        if (initTags)
-        {
-            await InitializeTaskTagsAsync(model.Tasks);
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
+
+            await InitializeTaskTagsAsync(model.Tasks, token);
+
+            OnMilestonesChanged();
+            return;
         }
-        else
+        
+        model.Tasks.ForEach(x => 
         {
-            model.Tasks.ForEach(x => 
+            if (_taskTags.TryGetValue(x.Id, out _))
             {
-                if (_taskTags.TryGetValue(x.Id, out _))
-                {
-                    x.Tags = _taskTags[x.Id];
-                }
-            });
-        }
+                x.Tags = _taskTags[x.Id];
+            }
+        });
 
         _tasks = model.Tasks;
 
@@ -51,9 +61,9 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState
     }
 
     public Project Project => _project;
+    public IReadOnlyList<UserProfile> Team => _team;
     public IReadOnlyList<OnlyofficeTask> Tasks => _tasks;
     public IReadOnlyList<Milestone> Milestones => _milestones;
-    public IReadOnlyList<UserProfile> Team => _team;
     public IReadOnlyList<OnlyofficeTaskStatus> Statuses => _statuses;
 
     public bool Initialized { get; protected set; }
@@ -161,23 +171,39 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState
 
     protected ProgressState Progress { get; set; } = new();
 
-    private async Task InitializeTaskTagsAsync(List<OnlyofficeTask> tasks)
+    private async Task InitializeTaskTagsAsync(List<OnlyofficeTask> tasks, CancellationToken cancellationToken)
     {
-        Progress.Max = tasks.Count;
         foreach (var task in tasks)
         {
             if (!_taskTags.TryGetValue(task.Id, out _))
             {
-                var value = await TaskClient.GetTaskTagsAsync(task.Id).ToListAsync();
+                var value = await TaskClient.GetTaskTagsAsync(task.Id).ToListAsync(cancellationToken);
                 _taskTags[task.Id] = value;
             }
 
-            task.Tags = _taskTags[task.Id];
-            Progress.Value++;
-            StateHasChanged();
-        }
+            cancellationToken.ThrowIfCancellationRequested();
 
-        Progress.Value = 0;
-        await Task.Delay(150); // wait for progress ring animation
+            task.Tags = _taskTags[task.Id];
+            _tasks.Add(task);
+            OnTasksChanged();
+        }
+    }
+
+    protected virtual Task CleanPreviousProjectStateAsync()
+    {
+        TaskFilter.Clear();
+        _taskTags.Clear();
+        _commonHeightByKey.Clear();
+
+        TasksChanged = null;
+        MilestonesChanged = null;
+        SubtasksChanged = null;
+
+        return Task.CompletedTask;
+    }
+
+    public virtual void Dispose()
+    {
+        _cts?.Dispose();
     }
 }

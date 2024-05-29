@@ -41,12 +41,18 @@
 
 @code {
     private List<Project>? userProjects;
+        
+    [Inject] IFollowedProjectManager FollowedProjectManager { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         if (IsAuthenticated)
         {
+            FollowedProjectManager.Refresh(await ProjectClient
+                .GetFollowedProjectsAsync()
+                .Select(x => x.Id).ToListAsync());
+
             userProjects = await ProjectClient
                 .GetSelfProjectsAsync()
                 .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.Id))

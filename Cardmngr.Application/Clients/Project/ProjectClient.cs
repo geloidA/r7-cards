@@ -20,7 +20,7 @@ public class ProjectClient(
     public async Task<ProjectStateDto> GetProjectAsync(int projectId)
     {
         var tasks = taskRepository
-            .GetFiltredAsync(TaskFilterBuilder.Instance.ProjectId(projectId))
+            .GetFiltredAsync(TaskFilterBuilder.Instance.ProjectId(projectId).SortBy("deadline"))
             .ToListAsync(mapper.Map<OnlyofficeTask>);
 
         var team = projectRepository

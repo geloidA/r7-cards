@@ -8,14 +8,21 @@
 {
     <CascadingValue Value="this" IsFixed="true" >
         <CascadingValue Value="hubClient" IsFixed="true">
-            @ChildContent
-            <div class="right-bottom-corner user-select-none">
-                <ConnectedUsers></ConnectedUsers>
-            </div>
+            <CascadingValue Value="_commonHeightByKey" IsFixed="true" >
+                @ChildContent
+                @if (_isHubInitialized)
+                {
+                    <div class="right-bottom-corner user-select-none">
+                        <ConnectedUsers></ConnectedUsers>
+                    </div>
+                }
+            </CascadingValue>
         </CascadingValue>
     </CascadingValue>
 }
 else
 {
-    <ProjectProgressIndicator Progress="Progress" />
+    <div style="height: 90%;" class="d-flex justify-content-center align-items-center">
+        <FluentProgressRing />
+    </div>
 }

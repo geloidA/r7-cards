@@ -4,7 +4,7 @@ namespace Cardmngr.Components.ProjectAggregate;
 
 public partial class ProjectBoard : ComponentBase
 {
-    private readonly Dictionary<object, int> _commonHeightByKey = [];
+    [CascadingParameter] Dictionary<int, int> CommonHeightByKey { get ;set; } = null!;
 
     [CascadingParameter] IProjectState State { get; set; } = null!;
 }

@@ -4,8 +4,8 @@
 
 @inherits KolComponentBase
 @implements IAsyncDisposable
-<div class="d-flex @Class" >
-    <KolTimeline Collapsed="!Collapsed" MinWidth="1860" MaxWidth="25000" UncollapsedHeight="@(State.Milestones.Count * 36)" 
+<div class="d-flex @Class" style=@Style >
+    <KolTimeline Collapsed="!Collapsed" UncollapsedHeight="@(State.Milestones.Count * 36)" 
         ShowTodayLine="true" Class="scrollbar-none py-0" >
         <CascadingValue Value="milestoneTaskFilter" IsFixed="true">
             @foreach (var milestone in State.Milestones.OrderBy(x => x.Deadline))

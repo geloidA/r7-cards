@@ -1,4 +1,33 @@
 .proj-narrow-tip {
     display: flex;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 7px;
     font-size: small;
+}
+
+.proj-narrow-tip:hover {
+    cursor: pointer;
+    color: var(--neutral-fill-rest) !important;
+    background-color: var(--accent-fill-hover);
+}
+
+.proj-narrow-tip .narrow-example {
+    color: gray;
+}
+
+.proj-narrow-tip:hover span {
+    color: var(--neutral-fill-rest);
+}
+
+.proj-narrow-tip:focus span {
+    color: var(--neutral-fill-rest);
+}
+
+.proj-narrow-tip:focus {
+    outline: none;
+    color: var(--neutral-fill-rest) !important;
+    background-color: var(--accent-fill-hover);
 }

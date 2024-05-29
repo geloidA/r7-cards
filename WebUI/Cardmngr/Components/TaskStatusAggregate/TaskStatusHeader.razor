@@ -16,7 +16,7 @@
 else
 {
     <div class="d-flex w-100 align-self-baseline">
-        <div class="col d-flex justify-content-start align-items-center">
+        <div class="d-flex justify-content-start align-items-center">
             <FluentBadge Class="align-self-center" Appearance="Appearance.Accent" >
                 @TaskCount
             </FluentBadge>
@@ -28,9 +28,10 @@ else
                 <img src=@($"data:{TaskStatus.ImageType};base64, {TaskStatus.Image}") class="ms-1" style="width: 20px;">
             }
         </div>
+        <FluentSpacer/>
         @if (TaskStatus.Available)
         {
-            <div class="col d-flex justify-content-end btn-hide">
+            <div class="d-flex justify-content-end btn-hide">
                 <Tool Color="Color.Success" Icon="@(new Icons.Regular.Size20.Add())"
                     TooltipTitle="Добавить задачу" OnClick="@ShowCreateTaskModal" />
             </div>

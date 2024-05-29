@@ -1,12 +1,42 @@
-﻿<div class="">
-    <span class="fw-bold">@Title</span>
-    <span class="text-secondary">@Example</span>
+﻿@inherits KolComponentBase
+
+<div class="proj-narrow-tip" @onclick="HandleClick" @onkeydown="HandleKeyDown" tabindex="@_selfCount" >
+    <span class="fw-bold p-0">@Title</span>
+    <span class="narrow-example p-0 ms-1">@Example</span>
 </div>
 
 @code {
+    private object countLock = new();
+    private static int Count;
+    private int _selfCount;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            lock(countLock)
+            {
+                _selfCount = Count;
+                Count++;
+                StateHasChanged();
+            }
+        }
+    }
+
+    [Parameter]
+    public int TabIndex { get; set; }
+
     [Parameter, EditorRequired] 
     public string Title { get; set; } = null!;
 
     [Parameter]
     public string? Example { get; set; }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            HandleClick(null!);
+        }
+    }
 }

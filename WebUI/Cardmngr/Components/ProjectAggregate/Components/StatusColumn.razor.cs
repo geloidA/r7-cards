@@ -37,26 +37,13 @@ public partial class StatusColumn : ComponentBase, IDisposable
     ModalOptions ModalOptions { get; set; } = null!;
 
     [Parameter]
-    public Dictionary<object, int>? CommonHeightByKey { get; set; }
-
-    private int _opacity;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await Task.Delay(1);
-            _opacity = 1;
-            StateHasChanged();
-        }
-
-        await base.OnAfterRenderAsync(firstRender);
-    }
+    public Dictionary<int, int>? CommonHeightByKey { get; set; }
 
     protected override void OnInitialized()
     {
         _tasks = GetTasksForStatus(State, Status);
         State.TasksChanged += RefreshColumn;
+        State.TaskFilter.FilterChanged += () => RefreshColumn(null);
         
         base.OnInitialized();
     }

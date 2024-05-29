@@ -5,7 +5,7 @@ namespace Cardmngr.Shared;
 
 public class TaskFilterManager : IFilterManager<OnlyofficeTask>
 {
-    private readonly List<IFilter<OnlyofficeTask>> filters = [];
+    private readonly List<IFilter<OnlyofficeTask>> _filters = [];
 
     public TaskFilterManager()
     {
@@ -14,14 +14,14 @@ public class TaskFilterManager : IFilterManager<OnlyofficeTask>
 
     public TaskFilterManager(IEnumerable<IFilter<OnlyofficeTask>> filters)
     {
-        this.filters = filters.ToList();
+        _filters = filters.ToList();
     }
 
     public IEnumerable<IFilter<OnlyofficeTask>> Filters
     {
         get
         {
-            foreach (var filter in filters)
+            foreach (var filter in _filters)
                 yield return filter;
         }
     }
@@ -33,13 +33,27 @@ public class TaskFilterManager : IFilterManager<OnlyofficeTask>
 
     public void AddFilter(IFilter<OnlyofficeTask> filter)
     {
-        filters.Add(filter);
+        _filters.Add(filter);
         OnFilterChanged();
     }
 
+    public void Reset(IEnumerable<IFilter<OnlyofficeTask>> filters)
+    {
+        _filters.Clear();
+
+        if (filters.Any())
+        {
+            _filters.AddRange(filters);
+        }
+        
+        OnFilterChanged();
+    }
+
+    
+
     public bool RemoveFilter(IFilter<OnlyofficeTask> filter)
     {
-        if (filters.Remove(filter))
+        if (_filters.Remove(filter))
         {
             OnFilterChanged();
             return true;
@@ -50,10 +64,28 @@ public class TaskFilterManager : IFilterManager<OnlyofficeTask>
 
     public void Clear()
     {
-        if (filters.Count > 0)
+        if (_filters.Count > 0)
         {
-            filters.Clear();
+            _filters.Clear();
             OnFilterChanged();
         }
+    }
+
+    public int RemoveFilters(IEnumerable<IFilter<OnlyofficeTask>> filters, IEqualityComparer<IFilter>? comparer = null)
+    {
+        comparer ??= new FilterTypeEqualityComparer();
+
+        var removed = _filters.RemoveAll(x => filters.Contains(x, comparer));
+
+        if (removed > 0)
+            OnFilterChanged();
+        
+        return removed;
+    }
+
+    public void AddFilters(IEnumerable<IFilter<OnlyofficeTask>> filters)
+    {
+        _filters.AddRange(filters);
+        OnFilterChanged();
     }
 }

@@ -1,14 +1,17 @@
 ﻿@using Cardmngr.Components.ProjectAggregate.Filter
 
 <div class="d-flex flex-column">
-    <div class="user-select-none d-flex p-1" style="font-size: small;" >
-        <div class="d-flex">
+    <div class="user-select-none d-flex" style="font-size: small;" >
+        <div class="d-flex align-items-center">
             <FluentIcon Value="@(new Icons.Filled.Size16.Sparkle())" Color="Color.Accent"/>
             Вехи
-            <FluentSwitch @bind-Value="collapsed" title="Развернуть / Свернуть"/>
+            @if (State.Milestones.Count > 1)
+            {
+                <FluentSwitch @bind-Value="collapsed" title="Развернуть / Свернуть"/>
+            }
         </div>
         <FluentSpacer />
         <ProjectFilterToolbar />
     </div>
-    <MilestoneTimeline Collapsed="collapsed" ></MilestoneTimeline>
+    <MilestoneTimeline Class="mt-2" Collapsed="collapsed" ></MilestoneTimeline>
 </div>

@@ -44,10 +44,6 @@ article {
     width: 100%;
 }
 
-ul {
-    margin-bottom: 4px;
-}
-
 .clickable {
     cursor: pointer;
 }

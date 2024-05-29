@@ -9,7 +9,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
-public sealed partial class StaticProjectState : ProjectStateBase, IProjectState, IDisposable
+public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
 {
     private string CssHeight => ViewModel?.IsCollapsed ?? true 
         ? "height: 50px;" 
@@ -29,7 +29,7 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
         toggleCollapsedFunc = ToggleCollapsed;
         if (ViewModel is { IsCollapsed: false })
         {
-            await SetModelAsync(await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks), cleanCache: false);
+            await SetModelAsync(await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks));
             Initialized = true;
         }
 
@@ -65,7 +65,7 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
             {
                 Initialized = false;
                 var model = await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks);
-                await SetModelAsync(model, initTags: !isTagsInitialized, cleanCache:!isTagsInitialized);
+                await SetModelAsync(model, !isTagsInitialized);
                 Initialized = true;
 
                 isTagsInitialized = true;
@@ -94,8 +94,9 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
         }
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
+        base.Dispose();
         SummaryService.OnProjectsChanged -= ToggleIfSelected;
     }
 }
