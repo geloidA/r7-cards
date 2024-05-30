@@ -4,11 +4,11 @@
 
 @inherits KolComponentBase
 
-<div class="d-flex align-items-center @Class" style="@Style">
+<div class="d-flex align-items-center gap-2 @Class" style="@Style">
     <FluentIcon Value="@(new Icons.Regular.Size24.ArrowClockwise())"
         Title="Обновить страницу"
         @onclick="@(async () => await Js.InvokeVoidAsync("reload"))" />
-    <Tool Icon="@(new Icons.Regular.Size24.ArrowCircleUpRight())" Class="ms-2" TooltipTitle="Перейти в Р7-Офис" OnClick=@NavigateToR7Office 
+    <Tool Icon="@(new Icons.Regular.Size24.ArrowCircleUpRight())" title="Перейти в Р7-Офис" OnClick=@NavigateToR7Office 
         />
 </div>
 

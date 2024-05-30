@@ -22,6 +22,7 @@ builder.Services
     .AddScoped<CookieHandler>()
     .AddScoped<IAuthApiLogic, AuthApiLogic>()
     .AddScoped<AppInfoService>()
+    .AddScoped<ITaskNotificationManager, TaskNotificationManager>()
     .AddSingleton<ITagColorManager, TagColorGetter>()
     .AddSingleton<AllProjectsPageSummaryService>()
     .AddTransient<RefreshService>()

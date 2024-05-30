@@ -1,0 +1,53 @@
+﻿@implements IDisposable
+
+@inject IMessageService MessageService
+
+<FluentButton BackgroundColor="var(--neutral-layer-4)" OnClick="OpenNotificationCenterAsync" Title="Центр уведомлений">
+@if (MessageService.Count(App.MESSAGES_NOTIFICATION_CENTER) > 0)
+{
+    <FluentCounterBadge Count="@MessageService.Count(App.MESSAGES_NOTIFICATION_CENTER)"
+                        Max="9"
+                        ShowOverflow="true"
+                        BackgroundColor="@Color.Error"
+                        Color="Color.Fill"
+                        Appearance="Appearance.Accent"
+                        ShowZero=true>
+        <ChildContent>
+            @NotificationIcon()
+        </ChildContent>
+    </FluentCounterBadge>
+}
+else
+{
+    @NotificationIcon() 
+}
+</FluentButton>
+
+@code {
+
+    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
+    [CascadingParameter] IModalService Modal { get; set; } = null!;
+   
+    protected override void OnInitialized()
+    {
+        MessageService.OnMessageItemsUpdated += UpdateCount;
+    }
+
+    private void UpdateCount()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private RenderFragment NotificationIcon() =>
+        @<FluentIcon Value="@(new Icons.Regular.Size24.Alert())" Title="Notification center" />;
+
+    private async Task OpenNotificationCenterAsync()
+    {
+        await Modal.Show<NotificationCenterModal>(new ModalParameters { { "Nothing", new object() } }, Options).Result;
+    }
+
+    public void Dispose()
+    {
+        MessageService.OnMessageItemsUpdated -= UpdateCount;
+    }
+}

@@ -14,6 +14,8 @@ namespace Cardmngr;
 
 public partial class App : ComponentBase
 {
+    public const string MESSAGES_NOTIFICATION_CENTER = "messages-notification-center";
+
     [Inject] ILocalStorageService LocalStorage { get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationProvider { get; set; } = null!;
     [Inject] IAuthApiLogic AuthApiLogic { get; set; } = null!;
@@ -21,6 +23,7 @@ public partial class App : ComponentBase
     [Inject] NotificationService NotificationService { get; set; } = null!;
     [Inject] NotificationHubConnection NotificationHubConnection { get; set; } = null!;
     [Inject] IJSRuntime JS { get; set; } = null!;
+    [Inject] ITaskNotificationManager TaskNotificationManager { get; set; } = null!;
 
     private async Task OnNavigateAsync(NavigationContext args)
     {
@@ -44,11 +47,11 @@ public partial class App : ComponentBase
     }
 
     protected override async Task OnInitializedAsync()
-    {        
+    {
         AuthenticationProvider.AuthenticationStateChanged += RequestPermission;
         NotificationHubConnection.TaskReceived += ReceiveTask;
         var appVersion = await AppInfoService.GetVersionAsync();
-        
+
         await JS.InvokeVoidAsync("updateVersion", appVersion);
 
         await NotificationService.RequestPermissionAsync();
@@ -66,6 +69,7 @@ public partial class App : ComponentBase
             }
 
             await NotificationHubConnection.StartAsync(userId);
+            await TaskNotificationManager.NotifyDeadlinesAsync();
         }
     }
 
@@ -78,6 +82,8 @@ public partial class App : ComponentBase
             Icon = "/favicon.png",
             RequireInteraction = true
         };
+
+        TaskNotificationManager.NotifyNew(task);
 
         await NotificationService.CreateAsync("Появилась новая задача!", options);
     }

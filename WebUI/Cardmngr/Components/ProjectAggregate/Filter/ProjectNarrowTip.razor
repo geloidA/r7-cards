@@ -1,7 +1,7 @@
 ﻿@inherits KolComponentBase
 
 <div class="proj-narrow-tip" @onclick="HandleClick" @onkeydown="HandleKeyDown" tabindex="@_selfCount" >
-    <span class="fw-bold p-0">@Title</span>
+    <span class="fw-bold p-0">@Text</span>
     <span class="narrow-example p-0 ms-1">@Example</span>
 </div>
 
@@ -27,7 +27,7 @@
     public int TabIndex { get; set; }
 
     [Parameter, EditorRequired] 
-    public string Title { get; set; } = null!;
+    public string Text { get; set; } = null!;
 
     [Parameter]
     public string? Example { get; set; }

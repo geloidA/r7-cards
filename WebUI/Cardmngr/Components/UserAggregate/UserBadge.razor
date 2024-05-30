@@ -11,12 +11,12 @@
             <span class="user-select-none">Выберите ответственного</span>
         }
     </FluentBadge>
-    <span style="font-size: 11px; margin-right: 8px;" class="d-flex justify-content-end">@Title</span>
+    <span style="font-size: 11px; margin-right: 8px;" class="d-flex justify-content-end">@Text</span>
 </div>
 
 @code {
 
     [Parameter] public UserInfo? User { get; set; }
-    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Text { get; set; }
     [Parameter] public string BadgeColor { get; set; } = "green";
 }

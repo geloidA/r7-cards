@@ -15,10 +15,12 @@
     <FilterCustomizer />
 </div>
 <FluentSpacer />
-<div class="d-flex gap-2">
+<div class="d-flex gap-1">
     <Toolbar />
     @if (currentUser is { })
     {
+        <NotificationCenter />
+
         <FluentIcon OnClick="OpenSettings"
             Value="@(new Icons.Regular.Size24.Settings())"
             />

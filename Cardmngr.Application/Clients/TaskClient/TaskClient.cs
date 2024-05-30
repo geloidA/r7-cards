@@ -38,11 +38,6 @@ public class TaskClient(ITaskRepository taskRepository, IMapper mapper) : ITaskC
             .Select(mapper.Map<OnlyofficeTask>);
     }
 
-    public IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync(FilterBuilder filter)
-    {
-        throw new NotImplementedException();
-    }
-
     public IAsyncEnumerable<OnlyofficeTask> GetSelfTasksAsync()
     {
         return taskRepository

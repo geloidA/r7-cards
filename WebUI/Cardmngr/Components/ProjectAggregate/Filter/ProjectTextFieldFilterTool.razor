@@ -24,7 +24,7 @@
             @foreach (var filter in _filters)
             {
                 <ProjectNarrowTip
-                    Title="@($"{filter.Prefix}:")"
+                    Text="@($"{filter.Prefix}:")"
                     @onclick="() => OnFilterTipClicked(filter)"
                     Example="@filter.Example" />
             }

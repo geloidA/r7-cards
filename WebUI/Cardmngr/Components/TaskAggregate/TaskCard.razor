@@ -51,7 +51,7 @@
                     <div class="d-flex flex-wrap gap-1 px-0">
                         @foreach (var tag in Task.Tags)
                         {
-                            <TaskTagLabel Tag="tag" Color="TagColorGetter.GetColor(tag)" />
+                            <TaskTagLabel Tag="tag" Color="@TagColorGetter.GetColor(tag)" />
                         }
                     </div>
                 </div>
