@@ -1,7 +1,8 @@
 ﻿<div aria-autocomplete="none">
-    <FluentSearch
+    <FluentTextField
         @ref="_fluentSearchComponent"
         Id="proj-filter-search"
+        AutoComplete="off"
         @bind-Value="_inputValue"
         Immediate ImmediateDelay="500"
         @bind-Value:after="ParseInput"
@@ -9,8 +10,8 @@
         Placeholder="Фильтр по карточкам"
         Style="width: 300px;"
         Appearance="FluentInputAppearance.Outline" >
-
-    </FluentSearch>
+        <FluentIcon Value="@(new Icons.Regular.Size16.Search())" Slot="start" Color="Color.Neutral" />
+    </FluentTextField>
 </div>
 
 <FluentPopover Class="popup-filter-tool" style="padding: 0;"

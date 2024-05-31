@@ -4,35 +4,37 @@
 
 <CascadingValue Value="this" IsFixed="true">
     <div class="proj-state scrollbar-none" style="@CssHeight">
-        <div class="proj-header clickable" @ondblclick="@toggleCollapsedFunc">
-            <div class="row user-select-none">
-                <div class="col d-flex fw-bold">
+        <div class="clickable" @ondblclick="@toggleCollapsedFunc">
+            <div class="d-flex user-select-none">
+                <div class="d-flex fw-bold gap-1">
                     @if (ViewModel is { })
                     {
-                        <FluentIcon class="user-select-none" OnClick="() => ToggleFollowAsync()"
+                        <FluentIcon style="min-width: 16px;" class="align-self-center" OnClick="() => ToggleFollowAsync()"
                             Value="IconFollow" Title="@(isFollow ? "Перестать отслеживать" : "Отслеживать")" />
                         @if (ViewModel.ProjectInfo.IsPrivate)
                         {
-                            <div class="align-self-center ms-2">
+                            <div class="align-self-center">
                                 <FluentIcon
                                     Value="@(new Icons.Filled.Size16.LockClosed())"
                                     title="Приватный проект"
                                     Color="Color.Warning" />
                             </div>
-                        }                        
-                        <div class="ms-2 align-self-center">
+                        }
+                        <div class="align-self-center">
                             @ViewModel.ProjectInfo.Title
                         </div>
                         <a class="align-self-center" href=@($"/project/{ViewModel.ProjectInfo.Id}")>
-                            <FluentIcon class="ms-1" Width="23" Value="@(new Icons.Regular.Size20.ArrowCircleUpRight())" />
+                            <FluentIcon Width="23" Value="@(new Icons.Regular.Size20.ArrowCircleUpRight())" />
                         </a>
                     }
                 </div>
-                <div class="col align-self-center d-flex justify-content-end" style="margin-right: 10px;">
+                <FluentSpacer/>
+                <FluentSpacer Width="12" />
+                <div class="align-self-center d-flex gap-1 justify-content-end">
                     <i class="tip-hide" style="font-size: small;">
                         Двойной клик для рыскрытия/закрытия
                     </i>
-                    <FluentIcon class="ms-2" OnClick="@toggleCollapsedFunc"
+                    <FluentIcon style="min-width: 20px;" OnClick="@toggleCollapsedFunc"
                         Value="CollapsedIcon" />
                 </div>
             </div>
@@ -49,7 +51,7 @@
             }
             else
             {
-                <ProjectProgressIndicator Progress="Progress" />
+                <FluentProgressRing style="position: relative; top: 40%; left: 50%; transform: translate(-50%, -50%);" />
             }
         }
     </div>

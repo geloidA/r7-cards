@@ -8,21 +8,31 @@
     <FluentIcon Value="@(new Icons.Regular.Size24.ArrowClockwise())"
         Title="Обновить страницу"
         @onclick="@(async () => await Js.InvokeVoidAsync("reload"))" />
-    <Tool Icon="@(new Icons.Regular.Size24.ArrowCircleUpRight())" title="Перейти в Р7-Офис" OnClick=@NavigateToR7Office 
-        />
+
+    <Tool Icon="@(new Icons.Regular.Size24.ArrowCircleUpRight())" 
+          title="Перейти в Р7-Офис" 
+          @onclick=@NavigateToR7Office />
 </div>
 
 @code {
+    string onlyofficeUrl = "";
+
     void NavigateToR7Office()
     {
         if (NavigationManager.Uri.Contains("/project/"))
         {
-            NavigationManager.NavigateTo(Config.CheckKey("onlyoffice-url") + $"/Products/Projects/Projects.aspx?prjID={CurrentProjectId}");
+            NavigationManager.NavigateTo($"{onlyofficeUrl}/Products/Projects/Projects.aspx?prjID={CurrentProjectId}");
         }
         else
         {
-            NavigationManager.NavigateTo(Config.CheckKey("onlyoffice-url"));
+            NavigationManager.NavigateTo(onlyofficeUrl);
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        onlyofficeUrl = Config.CheckKey("onlyoffice-url");
+        base.OnInitialized();
     }
 
     int CurrentProjectId => int.Parse(NavigationManager.Uri.Substring(NavigationManager.Uri.LastIndexOf('/') + 1));

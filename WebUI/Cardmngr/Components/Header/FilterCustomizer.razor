@@ -2,40 +2,42 @@
 
 @if(show)
 {
-    <FluentToolbar id="toolbar-fluent-components" style="background-color: var(--neutral-layer-4);">
-        <FluentAutocomplete Placeholder="Проект"
-            TOption="Domain.ProjectInfo"
-            SelectedOptionsChanged="SelectionProjectChanged"
-            MaximumSelectedOptions="1" MaximumOptionsSearch="100"
-            Style="width: 290px;" AutoComplete="off"
-            IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())"
-            SelectedOptions="SelectedProject"
-            OptionText="@(p => p.Title)" ShowOverlayOnEmptyResults="false"
-            OnOptionsSearch="OnProjectSearch" />
+    <div id="toolbar-fluent-components" class="d-flex gap-2" >
+        <div class="d-flex flex-wrap gap-1">
+            <FluentAutocomplete Placeholder="Проект"
+                TOption="Domain.ProjectInfo" Width="auto"
+                SelectedOptionsChanged="SelectionProjectChanged"
+                MaximumSelectedOptions="1" MaximumOptionsSearch="100"
+                Style="max-width: 228px;" AutoComplete="off"
+                IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())"
+                SelectedOptions="SelectedProject"
+                OptionText="@(p => p.Title)" ShowOverlayOnEmptyResults="false"
+                OnOptionsSearch="OnProjectSearch" />
 
-        <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.Person())"
-            TOption="UserInfo" Placeholder="Ответственный"
-            Style="width: 290px;" AutoComplete="off"
-            SelectedOptionsChanged="SelectionResponsibleChanged"
-            MaximumSelectedOptions="1" MaximumOptionsSearch="100"
-            OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
-            SelectedOptions="SelectedResponsible"
-            OnOptionsSearch="OnResponsibleSearch" />
+            <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.Person())"
+                TOption="UserInfo" Placeholder="Ответственный"
+                Style="max-width: 228px;" AutoComplete="off" Width="auto"
+                SelectedOptionsChanged="SelectionResponsibleChanged"
+                MaximumSelectedOptions="1" MaximumOptionsSearch="100"
+                OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
+                SelectedOptions="SelectedResponsible"
+                OnOptionsSearch="OnResponsibleSearch" />
 
-        <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())"
-            TOption="UserInfo" Placeholder="Автор"
-            SelectedOptionsChanged="SelectionCreatedByChanged"
-            MaximumSelectedOptions="1" MaximumOptionsSearch="100"
-            Style="width: 290px;" AutoComplete="off"
-            OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
-            SelectedOptions="SelectedCreatedBy"
-            OnOptionsSearch="OnCreatedBySearch" />
+            <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())"
+                TOption="UserInfo" Placeholder="Автор" Width="auto"
+                SelectedOptionsChanged="SelectionCreatedByChanged"
+                MaximumSelectedOptions="1" MaximumOptionsSearch="100"
+                Style="max-width: 228px;" AutoComplete="off"
+                OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
+                SelectedOptions="SelectedCreatedBy"
+                OnOptionsSearch="OnCreatedBySearch" />
+        </div>
 
-        <FluentRadioGroup @bind-Value="SelectorType" >
+        <FluentRadioGroup class="align-self-center" @bind-Value="SummaryService.FilterManager.TaskSelectorType" >
             <FluentRadio Checked="true" Value=@(TaskSelectorType.None)>Все</FluentRadio>
             <FluentRadio Value=@(TaskSelectorType.InProgress)>Активные</FluentRadio>
             <FluentRadio Value=@(TaskSelectorType.Closed)>Закрытые</FluentRadio>
             <FluentRadio Value=@(TaskSelectorType.Deadlined)>Просроченные</FluentRadio>
         </FluentRadioGroup>
-    </FluentToolbar>
+    </div>
 }

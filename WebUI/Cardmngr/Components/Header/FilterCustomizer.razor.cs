@@ -97,16 +97,6 @@ public partial class FilterCustomizer : ComponentBase, IDisposable
             .OrderBy(x => x.DisplayName);
     }
 
-    private TaskSelectorType _selectorType;
-    private TaskSelectorType SelectorType
-    {
-        get => _selectorType;
-        set
-        {
-            SummaryService.FilterManager.TaskSelectorType = _selectorType = value;
-        }
-    }
-
     private static bool IsFilterPage(string uri) => uri.EndsWith("/all-projects", StringComparison.OrdinalIgnoreCase);
 
     public void Dispose()

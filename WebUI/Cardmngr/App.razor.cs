@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Blazored.LocalStorage;
+using Cardmngr.Application.Clients;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Notification;
 using Cardmngr.Services;
@@ -23,6 +24,8 @@ public partial class App : ComponentBase
     [Inject] NotificationService NotificationService { get; set; } = null!;
     [Inject] NotificationHubConnection NotificationHubConnection { get; set; } = null!;
     [Inject] IJSRuntime JS { get; set; } = null!;
+    [Inject] IProjectClient ProjectClient { get; set; } = null!;    
+    [Inject] IFollowedProjectManager FollowedProjectManager { get; set; } = null!;
     [Inject] ITaskNotificationManager TaskNotificationManager { get; set; } = null!;
 
     private async Task OnNavigateAsync(NavigationContext args)
@@ -67,7 +70,10 @@ public partial class App : ComponentBase
             {
                 await NotificationHubConnection.DisposeAsync();
             }
-
+            
+            FollowedProjectManager.Refresh(await ProjectClient
+                .GetFollowedProjectsAsync()
+                .Select(x => x.Id).ToListAsync());
             await NotificationHubConnection.StartAsync(userId);
             await TaskNotificationManager.NotifyDeadlinesAsync();
         }

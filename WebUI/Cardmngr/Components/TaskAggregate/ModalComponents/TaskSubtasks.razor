@@ -2,8 +2,8 @@
 @using Cardmngr.Application.Clients.Subtask
 @using AutoMapper
 
-@inject KolTimelineJsInterop TimelineJsInterop
 @inject IMapper Mapper
+@inject IJSRuntime JSRuntime
 
 <div class="d-flex align-items-center fs-6">
     <FluentIcon Value="@(new Icons.Regular.Size24.Check())"/>
@@ -43,8 +43,8 @@
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-        {            
-            await TimelineJsInterop.RegisterScrollHandler(scrollElement);
+        {
+            await JSRuntime.InvokeVoidAsync("makeWheelScrollable", scrollElement);
         }
     }
 

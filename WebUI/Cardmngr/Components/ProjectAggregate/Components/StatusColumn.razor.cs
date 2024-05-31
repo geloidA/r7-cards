@@ -44,8 +44,6 @@ public partial class StatusColumn : ComponentBase, IDisposable
         _tasks = GetTasksForStatus(State, Status);
         State.TasksChanged += RefreshColumn;
         State.TaskFilter.FilterChanged += () => RefreshColumn(null);
-        
-        base.OnInitialized();
     }
 
     private void RefreshColumn(TaskChangedEventArgs? args)

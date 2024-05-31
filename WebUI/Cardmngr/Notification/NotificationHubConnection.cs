@@ -8,7 +8,7 @@ namespace Cardmngr.Notification;
 public sealed class NotificationHubConnection(IServiceProvider serviceProvider) : IAsyncDisposable
 {
     private readonly IServiceProvider serviceProvider = serviceProvider;
-    private string lastUserId = string.Empty;   
+    private string lastUserId = string.Empty;
     private HubConnection? connection;
 
     public bool Connected => connection is { State: HubConnectionState.Connected };

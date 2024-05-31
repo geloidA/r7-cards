@@ -12,11 +12,11 @@ namespace Cardmngr.Components.ProjectAggregate;
 public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
 {
     private string CssHeight => ViewModel?.IsCollapsed ?? true 
-        ? "height: 50px;" 
+        ? "height: auto;"
         : "height: 650px;";
 
-    private Icon CollapsedIcon => ViewModel?.IsCollapsed ?? true 
-        ? new Icons.Regular.Size16.ChevronDown() 
+    private Icon CollapsedIcon => ViewModel?.IsCollapsed ?? true
+        ? new Icons.Regular.Size16.ChevronDown()
         : new Icons.Regular.Size16.ChevronUp();
 
     [Parameter] public StaticProjectVm? ViewModel { get; set; }

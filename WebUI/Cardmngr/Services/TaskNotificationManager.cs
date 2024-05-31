@@ -18,11 +18,11 @@ public class TaskNotificationManager(IMessageService messageService,
         {
             options.Intent = MessageIntent.Warning;
             options.Title = "Задача просрочена";
-            options.Body = $"Задача - {task.Title} просрочена! В проекте: {task.ProjectOwner.Title}";
+            options.Body = $"Задача \"{task.Title}\" просрочена! В проекте: {task.ProjectOwner.Title}";
             options.Link = new ActionLink<Message>
             {
                 Href = $"/project/{task.ProjectOwner.Id}",
-                Text = "Подробнее в проекте"
+                Text = "Подробнее"
             };
             options.Section = App.MESSAGES_NOTIFICATION_CENTER;
         });
@@ -56,7 +56,7 @@ public class TaskNotificationManager(IMessageService messageService,
         {
             options.Intent = MessageIntent.Info;
             options.Title = "Новая задача";
-            options.Body = $"Вам Поручена задача - {task.Title}. В проекте: {task.ProjectOwner.Title}";
+            options.Body = $"Вам Поручена задача - \"{task.Title}\". В проекте: {task.ProjectOwner.Title}";
             options.Timestamp = DateTime.Now;
             options.Link = new ActionLink<Message>
             {

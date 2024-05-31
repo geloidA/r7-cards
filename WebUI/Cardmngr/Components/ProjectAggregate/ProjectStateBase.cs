@@ -169,8 +169,6 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState, IDisposab
 
     [Inject] ITaskClient TaskClient { get; set; } = null!;
 
-    protected ProgressState Progress { get; set; } = new();
-
     private async Task InitializeTaskTagsAsync(List<OnlyofficeTask> tasks, CancellationToken cancellationToken)
     {
         foreach (var task in tasks)

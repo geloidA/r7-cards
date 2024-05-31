@@ -11,7 +11,7 @@ namespace Cardmngr.Components.ProjectAggregate.Filter;
 public partial class ProjectTextFieldFilterTool : ComponentBase
 {
     private TextToFilterParser _textToFilterParser = null!;
-    private FluentSearch _fluentSearchComponent = null!;
+    private FluentTextField _fluentSearchComponent = null!;
     private bool _popupVisible = false;
     private string _inputValue = string.Empty;
 
@@ -32,8 +32,6 @@ public partial class ProjectTextFieldFilterTool : ComponentBase
             "Отображает связанные c вами задачи"));
 
         _textToFilterParser = new(_filters, x => new TitleTaskFilter(x));
-
-        base.OnInitializedAsync();
     }
 
     private IEnumerable<IFilter<OnlyofficeTask>> previousFilters = [];

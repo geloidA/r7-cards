@@ -34,7 +34,7 @@ public partial class AllProjectsPage : AuthorizedPage, IDisposable
 
     private async void OnFilterChangedAsync(TaskFilterBuilder builder)
     {
-        allProjects = await ProjectClient.GetGroupedFilteredTasksAsync(builder)
+        allProjects = await ProjectClient.GetGroupedFilteredTasksAsync(builder.SortBy("updated").SortOrder(FilterSortOrders.Desc))
             .Select(x => new StaticProjectVm(x.Key, x.Value))
             .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.ProjectInfo.Id))
             .ToListAsync();

@@ -20,7 +20,6 @@ public partial class ProjectBoardHeader : ComponentBase
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
         ProjectInfo.OpenInfoFunc = ShowProjectMenu;
         ProjectInfo.Title = State.Project.Title;
     }

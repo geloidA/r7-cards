@@ -1,15 +1,10 @@
 .proj-state {
     display: flex;
     flex-direction: column;
-    padding-top: 13px;
+    padding: 7px;
     background-color: var(--neutral-layer-2);
     border-radius: 10px;
     transition: height 0.5s ease-in-out;
-}
-
-.proj-state .proj-header  {
-    margin-left: 1rem !important;
-    margin-bottom: .25rem !important;
 }
 
 .tip-hide {
@@ -17,6 +12,6 @@
     transition: opacity 0.25s ease-in-out;
 }
 
-.proj-state .proj-header:hover .tip-hide {
+.proj-state:hover .tip-hide {
     opacity: 1;
 }
