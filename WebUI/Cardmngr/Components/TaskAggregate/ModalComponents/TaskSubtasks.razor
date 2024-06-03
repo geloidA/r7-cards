@@ -2,6 +2,8 @@
 @using Cardmngr.Application.Clients.Subtask
 @using AutoMapper
 
+@implements IDisposable
+
 @inject IMapper Mapper
 @inject IJSRuntime JSRuntime
 
@@ -15,24 +17,15 @@
 {
     <span>Список пуст</span>
 }
-<CascadingValue Value="hasEditingSubtask" >
-    <div @ref="scrollElement" class="d-flex gap-1 overflow-auto scrollbar-none">
-        @foreach (var subtask in Task.Subtasks)
-        {
-            var updateData = Mapper.Map<SubtaskUpdateData>(subtask);
 
-            <SubtaskView Subtask="updateData" UpdateCallback="StateHasChanged"
-                Disabled="!subtask.CanEdit" Id="subtask.Id"
-                EditModeChanged="next => hasEditingSubtask = next"
-                @key="subtask.Id" />
-        }
-    </div>
-</CascadingValue>
+<div class="subtasks-list">
+    @foreach (var subtask in Task.Subtasks.OrderBy(x => x.Status))
+    {
+        <SubtaskCard Subtask="subtask" />
+    }
+</div>
 
 @code {
-    bool hasEditingSubtask;
-    ElementReference scrollElement;
-
     [Inject] public ISubtaskClient SubtaskClient { get; set; } = null!;
     
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
@@ -40,12 +33,9 @@
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = default!;
 
-    protected async override Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnInitialized()
     {
-        if (firstRender)
-        {
-            await JSRuntime.InvokeVoidAsync("makeWheelScrollable", scrollElement);
-        }
+        State.SubtasksChanged += StateHasChanged;
     }
 
     async Task ShowCreationModal()
@@ -59,5 +49,10 @@
             var added = await SubtaskClient.CreateAsync(Task.Id, data);
             State.AddSubtask(Task.Id, added);
         }
+    }
+
+    public void Dispose()
+    {
+        State.SubtasksChanged -= StateHasChanged;
     }
 }

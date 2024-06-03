@@ -5,6 +5,14 @@
     --main-col-bg: var(--neutral-layer-2);
     --main-card-bg: var(--neutral-layer-1);
     --main-responsibles-bg: var(--neutral-layer-2);
+
+    --color1: 5, 12, 156;
+    --color2: 53, 114, 239;
+    --color3: 58, 190, 249;
+    --color4: 167, 230, 255;
+    --color5: 116, 226, 145;
+    --circle-size: 80%;
+    --blending: hard-light;
 }
 
 @font-face {

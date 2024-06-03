@@ -1,0 +1,26 @@
+﻿@using Cardmngr.Domain.Extensions
+
+<div class="subtask-card @CssCompleted" >
+    <span class="title">@Subtask.Title</span>
+    <FluentSpacer />
+    @if (Subtask.Responsible is { })
+    {
+        <div class="image">
+            <img style="border-radius: 50%;" src=@($"{proxyUrl}/api/people{Subtask.Responsible.AvatarSmall}") />
+        </div>
+    }
+    <div class="tools">
+        <Tool Icon="@(new Icons.Regular.Size20.Pen())" title="Редактировать" />
+        <Tool 
+            Icon="@(new Icons.Regular.Size20.Delete())" 
+            @onclick="DeleteSubtask"
+            Color="Color.Error" 
+            title="Удалить" />
+    </div>
+    <div class="status-change">
+        <Tool 
+            Icon="@StatusIcon"
+            Color="Color.Success"
+            @onclick="async () => await ChangeSubtaskStatus(Subtask.Status.Invert())" />
+    </div>
+</div>

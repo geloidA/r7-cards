@@ -16,4 +16,6 @@ public static class EnumExtensions
     }
 
     public static Status ToStatus(this StatusType status) => (Status)status;
+
+    public static Status Invert(this Status status) => status == Status.Open ? Status.Closed : Status.Open;
 }

@@ -1,4 +1,7 @@
-::deep > .both-gradient {
-    --scroll-fade-next: var(--fill-color);
-    --scroll-fade-previous: var(--fill-color)
+.subtasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: auto;
+    max-height: 305px;
 }

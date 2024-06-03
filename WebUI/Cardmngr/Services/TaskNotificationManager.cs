@@ -22,7 +22,8 @@ public class TaskNotificationManager(IMessageService messageService,
             options.Link = new ActionLink<Message>
             {
                 Href = $"/project/{task.ProjectOwner.Id}",
-                Text = "Подробнее"
+                Text = "Подробнее",
+                Target = "_self"
             };
             options.Section = App.MESSAGES_NOTIFICATION_CENTER;
         });
@@ -61,7 +62,8 @@ public class TaskNotificationManager(IMessageService messageService,
             options.Link = new ActionLink<Message>
             {
                 Href = $"/project/{task.ProjectOwner.Id}",
-                Text = "Подробнее в проекте"
+                Text = "Подробнее в проекте",
+                Target = "_self"
             };
             options.Section = App.MESSAGES_NOTIFICATION_CENTER;
         });
