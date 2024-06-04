@@ -1,6 +1,6 @@
 ﻿@inherits OffcanvasBase
 
-<div class="offcanvas @DelayedShow @CssPlacement @Class" style="@Style @($"width: {Width}px;")" 
+<div class="offcanvas @DelayedShow @CssPlacement @Class" style="@Style z-index: 99; @($"width: {Width}px;")" 
     tabindex="-1" id="offcanvasWithBackdrop" @onkeyup="HandleKeyUp" @ref="myOffcanvas" >
     @if (ShowCloseBtn) 
     {

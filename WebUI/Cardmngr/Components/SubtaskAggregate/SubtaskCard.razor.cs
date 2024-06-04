@@ -8,6 +8,8 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using Blazored.Modal.Services;
 using Blazored.Modal;
 using Cardmngr.Components.Modals.ConfirmModals;
+using Cardmngr.Components.Modals;
+using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Components.SubtaskAggregate;
 
@@ -17,8 +19,6 @@ public partial class SubtaskCard : ComponentBase
 
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
-
-    // DefaultConfirmModal
 
     [Inject] IConfiguration Config { get; set; } = null!;
     [Inject] public ISubtaskClient SubtaskClient { get; set; } = null!;
@@ -49,8 +49,27 @@ public partial class SubtaskCard : ComponentBase
     {
         var confirmModal = await Modal.Show<DefaultConfirmModal>("Удаление подзадачи", ModalOptions).Result;
         if (confirmModal.Cancelled) return;
-        
+
         await SubtaskClient.RemoveAsync(Task.Id, Subtask.Id);
         State.RemoveSubtask(Task.Id, Subtask.Id);
+    }
+
+    private async Task EditSubtask()
+    {
+        var param = new ModalParameters 
+        { 
+            { "Team", State.Team },
+            { "Title", Subtask.Title },
+            { "ResponsibleId", Subtask.Responsible?.Id }
+        };
+        
+        var res = await Modal.Show<SubtaskCreationModal>("Изменение подзадачи", param, ModalOptions).Result;
+
+        if (res.Confirmed)
+        {
+            var data = (SubtaskUpdateData)res.Data!;
+            var updated = await SubtaskClient.UpdateAsync(Task.Id, Subtask.Id, data);
+            State.UpdateSubtask(updated);
+        }
     }
 }

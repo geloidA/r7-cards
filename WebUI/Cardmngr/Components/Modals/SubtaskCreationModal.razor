@@ -5,7 +5,7 @@
 @inherits CreationModalBase
 
 <div class="flex-row">
-    <FluentTextField Label="Название" Maxlength="100" id="subtask-name-input" @bind-Value="subtask.Title" Style="width: 300px;" />
+    <FluentTextField Label="Название" Maxlength="255" id="subtask-name-input" @bind-Value="subtask.Title" Style="width: 300px;" />
     <FluentAutocomplete TOption="UserInfo" MaximumSelectedOptions="1" Width="300px"
                     MaximumOptionsSearch="100"
                     @bind-SelectedOptions="Responsible" Context="user" AutoComplete="off"
@@ -49,18 +49,24 @@
 </div>
 <div class="mt-2 d-flex justify-content-end">
     <FluentButton Type="ButtonType.Submit" OnClick="SumbitCreate" Disabled="string.IsNullOrWhiteSpace(subtask.Title)"
-        Color="ButtonColor.Success" >Создать</FluentButton>
+        Color="ButtonColor.Success" >ОК</FluentButton>
     <FluentButton Class="ms-2" OnClick="Cancel" >Отмена</FluentButton>
 </div>
 
 @code {
     string proxyUrl = "";
-    private SubtaskUpdateData subtask = new();
+    private readonly SubtaskUpdateData subtask = new();
 
     protected override void OnInitialized()
     {
         proxyUrl = Config.CheckKey("proxy-url");
+        subtask.Responsible = ResponsibleId;
+        subtask.Title = Title;
     }
+
+    [Parameter] public string? Title { get; set; }
+
+    [Parameter] public string? ResponsibleId { get; set; }
 
     private IEnumerable<UserInfo?> SelectedResponsible
     {

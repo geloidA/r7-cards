@@ -5,18 +5,23 @@
     <div id="toolbar-fluent-components" class="d-flex gap-2" >
         <div class="d-flex flex-wrap gap-1">
             <FluentAutocomplete Placeholder="Проект"
-                TOption="Domain.ProjectInfo" Width="auto"
+                TOption="Domain.ProjectInfo" Width="228px"
                 SelectedOptionsChanged="SelectionProjectChanged"
-                MaximumSelectedOptions="1" MaximumOptionsSearch="100"
-                Style="max-width: 228px;" AutoComplete="off"
+                MaximumSelectedOptions="1" MaximumOptionsSearch="100" AutoComplete="off"
                 IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())"
                 SelectedOptions="SelectedProject"
                 OptionText="@(p => p.Title)" ShowOverlayOnEmptyResults="false"
-                OnOptionsSearch="OnProjectSearch" />
+                OnOptionsSearch="OnProjectSearch" >
+
+                    <OptionTemplate>
+                        <div title="@context.Title">
+                            @context.Title
+                        </div>
+                    </OptionTemplate>
+                </FluentAutocomplete>
 
             <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.Person())"
-                TOption="UserInfo" Placeholder="Ответственный"
-                Style="max-width: 228px;" AutoComplete="off" Width="auto"
+                TOption="UserInfo" Placeholder="Ответственный" AutoComplete="off" Width="228px"
                 SelectedOptionsChanged="SelectionResponsibleChanged"
                 MaximumSelectedOptions="1" MaximumOptionsSearch="100"
                 OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
@@ -24,10 +29,9 @@
                 OnOptionsSearch="OnResponsibleSearch" />
 
             <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())"
-                TOption="UserInfo" Placeholder="Автор" Width="auto"
+                TOption="UserInfo" Placeholder="Автор" Width="228px"
                 SelectedOptionsChanged="SelectionCreatedByChanged"
-                MaximumSelectedOptions="1" MaximumOptionsSearch="100"
-                Style="max-width: 228px;" AutoComplete="off"
+                MaximumSelectedOptions="1" MaximumOptionsSearch="100" AutoComplete="off"
                 OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
                 SelectedOptions="SelectedCreatedBy"
                 OnOptionsSearch="OnCreatedBySearch" />

@@ -2,6 +2,8 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime Js
 
+@implements IDisposable
+
 @inherits KolComponentBase
 
 <div class="d-flex align-items-center gap-2 @Class" style="@Style">
@@ -9,31 +11,7 @@
         Title="Обновить страницу"
         @onclick="@(async () => await Js.InvokeVoidAsync("reload"))" />
 
-    <Tool Icon="@(new Icons.Regular.Size24.ArrowCircleUpRight())" 
-          title="Перейти в Р7-Офис" 
-          @onclick=@NavigateToR7Office />
+    <FluentAnchor Href="@_r7OfficeHref" title="Перейти в Р7 Офис"
+        Appearance="Appearance.Hypertext"
+        IconStart="@(new Icons.Regular.Size24.ArrowCircleUpRight())" />
 </div>
-
-@code {
-    string onlyofficeUrl = "";
-
-    void NavigateToR7Office()
-    {
-        if (NavigationManager.Uri.Contains("/project/"))
-        {
-            NavigationManager.NavigateTo($"{onlyofficeUrl}/Products/Projects/Projects.aspx?prjID={CurrentProjectId}");
-        }
-        else
-        {
-            NavigationManager.NavigateTo(onlyofficeUrl);
-        }
-    }
-
-    protected override void OnInitialized()
-    {
-        onlyofficeUrl = Config.CheckKey("onlyoffice-url");
-        base.OnInitialized();
-    }
-
-    int CurrentProjectId => int.Parse(NavigationManager.Uri.Substring(NavigationManager.Uri.LastIndexOf('/') + 1));
-}
