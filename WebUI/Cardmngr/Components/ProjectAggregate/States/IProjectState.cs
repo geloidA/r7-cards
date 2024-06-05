@@ -3,7 +3,7 @@ using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Utils.Filter;
 using Cardmngr.Utils;
 
-namespace Cardmngr.Components.ProjectAggregate;
+namespace Cardmngr.Components.ProjectAggregate.States;
 
 public interface IProjectState
 {
@@ -14,8 +14,6 @@ public interface IProjectState
     bool Initialized { get; }
 
     public void OnTasksChanged();
-
-    IFilterManager<OnlyofficeTask> TaskFilter { get; }
 
     Project Project { get; }
     IReadOnlyList<OnlyofficeTaskStatus> Statuses { get; }
@@ -36,6 +34,11 @@ public interface IProjectState
     void AddSubtask(int taskId, Subtask subtask);
     void UpdateSubtask(Subtask subtask);
     void RemoveSubtask(int taskId, int subtaskId);
+}
+
+public interface IFilterableProjectState : IProjectState
+{
+    IFilterManager<OnlyofficeTask> TaskFilter { get; }
 }
 
 public interface IRefresheableProjectState : IProjectState

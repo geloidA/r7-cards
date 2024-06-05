@@ -8,14 +8,13 @@ using Cardmngr.Components.Modals.ConfirmModals;
 using Cardmngr.Extensions;
 using Cardmngr.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
-using KolBlazor.Components;
 using Cardmngr.Components.ProjectAggregate.Models;
+using Cardmngr.Components.ProjectAggregate.States;
 
 namespace Cardmngr.Components.ProjectAggregate.Components;
 
 public partial class StatusColumn : ComponentBase, IDisposable
 {
-    private KolBoardColumn<OnlyofficeTask> boardColumnComponent = null!;
     private IList<OnlyofficeTask> _tasks = [];
 
     [Inject] 
@@ -43,7 +42,11 @@ public partial class StatusColumn : ComponentBase, IDisposable
     {
         _tasks = GetTasksForStatus(State, Status);
         State.TasksChanged += RefreshColumn;
-        State.TaskFilter.FilterChanged += () => RefreshColumn(null);
+
+        if (State is IFilterableProjectState filterableState)
+        {
+            filterableState.TaskFilter.FilterChanged += () => RefreshColumn(null);
+        }
     }
 
     private void RefreshColumn(TaskChangedEventArgs? args)
@@ -54,7 +57,14 @@ public partial class StatusColumn : ComponentBase, IDisposable
 
     private static IList<OnlyofficeTask> GetTasksForStatus(IProjectState state, OnlyofficeTaskStatus status)
     {
-        return [.. state.FilteredTasks()
+        IEnumerable<OnlyofficeTask> tasks = state.Tasks;
+
+        if (state is IFilterableProjectState filterableState)
+        {
+            tasks = filterableState.FilteredTasks();
+        }
+        
+        return [.. tasks
             .FilterByStatus(status)
             .OrderByTaskCriteria()];
     }

@@ -17,16 +17,9 @@ public class TaskFilterManager : IFilterManager<OnlyofficeTask>
         _filters = filters.ToList();
     }
 
-    public IEnumerable<IFilter<OnlyofficeTask>> Filters
-    {
-        get
-        {
-            foreach (var filter in _filters)
-                yield return filter;
-        }
-    }
+    public ICollection<IFilter<OnlyofficeTask>> Filters => _filters;
 
-    IEnumerable<IFilter> IFilterManager.Filters => Filters;
+    ICollection<IFilter> IFilterManager.Filters => [.. Filters.Cast<IFilter>()];
 
     public event Action? FilterChanged;
     private void OnFilterChanged() => FilterChanged?.Invoke();

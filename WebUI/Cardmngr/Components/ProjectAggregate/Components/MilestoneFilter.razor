@@ -27,7 +27,7 @@ else
 @code {
     private List<MilestoneFilterItem> filterItems = [];
 
-    [CascadingParameter] IProjectState State { get; set; } = null!;
+    [CascadingParameter] IFilterableProjectState State { get; set; } = null!;
 
     protected override void OnInitialized()
     {

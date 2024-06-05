@@ -1,4 +1,5 @@
-﻿using Cardmngr.Domain.Entities;
+﻿using Cardmngr.Components.ProjectAggregate.States;
+using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Utils.Filter;
 using Cardmngr.Shared.Utils.Filter.TaskFilters;
 using Microsoft.AspNetCore.Components;
@@ -15,7 +16,7 @@ public partial class ProjectTextFieldFilterTool : ComponentBase
     private bool _popupVisible = false;
     private string _inputValue = string.Empty;
 
-    [CascadingParameter] IProjectState State { get; set; } = null!;
+    [CascadingParameter] IFilterableProjectState State { get; set; } = null!;
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
 
     private readonly IList<IFilterModel> _filters = 

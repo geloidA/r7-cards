@@ -1,13 +1,10 @@
 ﻿using Cardmngr.Application.Clients;
 using Cardmngr.Components.ProjectAggregate.Models;
-using Cardmngr.Domain.Entities;
 using Cardmngr.Services;
-using Cardmngr.Shared;
-using Cardmngr.Shared.Utils.Filter;
 using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
 
-namespace Cardmngr.Components.ProjectAggregate;
+namespace Cardmngr.Components.ProjectAggregate.States;
 
 public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
 {
@@ -47,9 +44,6 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
             StateHasChanged();
         }
     }
-
-    private readonly TaskFilterManager taskFilterManager = new();
-    public override IFilterManager<OnlyofficeTask> TaskFilter => taskFilterManager;
 
     private Func<Task> toggleCollapsedFunc = null!;
 

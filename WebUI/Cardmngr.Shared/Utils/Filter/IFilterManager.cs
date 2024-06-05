@@ -2,7 +2,7 @@
 
 public interface IFilterManager<T> : IFilterManager
 {
-    new IEnumerable<IFilter<T>> Filters { get; }
+    new ICollection<IFilter<T>> Filters { get; }
 
     void AddFilter(IFilter<T> filter);
     bool RemoveFilter(IFilter<T> filter);
@@ -18,6 +18,6 @@ public interface IFilterManager<T> : IFilterManager
 
 public interface IFilterManager
 {
-    IEnumerable<IFilter> Filters { get; }
+    ICollection<IFilter> Filters { get; }
     event Action? FilterChanged;
 }

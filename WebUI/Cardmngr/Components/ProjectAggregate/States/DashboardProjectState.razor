@@ -1,0 +1,9 @@
+﻿@inherits ProjectStateBase
+
+@if (Initialized)
+{
+    <CascadingValue IsFixed Value="this">
+        @ChildContent
+    </CascadingValue>
+}
+

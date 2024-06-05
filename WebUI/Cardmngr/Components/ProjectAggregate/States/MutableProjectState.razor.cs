@@ -5,14 +5,19 @@ using Cardmngr.Domain.Entities;
 using Cardmngr.Shared;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Shared.Utils.Filter;
+using Cardmngr.Shared.Utils.Filter.TaskFilters;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Onlyoffice.Api.Extensions;
 
-namespace Cardmngr.Components.ProjectAggregate;
+namespace Cardmngr.Components.ProjectAggregate.States;
 
-public sealed partial class MutableProjectState : ProjectStateBase, IRefresheableProjectState, IAsyncDisposable
+public sealed partial class MutableProjectState :
+    ProjectStateBase,
+    IFilterableProjectState,
+    IRefresheableProjectState,
+    IAsyncDisposable
 {
     private int previousId = -1;
     private readonly Guid _refreshLocker = Guid.NewGuid();
@@ -29,7 +34,7 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
 
     private readonly TaskFilterManager taskFilterManager = new();
-    public override IFilterManager<OnlyofficeTask> TaskFilter => taskFilterManager;
+    public IFilterManager<OnlyofficeTask> TaskFilter => taskFilterManager;
 
     protected override void OnInitialized()
     {
@@ -78,6 +83,16 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
         Initialized = true;
     }
 
+    public override void RemoveMilestone(Milestone milestone)
+    {
+        base.RemoveMilestone(milestone);
+
+        if (TaskFilter.Filters.SingleOrDefault(x => x is MilestoneTaskFilter) is MilestoneTaskFilter filter && filter.Remove(milestone))
+        {
+            OnTasksChanged();
+        }
+    }
+
     private async void OnRefreshModelAsync()
     {
         SetModelAsync(await ProjectClient.GetProjectAsync(Id)).Forget();
@@ -102,6 +117,8 @@ public sealed partial class MutableProjectState : ProjectStateBase, IRefresheabl
         }
 
         await base.CleanPreviousProjectStateAsync();
+        
+        TaskFilter.Clear();
     }
 
     public async ValueTask DisposeAsync()

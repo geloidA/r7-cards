@@ -1,4 +1,4 @@
-﻿using Cardmngr.Components.ProjectAggregate;
+﻿using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Domain.Enums;
 using Microsoft.AspNetCore.Components;

@@ -9,7 +9,7 @@
 
 @code {
     private MilestoneTaskFilter milestoneTaskFilter = null!;
-    [CascadingParameter] IProjectState State { get; set; } = null!;
+    [CascadingParameter] IFilterableProjectState State { get; set; } = null!;
 
     protected override void OnInitialized()
     {

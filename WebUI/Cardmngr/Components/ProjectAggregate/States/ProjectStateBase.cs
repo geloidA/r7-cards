@@ -1,15 +1,12 @@
 ﻿using Cardmngr.Application.Clients.TaskClient;
-using Cardmngr.Components.Common;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Shared.Project;
-using Cardmngr.Shared.Utils.Filter;
-using Cardmngr.Shared.Utils.Filter.TaskFilters;
 using Microsoft.AspNetCore.Components;
 
-namespace Cardmngr.Components.ProjectAggregate;
+namespace Cardmngr.Components.ProjectAggregate.States;
 
 public abstract class ProjectStateBase : ComponentBase, IProjectState, IDisposable
 {
@@ -40,25 +37,33 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState, IDisposab
             _cts = new CancellationTokenSource();
             var token = _cts.Token;
 
-            await InitializeTaskTagsAsync(model.Tasks, token);
+            try
+            {
+                await InitializeTaskTagsAsync(model.Tasks, token);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
 
             OnMilestonesChanged();
             return;
         }
-        
-        model.Tasks.ForEach(x => 
+
+        foreach (var task in model.Tasks)
         {
-            if (_taskTags.TryGetValue(x.Id, out _))
+            if (_taskTags.TryGetValue(task.Id, out var tags))
             {
-                x.Tags = _taskTags[x.Id];
+                task.Tags = tags;
             }
-        });
+        }
 
         _tasks = model.Tasks;
 
         OnMilestonesChanged();
         OnTasksChanged();
     }
+
 
     public Project Project => _project;
     public IReadOnlyList<UserProfile> Team => _team;
@@ -67,8 +72,6 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState, IDisposab
     public IReadOnlyList<OnlyofficeTaskStatus> Statuses => _statuses;
 
     public bool Initialized { get; protected set; }
-
-    public abstract IFilterManager<OnlyofficeTask> TaskFilter { get; }
 
     public event Action? MilestonesChanged;
     protected void OnMilestonesChanged() => MilestonesChanged?.Invoke();
@@ -118,15 +121,10 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState, IDisposab
         OnMilestonesChanged();
     }
 
-    public void RemoveMilestone(Milestone milestone)
+    public virtual void RemoveMilestone(Milestone milestone)
     {
         RemoveTaskMilestoneIds(this.GetMilestoneTasks(milestone.Id).ToList());
         _milestones.RemoveSingle(x => x.Id == milestone.Id);
-        
-        if (TaskFilter.Filters.SingleOrDefault(x => x is MilestoneTaskFilter) is MilestoneTaskFilter filter && filter.Remove(milestone))
-        {
-            OnTasksChanged();
-        }
 
         OnMilestonesChanged();
     }
@@ -189,7 +187,6 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState, IDisposab
 
     protected virtual Task CleanPreviousProjectStateAsync()
     {
-        TaskFilter.Clear();
         _taskTags.Clear();
         _commonHeightByKey.Clear();
 

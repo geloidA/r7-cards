@@ -1,5 +1,5 @@
 ﻿using Cardmngr.Components.Modals.MyBlazored;
-using Cardmngr.Components.ProjectAggregate;
+using Cardmngr.Components.ProjectAggregate.States;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Components.Modals.Base;

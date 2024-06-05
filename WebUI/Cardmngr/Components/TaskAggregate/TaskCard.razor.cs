@@ -3,7 +3,7 @@ using Blazored.Modal.Services;
 using Cardmngr.Domain.Entities;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Shared.Extensions;
-using Cardmngr.Components.ProjectAggregate;
+using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Components.TaskAggregate.Modals;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Services;

@@ -1,4 +1,4 @@
-﻿using Cardmngr.Components.ProjectAggregate;
+﻿using Cardmngr.Components.ProjectAggregate.States;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Components.Modals.Base;
 using Cardmngr.Domain.Entities;

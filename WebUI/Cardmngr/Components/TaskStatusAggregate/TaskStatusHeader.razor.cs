@@ -1,6 +1,6 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
-using Cardmngr.Components.ProjectAggregate;
+using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Extensions;
 using Microsoft.AspNetCore.Components;

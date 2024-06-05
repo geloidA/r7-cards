@@ -1,4 +1,4 @@
-﻿using Cardmngr.Components.ProjectAggregate;
+﻿using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Utils.Filter;
 
@@ -22,7 +22,7 @@ public static class ProjectStateExtensions
     /// <see cref="IFilterManager{T}"/>
     /// <param name="projectState"></param>
     /// <returns>Filtered tasks</returns>
-    public static IEnumerable<OnlyofficeTask> FilteredTasks(this IProjectState projectState)
+    public static IEnumerable<OnlyofficeTask> FilteredTasks(this IFilterableProjectState projectState)
     {
         return projectState.Tasks.Filter(projectState.TaskFilter);
     }

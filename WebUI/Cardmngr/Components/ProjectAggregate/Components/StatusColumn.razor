@@ -1,7 +1,7 @@
 ﻿@implements IDisposable
 
 <SmoothAppear >
-    <KolBoardColumn @ref="boardColumnComponent"
+    <KolBoardColumn
         CommonHeightByKey="CommonHeightByKey"
         Width="365"
         CollapsedWidth="150"
@@ -19,7 +19,7 @@
         
         <HeaderTemplate Context="isCollapsed">
             <TaskStatusHeader TaskStatus="@Status" />
-            @if (State.TaskFilter.Filters.Any())
+            @if (State is IFilterableProjectState { TaskFilter.Filters.Count: > 0 })
             {
                 <div class="mt-1 d-flex justify-content-center fw-light" style="font-size: small;">
                     @_tasks.Count результатов
