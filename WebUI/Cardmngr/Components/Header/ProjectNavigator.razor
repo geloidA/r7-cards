@@ -4,16 +4,16 @@
 @inherits KolComponentBase
 @implements IDisposable
 
-@if (ProjectInfo.Title is { })
+@if (ProjectInfo.ProjectTitle is { })
 {
     <div class="d-flex">
         <FluentButton Id="btn-pj-nav" @onclick="() => openPopover = !openPopover" Appearance="Appearance.Outline" >
-            @ProjectInfo.Title
+            @ProjectInfo.ProjectTitle
         </FluentButton>
-        @if (ProjectInfo.OpenInfoFunc is { })
+        @if (ProjectInfo.OpenProjectInfoFunc is { })
         {
             <FluentIcon Value="@(new Icons.Filled.Size20.Info())" 
-                OnClick="ProjectInfo.OpenInfoFunc" class="ms-2" Title="О проекте" />
+                OnClick="ProjectInfo.OpenProjectInfoFunc" class="ms-2" Title="О проекте" />
         }
     </div>
 
@@ -41,7 +41,7 @@
     bool openPopover;
     Dictionary<int, Project> projectsByIds = [];
 
-    [CascadingParameter] HeaderProjectInfo ProjectInfo { get; set; } = null!;
+    [CascadingParameter] HeaderInteractionService ProjectInfo { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,7 +50,7 @@
             .ToListAsync())
             .ToDictionary(x => x.Id, x => x);
 
-        ProjectInfo.TitleChanged += StateHasChanged;
+        ProjectInfo.ProjectTitleChanged += StateHasChanged;
 
         UpdateStateByLocation(null, new LocationChangedEventArgs(NavigationManager.Uri, true));
         NavigationManager.LocationChanged += UpdateStateByLocation;
@@ -60,7 +60,7 @@
     {
         if (!IsProjectUri(args.Location))
         {
-            ProjectInfo.Clean();
+            ProjectInfo.CleanProjectTitle();
         }
 
         StateHasChanged();
@@ -71,6 +71,6 @@
     public void Dispose()
     {
         NavigationManager.LocationChanged -= UpdateStateByLocation;
-        ProjectInfo.TitleChanged -= StateHasChanged;
+        ProjectInfo.ProjectTitleChanged -= StateHasChanged;
     }
 }

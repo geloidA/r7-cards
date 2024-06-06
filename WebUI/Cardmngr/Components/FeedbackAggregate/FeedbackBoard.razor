@@ -1,4 +1,4 @@
-﻿<KolBoard TValue="Feedback" Class="m-1" CanItemDrag="x => x.CanChangeStatus">
+﻿<KolBoard TValue="Feedback" Class="m-1">
     <Columns>
         <FeedbackColumn Width="420" Status="FeedbackStatus.Todo">
             <HeaderTemplate>
@@ -35,7 +35,4 @@
             </HeaderTemplate>
         </FeedbackColumn>
     </Columns>
-    <ItemTemplate Context="feedback">
-        <FeedbackCard Feedback="feedback" />
-    </ItemTemplate>
 </KolBoard>

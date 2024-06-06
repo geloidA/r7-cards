@@ -34,12 +34,19 @@
                     </OptionTemplate> 
                 </FluentSelect>
             </FluentGridItem>
+
+            <div style="padding: 12px;">
+                <FluentButton @onclick="() => InteractionService.HeaderCollapsed = true">
+                    Свернуть шапку сайта
+                </FluentButton>
+            </div>
         </FluentGrid>
     </OffcanvasBody>
 </Offcanvas>
 
 @code {
     [Parameter] public object? Nothing { get; set; } // TODO: ??? close animation only with parameter ???
+    [CascadingParameter] HeaderInteractionService InteractionService { get; set; } = null!;
 
     public DesignThemeModes Mode { get; set; }
     public OfficeColor? OfficeColor { get; set; }

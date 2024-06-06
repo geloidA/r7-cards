@@ -1,88 +1,63 @@
-﻿@inject AuthenticationStateProvider AuthenticationState
-@inject NavigationManager NavigationManager
-@inject ILocalStorageService LocalStorage
-@inject IConfiguration Config
+﻿@inherits KolComponentBase
 
-@using System.Text.Json
+@if (InteractionService.HeaderCollapsed)
+{
+    <SmoothAppear>
+        <div class="position-absolute top-0 mt-2 p-2" style="left: 50%; opacity: 15%; z-index: 9999;">
+            <div style="background-color: var(--neutral-layer-2); border-radius: 50%;">
+                <FluentIcon Value="@(new Icons.Regular.Size24.Dismiss())"
+                    @onclick="() => InteractionService.HeaderCollapsed = false"
+                    title="Раскрыть шапку"
+                    Color="Color.Neutral" />
+            </div>
+        </div>
+    </SmoothAppear>
+}
+else
+{
+<FluentHeader class="siteheader" Style="height: auto; z-index: 1;" >
+    <AuthorizeView>
+        <Authorized>
+            <div class="d-flex gap-1 align-items-center">
+                <FluentButton Class="py-0" Appearance="Appearance.Outline"
+                    OnClick="OpenSidebar" IconEnd="@(new Icons.Regular.Size20.TextAlignJustify())" />
+                <FluentSpacer Width="5" />
+                <NavigateButtons />
+                <FluentSpacer Width="25" />
+                <ProjectNavigator />
+                <FilterCustomizer />
+            </div>
+            <FluentSpacer />
+            <div class="d-flex gap-2">
+                <Toolbar />
+                @if (currentUser is { })
+                {
+                    <FluentIcon OnClick="OpenSettings"
+                        Value="@(new Icons.Regular.Size24.Settings())"
+                        />        
 
-<div class="d-flex gap-1 align-items-center">
-    <FluentButton Class="py-0" Appearance="Appearance.Outline"
-        OnClick="OpenSidebar" IconEnd="@(new Icons.Regular.Size20.TextAlignJustify())" />
-    <FluentSpacer Width="5" />
-    <NavigateButtons />
-    <FluentSpacer Width="25" />
-    <ProjectNavigator />
-    <FilterCustomizer />
-</div>
-<FluentSpacer />
-<div class="d-flex gap-2">
-    <Toolbar />
-    @if (currentUser is { })
-    {
-        <FluentIcon OnClick="OpenSettings"
-            Value="@(new Icons.Regular.Size24.Settings())"
-            />        
+                    <FluentProfileMenu Image="@($"{proxyUrl}/api/people{currentUser.Avatar}")"
+                                    HeaderLabel="УПКБ Деталь" HeaderButton="Выйти" OnHeaderButtonClick="LogoutAsync"
+                                    Initials="@($"{currentUser.LastName[0]}{currentUser.FirstName[0]}")" 
+                                    FullName="@currentUser.DisplayName"
+                                    EMail="@currentUser.Email" class="ms-2"
+                                    Style="border-radius: 5px; min-width: 300px;" >                       
+                        <FooterTemplate>
+                            <FluentStack>
+                                <FluentSpacer />
+                                <FluentAnchor Appearance="@Appearance.Hypertext"
+                                            Href="@($"{onlyofficeUrl}/Products/People/Profile.aspx?user={currentUser.UserName}")">
+                                    Профиль
+                                </FluentAnchor>
+                            </FluentStack>
+                        </FooterTemplate>
 
-        <FluentProfileMenu Image="@($"{proxyUrl}/api/people{currentUser.Avatar}")"
-                        HeaderLabel="УПКБ Деталь" HeaderButton="Выйти" OnHeaderButtonClick="LogoutAsync"
-                        Initials="@($"{currentUser.LastName[0]}{currentUser.FirstName[0]}")" 
-                        FullName="@currentUser.DisplayName"
-                        EMail="@currentUser.Email" class="ms-2"
-                        Style="border-radius: 5px; min-width: 300px;" >                       
-            <FooterTemplate>
-                <FluentStack>
-                    <FluentSpacer />
-                    <FluentAnchor Appearance="@Appearance.Hypertext"
-                                Href="@($"{onlyofficeUrl}/Products/People/Profile.aspx?user={currentUser.UserName}")">
-                        Профиль
-                    </FluentAnchor>
-                </FluentStack>
-            </FooterTemplate>
+                    </FluentProfileMenu>
 
-        </FluentProfileMenu>
-
-        <NotificationCenter />
-    }
-</div>
-
-@code {
-    string proxyUrl = null!;
-    string onlyofficeUrl = null!;
-
-    private UserProfile? currentUser;
-
-    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
-    [CascadingParameter] IModalService Modal { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        if (AuthenticationState is { })
-        {
-            proxyUrl = Config.CheckKey("proxy-url");
-            onlyofficeUrl = Config.CheckKey("onlyoffice-url");
-            var provider = AuthenticationState.ToCookieProvider();
-            currentUser = JsonSerializer.Deserialize<UserProfile>(provider["Data"]);
-        }
-    }
-
-    private async Task OpenSidebar()
-    {
-        await Modal.Show<HeaderMenuModal>("", new ModalParameters { { "Nothing", new object() } }, Options).Result;
-            // TODO: ??? close animation only with parameter ???
-    }
-
-    private async Task OpenSettings()
-    {
-        await Modal.Show<SettingsModal>("", new ModalParameters { { "Nothing", new object() } }, Options).Result;
-    }
-
-    async Task LogoutAsync()
-    {
-        if (AuthenticationState is { })
-        {            
-            AuthenticationState.ToCookieProvider().ClearAuthInfo();
-            await LocalStorage.RemoveItemAsync("isauthenticated");
-            NavigationManager.NavigateTo("login");
-        }
-    }
+                    <NotificationCenter />
+                }
+            </div>
+        </Authorized>
+    </AuthorizeView>
+</FluentHeader>
 }

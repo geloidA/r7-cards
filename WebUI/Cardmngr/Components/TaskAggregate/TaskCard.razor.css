@@ -1,4 +1,4 @@
-.board .board-column .item-container .item .task-card {
+.board-column .item-container .item .task-card {
     font-size: small;
     cursor: pointer;
     background-color: var(--main-card-bg);
@@ -6,7 +6,7 @@
     width: 100%;
 }
 
-.board .board-column .task-card.dragged {
+.board-column .task-card.dragged {
     opacity: 0.5;
 }
 

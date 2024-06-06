@@ -1,0 +1,17 @@
+﻿@inherits KolComponentBase
+
+<div class="d-flex flex-column fw-bolder h-100 @Class" style="font-size: 20px; @Style">
+    <div style="height: 5%;" class="w-100">
+        Вехи
+    </div>
+    <div style="height: 95%;" class="w-100 overflow-auto scrollbar-none">
+        <SmoothAppear>
+            <div class="d-flex flex-column gap-2">
+                @foreach (var milestone in State.Milestones.OrderBy(x => x.Deadline))
+                {
+                    <MilestoneBar Milestone="milestone" />
+                }
+            </div>
+        </SmoothAppear>
+    </div>
+</div>

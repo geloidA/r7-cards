@@ -1,0 +1,19 @@
+﻿
+<div class="project-dashboard-header">
+    <FluentIcon Color="Color.Warning" Width="30px" Value="@(new Icons.Filled.Size24.LockClosed())" />
+    <FluentSpacer Width="10" />
+    @State.Project.Title
+    <FluentSpacer />
+    <span class="tasks-count">Всего задач: @State.Tasks.Count</span>
+</div>
+
+@code {
+
+    [CascadingParameter] IProjectState State { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        State.TasksChanged += _ => StateHasChanged();
+    }
+
+}

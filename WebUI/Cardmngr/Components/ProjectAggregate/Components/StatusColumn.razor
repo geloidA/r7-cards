@@ -13,6 +13,7 @@
         Virtualized
         EstimateHeight="150"
         Overscan="5"
+        CanItemDrag="@(x => x.CanEdit)"
         KeySelector="x => x.Id"
         Items="_tasks" 
         OnDropItem="@(async task => await OnChangeTaskStatus(task, Status))" >
@@ -26,5 +27,9 @@
                 </div>
             }
         </HeaderTemplate>
+        
+        <ItemTemplate>
+            <TaskCard Task="context" />
+        </ItemTemplate>
     </KolBoardColumn>
 </SmoothAppear>

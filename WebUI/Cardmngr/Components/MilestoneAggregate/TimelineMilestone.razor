@@ -50,7 +50,7 @@
         get
         {
             if (Milestone.IsClosed()) return "rgb(64, 165, 120)";
-            return Milestone.IsDeadlineOut() ? "rgb(96, 114, 116)" : "var(--accent-fill-rest)";
+            return Milestone.IsDeadlineOut() ? "var(--neutral-fill-strong-rest)" : "var(--accent-fill-rest)";
         }
     }
 

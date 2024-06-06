@@ -1,0 +1,13 @@
+.project-dashboard-header {
+    display: flex;
+    font-size: 25px;
+    font-weight: bold;
+    align-items: center;
+    width: 100%;
+}
+
+.tasks-count {
+    padding: .5rem;
+    background-color: var(--neutral-layer-2);
+    border-radius: 13px;
+}

@@ -2,7 +2,7 @@
     <KolBoardColumn TValue="Feedback" 
         ItemSpacing="10" Width="Width"
         EstimateHeight="113" Virtualized
-        Overscan="4"
+        Overscan="4" CanItemDrag="x => x.CanChangeStatus"
         OnDropItem="DropFeedback" Items="Items" KeySelector="f => f.Id">
         <HeaderTemplate>
             <div class="d-flex mb-2">
@@ -14,5 +14,9 @@
                 </div>
             </div>
         </HeaderTemplate>
+        
+        <ItemTemplate Context="feedback">
+            <FeedbackCard Feedback="feedback" />
+        </ItemTemplate>
     </KolBoardColumn>
 </div>

@@ -17,7 +17,7 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
     IDisposable
 {
     string proxyUrl = null!;
-    private readonly Guid lockGuid = Guid.NewGuid();
+    private Guid lockGuid;
     Offcanvas currentModal = null!;
 
     private bool CanEdit => Model == null || Model.CanEdit;
@@ -27,7 +27,7 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
     private int TotalTasks => Model == null ? 0 : milestoneTasks.Count();
     private int ActiveTasks => Model == null ? 0 : milestoneTasks.Count(x => !x.IsClosed());
 
-    [Parameter] public MutableProjectState State { get; set; } = null!;
+    [Parameter] public IProjectState State { get; set; } = null!;
     [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     [Inject] IMilestoneClient MilestoneClient { get; set; } = null!;
@@ -40,7 +40,12 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
     {
         base.OnInitialized();
 
-        State.RefreshService.Lock(lockGuid);
+        if (State is IRefresheableProjectState refresheableState)
+        {
+            lockGuid = Guid.NewGuid();
+            refresheableState.RefreshService.Lock(lockGuid);
+        }
+
         proxyUrl = Config.CheckKey("proxy-url");
 
         if (IsAdd)
@@ -97,5 +102,11 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
         e.Items = State.Team.Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase));
     }
 
-    public void Dispose() => State.RefreshService.RemoveLock(lockGuid);
+    public void Dispose()
+    {
+        if (State is IRefresheableProjectState refresheableState)
+        {
+            refresheableState.RefreshService.RemoveLock(lockGuid);
+        }
+    }
 }

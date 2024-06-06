@@ -1,0 +1,22 @@
+﻿<div class="d-flex flex-column fw-bolder h-100" style="font-size: 20px;">
+    <div style="height: 10%;" class="w-100">
+        Просрочено
+    </div>
+    <div style="height: 90%; font-size: 96px;" class="w-100 d-flex align-items-center justify-content-center">
+        @($"{Value:0}")<span style="font-size: 40px;" class="mt-4">%</span>
+    </div>
+</div>
+
+@code {
+
+    [CascadingParameter] IProjectState State { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        State.TasksChanged += _ => StateHasChanged();
+    }
+
+    private double Value => State.Tasks.Count != 0 
+        ? (State.Tasks.Count(x => x.IsDeadlineOut()) / (double)State.Tasks.Count) * 100
+        : 0;
+}

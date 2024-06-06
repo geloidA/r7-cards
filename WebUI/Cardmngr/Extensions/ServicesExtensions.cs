@@ -31,7 +31,7 @@ public static class ServicesExtensions
                         UseCustomLayout = true
                     },
                     true))
-            .AddCascadingValue(sp => new CascadingValueSource<HeaderProjectInfo>(new HeaderProjectInfo(), true));
+            .AddCascadingValue(sp => new CascadingValueSource<HeaderInteractionService>(new HeaderInteractionService(), true));
     }
 
     public static IServiceCollection AddValidators(this IServiceCollection services)

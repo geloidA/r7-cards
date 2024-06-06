@@ -1,6 +1,6 @@
 ﻿@using Cardmngr.Components.ProjectAggregate.Components
 
-<KolBoard TValue="OnlyofficeTask" CanItemDrag="@(x => x.CanEdit)" >    
+<KolBoard TValue="OnlyofficeTask" >    
     <Columns>
         @{ 
             var isFirst = true;
@@ -15,9 +15,6 @@
             }   
         }
     </Columns>
-    <ItemTemplate>
-        <TaskCard Task="context" />
-    </ItemTemplate>
 </KolBoard>
 
 <FluentTooltip Anchor="responsibles">

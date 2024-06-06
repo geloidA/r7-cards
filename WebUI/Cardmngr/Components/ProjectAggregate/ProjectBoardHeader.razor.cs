@@ -17,12 +17,12 @@ public partial class ProjectBoardHeader : ComponentBase
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
-    [CascadingParameter] HeaderProjectInfo ProjectInfo { get; set; } = null!;
+    [CascadingParameter] HeaderInteractionService ProjectInfo { get; set; } = null!;
 
     protected override void OnInitialized()
     {
-        ProjectInfo.OpenInfoFunc = ShowProjectMenu;
-        ProjectInfo.Title = State.Project.Title;
+        ProjectInfo.OpenProjectInfoFunc = ShowProjectMenu;
+        ProjectInfo.ProjectTitle = State.Project.Title;
     }
 
     private async Task ShowProjectMenu()

@@ -1,5 +1,73 @@
-﻿@page "/dashboard"
+﻿@page "/dashboard/{ProjectId:int}"
 
-<DashboardProjectState >
-    
+@using Cardmngr.Components.ProjectAggregate.Dashboard
+
+<DashboardProjectState Id="ProjectId" >
+    <div class="d-flex flex-column h-100">
+
+        @* HEADER *@
+        <div class="p-2" style="height: 5%;">
+            <ProjectDashboardHeader />
+        </div>
+
+        @* BODY *@
+        <div class="d-flex" style="height: 95%;">
+            <div class="p-2" style="width: 20%;">
+                @if (_columns is { })
+                {
+                    @* DEADLINED *@
+                    <DashboardCardsColumn 
+                        Header="@_columns[0].Header" 
+                        Color="Color.Error"
+                        TaskRefreshFunc="@_columns[0].TaskRefreshFunc" />
+                }
+            </div>
+            <div class="" style="width: 60%;">
+                <div class="d-flex" style="height: 65%;">
+                    <div class="h-100 p-2" style="width: 33%;">
+                        @if (_columns is { })
+                        {
+                            @* SEVEN DAYS DEADLINE OUT *@
+                            <DashboardCardsColumn 
+                                Header="@_columns[1].Header" 
+                                Color="Color.Warning"
+                                TaskRefreshFunc="@_columns[1].TaskRefreshFunc" />
+                        }
+                    </div>
+                    <div class="h-100 p-2" style="width: 45%;">
+                        <DashboardSegment >
+                            <MilestonesSummary />
+                        </DashboardSegment>
+                    </div>
+                    <div class="h-100" style="width: 22%;">
+                        <div class="w-100 p-2" style="height: 60%;">
+                            <DashboardSegment >
+                                <ClosedCounter />
+                            </DashboardSegment>
+                        </div>
+                        <div class="w-100 p-2" style="height: 40%;">
+                            <DashboardSegment >
+                                <DeadlinePrecent />
+                            </DashboardSegment>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 35%;" class="p-2">
+                    <DashboardSegment class="pb-1" >
+                        <MilestoneTimeline Collapsed="true" />
+                    </DashboardSegment>
+                </div>
+            </div>
+            <div class="p-2" style="width: 20%;">
+                @if (_columns is { })
+                {
+                    @* TODO TASKS *@
+                    <DashboardCardsColumn 
+                        Header="@_columns[2].Header" 
+                        Color="Color.Accent"
+                        TaskRefreshFunc="@_columns[2].TaskRefreshFunc" />
+                }
+            </div>
+        </div>
+    </div>
 </DashboardProjectState>
