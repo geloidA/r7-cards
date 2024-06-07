@@ -1,25 +1,27 @@
-﻿namespace Cardmngr.Utils;
+﻿using Cardmngr.Domain.Entities;
+
+namespace Cardmngr.Utils;
 
 public class HeaderInteractionService
 {
-    private string? _title;
-    public string? ProjectTitle
+    private Project? _selectedProject;
+    public Project? SelectedProject
     {
-        get => _title;
+        get => _selectedProject;
         set
         {
-            _title = value;
-            ProjectTitleChanged?.Invoke();
+            _selectedProject = value;
+            SelectedProjectChanged?.Invoke();
         }
     }
     
     public Func<Task>? OpenProjectInfoFunc { get; set; }
 
-    public event Action? ProjectTitleChanged;
+    public event Action? SelectedProjectChanged;
     
-    public void CleanProjectTitle()
+    public void CleanSelectedProject()
     {
-        ProjectTitle = null;
+        SelectedProject = null;
         OpenProjectInfoFunc = null;
     }
 

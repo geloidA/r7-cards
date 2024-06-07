@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.States;
 
-public abstract class ProjectStateBase : ComponentBase, IProjectState, IDisposable
+public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase, IProjectState, IDisposable
 {
     private Project _project = null!;
     private List<UserProfile> _team = [];
@@ -80,7 +80,7 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState, IDisposab
     private void OnTasksChanged(TaskAction action, OnlyofficeTask task) 
         => TasksChanged?.Invoke(new TaskChangedEventArgs(action, task));
 
-    public void OnTasksChanged() => TasksChanged?.Invoke(null);
+    private void OnTasksChanged() => TasksChanged?.Invoke(null);
 
     public event Action? SubtasksChanged;
     protected void OnSubtasksChanged() => SubtasksChanged?.Invoke();
@@ -166,6 +166,8 @@ public abstract class ProjectStateBase : ComponentBase, IProjectState, IDisposab
     }
 
     [Inject] ITaskClient TaskClient { get; set; } = null!;
+
+    public bool ReadOnly => isReadOnly;
 
     private async Task InitializeTaskTagsAsync(List<OnlyofficeTask> tasks, CancellationToken cancellationToken)
     {

@@ -1,0 +1,17 @@
+.dashboard-watch-manager {
+    opacity: 0.4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+
+    background-color: var(--neutral-fill-layer-rest);
+    border-radius: 10px;
+    padding: 10px;
+
+    transition: opacity 0.5s ease-in-out;
+}
+
+.dashboard-watch-manager:hover {
+    opacity: 1;
+}

@@ -87,7 +87,7 @@
                     </FluentButton>
                     @if (!IsAdd)
                     {
-                        <FluentButton Class="ms-2" Disabled="!Model!.CanDelete"
+                        <FluentButton Class="ms-2" Disabled="!Model!.CanDelete || State.ReadOnly"
                                 OnClick="DeleteAsync" >
                                 Удалить
                         </FluentButton>

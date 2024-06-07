@@ -50,7 +50,7 @@
                         </FluentButton>
                         @if(!IsAdd)
                         {
-                            <FluentButton Class="ms-2" OnClick="DeleteAsync" Disabled="!Model!.CanDelete" >
+                            <FluentButton Class="ms-2" OnClick="DeleteAsync" Disabled="!Model!.CanDelete || State.ReadOnly" >
                                 Удалить
                             </FluentButton>
                         }

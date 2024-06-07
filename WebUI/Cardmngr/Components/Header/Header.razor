@@ -3,7 +3,7 @@
 @if (InteractionService.HeaderCollapsed)
 {
     <SmoothAppear>
-        <div class="position-absolute top-0 mt-2 p-2" style="left: 50%; opacity: 15%; z-index: 9999;">
+        <div class="position-absolute top-0 mt-2 p-2" style="left: 50%; opacity: 30%; z-index: 1;">
             <div style="background-color: var(--neutral-layer-2); border-radius: 50%;">
                 <FluentIcon Value="@(new Icons.Regular.Size24.Dismiss())"
                     @onclick="() => InteractionService.HeaderCollapsed = false"

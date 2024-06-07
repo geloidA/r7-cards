@@ -11,12 +11,12 @@
 }
 
 .red-border {
-    border: 1px solid red !important;
+    border: 1px solid var(--error) !important;
     border-radius: 5px;
 }
 
 .warning-border {
-    border: 1px solid orange !important;
+    border: 1px solid var(--warning) !important;
     border-radius: 5px;
 }
 

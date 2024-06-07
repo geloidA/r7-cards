@@ -1,12 +1,14 @@
 ﻿@using Microsoft.FluentUI.AspNetCore.Components
 @inherits LayoutComponentBase
 
+@implements IDisposable
+
 <FluentToastProvider />
 
 <FluentLayout>
     <Header />
     <FluentStack Orientation="Orientation.Horizontal" Width="100%">
-        <FluentBodyContent style="height: 100vh;">
+        <FluentBodyContent style="@CssPadding" >
             <ErrorBoundary>
                 <ChildContent>
                     <div class="content">
@@ -23,3 +25,19 @@
         </FluentBodyContent>
     </FluentStack>
 </FluentLayout>
+
+@code {
+    [CascadingParameter] HeaderInteractionService InteractionService { get; set; } = null!;
+
+    private string CssPadding => InteractionService.HeaderCollapsed ? "height: 100vh;" : "height: 100vh; padding-bottom: 3rem;";
+
+    protected override void OnInitialized()
+    {
+        InteractionService.HeaderCollapsedChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        InteractionService.HeaderCollapsedChanged -= StateHasChanged;
+    }
+}

@@ -8,15 +8,15 @@
 </div>
 
 @code {
-
-    [CascadingParameter] IProjectState State { get; set; } = null!;
+    [CascadingParameter] IFilterableProjectState State { get; set; } = null!;
 
     protected override void OnInitialized()
     {
         State.TasksChanged += _ => StateHasChanged();
+        State.TaskFilter.FilterChanged += StateHasChanged;
     }
 
-    private double Value => State.Tasks.Count != 0 
-        ? (State.Tasks.Count(x => x.IsDeadlineOut()) / (double)State.Tasks.Count) * 100
+    private double Value => State.FilteredTasks().Count() != 0 
+        ? (State.FilteredTasks().Count(x => x.IsDeadlineOut()) / (double)State.FilteredTasks().Count()) * 100
         : 0;
 }

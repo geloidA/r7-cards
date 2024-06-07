@@ -39,7 +39,7 @@
 
 .content {
     display: flex;
-    height: 100dvh;
+    height: 100%;
     background-color: var(--neutral-layer-4);
 }
 

@@ -12,8 +12,7 @@ public interface IProjectState
     event Action? SubtasksChanged;
 
     bool Initialized { get; }
-
-    public void OnTasksChanged();
+    bool ReadOnly { get; }
 
     Project Project { get; }
     IReadOnlyList<OnlyofficeTaskStatus> Statuses { get; }

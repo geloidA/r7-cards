@@ -87,9 +87,9 @@ public sealed partial class MutableProjectState :
     {
         base.RemoveMilestone(milestone);
 
-        if (TaskFilter.Filters.SingleOrDefault(x => x is MilestoneTaskFilter) is MilestoneTaskFilter filter && filter.Remove(milestone))
+        if (TaskFilter.Filters.SingleOrDefault(x => x is MilestoneTaskFilter) is MilestoneTaskFilter filter)
         {
-            OnTasksChanged();
+            filter.Remove(milestone);
         }
     }
 

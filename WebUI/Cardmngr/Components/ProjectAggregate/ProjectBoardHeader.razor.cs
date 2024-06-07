@@ -22,7 +22,7 @@ public partial class ProjectBoardHeader : ComponentBase
     protected override void OnInitialized()
     {
         ProjectInfo.OpenProjectInfoFunc = ShowProjectMenu;
-        ProjectInfo.ProjectTitle = State.Project.Title;
+        ProjectInfo.SelectedProject = State.Project;
     }
 
     private async Task ShowProjectMenu()

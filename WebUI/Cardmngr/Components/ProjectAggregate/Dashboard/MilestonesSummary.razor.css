@@ -1,0 +1,6 @@
+.milestones-summary {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    height: 100%;
+}

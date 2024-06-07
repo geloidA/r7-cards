@@ -9,9 +9,9 @@ namespace Cardmngr.Components.ProjectAggregate.Dashboard;
 public partial class DashboardCardsColumn : ComponentBase
 {
     private IList<OnlyofficeTask> _tasks = null!;
-    [CascadingParameter] IProjectState State { get; set; } = null!;
+    [CascadingParameter] IFilterableProjectState State { get; set; } = null!;
 
-    [Parameter, EditorRequired] public Func<IProjectState, IList<OnlyofficeTask>> TaskRefreshFunc { get; set; } = null!;
+    [Parameter, EditorRequired] public Func<IFilterableProjectState, IList<OnlyofficeTask>> TaskRefreshFunc { get; set; } = null!;
     [Parameter, EditorRequired] public string Header { get; set; } = null!;
 
     [Parameter] public Color Color { get; set; }
@@ -19,10 +19,11 @@ public partial class DashboardCardsColumn : ComponentBase
     protected override void OnInitialized()
     {
         _tasks = TaskRefreshFunc(State);
-        State.TasksChanged += RefreshTasks;
+        State.TasksChanged += _ => RefreshTasks();
+        State.TaskFilter.FilterChanged += RefreshTasks;
     }
 
-    private void RefreshTasks(TaskChangedEventArgs? e)
+    private void RefreshTasks()
     {
         _tasks = TaskRefreshFunc(State);
         StateHasChanged();

@@ -7,4 +7,9 @@ namespace Cardmngr.Components.ProjectAggregate.Dashboard;
 public partial class MilestonesSummary : KolComponentBase
 {
     [CascadingParameter] IProjectState State { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        State.MilestonesChanged += StateHasChanged;
+    }
 }

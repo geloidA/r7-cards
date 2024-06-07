@@ -49,7 +49,7 @@
                 Вехи
                 <FluentBadge class="p-1" >@State.Milestones.Count</FluentBadge>
                 <FluentSpacer />
-                <Tool Disabled="@(!State.Project.CanEdit)"
+                <Tool Disabled="@(State.ReadOnly || !State.Project.CanEdit)"
                     Icon="@(new Icons.Regular.Size16.Add())" Color="Color.Success"
                     OnClick="ShowMilestoneCreation" TooltipTitle="Добавить веху" />
             </div>

@@ -18,7 +18,7 @@ public partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskU
 {
     private readonly Guid lockGuid = Guid.NewGuid();
     Components.Modals.MyBlazored.Offcanvas currentModal = null!;
-    private bool CanEdit => Model == null || Model.CanEdit;
+    private bool CanEdit => !State.ReadOnly && (Model == null || Model.CanEdit);
 
     [Inject] ITaskClient TaskClient { get; set; } = null!;
     [Inject] ITagColorManager TagColorGetter { get; set; } = null!;
@@ -33,6 +33,8 @@ public partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskU
     protected override void OnInitialized()
     {
         base.OnInitialized();
+
+        Console.WriteLine(State.ReadOnly);
 
         if (State is IRefresheableProjectState refresheableProjectState)
         {

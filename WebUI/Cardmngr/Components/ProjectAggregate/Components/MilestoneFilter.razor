@@ -39,8 +39,6 @@ else
         State.TaskFilter
             .OfType<MilestoneTaskFilter>()
             .Toggle(milestone);
-
-        State.OnTasksChanged();
     }
 
     private class MilestoneFilterItem(Milestone milestone)

@@ -39,11 +39,7 @@
 
     [Parameter] public Milestone Milestone { get; set; } = null!;
 
-    void ToggleMilestone(Milestone milestone)
-    {
-        MilestoneTaskFilter.Toggle(Milestone);
-        State.OnTasksChanged();
-    }
+    void ToggleMilestone(Milestone milestone) => MilestoneTaskFilter.Toggle(Milestone);
 
     private string BadgeColor
     {

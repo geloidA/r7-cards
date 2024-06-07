@@ -3,7 +3,7 @@
 @inject KolTimelineJsInterop TimelineInterop
 
 @inherits KolComponentBase
-@implements IAsyncDisposable
+
 <div class="d-flex h-100 @Class" style=@Style >
     <KolTimeline Collapsed="!Collapsed" UncollapsedHeight="@(State.Milestones.Count * 36)" 
         ShowTodayLine="true" Class="scrollbar-none py-0" >
@@ -17,39 +17,3 @@
         </CascadingValue>
     </KolTimeline>
 </div>
-
-@code {
-    [CascadingParameter] IFilterableProjectState State { get; set; } = null!;
-
-    private bool firstFilterItemFlag = true;
-    private readonly MilestoneTaskFilter milestoneTaskFilter = new();
-
-    [Parameter]
-    public bool Collapsed { get; set; }
-
-    protected override void OnInitialized()
-    {
-        // Remove filter if empty
-        milestoneTaskFilter.FilterChanged += () =>
-        {
-            if (!milestoneTaskFilter.Any())
-            {
-                State.TaskFilter.RemoveFilter(milestoneTaskFilter);
-                firstFilterItemFlag = true;
-            }
-            else if (firstFilterItemFlag)
-            {
-                State.TaskFilter.AddFilter(milestoneTaskFilter);
-                firstFilterItemFlag = false;
-            }
-        };
-
-        State.MilestonesChanged += StateHasChanged;
-        State.TasksChanged += _ => StateHasChanged();
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        return TimelineInterop.DisposeAsync();
-    }
-}

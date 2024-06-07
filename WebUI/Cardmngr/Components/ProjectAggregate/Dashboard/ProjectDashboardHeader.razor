@@ -4,16 +4,17 @@
     <FluentSpacer Width="10" />
     @State.Project.Title
     <FluentSpacer />
-    <span class="tasks-count">Всего задач: @State.Tasks.Count</span>
+    <span class="tasks-count">Всего задач: @State.FilteredTasks().Count()</span>
 </div>
 
 @code {
 
-    [CascadingParameter] IProjectState State { get; set; } = null!;
+    [CascadingParameter] IFilterableProjectState State { get; set; } = null!;
 
     protected override void OnInitialized()
     {
         State.TasksChanged += _ => StateHasChanged();
+        State.TaskFilter.FilterChanged += StateHasChanged;
     }
 
 }

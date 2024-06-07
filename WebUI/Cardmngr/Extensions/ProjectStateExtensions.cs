@@ -65,4 +65,9 @@ public static class ProjectStateExtensions
     {
         return projectState.Tasks.Count(x => x.Status == Domain.Enums.Status.Closed);
     }
+
+    public static int CountClosedTasks(this IFilterableProjectState projectState)
+    {
+        return projectState.FilteredTasks().Count(x => x.Status == Domain.Enums.Status.Closed);
+    }
 }

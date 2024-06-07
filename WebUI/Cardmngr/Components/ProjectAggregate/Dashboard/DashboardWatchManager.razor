@@ -1,0 +1,20 @@
+﻿@inherits KolComponentBase
+
+<div id="@_popoverGuid" class="dashboard-watch-manager clickable" @onclick="() => _isPopoverOpen = !_isPopoverOpen" >
+    <FluentIcon Value="@(new Icons.Filled.Size24.Board())" Width="50px" />
+</div>
+
+<FluentPopover @bind-Open="_isPopoverOpen" AnchorId="@_popoverGuid" VerticalPosition="VerticalPosition.Top"
+    style="width: 200px; height: 300px; border-radius: 10px;">
+    <Header >
+        <div style="font-size: 12px; line-height: 1;">Выберите проекты для просмотра</div>
+    </Header>
+    <Body >
+        <div class="d-flex flex-column gap-2 overflow-auto">
+            @foreach (var project in Projects)
+            {
+                <FluentCheckbox Label="@project.Title" />
+            }
+        </div>
+    </Body>
+</FluentPopover>

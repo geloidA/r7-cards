@@ -11,7 +11,7 @@
     <FluentIcon Value="@(new Icons.Regular.Size24.Check())"/>
     <span class="ms-1" style="color: var(--neutral-foreground-rest);">Подзадачи</span>
     <Tool Icon="@(new Icons.Regular.Size16.Add())" Class="ms-1" TooltipTitle="Добавить"
-        Disabled="@(!Task.CanEdit || Task.IsClosed())" @onclick="ShowCreationModal" />
+        Disabled="@(State.ReadOnly || !Task.CanEdit || Task.IsClosed())" @onclick="ShowCreationModal" />
 </div>
 @if (Task.Subtasks.Count == 0)
 {

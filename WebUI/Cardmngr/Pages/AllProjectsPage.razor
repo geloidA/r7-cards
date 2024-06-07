@@ -2,6 +2,7 @@
 
 @using Cardmngr.Components.TaskAggregate
 @using Shared.Project
+@using Cardmngr.Components.ProjectAggregate.Dashboard
 
 @inherits AuthorizedPage
 
@@ -12,7 +13,7 @@
     <AuthorizeView>
         <div class="d-flex flex-column p-2" style="overflow-y: auto; overflow-x: hidden;">
             <CascadingValue Value="IdOnInitialization" Name="UserId" IsFixed="true" >
-                <div style="height: 900px; overflow-y:auto; overflow-x:hidden">
+                <div style="height: 100%; overflow-y:auto; overflow-x:hidden">
                     <Virtualize Items="allProjects" Context="project">
                         <ItemContent>
                             <div class="mb-2" @key="project.ProjectInfo.Id" >
@@ -26,7 +27,10 @@
                         </EmptyContent>
                     </Virtualize>
                 </div>
-            </CascadingValue>
+            </CascadingValue>            
+        </div>
+        <div class="position-absolute bottom-0" style="right: 0; margin-bottom: 60px !important; margin-right: 45px;">
+            <DashboardWatchManager Projects="allProjects.Select(x => x.ProjectInfo)" />
         </div>
     </AuthorizeView>
 }

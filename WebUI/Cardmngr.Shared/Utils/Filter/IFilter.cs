@@ -1,6 +1,11 @@
 ﻿namespace Cardmngr.Shared.Utils.Filter;
 
-public interface IFilterByMultipleItem<TFilter, T> : IFilter<T>, IEnumerable<TFilter>
+public interface IFilterByMultipleItem<TFilter, T> : IFilter<T>, ICollection<TFilter>, IChangeableFilter
+{
+    void RemoveRange(IEnumerable<TFilter> filters);
+}
+
+public interface IChangeableFilter : IFilter
 {
     event Action? FilterChanged;
 }

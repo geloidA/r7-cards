@@ -20,7 +20,7 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
     private Guid lockGuid;
     Offcanvas currentModal = null!;
 
-    private bool CanEdit => Model == null || Model.CanEdit;
+    private bool CanEdit => !State.ReadOnly && (Model == null || Model.CanEdit);
 
     private DateTime? Start => Model == null ? buffer.Deadline?.AddDays(-7) : State.GetMilestoneStart(Model);
 

@@ -36,9 +36,7 @@
             </FluentGridItem>
 
             <div style="padding: 12px;">
-                <FluentButton @onclick="() => InteractionService.HeaderCollapsed = true">
-                    Свернуть шапку сайта
-                </FluentButton>
+                <FluentCheckbox @bind-Value="InteractionService.HeaderCollapsed" Label="Свернуть шапку" />
             </div>
         </FluentGrid>
     </OffcanvasBody>
