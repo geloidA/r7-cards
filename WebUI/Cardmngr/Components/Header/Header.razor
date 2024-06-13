@@ -2,7 +2,7 @@
 
 @if (InteractionService.HeaderCollapsed)
 {
-    <SmoothAppear>
+    <Smooth>
         <div class="position-absolute top-0 mt-2 p-2" style="left: 50%; opacity: 30%; z-index: 1;">
             <div style="background-color: var(--neutral-layer-2); border-radius: 50%;">
                 <FluentIcon Value="@(new Icons.Regular.Size24.Dismiss())"
@@ -11,53 +11,49 @@
                     Color="Color.Neutral" />
             </div>
         </div>
-    </SmoothAppear>
+    </Smooth>
 }
 else
 {
 <FluentHeader class="siteheader" Style="height: auto; z-index: 1;" >
-    <AuthorizeView>
-        <Authorized>
-            <div class="d-flex gap-1 align-items-center">
-                <FluentButton Class="py-0" Appearance="Appearance.Outline"
-                    OnClick="OpenSidebar" IconEnd="@(new Icons.Regular.Size20.TextAlignJustify())" />
-                <FluentSpacer Width="5" />
-                <NavigateButtons />
-                <FluentSpacer Width="25" />
-                <ProjectNavigator />
-                <FilterCustomizer />
-            </div>
-            <FluentSpacer />
-            <div class="d-flex gap-2">
-                <Toolbar />
-                @if (currentUser is { })
-                {
-                    <FluentIcon OnClick="OpenSettings"
-                        Value="@(new Icons.Regular.Size24.Settings())"
-                        />        
+    <div class="d-flex gap-1 align-items-center">
+        <FluentButton Class="py-0" Appearance="Appearance.Outline"
+            OnClick="OpenSidebar" IconEnd="@(new Icons.Regular.Size20.TextAlignJustify())" />
+        <FluentSpacer Width="5" />
+        <NavigateButtons />
+        <FluentSpacer Width="25" />
+        <ProjectNavigator />
+        <FilterCustomizer />
+    </div>
+    <FluentSpacer />
+    <div class="d-flex gap-2">
+        <Toolbar />
+        @if (currentUser is { })
+        {
+            <FluentIcon OnClick="OpenSettings"
+                Value="@(new Icons.Regular.Size24.Settings())"
+                />        
 
-                    <FluentProfileMenu Image="@($"{proxyUrl}/api/people{currentUser.Avatar}")"
-                                    HeaderLabel="УПКБ Деталь" HeaderButton="Выйти" OnHeaderButtonClick="LogoutAsync"
-                                    Initials="@($"{currentUser.LastName[0]}{currentUser.FirstName[0]}")" 
-                                    FullName="@currentUser.DisplayName"
-                                    EMail="@currentUser.Email" class="ms-2"
-                                    Style="border-radius: 5px; min-width: 300px;" >                       
-                        <FooterTemplate>
-                            <FluentStack>
-                                <FluentSpacer />
-                                <FluentAnchor Appearance="@Appearance.Hypertext"
-                                            Href="@($"{onlyofficeUrl}/Products/People/Profile.aspx?user={currentUser.UserName}")">
-                                    Профиль
-                                </FluentAnchor>
-                            </FluentStack>
-                        </FooterTemplate>
+            <FluentProfileMenu Image="@($"{proxyUrl}/api/people{currentUser.Avatar}")"
+                            HeaderLabel="УПКБ Деталь" HeaderButton="Выйти" OnHeaderButtonClick="LogoutAsync"
+                            Initials="@($"{currentUser.LastName[0]}{currentUser.FirstName[0]}")" 
+                            FullName="@currentUser.DisplayName"
+                            EMail="@currentUser.Email" class="ms-2"
+                            Style="border-radius: 5px; min-width: 300px;" >                       
+                <FooterTemplate>
+                    <FluentStack>
+                        <FluentSpacer />
+                        <FluentAnchor Appearance="@Appearance.Hypertext"
+                                    Href="@($"{onlyofficeUrl}/Products/People/Profile.aspx?user={currentUser.UserName}")">
+                            Профиль
+                        </FluentAnchor>
+                    </FluentStack>
+                </FooterTemplate>
 
-                    </FluentProfileMenu>
+            </FluentProfileMenu>
 
-                    <NotificationCenter />
-                }
-            </div>
-        </Authorized>
-    </AuthorizeView>
+            <NotificationCenter />
+        }
+    </div>
 </FluentHeader>
 }

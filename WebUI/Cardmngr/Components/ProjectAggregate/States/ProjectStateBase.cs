@@ -22,6 +22,8 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
 
     public async Task SetModelAsync(ProjectStateDto model, bool firstRender = false)
     {
+        Initialized = false;
+        
         _team = model.Team;
         _project = model.Project;
         _statuses = model.Statuses;
@@ -60,6 +62,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
 
         _tasks = model.Tasks;
 
+        Initialized = true;
         OnMilestonesChanged();
         OnTasksChanged();
     }

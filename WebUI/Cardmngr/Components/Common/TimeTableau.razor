@@ -10,7 +10,7 @@
 </div>
 
 @code {
-    readonly Dictionary<int, string> genitiveCasesByMonthNum = new()
+    private readonly Dictionary<int, string> genitiveCasesByMonthNum = new()
     {
         { 1, "января" },
         { 2, "февраля" },
@@ -23,10 +23,10 @@
         { 9, "сентября" },
     };
 
-    DateTime showedTime = DateTime.Now;
+    private DateTime showedTime = DateTime.Now;
 
-    readonly CultureInfo culture = new("ru-RU");
-    readonly Timer timeRefresher = new(TimeSpan.FromSeconds(1));
+    private readonly CultureInfo culture = new("ru-RU");
+    private readonly Timer timeRefresher = new(TimeSpan.FromSeconds(1));
 
     protected override void OnInitialized()
     {

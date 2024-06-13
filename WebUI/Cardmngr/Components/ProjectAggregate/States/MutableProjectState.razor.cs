@@ -64,7 +64,7 @@ public sealed partial class MutableProjectState :
             try
             {
                 await SetModelAsync(await ProjectClient.GetProjectAsync(Id), true);
-            }            
+            }
             catch (OperationCanceledException) 
             {
                 RefreshService.RemoveLock(_refreshLocker);
@@ -79,8 +79,6 @@ public sealed partial class MutableProjectState :
             previousId = Id;
             RefreshService.RemoveLock(_refreshLocker);
         }
-
-        Initialized = true;
     }
 
     public override void RemoveMilestone(Milestone milestone)

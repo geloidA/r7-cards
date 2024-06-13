@@ -4,7 +4,7 @@
 @inject IFeedbackClient FeedbackClient
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<SmoothAppear>
+<Smooth>
     <div class="feedback-card clickable" style="font-size: 13px;" @onclick="openModalFunc" >
         <div class="py-1 px-2 h-100" >
             <span class="fw-bold title max-height-100 pre-wrap" >@Feedback.Title</span>
@@ -57,4 +57,4 @@
             </div>
         </div>
     </div>
-</SmoothAppear>
+</Smooth>

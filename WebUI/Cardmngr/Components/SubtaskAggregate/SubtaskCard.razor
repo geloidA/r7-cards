@@ -9,25 +9,28 @@
             <UserAvatar User="Subtask.Responsible" ShowTooltip />
         </div>
     }
-    <div class="tools">
-        <Tool 
-            Disabled="Task.IsClosed()"
-            Icon="@(new Icons.Regular.Size20.Pen())"
-            @onclick="EditSubtask"
-            title="Редактировать" />
+    @if (!State.ReadOnly)
+    {
+        <div class="tools">
+            <Tool 
+                Disabled="Task.IsClosed()"
+                Icon="@(new Icons.Regular.Size20.Pen())"
+                @onclick="EditSubtask"
+                title="Редактировать" />
 
-        <Tool 
-            Disabled="Task.IsClosed()"
-            Icon="@(new Icons.Regular.Size20.Delete())" 
-            @onclick="DeleteSubtask"
-            Color="Color.Error" 
-            title="Удалить" />
-    </div>
-    <div class="status-change">
-        <Tool 
-            Disabled="Task.IsClosed()"
-            Icon="@StatusIcon"
-            Color="Color.Success"
-            @onclick="async () => await ChangeSubtaskStatus(Subtask.Status.Invert())" />
-    </div>
+            <Tool 
+                Disabled="Task.IsClosed()"
+                Icon="@(new Icons.Regular.Size20.Delete())" 
+                @onclick="DeleteSubtask"
+                Color="Color.Error" 
+                title="Удалить" />
+        </div>
+        <div class="status-change">
+            <Tool 
+                Disabled="Task.IsClosed()"
+                Icon="@StatusIcon"
+                Color="Color.Success"
+                @onclick="async () => await ChangeSubtaskStatus(Subtask.Status.Invert())" />
+        </div>
+    }
 </div>

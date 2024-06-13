@@ -1,6 +1,6 @@
 ﻿@using Domain.Enums
 
-<SmoothAppear SmoothDelay="TimeSpan.FromMilliseconds(500)">
+<Smooth Delay="TimeSpan.FromMilliseconds(500)">
     <div class="task-card @CssDeadline" @onclick="openModalAction" >
         <div class="container py-1 px-4 default-text" style="min-height: 150px;">
             <div class="row py-1 @CssMarginTitle">
@@ -79,4 +79,4 @@
             }
         </div>
     </div>
-</SmoothAppear>
+</Smooth>

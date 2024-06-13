@@ -27,7 +27,6 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
         if (ViewModel is { IsCollapsed: false })
         {
             await SetModelAsync(await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks));
-            Initialized = true;
         }
 
         isFollow = ProjectSummaryService.IsFollow(ViewModel?.ProjectInfo.Id ?? -1);

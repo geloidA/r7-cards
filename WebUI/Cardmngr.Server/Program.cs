@@ -52,6 +52,10 @@ if (app.Environment.IsProduction())
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+else
+{
+    app.UseWebAssemblyDebugging();
+}
 
 app.UseHttpsRedirection()
    .UseBlazorFrameworkFiles()

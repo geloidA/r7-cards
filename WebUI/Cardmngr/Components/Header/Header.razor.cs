@@ -13,7 +13,7 @@ using Cardmngr.Utils;
 
 namespace Cardmngr.Components.Header;
 
-public partial class Header : KolComponentBase
+public partial class Header : KolComponentBase, IDisposable
 {
     [Inject] public IConfiguration Config { get; set; } = null!;
     [Inject] public AuthenticationStateProvider AuthenticationState { get; set; } = null!;
@@ -22,30 +22,32 @@ public partial class Header : KolComponentBase
 
     [CascadingParameter] HeaderInteractionService InteractionService { get; set; } = null!;
 
-    string proxyUrl = null!;
-    string onlyofficeUrl = null!;
+    private string proxyUrl = null!;
+    private string onlyofficeUrl = null!;
 
     private UserProfile? currentUser;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        if (AuthenticationState is { })
+        var user = await AuthenticationState.GetAuthenticationStateAsync();
+        if (user.User.Identity is { IsAuthenticated: true })
         {
             proxyUrl = Config.CheckKey("proxy-url");
             onlyofficeUrl = Config.CheckKey("onlyoffice-url");
             var provider = AuthenticationState.ToCookieProvider();
             currentUser = JsonSerializer.Deserialize<UserProfile>(provider["Data"]);
             InteractionService.HeaderCollapsedChanged += StateHasChanged;
+            InteractionService.HeaderCollapsed = false;
         }
     }
 
     private async Task OpenSidebar()
     {
         await Modal.Show<HeaderMenuModal>("", new ModalParameters { { "Nothing", new object() } }, Options).Result;
-            // TODO: ??? close animation only with parameter ???
+            // TODO: ??? close animation works only with parameter ???
     }
 
     private async Task OpenSettings()
@@ -53,13 +55,16 @@ public partial class Header : KolComponentBase
         await Modal.Show<SettingsModal>("", new ModalParameters { { "Nothing", new object() } }, Options).Result;
     }
 
-    async Task LogoutAsync()
+    private async Task LogoutAsync()
     {
-        if (AuthenticationState is { })
-        {            
-            AuthenticationState.ToCookieProvider().ClearAuthInfo();
-            await LocalStorage.RemoveItemAsync("isauthenticated");
-            NavigationManager.NavigateTo("login");
-        }
+        AuthenticationState.ToCookieProvider().ClearAuthInfo();
+        await LocalStorage.RemoveItemAsync("isauthenticated");
+        NavigationManager.NavigateTo("login");
+    }
+
+    public void Dispose()
+    {
+        InteractionService.HeaderCollapsedChanged -= StateHasChanged;
+        InteractionService.HeaderCollapsed = true;
     }
 }

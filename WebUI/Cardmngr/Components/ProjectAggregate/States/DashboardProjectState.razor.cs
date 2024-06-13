@@ -25,19 +25,59 @@ public partial class DashboardProjectState :
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     private readonly IFilterManager<OnlyofficeTask> _taskFilter = new TaskFilterManager();
+    private readonly Guid _refreshLocker = Guid.NewGuid();
+
     public IFilterManager<OnlyofficeTask> TaskFilter => _taskFilter;
 
     [Parameter] public int Id { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await SetModelAsync(await ProjectClient.GetProjectAsync(Id), true);
         RefreshService.Refreshed += OnRefreshModelAsync;
         RefreshService.Start(TimeSpan.FromMinutes(1));
+    }
+
+    private int _previousId = -1;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Initialized = false;
+
+        if (_previousId != Id)
+        {
+            RefreshService.Lock(_refreshLocker);
+
+            await CleanPreviousProjectStateAsync();            
+
+            try
+            {
+                await SetModelAsync(await ProjectClient.GetProjectAsync(Id), true);
+            }            
+            catch (OperationCanceledException) 
+            {
+                RefreshService.RemoveLock(_refreshLocker);
+                return;
+            }
+
+            _previousId = Id;
+            RefreshService.RemoveLock(_refreshLocker);
+        }
+    }
+
+    protected override Task CleanPreviousProjectStateAsync()
+    {
+        TaskFilter.Clear();
+        return base.CleanPreviousProjectStateAsync();
     }
 
     private async void OnRefreshModelAsync()
     {
         SetModelAsync(await ProjectClient.GetProjectAsync(Id)).Forget();
+    }
+
+    public override void Dispose()
+    {
+        RefreshService.Dispose();
+        base.Dispose();
     }
 }

@@ -5,13 +5,13 @@
         Вехи
     </div>
     <div style="height: 95%;" class="w-100 overflow-auto scrollbar-none">
-        <SmoothAppear>
+        <Smooth>
             <div class="d-flex flex-column gap-2">
                 @foreach (var milestone in State.Milestones.OrderBy(x => x.Deadline))
                 {
                     <MilestoneBar Milestone="milestone" />
                 }
             </div>
-        </SmoothAppear>
+        </Smooth>
     </div>
 </div>

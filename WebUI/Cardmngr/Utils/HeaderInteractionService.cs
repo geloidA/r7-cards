@@ -25,7 +25,7 @@ public class HeaderInteractionService
         OpenProjectInfoFunc = null;
     }
 
-    private bool _headerCollapsed;
+    private bool _headerCollapsed = true;
     public bool HeaderCollapsed
     {
         get => _headerCollapsed;

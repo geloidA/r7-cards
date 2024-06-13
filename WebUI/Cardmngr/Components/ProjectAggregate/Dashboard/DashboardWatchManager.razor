@@ -5,16 +5,71 @@
 </div>
 
 <FluentPopover @bind-Open="_isPopoverOpen" AnchorId="@_popoverGuid" VerticalPosition="VerticalPosition.Top"
-    style="width: 200px; height: 300px; border-radius: 10px;">
+    style="width: 500px; height: 400px; border-radius: 10px;" class="user-select-none">
     <Header >
         <div style="font-size: 12px; line-height: 1;">Выберите проекты для просмотра</div>
     </Header>
     <Body >
-        <div class="d-flex flex-column gap-2 overflow-auto">
-            @foreach (var project in Projects)
+        <div class="d-flex flex-column gap-1">
+            <div class="d-flex flex-column gap-1 overflow-auto p-1" 
+                style="height: 200px; border: 1px solid var(--neutral-layer-4); border-radius: 5px;">
+                <FluentCheckbox
+                        ThreeState="true"
+                        ShowIndeterminate="false"
+                        @bind-CheckState="AreAllProjectsSelected" >
+                        <LabelTemplate>
+                            <span style="font-size: 12px; font-weight: bold;">
+                                Все
+                            </span>
+                        </LabelTemplate>                    
+                </FluentCheckbox>
+
+                @foreach (var project in Projects)
+                {
+                    bool isChecked = _selectedProjects.Contains(project.Id);
+                    <FluentCheckbox @bind-Value:get="isChecked"
+                                    @bind-Value:set="c => OnSelectionProjectChanged(project.Id, c)" >
+                        <LabelTemplate>
+                            <span style="font-size: 12px;">
+                                @project.Title
+                            </span>
+                        </LabelTemplate>
+                    </FluentCheckbox>
+                }
+            </div>
+
+            @if (_showSelectionErrorMsg)
             {
-                <FluentCheckbox Label="@project.Title" />
+                <Smooth Delay="TimeSpan.FromSeconds(1)">
+                    <span style="font-size: 12px; color: var(--error);" class="d-flex align-content-center">
+                        <FluentIcon Value="@(new Icons.Filled.Size12.ErrorCircle())" 
+                            Color="Color.Error" class="me-1" />
+                        Выберите по крайней мере два проекта
+                    </span>
+                </Smooth>
             }
+
+            <FluentNumberField Max="@_maxUnitValue" Min="@_minUnitValue" @bind-Value="ChangeInterval" >
+                <LabelTemplate>
+                    <div style="font-size: 12px; width: 100%;" class="d-flex align-items-center" >
+                        Смена проекта через:
+                        <FluentSpacer />
+                        <FluentCombobox Items="Enum.GetValues<TimeMeasurementUnit>()"
+                                OptionText="x => x.GetDesc()" Width="100px"
+                                Appearance="Appearance.Filled"
+                                @bind-SelectedOption="MeasurementUnit"
+                                @bind-SelectedOption:after="ChangeMaxAndMin" >
+                        </FluentCombobox>
+                    </div>
+                </LabelTemplate>
+                <ChildContent>
+                    <FluentIcon Value="@(new Icons.Regular.Size16.Clock())" Color="@Color.Neutral" Slot="start" />  
+                </ChildContent>
+            </FluentNumberField>
+
+            <FluentButton class="d-flex" @onclick="NavigateToDashboard" >
+                Начать просмотр
+            </FluentButton>
         </div>
     </Body>
 </FluentPopover>

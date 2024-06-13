@@ -1,0 +1,11 @@
+﻿@page "/project-dashboards"
+@using Cardmngr.Components.ProjectAggregate.Dashboard
+
+<FluentProgress Value="_progress" Max="ProgressMaxValue"  BackgroundColor="transparent" />
+
+@if (Projects is { } projects && _currentProjectId < projects.Length) 
+{
+    <Smooth IsShowing="_smoothShowing" style="height: 99%;" >
+        <ProjectDashboard Id="@Projects[_currentProjectId]" />
+    </Smooth>
+}
