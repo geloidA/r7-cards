@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Cardmngr.Extensions;
 using Onlyoffice.Api.Common;
 
 namespace Cardmngr.Services;
@@ -19,7 +20,7 @@ public class FilterManagerService
         return taskSelectorType switch 
         {
             TaskSelectorType.InProgress => builder.Status(Status.Open),
-            TaskSelectorType.Deadlined => builder.DeadlineStop(DateTime.Now).Status(Status.Open),
+            TaskSelectorType.Deadlined => builder.DeadlineOutside(),
             TaskSelectorType.Closed => builder.Status(Status.Closed),
             _ => builder
         };

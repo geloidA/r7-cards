@@ -1,0 +1,10 @@
+.dashboard-task-card {
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+    background-color: var(--main-card-bg);
+    border-radius: 18px;
+    width: 100%;
+    max-width: 360px;
+    min-width: 214px;
+}

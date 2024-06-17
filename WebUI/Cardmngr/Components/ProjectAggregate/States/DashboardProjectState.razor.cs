@@ -47,7 +47,7 @@ public partial class DashboardProjectState :
         {
             RefreshService.Lock(_refreshLocker);
 
-            await CleanPreviousProjectStateAsync();            
+            await CleanPreviousProjectStateAsync();
 
             try
             {

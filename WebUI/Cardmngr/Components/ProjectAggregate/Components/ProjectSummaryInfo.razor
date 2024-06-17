@@ -1,0 +1,46 @@
+﻿<Cardmngr.Components.ProjectAggregate.Dashboard.ProjectDashboardHeader class="p-3 fs-3" style="line-height: 25px;" />
+
+<div class="project-summary-info" style="height: 94%;">
+    @if (_deadlineoutSoonTasks.Count > 0 || _deadlineoutTasks.Count > 0)
+    {
+        <div class="h-100">
+            <div class="row align-items-center justify-content-center h-100">
+                @RenderTasks(_deadlineoutTasks)
+                @RenderTasks(_deadlineoutSoonTasks)
+            </div>
+            <div class="row">
+                @if (_deadlineoutTasks.Count > 0)
+                {
+                    <div style="color: var(--error);" class="col d-flex justify-content-center">
+                        @RenderInscription("ПРОСРОЧЕНО")
+                    </div>
+                }
+                @if (_deadlineoutSoonTasks.Count > 0)
+                {
+                    <div style="color: var(--warning);" class="col d-flex justify-content-center">
+                        @RenderInscription("СРОК СКОРО ИСТЕЧЕТ")
+                    </div>
+                }            
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="fs-1 fw-bold" style="color: var(--neutral-layer-2);" >НЕТ ЗАДАЧ</div>
+    }
+</div>
+
+@code {
+    private RenderFragment<IEnumerable<OnlyofficeTask>> RenderTasks = tasks =>
+        @<div class=@(tasks.Any() ? "task-column col" : "") style="overflow-x: hidden;" >
+            @foreach (var task in tasks)
+            {
+                <DashboardTaskCard Task="task" />
+            }
+        </div>;
+
+    private RenderFragment<string> RenderInscription = inscription =>
+        @<div class="inscription">
+            @inscription
+        </div>;
+}

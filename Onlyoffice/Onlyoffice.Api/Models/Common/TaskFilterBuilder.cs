@@ -1,7 +1,7 @@
 ﻿namespace Onlyoffice.Api.Common;
 
 public sealed class TaskFilterBuilder : FilterBuilder
-{    
+{
     private TaskFilterBuilder() { }
     public static TaskFilterBuilder Instance => new();
 

@@ -15,10 +15,6 @@
             <div class="d-flex gap-2 ms-2 align-items-center">
                 <FluentIcon Value="@(new Icons.Filled.Size20.Info())" 
                     OnClick="ProjectInfo.OpenProjectInfoFunc" Title="О проекте" />
-
-                <FluentAnchor IconStart="@(new Icons.Filled.Size20.Board())" 
-                    Href="@($"/proj-dashboard/{ProjectInfo.SelectedProject.Id}")"
-                    title="Открыть в Дашборд-виде" Appearance="Appearance.Hypertext" />
             </div>
         }
     </div>

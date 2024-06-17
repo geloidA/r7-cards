@@ -1,0 +1,27 @@
+﻿
+<div>
+    <div class="dashboard-task-card @Task.CssDeadline()">
+        <div class="d-flex">
+            @if (Task.Priority == Domain.Enums.Priority.High)
+            {
+                <FluentIcon Value="@(new Icons.Filled.Size20.ArrowCircleUp())" Color="Color.Accent" 
+                    Title="Приоритет - Высокий" Style="margin-right: 5px;" />
+            }
+            <div class="fw-bold fs-6 max-height-100 title pre-wrap">@Task.Title</div>
+        </div>
+        <div class="align-self-end d-flex mt-1">
+            @if (Task.IsDeadlineOut())
+            {
+                <FluentIcon Value="@(new Icons.Regular.Size16.Fire())" Color="Color.Error" />
+            }
+            else if (Task.IsSevenDaysDeadlineOut())
+            {
+                <FluentIcon Value="@(new Icons.Filled.Size16.Warning())" Color="Color.Warning" />
+            }
+            <span class="small ms-2 @(Task.IsDeadlineOut() ? "text-danger" : "fw-lighter")" >
+                Крайний срок:
+                @Task.Deadline?.ToString("d MMM yyyy г.")
+            </span>
+        </div>
+    </div>
+</div>

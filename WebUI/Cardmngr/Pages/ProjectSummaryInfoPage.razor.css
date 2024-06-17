@@ -1,0 +1,26 @@
+.detal-background {
+    background-repeat: no-repeat;
+    background-size: 97% 130%;
+    background-image: url(images/logo-detal-white.svg);
+    background-position: 1000% 41%;
+}
+
+.summary-player-manager {
+    position: absolute;
+    display: flex;
+    gap: 2px;
+    bottom: 0;
+    margin-bottom: 55px;
+    padding: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--neutral-fill-rest);
+    border-radius: 10px;
+    opacity: 0.2;
+
+    transition: opacity 0.3s ease-in-out;
+}
+
+.summary-player-manager:hover {
+    opacity: 1;
+}

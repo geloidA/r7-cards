@@ -85,7 +85,7 @@ public partial class ProjectTasksTab
 
         if (reportRequest.OnlyDeadline)
         {
-            filter = filter.Status(Status.Open).DeadlineStop(DateTime.Now);
+            filter = filter.DeadlineOutside();
         }
         else
         {

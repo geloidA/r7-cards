@@ -1,5 +1,6 @@
 ﻿using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Extensions;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Onlyoffice.Api.Common;
@@ -42,8 +43,7 @@ public class TaskNotificationManager(IMessageService messageService,
         var userId = authentication.ToCookieProvider().UserId ?? throw new InvalidOperationException("User id is null");
 
         var builder = TaskFilterBuilder.Instance
-            .DeadlineStop(DateTime.Now)
-            .Status(Status.Open)
+            .DeadlineOutside()
             .Participant(userId);
 
         return taskClient

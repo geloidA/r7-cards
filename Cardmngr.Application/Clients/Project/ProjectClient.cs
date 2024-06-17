@@ -129,6 +129,11 @@ public class ProjectClient(
 
     public async Task<ProjectStateDto> CreateProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks)
     {
+        if (tasks.Count == 0)
+        {
+            throw new ArgumentException("Tasks collection cannot be empty");
+        }
+        
         var projectId = tasks.First().ProjectOwner.Id;
 
         if (tasks.Any(x => x.ProjectOwner.Id != projectId))

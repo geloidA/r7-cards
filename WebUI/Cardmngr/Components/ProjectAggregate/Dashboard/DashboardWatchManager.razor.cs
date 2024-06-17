@@ -1,12 +1,17 @@
-﻿using Cardmngr.Domain;
+﻿using Cardmngr.Application.Clients.TaskClient;
+using Cardmngr.Domain;
+using Cardmngr.Extensions;
 using Cardmngr.Utils;
 using KolBlazor;
 using Microsoft.AspNetCore.Components;
+using Onlyoffice.Api.Common;
 
 namespace Cardmngr.Components.ProjectAggregate.Dashboard;
 
 public partial class DashboardWatchManager : KolComponentBase
 {
+    private bool _onlyShowDeadlineContainedProjects;
+    private bool _showOnlyDeadlineContainedProjectsError;
     private bool _isPopoverOpen;
     private bool _showSelectionErrorMsg;
     private readonly string _popoverGuid = Guid.NewGuid().ToString();
@@ -14,6 +19,7 @@ public partial class DashboardWatchManager : KolComponentBase
 
     [Parameter, EditorRequired] public IEnumerable<ProjectInfo> Projects { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] ITaskClient TaskClient { get; set; } = null!;
 
     protected void OnSelectionProjectChanged(int projectId, bool isSelected)
     {
@@ -74,21 +80,38 @@ public partial class DashboardWatchManager : KolComponentBase
         }
     }
 
-    private void NavigateToDashboard()
+    private async Task NavigateToDashboard()
     {
-        if (_selectedProjects.Count < 2)
+        int[] projects = null!;
+
+        if (_onlyShowDeadlineContainedProjects)
+        {
+            var tasks = await TaskClient
+                .GetEntitiesAsync(TaskFilterBuilder.Instance.DeadlineOutside(7))
+                .ToListAsync();
+            
+            if (tasks.Count == 0)
+            {
+                _showOnlyDeadlineContainedProjectsError = true;
+                return;
+            }
+
+            projects = [.. tasks.Select(x => x.ProjectOwner.Id).Distinct()];
+        }
+
+        if (_selectedProjects.Count < 2 && !_onlyShowDeadlineContainedProjects)
         {
             _showSelectionErrorMsg = true;
             return;
         }
 
         NavigationManager.NavigateTo(NavigationManager.GetUriWithQueryParameters(
-            "/project-dashboards", 
+            "/project-summary-info", 
             new Dictionary<string, object?>
             {
                 {"measurementUnit", (int)MeasurementUnit },
                 {"changeInterval", ChangeInterval },
-                {"projects", _selectedProjects.ToArray() }
+                {"projects", projects ?? [.. _selectedProjects] }
             }
         ));
     }

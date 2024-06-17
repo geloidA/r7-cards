@@ -1,19 +1,30 @@
 ﻿@inherits KolComponentBase
 
 <div id="@_popoverGuid" class="dashboard-watch-manager clickable" @onclick="() => _isPopoverOpen = !_isPopoverOpen" >
-    <FluentIcon Value="@(new Icons.Filled.Size24.Board())" Width="50px" />
+    <FluentIcon Value="@(new Icons.Filled.Size24.Fireplace())" Width="50px" />
 </div>
 
 <FluentPopover @bind-Open="_isPopoverOpen" AnchorId="@_popoverGuid" VerticalPosition="VerticalPosition.Top"
-    style="width: 500px; height: 400px; border-radius: 10px;" class="user-select-none">
+    style="width: 500px; height: 420px; border-radius: 10px;" class="user-select-none">
     <Header >
-        <div style="font-size: 12px; line-height: 1;">Выберите проекты для просмотра</div>
+        <div style="font-size: 12px; line-height: 1;">Выберите проекты для просмотра просроченных задач</div>
     </Header>
     <Body >
         <div class="d-flex flex-column gap-1">
             <div class="d-flex flex-column gap-1 overflow-auto p-1" 
                 style="height: 200px; border: 1px solid var(--neutral-layer-4); border-radius: 5px;">
+                <FluentCheckbox class="align-self-end" 
+                        title="Отобразить только те проекты, которые содержат просроченные или скоро просрочившиеся задачи."
+                        @bind-Value="_onlyShowDeadlineContainedProjects" >
+                        <LabelTemplate>
+                            <i style="font-size: 12px;">
+                                Только проекты с просрочкой
+                            </i>
+                        </LabelTemplate>
+                </FluentCheckbox>
+
                 <FluentCheckbox
+                        Disabled="_onlyShowDeadlineContainedProjects"
                         ThreeState="true"
                         ShowIndeterminate="false"
                         @bind-CheckState="AreAllProjectsSelected" >
@@ -21,13 +32,14 @@
                             <span style="font-size: 12px; font-weight: bold;">
                                 Все
                             </span>
-                        </LabelTemplate>                    
+                        </LabelTemplate>
                 </FluentCheckbox>
 
                 @foreach (var project in Projects)
                 {
                     bool isChecked = _selectedProjects.Contains(project.Id);
-                    <FluentCheckbox @bind-Value:get="isChecked"
+                    <FluentCheckbox Disabled="_onlyShowDeadlineContainedProjects"
+                                    @bind-Value:get="isChecked"
                                     @bind-Value:set="c => OnSelectionProjectChanged(project.Id, c)" >
                         <LabelTemplate>
                             <span style="font-size: 12px;">
@@ -40,13 +52,7 @@
 
             @if (_showSelectionErrorMsg)
             {
-                <Smooth Delay="TimeSpan.FromSeconds(1)">
-                    <span style="font-size: 12px; color: var(--error);" class="d-flex align-content-center">
-                        <FluentIcon Value="@(new Icons.Filled.Size12.ErrorCircle())" 
-                            Color="Color.Error" class="me-1" />
-                        Выберите по крайней мере два проекта
-                    </span>
-                </Smooth>
+                @RenderError("Выберите по крайней мере два проекта");
             }
 
             <FluentNumberField Max="@_maxUnitValue" Min="@_minUnitValue" @bind-Value="ChangeInterval" >
@@ -67,9 +73,26 @@
                 </ChildContent>
             </FluentNumberField>
 
+            @if (_showOnlyDeadlineContainedProjectsError)
+            {
+                @RenderError("Ни один проект не содержит просроченных или скоро просрочившихся задач.");
+            }
+
             <FluentButton class="d-flex" @onclick="NavigateToDashboard" >
                 Начать просмотр
             </FluentButton>
+
         </div>
     </Body>
 </FluentPopover>
+
+@code {
+    private RenderFragment<string> RenderError = errorMsg =>
+        @<Smooth Delay="TimeSpan.FromSeconds(1)">
+            <span style="font-size: 12px; color: var(--error);" class="d-flex align-content-center">
+                <FluentIcon Value="@(new Icons.Filled.Size12.ErrorCircle())" 
+                    Color="Color.Error" class="me-1" />
+                @errorMsg
+            </span>
+        </Smooth>;
+}

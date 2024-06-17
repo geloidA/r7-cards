@@ -1,15 +1,16 @@
-﻿
-@inherits KolComponentBase
+﻿@inherits KolComponentBase
 
 @if (OnClick.HasDelegate)
 {
-    <div @onclick:stopPropagation @ondblclick:stopPropagation >
+    <div class="@Class" @onclick:stopPropagation @ondblclick:stopPropagation >
         @FluentBadge
     </div>
 }
 else
 {
-    @FluentBadge
+    <div class="@Class" >
+        @FluentBadge
+    </div>
 }
 
 @code {
@@ -19,12 +20,14 @@ else
         @<div>
             @if (Milestone is { })
             {
-                <FluentBadge title="@Milestone.Title" @onclick="HandleClick" class=@($"{Class} {(OnClick.HasDelegate ? "clickable" : "")}") 
-                    Appearance="Appearance.Accent" >
-                    <span style="font-size: 12px; font-weight: 500;" class="hide-max-140 user-select-none">
+                <div title="@Milestone.Title" @onclick="HandleClick" 
+                    class=@($"d-flex {(OnClick.HasDelegate ? "clickable" : "")}") >
+                    <FluentIcon Value="@(new MyIcons.Milestone())" Color="Color.Accent" class="me-1" />
+                    <span style="font-size: 12px; font-weight: 500; color: var(--accent-fill-rest);" 
+                        class="hide-max-140 user-select-none">
                         @Milestone.Title
                     </span>
-                </FluentBadge>
+                </div>
             }
         </div>;
 }

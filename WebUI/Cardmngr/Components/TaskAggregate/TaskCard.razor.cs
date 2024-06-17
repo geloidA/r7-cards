@@ -23,11 +23,6 @@ public partial class TaskCard : ComponentBase
 
     string CssMarginTitle => string.IsNullOrEmpty(Task.Description) ? "mb-5" : "";
 
-    private string CssDeadline =>
-        Task.Deadline is null ? "" :
-        Task.IsDeadlineOut() ? "red-border" :
-        Task.IsSevenDaysDeadlineOut() ? "warning-border" : "";
-
     protected override void OnInitialized()
     {
         openModalAction = OpenModal;

@@ -168,3 +168,15 @@ article {
     border-bottom: 1px solid var(--neutral-layer-2); 
     padding-bottom: 5px;
 }
+
+.red-border {
+    border: 1px solid var(--error) !important;
+}
+
+.warning-border {
+    border: 1px solid var(--warning) !important;
+}
+
+.default-text {
+    color: var(--col-title-color);
+}
