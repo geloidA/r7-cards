@@ -12,7 +12,7 @@
     cursor: pointer;
 
     background-color: var(--main-card-bg);
-    border-radius: 5px;
+    border-radius: 10px;
     border: 1px solid var(--bs-gray-600);
 
     transition: scale 0.2s ease-in-out;

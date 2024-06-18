@@ -1,5 +1,4 @@
-﻿
-using Cardmngr.Application.Clients;
+﻿using Cardmngr.Application.Clients;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared;
 using Cardmngr.Shared.Utils.Filter;
@@ -51,7 +50,7 @@ public partial class DashboardProjectState :
 
             try
             {
-                await SetModelAsync(await ProjectClient.GetProjectAsync(Id), true);
+                await SetModelAsync(await ProjectClient.GetProjectStateAsync(Id), true);
             }            
             catch (OperationCanceledException) 
             {
@@ -72,7 +71,7 @@ public partial class DashboardProjectState :
 
     private async void OnRefreshModelAsync()
     {
-        SetModelAsync(await ProjectClient.GetProjectAsync(Id)).Forget();
+        SetModelAsync(await ProjectClient.GetProjectStateAsync(Id)).Forget();
     }
 
     public override void Dispose()

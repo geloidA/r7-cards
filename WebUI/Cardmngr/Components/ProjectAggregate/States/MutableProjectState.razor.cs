@@ -63,7 +63,7 @@ public sealed partial class MutableProjectState :
 
             try
             {
-                await SetModelAsync(await ProjectClient.GetProjectAsync(Id), true);
+                await SetModelAsync(await ProjectClient.GetProjectStateAsync(Id), true);
             }
             catch (OperationCanceledException) 
             {
@@ -93,7 +93,7 @@ public sealed partial class MutableProjectState :
 
     private async void OnRefreshModelAsync()
     {
-        SetModelAsync(await ProjectClient.GetProjectAsync(Id)).Forget();
+        SetModelAsync(await ProjectClient.GetProjectStateAsync(Id)).Forget();
     }
 
     private ProjectHubClient GetNewHubClient()

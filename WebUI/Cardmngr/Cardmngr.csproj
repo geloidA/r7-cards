@@ -47,7 +47,9 @@
 
   <PropertyGroup Label="Typescript Config (Debug)">
     <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
-    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
+    <TypeScriptOutDir>wwwroot\js\GeneratedJS</TypeScriptOutDir>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
   </PropertyGroup>
 
   <ItemGroup>

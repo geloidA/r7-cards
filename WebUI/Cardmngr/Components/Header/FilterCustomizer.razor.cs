@@ -10,6 +10,7 @@ namespace Cardmngr.Components.Header;
 public partial class FilterCustomizer : ComponentBase, IDisposable
 {
     private bool show;
+    private readonly TaskSelectorType[] _taskSelectorTypes = Enum.GetValues<TaskSelectorType>();
 
     [Inject] AllProjectsPageSummaryService SummaryService { get; set; } = null!;
     [Inject] NavigationManager NavigationManager { get; set; } = null!;

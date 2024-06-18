@@ -1,14 +1,24 @@
-﻿<Cardmngr.Components.ProjectAggregate.Dashboard.ProjectDashboardHeader class="p-3 fs-3" style="line-height: 25px;" />
+﻿<Cardmngr.Components.ProjectAggregate.Dashboard.ProjectDashboardHeader class="p-3 fs-2" style="line-height: normal;" />
 
 <div class="project-summary-info" style="height: 94%;">
     @if (_deadlineoutSoonTasks.Count > 0 || _deadlineoutTasks.Count > 0)
     {
         <div class="h-100">
             <div class="row align-items-center justify-content-center h-100">
-                @RenderTasks(_deadlineoutTasks)
-                @RenderTasks(_deadlineoutSoonTasks)
+                <div @ref="_deadlineoutTasksRef" class=@(_deadlineoutTasks.Any() ? "task-column col" : "") style="overflow-x: hidden;" >
+                    @foreach (var task in _deadlineoutTasks)
+                    {
+                        <DashboardTaskCard Task="task" />
+                    }
+                </div>
+                <div @ref="_deadlineoutSoonTasksRef" class=@(_deadlineoutSoonTasks.Any() ? "task-column col" : "") style="overflow-x: hidden;" >
+                    @foreach (var task in _deadlineoutSoonTasks)
+                    {
+                        <DashboardTaskCard Task="task" />
+                    }
+                </div>
             </div>
-            <div class="row">
+            <div class="row position-absolute w-100" style="bottom: 60px; left: 0;">
                 @if (_deadlineoutTasks.Count > 0)
                 {
                     <div style="color: var(--error);" class="col d-flex justify-content-center">
@@ -20,7 +30,7 @@
                     <div style="color: var(--warning);" class="col d-flex justify-content-center">
                         @RenderInscription("СРОК СКОРО ИСТЕЧЕТ")
                     </div>
-                }            
+                }
             </div>
         </div>
     }

@@ -1,6 +1,7 @@
 ﻿using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Shared.Utils.Filter.TaskFilters;
 using KolBlazor;
+using KolBlazor.JSInterop;
 using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate;
@@ -13,6 +14,8 @@ public partial class MilestoneTimeline : KolComponentBase, IAsyncDisposable
 
     [Parameter]
     public bool Collapsed { get; set; }
+
+    [Inject] KolTimelineJsInterop TimelineInterop { get; set; } = null!;
 
     protected override void OnInitialized()
     {

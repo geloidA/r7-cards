@@ -2,17 +2,22 @@
 using Cardmngr.Domain.Entities;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Shared.Extensions;
-using System.Diagnostics;
+using Microsoft.JSInterop;
 
 namespace Cardmngr.Components.ProjectAggregate.Components;
 
 public partial class ProjectSummaryInfo : ComponentBase
 {
+    private ElementReference _deadlineoutTasksRef;
+    private ElementReference _deadlineoutSoonTasksRef;
+
     private ICollection<OnlyofficeTask> _deadlineoutTasks = null!;
     private ICollection<OnlyofficeTask> _deadlineoutSoonTasks = null!;
     private IRefresheableProjectState? _refreshableState;
 
     [CascadingParameter] IProjectState State { get; set; } = null!;
+
+    [Inject] IJSRuntime JSRuntime { get; set; } = null!;
 
     protected override void OnInitialized()
     {
@@ -23,6 +28,14 @@ public partial class ProjectSummaryInfo : ComponentBase
         }
         
         RefreshState();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // await JSRuntime.InvokeVoidAsync("scrollToPosition", _deadlineoutTasksRef, )
+        }
     }
 
     private void RefreshState()

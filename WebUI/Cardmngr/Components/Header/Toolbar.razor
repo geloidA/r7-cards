@@ -9,7 +9,7 @@
 <div class="d-flex align-items-center gap-2 @Class" style="@Style">
     <FluentIcon Value="@(new Icons.Regular.Size24.ArrowClockwise())"
         Title="Обновить страницу"
-        @onclick="@(async () => await Js.InvokeVoidAsync("reload"))" />
+        @onclick="@(async () => await Js.InvokeVoidAsync("reloadPage"))" />
 
     <FluentAnchor Href="@_r7OfficeHref" title="Перейти в Р7 Офис"
         Appearance="Appearance.Hypertext"

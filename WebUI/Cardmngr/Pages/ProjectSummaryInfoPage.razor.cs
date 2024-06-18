@@ -2,16 +2,18 @@
 using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace Cardmngr.Pages;
 
-public partial class ProjectSummaryInfoPage
+public partial class ProjectSummaryInfoPage : ComponentBase
 {
     private readonly Guid _lockGuid = Guid.NewGuid();
     private SummaryInfoProjectState _currentState = null!;
     private readonly System.Timers.Timer _timer = new();
     private readonly System.Timers.Timer _progressTimer = new() { Interval = 1000 };
     private int _progress = 0;
+    private int _progressMaxValue;
     private int _currentProjectId = 0;
 
     [SupplyParameterFromQuery]
@@ -23,23 +25,32 @@ public partial class ProjectSummaryInfoPage
     [SupplyParameterFromQuery(Name = "projects")]
     public int[]? Projects { get; set; }
 
-    private int ProgressMaxValue => MeasurementUnit == (int)TimeMeasurementUnit.Minutes 
-        ? ChangeInterval * 60
-        : ChangeInterval;
-
     protected override void OnInitialized()
     {
-        var unit = (TimeMeasurementUnit)MeasurementUnit;
-        _timer.Interval = unit == TimeMeasurementUnit.Minutes
-            ? ChangeInterval * 60 * 1000
-            : ChangeInterval * 1000;
-        
         _progressTimer.Elapsed += OnProgressTimerElapsed;
         _progressTimer.Start();
         
         _timer.Elapsed += OnTimerElapsed;
         _timer.Start();
     }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && _currentState is { })
+        {
+            _currentState.OnAfterIdChanged += state => 
+            {
+                (_timer.Interval, _progressMaxValue) = state.Tasks.Count == 0
+                    ? (3000, 3)
+                    : GetIntervalAndMaxValue();
+                StateHasChanged();
+            };
+        }
+    }
+
+    private (int, int) GetIntervalAndMaxValue() => MeasurementUnit == (int)TimeMeasurementUnit.Minutes
+        ? (ChangeInterval * 60 * 1000, ChangeInterval * 60)
+        : (ChangeInterval * 1000, ChangeInterval);
 
     private bool _smoothShowing = true;
 

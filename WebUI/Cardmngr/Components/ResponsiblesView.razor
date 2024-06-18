@@ -1,4 +1,4 @@
-﻿<FluentCard Class="p-1" Style="background-color: var(--main-responsibles-bg); border: none;">
+﻿<div Class="responsible-view" >
     <div class="d-flex flex-column">
         @{
             var count = 0;
@@ -17,7 +17,7 @@
     {
         <span class="d-flex justify-content-end" style="margin-right: 2px;">+@(totalCount - MaxCount)</span>
     }
-</FluentCard>
+</div>
 
 @code {
     private int totalCount => Responsibles.Count();

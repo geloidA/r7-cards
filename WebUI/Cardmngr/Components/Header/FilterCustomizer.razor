@@ -35,13 +35,14 @@
                 OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
                 SelectedOptions="SelectedCreatedBy"
                 OnOptionsSearch="OnCreatedBySearch" />
-        </div>
 
-        <FluentRadioGroup class="align-self-center" @bind-Value="SummaryService.FilterManager.TaskSelectorType" >
-            <FluentRadio Checked="true" Value=@(TaskSelectorType.None)>Все</FluentRadio>
-            <FluentRadio Value=@(TaskSelectorType.InProgress)>Активные</FluentRadio>
-            <FluentRadio Value=@(TaskSelectorType.Closed)>Закрытые</FluentRadio>
-            <FluentRadio Value=@(TaskSelectorType.Deadlined)>Просроченные</FluentRadio>
-        </FluentRadioGroup>
+            <FluentSelect TOption="TaskSelectorType"
+              Class="align-self-start"
+              Items="@_taskSelectorTypes"
+              Width="228px"
+              Height="136px"
+              OptionText="@(s => s.GetDesc())"
+              @bind-SelectedOption="SummaryService.FilterManager.TaskSelectorType" />
+        </div>        
     </div>
 }

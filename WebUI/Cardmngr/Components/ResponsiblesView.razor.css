@@ -1,0 +1,5 @@
+.responsible-view {
+    padding: .25rem;
+    background-color: var(--main-responsibles-bg);
+    border-radius: 10px;
+}

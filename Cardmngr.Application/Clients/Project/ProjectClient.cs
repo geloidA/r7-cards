@@ -17,7 +17,7 @@ public class ProjectClient(
     IMilestoneRepository milestoneRepository,
     IMapper mapper) : IProjectClient
 {
-    public async Task<ProjectStateDto> GetProjectAsync(int projectId)
+    public async Task<ProjectStateDto> GetProjectStateAsync(int projectId)
     {
         var tasks = taskRepository
             .GetFiltredAsync(TaskFilterBuilder.Instance
@@ -184,4 +184,9 @@ public class ProjectClient(
     }
 
     public IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync() => GetFilteredTasksAsync(FilterBuilder.Empty);
+
+    public async Task<Project> GetProjectAsync(int projectId)
+    {
+        return mapper.Map<Project>(await projectRepository.GetByIdAsync(projectId));
+    }
 }

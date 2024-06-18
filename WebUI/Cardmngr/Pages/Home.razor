@@ -10,28 +10,22 @@
 
 <AuthorizeView>
     <div class="h-100 w-100 detal-background d-flex p-2" >
+        <div class="d-flex flex-column h-100">
+            <FeatureCard Text="Проекты" Desc="Поиск в проектах" Style="width: 300px;" Class="mb-3"
+                Icon="@(new Icons.Regular.Size20.Library())" Href="all-projects" />
+            <UserProjectsView Style="width: 300px;" UserProjects="userProjects"
+                MaxHeight="500" />
+            <FeatureCard Text="Отчеты" Desc="Создание отчетов по проектам" Href="reports" class="align-self-end"
+                Icon="@(new Icons.Regular.Size20.DataBarVerticalAscending())" Style="margin-top: auto;" />
+        </div>
+        <FluentSpacer />
         <div class="w-100 d-flex">
-            <div class="justify-content-center align-self-baseline w-75 d-flex">
+            <div class="justify-content-end align-self-baseline w-75 d-flex">
                 <TimeTableau />
             </div>
             <FluentSpacer />
-        </div>
-        <FluentSpacer />
-        <div class="d-flex flex-column">
-            <div class="row h-100 row-cols-1">
-                <div class="col d-flex flex-column align-items-end">
-                    <FeatureCard Text="Проекты" Desc="Поиск в проектах" Style="width: 300px;" Class="mb-3"
-                        Icon="@(new Icons.Regular.Size20.Library())" Href="all-projects" />
-                        <UserProjectsView Style="width: 300px;" UserProjects="userProjects"
-                            MaxHeight="500" />
-                </div>
-                <div class="col d-flex align-items-end justify-content-end gap-2">
-                    <FeatureCard Text="Отчеты" Desc="Создание отчетов по проектам" Href="reports"
-                        Icon="@(new Icons.Regular.Size20.DataBarVerticalAscending())" Style="width: 300px;" />
-                    <FeatureCard Text="Пожелания и предложения" Style="width: 300px;"
+            <FeatureCard Text="Пожелания и предложения" style="margin-top: auto;"
                         Icon="@(new Icons.Regular.Size20.Lightbulb())" Href="feedback-board" />
-                </div>
-            </div>
         </div>
     </div>
 </AuthorizeView>

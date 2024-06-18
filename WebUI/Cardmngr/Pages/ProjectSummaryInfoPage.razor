@@ -3,7 +3,7 @@
 @using Cardmngr.Components.ProjectAggregate.Components
 
 <div class="detal-background w-100" style="height: 100%;">
-    <FluentProgress Value="_progress" Max="ProgressMaxValue"  BackgroundColor="transparent" />
+    <FluentProgress Value="_progress" Max="_progressMaxValue"  BackgroundColor="transparent" />
     
     @if (Projects is { } projects && _currentProjectId < projects.Length)
     {

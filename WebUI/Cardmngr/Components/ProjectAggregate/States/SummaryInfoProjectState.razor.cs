@@ -2,6 +2,8 @@
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
+using Cardmngr.Shared.Extensions;
+using Cardmngr.Shared.Project;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
 using Onlyoffice.Api.Common;
@@ -22,18 +24,20 @@ public partial class SummaryInfoProjectState : ProjectStateBase, IRefresheablePr
     [Inject] IProjectClient ProjectClient { get; set; } = null!;
     [Inject] ITaskClient TaskClient { get; set; } = null!;
 
+    public event Action<SummaryInfoProjectState>? OnAfterIdChanged;
+
     protected override void OnInitialized()
     {
-        RefreshService.Refreshed += OnRefreshModelAsync;
+        RefreshService.Refreshed += () => OnRefreshModelAsync().Forget();
     }
 
-    private async void OnRefreshModelAsync()
+    private async Task OnRefreshModelAsync()
     {
         var tasks = await GetFilteredTasksAsync().ToListAsync();
                 
         if (tasks.Count == 0)
         {
-            await SetModelAsync(await ProjectClient.GetProjectAsync(Id));
+            await SetModelAsync(new ProjectStateDto { Project = await ProjectClient.GetProjectAsync(Id) });
         }
         else
         {
@@ -49,16 +53,9 @@ public partial class SummaryInfoProjectState : ProjectStateBase, IRefresheablePr
         {
             try
             {
-                var tasks = await GetFilteredTasksAsync().ToListAsync();
-                
-                if (tasks.Count == 0)
-                {
-                    await SetModelAsync(await ProjectClient.GetProjectAsync(Id));
-                }
-                else
-                {
-                    await SetModelAsync(await ProjectClient.CreateProjectWithTasksAsync(tasks));
-                }
+                await OnRefreshModelAsync();
+
+                OnAfterIdChanged?.Invoke(this);
             }            
             catch (OperationCanceledException) 
             {
