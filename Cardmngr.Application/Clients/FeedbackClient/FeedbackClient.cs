@@ -1,22 +1,20 @@
 ﻿using System.Net.Http.Json;
+using Cardmngr.Domain.Entities.Feedback;
 using Cardmngr.Domain.Enums;
-using Cardmngr.Domain.Feedback;
 using Cardmngr.Shared.Feedbacks;
 using Microsoft.AspNetCore.Components.Authorization;
 using Onlyoffice.Api.Extensions;
 
 namespace Cardmngr.Application.Clients.FeedbackClient;
 
-public class FeedbackClient(IHttpClientFactory httpClientFactory, AuthenticationStateProvider authenticationStateProvider) : IFeedbackClient
+public class FeedbackClient(HttpClient httpClient, AuthenticationStateProvider authenticationStateProvider) : IFeedbackClient
 {
     private readonly string userGuid = authenticationStateProvider.ToCookieProvider().UserId;
-    private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
+    private readonly HttpClient httpClient = httpClient;
 
     public async Task<Feedback> CreateFeedbackAsync(FeedbackCreateRequestData data)
     {
-        using var client = httpClientFactory.CreateClient("self-api-cookie");
-
-        var response = await client.PostAsJsonAsync($"api/feedback", data);
+        var response = await httpClient.PostAsJsonAsync($"api/feedback", data);
 
         response.EnsureSuccessStatusCode();
 
@@ -26,9 +24,7 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
 
     public async Task<Feedback?> DeleteFeedbackAsync(int feedbackId)
     {
-        using var client = httpClientFactory.CreateClient("self-api-cookie");
-
-        var response = await client.DeleteAsync($"api/feedback/{feedbackId}");
+        var response = await httpClient.DeleteAsync($"api/feedback/{feedbackId}");
 
         if (response.IsSuccessStatusCode)
         {
@@ -40,9 +36,7 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
 
     public async Task<FeedbacksVm> GetFeedbacksAsync()
     {
-        using var client = httpClientFactory.CreateClient("self-api-cookie");
-
-        var response = await client.GetAsync($"api/feedback/all/{userGuid}");
+        var response = await httpClient.GetAsync($"api/feedback/all/{userGuid}");
 
         response.EnsureSuccessStatusCode();
 
@@ -54,9 +48,7 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
 
     public async Task<Feedback?> ToggleFeedbackDislikeAsync(int feedbackId)
     {
-        using var client = httpClientFactory.CreateClient("self-api-cookie");
-
-        var response = await client.PostAsync($"api/feedback/dislike/{feedbackId}/{userGuid}", null);
+        var response = await httpClient.PostAsync($"api/feedback/dislike/{feedbackId}/{userGuid}", null);
 
         if (response.IsSuccessStatusCode)
         {
@@ -69,9 +61,7 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
 
     public async Task<Feedback?> ToggleFeedbackLikeAsync(int feedbackId)
     {
-        using var client = httpClientFactory.CreateClient("self-api-cookie");
-
-        var response = await client.PostAsync($"api/feedback/like/{feedbackId}/{userGuid}", null);
+        var response = await httpClient.PostAsync($"api/feedback/like/{feedbackId}/{userGuid}", null);
 
         if (response.IsSuccessStatusCode)
         {
@@ -84,9 +74,7 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
 
     public async Task<Feedback?> UpdateFeedbackAsync(int feedbackId, FeedbackUpdateData data)
     {
-        using var client = httpClientFactory.CreateClient("self-api-cookie");
-
-        var response = await client.PutAsJsonAsync($"api/feedback/{userGuid}/{feedbackId}", data);
+        var response = await httpClient.PutAsJsonAsync($"api/feedback/{userGuid}/{feedbackId}", data);
 
         if (response.IsSuccessStatusCode)
         {
@@ -99,9 +87,7 @@ public class FeedbackClient(IHttpClientFactory httpClientFactory, Authentication
 
     public async Task<Feedback> UpdateFeedbackStatusAsync(int feedbackId, FeedbackStatus status)
     {
-        using var client = httpClientFactory.CreateClient("self-api-cookie");
-
-        var response = await client.PutAsJsonAsync($"api/feedback/status/{userGuid}/{feedbackId}", status);
+        var response = await httpClient.PutAsJsonAsync($"api/feedback/status/{userGuid}/{feedbackId}", status);
 
         response.EnsureSuccessStatusCode();
 

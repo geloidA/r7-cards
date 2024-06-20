@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Services.AddRazorPages();
 
 Log.Logger = new LoggerConfiguration().CreateMyLogger(builder.Configuration.CheckKey("Logging:pathFormat"));
@@ -20,27 +22,23 @@ builder.Services.AddResponseCompression(opts =>
 
 builder.Services.AddSignalR();
 
-builder.Services.AddControllers();
-
-ConfigureFeedbackDirectory(builder.Configuration);
-
 builder.Services.AddCardmngrServices();
 
-builder.WebHost.UseKestrel(opt => 
-{
-    var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
-    var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
-    var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
+// builder.WebHost.UseKestrel(opt => 
+// {
+//     var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
+//     var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
+//     var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
 
-    var port = int.Parse(config.CheckKey("Port"));
+//     var port = int.Parse(config.CheckKey("Port"));
         
-    opt.Listen(IPAddress.Parse(config["IPAddress"]!), port);
-    opt.Listen(IPAddress.Parse(config["IPAddress"]!), port + 1, listenOptions =>
-    {
-        listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
-        listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
-    });
-});
+//     opt.Listen(IPAddress.Parse(config["IPAddress"]!), port);
+//     opt.Listen(IPAddress.Parse(config["IPAddress"]!), port + 1, listenOptions =>
+//     {
+//         listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+//         listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
+//     });
+// });
 
 builder.Services.AddAuthentication();
 
@@ -63,30 +61,12 @@ app.UseHttpsRedirection()
 
 app.MapHubs();
 
+app.MapSelfEndpoints();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.Run();
-
-static void ConfigureFeedbackDirectory(IConfiguration config)
-{
-    ArgumentNullException.ThrowIfNull(config);
-
-    var directoryPath = Path.GetFullPath(config.CheckKey("FeedbackConfig:directory"));
-    
-    DirectoryWrapper.CreateIfDoesntExists(directoryPath);
-
-    if (!File.Exists($"{directoryPath}/feedbacks.json"))
-    {
-        File.WriteAllText($"{directoryPath}/feedbacks.json", "[]");
-    }
-
-    if (!File.Exists($"{directoryPath}/counter"))
-    {
-        File.WriteAllText($"{directoryPath}/counter", "0");
-    }
-}

@@ -10,12 +10,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cardmngr\Cardmngr.csproj" />
+    <ProjectReference Include="..\..\Cardmngr.ServiceDefaults\Cardmngr.ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="version.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Exceptions/" />
   </ItemGroup>
 
   <PropertyGroup>

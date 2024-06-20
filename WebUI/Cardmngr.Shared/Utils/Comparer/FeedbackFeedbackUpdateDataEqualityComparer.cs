@@ -1,4 +1,4 @@
-﻿using Cardmngr.Domain.Feedback;
+﻿using Cardmngr.Domain.Entities.Feedback;
 using Cardmngr.Shared.Feedbacks;
 
 namespace Cardmngr.Shared.Utils.Comparer;

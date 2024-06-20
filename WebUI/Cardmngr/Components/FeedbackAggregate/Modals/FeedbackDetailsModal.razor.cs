@@ -1,5 +1,5 @@
 ﻿using Cardmngr.Components.Modals.Base;
-using Cardmngr.Domain.Feedback;
+using Cardmngr.Domain.Entities.Feedback;
 using Cardmngr.Shared.Feedbacks;
 using Cardmngr.Shared.Utils.Comparer;
 using Microsoft.AspNetCore.Components;

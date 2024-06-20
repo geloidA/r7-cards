@@ -1,6 +1,4 @@
-﻿using Cardmngr.Server.AppInfoApi.Service;
-using Cardmngr.Server.FeedbackApi.Service;
-using Cardmngr.Server.Hubs;
+﻿using Cardmngr.Server.Hubs;
 
 namespace Cardmngr.Server.Extensions;
 
@@ -8,9 +6,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddCardmngrServices(this IServiceCollection collection)
     {
-        return collection
-            .AddSingleton<GroupManager>()
-            .AddScoped<IFeedbackService, FeedbackService>()
-            .AddScoped<IAppInfoService, AppInfoService>();
+        return collection.AddSingleton<GroupManager>();
     }
 }

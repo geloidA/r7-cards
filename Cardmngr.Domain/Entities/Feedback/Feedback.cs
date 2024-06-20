@@ -1,10 +1,9 @@
-﻿using Cardmngr.Domain.Entities;
-using Cardmngr.Domain.Entities.Base;
+﻿using Cardmngr.Domain.Entities.Base;
 using Cardmngr.Domain.Enums;
 
-namespace Cardmngr.Domain.Feedback;
+namespace Cardmngr.Domain.Entities.Feedback;
 
-public sealed record class Feedback : ResponseEntityBase<int> 
+public sealed record class Feedback : ResponseEntityBase<int>
 {
     public string Title { get; init; }
     public string Description { get; init; }

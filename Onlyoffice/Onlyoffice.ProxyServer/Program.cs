@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 Log.Logger = new LoggerConfiguration().CreateMyLogger(builder.Configuration.CheckKey("Logging:pathFormat"));
 
 builder.Configuration.AddJsonFile("appsettings.json");
@@ -26,20 +28,20 @@ builder.Services.AddControllers();
 
 var config = builder.Configuration;
 
-builder.WebHost.UseKestrel(opt =>
-{
-    var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
-    var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
-    var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
+// builder.WebHost.UseKestrel(opt =>
+// {
+//     var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
+//     var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
+//     var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
 
-    var port = int.Parse(config.CheckKey("Port"));
+//     var port = int.Parse(config.CheckKey("Port"));
 
-    opt.Listen(IPAddress.Parse(config["IPAddress"]!), port, listenOptions =>
-    {
-        listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
-        listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
-    });
-});
+//     opt.Listen(IPAddress.Parse(config["IPAddress"]!), port, listenOptions =>
+//     {
+//         listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+//         listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
+//     });
+// });
 
 var app = builder.Build();
 

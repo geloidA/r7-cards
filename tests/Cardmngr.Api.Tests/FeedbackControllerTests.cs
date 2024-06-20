@@ -1,4 +1,4 @@
-using Cardmngr.Domain.Feedback;
+using Cardmngr.Domain.Entities.Feedback;
 using Cardmngr.Server.FeedbackApi;
 using Cardmngr.Server.FeedbackApi.Service;
 using Cardmngr.Shared.Feedbacks;
