@@ -3,24 +3,27 @@
 @using Cardmngr.Components.ProjectAggregate.Components
 
 <div class="detal-background w-100" style="height: 100%;">
-    <FluentProgress Value="_progress" Max="_progressMaxValue"  BackgroundColor="transparent" />
+    <FluentProgress 
+        Value="(int)ElementSwitcherService.MillisecondsElapsed" 
+        Max="ElementSwitcherService.SwitchInterval"
+        BackgroundColor="transparent" />
     
-    @if (Projects is { } projects && _currentProjectId < projects.Length)
+    @if (Projects is { })
     {
         <Smooth IsShowing="_smoothShowing" style="height: 94%;" >
-            <SummaryInfoProjectState @ref="_currentState" Id="@Projects[_currentProjectId]" >
+            <SummaryInfoProjectState @ref="_currentState" Id="@ElementSwitcherService.Element" >
                 <ProjectSummaryInfo />
             </SummaryInfoProjectState>
         </Smooth>
         <div class="summary-player-manager">
             <FluentIcon Value="@(new Icons.Filled.Size24.Previous())" @onclick="PreviousProject" />
-            @if (_timer.Enabled)
+            @if (ElementSwitcherService.Stopped)
             {
-                <FluentIcon Value="@(new Icons.Filled.Size24.Pause())" @onclick="PauseTimer" />
+                <FluentIcon Value="@(new Icons.Filled.Size24.Play())" @onclick="ResumeTimer" />
             }
             else
             {
-                <FluentIcon Value="@(new Icons.Filled.Size24.Play())" @onclick="ResumeTimer" />
+                <FluentIcon Value="@(new Icons.Filled.Size24.Pause())" @onclick="PauseTimer" />
             }
             <FluentIcon Value="@(new Icons.Filled.Size24.Next())" @onclick="NextProject" />
         </div>

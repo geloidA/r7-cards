@@ -1,4 +1,4 @@
 interface DotNetObjectRef {
-    dispose();
+    dispose(): void;
     invokeMethodAsync: Function;
 }

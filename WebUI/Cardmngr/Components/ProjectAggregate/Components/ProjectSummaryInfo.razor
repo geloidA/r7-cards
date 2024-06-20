@@ -5,13 +5,13 @@
     {
         <div class="h-100">
             <div class="row align-items-center justify-content-center h-100">
-                <div @ref="_deadlineoutTasksRef" class=@(_deadlineoutTasks.Any() ? "task-column col" : "") style="overflow-x: hidden;" >
+                <div @ref="_deadlineoutTasksRef" class=@(_deadlineoutTasks.Any() ? "task-column col scrollbar-none" : "") style="overflow-x: hidden;" >
                     @foreach (var task in _deadlineoutTasks)
                     {
                         <DashboardTaskCard Task="task" />
                     }
                 </div>
-                <div @ref="_deadlineoutSoonTasksRef" class=@(_deadlineoutSoonTasks.Any() ? "task-column col" : "") style="overflow-x: hidden;" >
+                <div @ref="_deadlineoutSoonTasksRef" class=@(_deadlineoutSoonTasks.Any() ? "task-column col scrollbar-none" : "") style="overflow-x: hidden;" >
                     @foreach (var task in _deadlineoutSoonTasks)
                     {
                         <DashboardTaskCard Task="task" />

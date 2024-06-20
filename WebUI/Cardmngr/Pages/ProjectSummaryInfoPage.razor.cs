@@ -1,20 +1,16 @@
 ﻿using System.Timers;
 using Cardmngr.Components.ProjectAggregate.States;
+using Cardmngr.Services;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 
 namespace Cardmngr.Pages;
 
-public partial class ProjectSummaryInfoPage : ComponentBase
+public partial class ProjectSummaryInfoPage : ComponentBase, IDisposable
 {
     private readonly Guid _lockGuid = Guid.NewGuid();
+    private readonly System.Timers.Timer _timer = new() { Interval = 100};
     private SummaryInfoProjectState _currentState = null!;
-    private readonly System.Timers.Timer _timer = new();
-    private readonly System.Timers.Timer _progressTimer = new() { Interval = 1000 };
-    private int _progress = 0;
-    private int _progressMaxValue;
-    private int _currentProjectId = 0;
 
     [SupplyParameterFromQuery]
     public int MeasurementUnit { get; set; }
@@ -25,13 +21,19 @@ public partial class ProjectSummaryInfoPage : ComponentBase
     [SupplyParameterFromQuery(Name = "projects")]
     public int[]? Projects { get; set; }
 
+    [Inject] ICircularElementSwitcherService<int> ElementSwitcherService { get; set; } = null!;
+
     protected override void OnInitialized()
     {
-        _progressTimer.Elapsed += OnProgressTimerElapsed;
-        _progressTimer.Start();
-        
-        _timer.Elapsed += OnTimerElapsed;
+        _timer.Elapsed += (_, _) => StateHasChanged();
         _timer.Start();
+
+        if (Projects is { })
+        {
+            ElementSwitcherService.SetElements(Projects);
+            ElementSwitcherService.OnElementChanged += StateHasChanged;
+            ElementSwitcherService.Start();
+        }
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -40,17 +42,15 @@ public partial class ProjectSummaryInfoPage : ComponentBase
         {
             _currentState.OnAfterIdChanged += state => 
             {
-                (_timer.Interval, _progressMaxValue) = state.Tasks.Count == 0
-                    ? (3000, 3)
-                    : GetIntervalAndMaxValue();
+                ElementSwitcherService.SwitchInterval = state.Tasks.Count != 0 ? SwitchInterval : 3000;
                 StateHasChanged();
             };
         }
     }
 
-    private (int, int) GetIntervalAndMaxValue() => MeasurementUnit == (int)TimeMeasurementUnit.Minutes
-        ? (ChangeInterval * 60 * 1000, ChangeInterval * 60)
-        : (ChangeInterval * 1000, ChangeInterval);
+    private int SwitchInterval => MeasurementUnit == (int)TimeMeasurementUnit.Minutes
+        ? ChangeInterval * 60 * 1000
+        : ChangeInterval * 1000;
 
     private bool _smoothShowing = true;
 
@@ -59,39 +59,33 @@ public partial class ProjectSummaryInfoPage : ComponentBase
         NextProject();
     }
 
-    private void NextProject()
+    private async void NextProject()
     {
-        ResetTimers(() => _currentProjectId = (_currentProjectId + 1) % Projects!.Length);
-    }
-
-    private void PreviousProject()
-    {
-        ResetTimers(() => _currentProjectId = (_currentProjectId - 1 + Projects!.Length) % Projects.Length);
-    }
-
-    private void ResetTimers(Action action)
-    {
-        var prevEnabled = _timer.Enabled;
-        _timer.Enabled = false;
-
-        _progressTimer.Enabled = false;
-        _progressTimer.Enabled = prevEnabled;
-        _progress = 0;
-
         _smoothShowing = false; // hide
         StateHasChanged();
 
-        action();
+        await Task.Delay(300);
+
+        ElementSwitcherService.Next();
 
         _smoothShowing = true; // show
+    }
 
-        _timer.Enabled = prevEnabled;
+    private async void PreviousProject()
+    {
+        _smoothShowing = false; // hide
+        StateHasChanged();
+
+        await Task.Delay(300);
+
+        ElementSwitcherService.Previous();
+
+        _smoothShowing = true; // show
     }
     
     private void PauseTimer()
     {
-        _timer.Enabled = false;
-        _progressTimer.Enabled = false;
+        ElementSwitcherService.Stop();
 
         if (!_currentState.RefreshService.Started)
         {
@@ -105,21 +99,12 @@ public partial class ProjectSummaryInfoPage : ComponentBase
 
     private void ResumeTimer()
     {
-        _timer.Enabled = true;
-        _progressTimer.Enabled = true;
-
+        ElementSwitcherService.Start();
         _currentState.RefreshService.Lock(_lockGuid);
-    }
-
-    private void OnProgressTimerElapsed(object? sender, ElapsedEventArgs e)
-    {
-        _progress++;
-        StateHasChanged();
     }
 
     public void Dispose()
     {
         _timer.Dispose();
-        _progressTimer.Dispose();
     }
 }

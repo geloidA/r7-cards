@@ -8,6 +8,7 @@ using Cardmngr.Application.Group;
 using Cardmngr.Application.Mappers;
 using Microsoft.Extensions.DependencyInjection;
 using Onlyoffice.Api;
+using Onlyoffice.Api.Logics;
 using Onlyoffice.Api.Logics.Group;
 using Onlyoffice.Api.Logics.Milestone;
 using Onlyoffice.Api.Logics.MyTask;
@@ -20,9 +21,10 @@ namespace Cardmngr.Application.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection ConfigureServices(this IServiceCollection services)
+    public static IServiceCollection AddApiClients(this IServiceCollection services)
     {
         return services
+            .AddScoped<IAuthApiLogic, AuthApiLogic>()
             .AddScoped<IPeopleRepository, ApiPeopleRepository>()
             .AddScoped<IFeedbackClient, FeedbackClient>()
             .AddScoped<IGroupRepository, ApiGroupRepository>()

@@ -10,7 +10,7 @@ using Cardmngr.Report;
 using Blazored.Modal;
 using Cardmngr.Utils;
 
-namespace Cardmngr;
+namespace Cardmngr.Extensions;
 
 public static class ServicesExtensions
 {
@@ -18,13 +18,13 @@ public static class ServicesExtensions
     {
         return services
             .AddCascadingValue(sp => new CascadingValueSource<ModalOptions>(
-                    "MiddleModal", 
-                    new ModalOptions { Position = ModalPosition.Middle }, 
+                    "MiddleModal",
+                    new ModalOptions { Position = ModalPosition.Middle },
                     true))
             .AddCascadingValue(sp => new CascadingValueSource<ModalOptions>(
-                    "DetailsModal", 
-                    new ModalOptions 
-                    { 
+                    "DetailsModal",
+                    new ModalOptions
+                    {
                         Position = ModalPosition.Middle,
                         Size = ModalSize.ExtraLarge,
                         DisableBackgroundCancel = true,
@@ -66,10 +66,10 @@ public static class ServicesExtensions
             .AddScoped<ReportJSModule>();
     }
 
-    public static void ConfigureHttpClients(this WebAssemblyHostBuilder builder)    
+    public static void ConfigureHttpClients(this WebAssemblyHostBuilder builder)
     {
         builder.Services
-            .AddHttpClient("onlyoffice", opt => opt.BaseAddress = new Uri(builder.Configuration["proxy-url"] 
+            .AddHttpClient("onlyoffice", opt => opt.BaseAddress = new Uri(builder.Configuration["proxy-url"]
                 ?? throw new NullReferenceException("proxy-url config is null")))
             .AddHttpMessageHandler<CookieHandler>();
 
@@ -79,5 +79,16 @@ public static class ServicesExtensions
         builder.Services
             .AddHttpClient("self-api-cookie", opt => opt.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
             .AddHttpMessageHandler<CookieHandler>();
+    }
+
+    public static IServiceCollection AddCommonServices(this IServiceCollection services)
+    {
+        return services
+            .AddScoped<AppInfoService>()
+            .AddScoped<ICircularElementSwitcherService<int>, CircularElementSwitcherService<int>>() // for project tasks switcher in dashboard
+            .AddScoped<ITaskNotificationManager, TaskNotificationManager>()
+            .AddSingleton<ITagColorManager, TagColorGetter>()
+            .AddSingleton<AllProjectsPageSummaryService>()
+            .AddTransient<RefreshService>();
     }
 }

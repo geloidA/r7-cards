@@ -1,23 +1,24 @@
-function scrollToPosition(element: HTMLElement, pos: number, duration: number): void {
-    let currentPos = element.scrollTop;
-    let start: number;
+function scrollToPosition(element: HTMLElement, targetPosition: number, duration: number): void {
+    const startPosition = element.scrollTop;
+    const distance = targetPosition - startPosition;
+    const startTime = performance.now();
 
-    pos = +pos; duration = +duration;
+    function animateScroll(currentTime: number): void {
+        const timeElapsed = currentTime - startTime;
+        const scrollProgress = Math.min(timeElapsed / duration, 1);
 
-    requestAnimationFrame(function step(timestamp) {
-        start = !start ? timestamp : start;
-        let progress = timestamp - start;
-        if (currentPos < pos) {
-            element.scrollTo(0, ((pos - currentPos) * progress / duration) + currentPos);
-        } else {
-            element.scrollTo(0, currentPos - ((currentPos - pos) * progress / duration));
+        element.scrollTop = startPosition + distance * scrollProgress;
+
+        if (targetPosition !== element.scrollTop) {
+            requestAnimationFrame(animateScroll);
         }
-        if (progress < duration) {
-            requestAnimationFrame(step);
-        } else {
-            scrollTo(0, pos);
-        }
-    })
+    }
+
+    requestAnimationFrame(animateScroll);
+}
+
+function scrollToBottom(element: HTMLElement, duration: number): void {
+    scrollToPosition(element, element.scrollHeight - element.clientHeight, duration);
 }
 
 function reloadPage() {

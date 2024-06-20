@@ -8,6 +8,7 @@ namespace Cardmngr.Components.ProjectAggregate.Components;
 
 public partial class ProjectSummaryInfo : ComponentBase
 {
+    private const int ScrollDuration = 20000;
     private ElementReference _deadlineoutTasksRef;
     private ElementReference _deadlineoutSoonTasksRef;
 
@@ -34,7 +35,8 @@ public partial class ProjectSummaryInfo : ComponentBase
     {
         if (firstRender)
         {
-            // await JSRuntime.InvokeVoidAsync("scrollToPosition", _deadlineoutTasksRef, )
+            await JSRuntime.InvokeVoidAsync("scrollToBottom", _deadlineoutTasksRef, ScrollDuration);
+            await JSRuntime.InvokeVoidAsync("scrollToBottom", _deadlineoutSoonTasksRef, ScrollDuration);
         }
     }
 
