@@ -14,7 +14,7 @@ public class FeedbackClient(HttpClient httpClient, AuthenticationStateProvider a
 
     public async Task<Feedback> CreateFeedbackAsync(FeedbackCreateRequestData data)
     {
-        var response = await httpClient.PostAsJsonAsync($"api/feedback", data);
+        var response = await httpClient.PostAsJsonAsync($"/api/feedback", data);
 
         response.EnsureSuccessStatusCode();
 
@@ -24,7 +24,7 @@ public class FeedbackClient(HttpClient httpClient, AuthenticationStateProvider a
 
     public async Task<Feedback?> DeleteFeedbackAsync(int feedbackId)
     {
-        var response = await httpClient.DeleteAsync($"api/feedback/{feedbackId}");
+        var response = await httpClient.DeleteAsync($"/api/feedback/{feedbackId}");
 
         if (response.IsSuccessStatusCode)
         {
@@ -36,7 +36,7 @@ public class FeedbackClient(HttpClient httpClient, AuthenticationStateProvider a
 
     public async Task<FeedbacksVm> GetFeedbacksAsync()
     {
-        var response = await httpClient.GetAsync($"api/feedback/all/{userGuid}");
+        var response = await httpClient.GetAsync($"/api/feedback/all/{userGuid}");
 
         response.EnsureSuccessStatusCode();
 
@@ -48,7 +48,7 @@ public class FeedbackClient(HttpClient httpClient, AuthenticationStateProvider a
 
     public async Task<Feedback?> ToggleFeedbackDislikeAsync(int feedbackId)
     {
-        var response = await httpClient.PostAsync($"api/feedback/dislike/{feedbackId}/{userGuid}", null);
+        var response = await httpClient.PostAsync($"/api/feedback/dislike/{feedbackId}/{userGuid}", null);
 
         if (response.IsSuccessStatusCode)
         {
@@ -61,7 +61,7 @@ public class FeedbackClient(HttpClient httpClient, AuthenticationStateProvider a
 
     public async Task<Feedback?> ToggleFeedbackLikeAsync(int feedbackId)
     {
-        var response = await httpClient.PostAsync($"api/feedback/like/{feedbackId}/{userGuid}", null);
+        var response = await httpClient.PostAsync($"/api/feedback/like/{feedbackId}/{userGuid}", null);
 
         if (response.IsSuccessStatusCode)
         {
@@ -74,7 +74,7 @@ public class FeedbackClient(HttpClient httpClient, AuthenticationStateProvider a
 
     public async Task<Feedback?> UpdateFeedbackAsync(int feedbackId, FeedbackUpdateData data)
     {
-        var response = await httpClient.PutAsJsonAsync($"api/feedback/{userGuid}/{feedbackId}", data);
+        var response = await httpClient.PutAsJsonAsync($"/api/feedback/{userGuid}/{feedbackId}", data);
 
         if (response.IsSuccessStatusCode)
         {
@@ -87,7 +87,7 @@ public class FeedbackClient(HttpClient httpClient, AuthenticationStateProvider a
 
     public async Task<Feedback> UpdateFeedbackStatusAsync(int feedbackId, FeedbackStatus status)
     {
-        var response = await httpClient.PutAsJsonAsync($"api/feedback/status/{userGuid}/{feedbackId}", status);
+        var response = await httpClient.PutAsJsonAsync($"/api/feedback/status/{userGuid}/{feedbackId}", status);
 
         response.EnsureSuccessStatusCode();
 

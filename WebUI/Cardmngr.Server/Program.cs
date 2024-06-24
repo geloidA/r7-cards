@@ -24,6 +24,8 @@ builder.Services.AddSignalR();
 
 builder.Services.AddCardmngrServices();
 
+builder.Services.AddHttpForwarderWithServiceDiscovery();
+
 // builder.WebHost.UseKestrel(opt => 
 // {
 //     var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
@@ -61,12 +63,16 @@ app.UseHttpsRedirection()
 
 app.MapHubs();
 
-app.MapSelfEndpoints();
+app.MapSelfEndpoints()
+   .MapDefaultEndpoints();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapFallbackToFile("index.html");
+
+app.MapForwarder("/api/feedback/{**catch-all}", "https+http://feedback", "/api/feedback/{**catch-all}");
+app.MapForwarder("/onlyoffice/{**catch-all}", "https+http://onlyoffice", "/{**catch-all}");
 
 app.Run();

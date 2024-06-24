@@ -34,12 +34,12 @@ else
                 Value="@(new Icons.Regular.Size24.Settings())"
                 />        
 
-            <FluentProfileMenu Image="@($"{proxyUrl}/api/people{currentUser.Avatar}")"
+            <FluentProfileMenu Image="@($"onlyoffice/api/people{currentUser.Avatar}")"
                             HeaderLabel="УПКБ Деталь" HeaderButton="Выйти" OnHeaderButtonClick="LogoutAsync"
                             Initials="@($"{currentUser.LastName[0]}{currentUser.FirstName[0]}")" 
                             FullName="@currentUser.DisplayName"
                             EMail="@currentUser.Email" class="ms-2"
-                            Style="border-radius: 5px; min-width: 300px;" >                       
+                            Style="border-radius: 5px; min-width: 300px;" >
                 <FooterTemplate>
                     <FluentStack>
                         <FluentSpacer />

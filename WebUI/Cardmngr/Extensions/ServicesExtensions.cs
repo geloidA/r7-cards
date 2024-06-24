@@ -69,15 +69,7 @@ public static class ServicesExtensions
     public static void ConfigureHttpClients(this WebAssemblyHostBuilder builder)
     {
         builder.Services
-            .AddHttpClient("onlyoffice", opt => opt.BaseAddress = new Uri(builder.Configuration["proxy-url"]
-                ?? throw new NullReferenceException("proxy-url config is null")))
-            .AddHttpMessageHandler<CookieHandler>();
-
-        builder.Services
-            .AddHttpClient("self-api", opt => opt.BaseAddress = new Uri($"{builder.HostEnvironment.BaseAddress}api"));
-
-        builder.Services
-            .AddHttpClient("self-api-cookie", opt => opt.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+            .AddHttpClient("onlyoffice", opt => opt.BaseAddress = new Uri($"{builder.HostEnvironment.BaseAddress}onlyoffice/"))
             .AddHttpMessageHandler<CookieHandler>();
     }
 

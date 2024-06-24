@@ -1,35 +1,23 @@
-﻿@inject IConfiguration Config
-
-@if (proxyUrl is { })
-{
-    <div class="d-flex flex-row align-items-center py-1">
-        <div class="avatar-circle responsible-view" style="@($"width: {Size}px; height: {Size}px;")">
-            @if (ShowTooltip)
-            {
-                <img title="@User.DisplayName" width="@Size" src=@($"{proxyUrl}/api/people{User.AvatarSmall}") />
-            }
-            else
-            {
-                <img src=@($"{proxyUrl}/api/people{User.AvatarSmall}") />
-            }
-        </div>
-        @if (ShowName)
+﻿<div class="d-flex flex-row align-items-center py-1">
+    <div class="avatar-circle responsible-view" style="@($"width: {Size}px; height: {Size}px;")">
+        @if (ShowTooltip)
         {
-            <div class="ms-1 fw-light">@User.DisplayName</div>
+            <img title="@User.DisplayName" width="@Size" src=@($"onlyoffice/api/people{User.AvatarSmall}") />
+        }
+        else
+        {
+            <img src=@($"onlyoffice/api/people{User.AvatarSmall}") />
         }
     </div>
-}
+    @if (ShowName)
+    {
+        <div class="ms-1 fw-light">@User.DisplayName</div>
+    }
+</div>
 
 @code {
-    private string? proxyUrl;
-
     [Parameter] public UserInfo User { get; set; } = null!;
     [Parameter] public bool ShowTooltip { get; set; }
     [Parameter] public bool ShowName { get; set; }
     [Parameter] public int Size { get; set; } = 32;
-
-    protected override void OnInitialized()
-    {
-        proxyUrl = Config.CheckKey("proxy-url");
-    }
 }

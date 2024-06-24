@@ -36,7 +36,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddFeedbackServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IFeedbackClient, FeedbackClient>();
-        services.AddHttpClient<IFeedbackClient, FeedbackClient>(c => c.BaseAddress = new Uri(configuration.CheckKey("FeedbackApiUrl")));
         return services;
     }
     

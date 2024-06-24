@@ -16,7 +16,6 @@ namespace Cardmngr.Components.MilestoneAggregate.Modals;
 public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, MilestoneUpdateData>(new MilestoneMilestoneUpdateDataEqualityComparer()), 
     IDisposable
 {
-    string proxyUrl = null!;
     private Guid lockGuid;
     Offcanvas currentModal = null!;
 
@@ -45,8 +44,6 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
             lockGuid = Guid.NewGuid();
             refresheableState.RefreshService.Lock(lockGuid);
         }
-
-        proxyUrl = Config.CheckKey("proxy-url");
 
         if (IsAdd)
         {
