@@ -12,7 +12,7 @@
     {
         <Smooth IsShowing="_smoothShowing" style="height: 94%;" >
             <SummaryInfoProjectState @ref="_currentState" Id="@ElementSwitcherService.Element" >
-                <ProjectSummaryInfo />
+                <ProjectSummaryInfo CanSwitch="@CanSwitchHandler" />
             </SummaryInfoProjectState>
         </Smooth>
         <div class="summary-player-manager">

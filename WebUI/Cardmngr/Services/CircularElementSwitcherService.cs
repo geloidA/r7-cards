@@ -54,7 +54,34 @@ public class CircularElementSwitcherService<T> : ICircularElementSwitcherService
 
     public bool Stopped => !_switchTimer.Enabled;
 
-    private void OnSwitchTimerElapsed(object? sender, ElapsedEventArgs e) => Next();
+    private bool _blockSwitch;
+    public bool BlockSwitch 
+    { 
+        get => _blockSwitch; 
+        set
+        {
+            Console.WriteLine($"Block switch set to {value} and needSwitch is {_needSwitch}");
+            _blockSwitch = value;
+            if (_needSwitch && !_blockSwitch)
+            {
+                Console.WriteLine("Block switch invoked");
+                Next();
+            }
+        }
+    }
+
+    private bool _needSwitch;
+
+    private void OnSwitchTimerElapsed(object? sender, ElapsedEventArgs e)
+    {
+        _needSwitch = true;
+        
+        if (!_blockSwitch)
+        {
+            Console.WriteLine("Timer switch invoked");
+            Next();
+        }
+    }
 
     public void Next() => ResetTimerElapsing(() => _currentElementIndex = (_currentElementIndex + 1) % Elements.Length);
 
@@ -67,12 +94,14 @@ public class CircularElementSwitcherService<T> : ICircularElementSwitcherService
         callback();
         _switchTimer.Enabled = previousEnabledState;
         _elementFirstShowTime = DateTime.Now;
+        _needSwitch = false;
         ElementChanged();
     }
 
     public void Stop()
     {
         _switchTimer.Enabled = false;
+        _needSwitch = false;
     }
 
     public void Start()
@@ -110,11 +139,18 @@ public interface ICircularElementSwitcherService<T> : IDisposable
     int SwitchInterval { get; set; }
 
     bool Stopped { get; }
+    bool BlockSwitch { get; set; }
 
     void Next();
     void Previous();
     void Stop();
     void Start();
 
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="elements"></param>
+    /// <exception cref="ArgumentNullException"></exception>
     public void SetElements(IEnumerable<T> elements);
 }

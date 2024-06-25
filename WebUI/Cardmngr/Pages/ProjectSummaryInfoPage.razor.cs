@@ -9,7 +9,7 @@ namespace Cardmngr.Pages;
 public partial class ProjectSummaryInfoPage : ComponentBase, IDisposable
 {
     private readonly Guid _lockGuid = Guid.NewGuid();
-    private readonly System.Timers.Timer _timer = new() { Interval = 100};
+    private readonly System.Timers.Timer _timer = new() { Interval = 100 };
     private SummaryInfoProjectState _currentState = null!;
 
     [SupplyParameterFromQuery]
@@ -31,7 +31,12 @@ public partial class ProjectSummaryInfoPage : ComponentBase, IDisposable
         if (Projects is { })
         {
             ElementSwitcherService.SetElements(Projects);
-            ElementSwitcherService.OnElementChanged += StateHasChanged;
+            ElementSwitcherService.OnElementChanged += () =>
+            {
+                StateHasChanged();
+                Console.WriteLine(ElementSwitcherService.Element);
+                ElementSwitcherService.BlockSwitch = true;
+            };
             ElementSwitcherService.Start();
         }
     }
@@ -54,9 +59,9 @@ public partial class ProjectSummaryInfoPage : ComponentBase, IDisposable
 
     private bool _smoothShowing = true;
 
-    private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
+    private void CanSwitchHandler()
     {
-        NextProject();
+        ElementSwitcherService.BlockSwitch = false;
     }
 
     private async void NextProject()
@@ -66,6 +71,7 @@ public partial class ProjectSummaryInfoPage : ComponentBase, IDisposable
 
         await Task.Delay(300);
 
+        Console.WriteLine("Next project invoked");
         ElementSwitcherService.Next();
 
         _smoothShowing = true; // show

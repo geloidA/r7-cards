@@ -6,7 +6,7 @@ using Microsoft.JSInterop;
 
 namespace Cardmngr.Components.ProjectAggregate.Components;
 
-public partial class ProjectSummaryInfo : ComponentBase
+public partial class ProjectSummaryInfo : ComponentBase, IDisposable
 {
     private const int ScrollDuration = 20000;
     private ElementReference _deadlineoutTasksRef;
@@ -20,6 +20,8 @@ public partial class ProjectSummaryInfo : ComponentBase
 
     [Inject] IJSRuntime JSRuntime { get; set; } = null!;
 
+    [Parameter] public EventCallback CanSwitch { get; set; }
+
     protected override void OnInitialized()
     {
         if (State is IRefresheableProjectState refresheable)
@@ -31,12 +33,35 @@ public partial class ProjectSummaryInfo : ComponentBase
         RefreshState();
     }
 
+    private DotNetObjectReference<ProjectSummaryInfo>? _dotNetObjectReference;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("scrollToBottom", _deadlineoutTasksRef, ScrollDuration);
-            await JSRuntime.InvokeVoidAsync("scrollToBottom", _deadlineoutSoonTasksRef, ScrollDuration);
+            _dotNetObjectReference = DotNetObjectReference.Create(this);
+
+            await JSRuntime.InvokeVoidAsync("scrollToBottom", 
+                _deadlineoutTasksRef, 
+                ScrollDuration,
+                _dotNetObjectReference);
+
+            await JSRuntime.InvokeVoidAsync("scrollToBottom", 
+                _deadlineoutSoonTasksRef, 
+                ScrollDuration,
+                _dotNetObjectReference);
+        }
+    }
+
+    private int _invokeCounter = 0;
+
+    [JSInvokable]
+    public void ScrollFinished()
+    {
+        _invokeCounter++;
+        if (_invokeCounter == 2)
+        {
+            CanSwitch.InvokeAsync();
         }
     }
 
@@ -45,5 +70,10 @@ public partial class ProjectSummaryInfo : ComponentBase
         _deadlineoutTasks = [.. State.Tasks.Where(x => x.IsDeadlineOut())];
         _deadlineoutSoonTasks = [.. State.Tasks.Where(x => !x.IsDeadlineOut() && x.IsSevenDaysDeadlineOut())];
         StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        _dotNetObjectReference?.Dispose();
     }
 }
