@@ -1,0 +1,11 @@
+resources:
+- configmap.yaml
+- onlyoffice
+- feedback
+- server
+- dashboard.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+

@@ -4,7 +4,6 @@ using Cardmngr.Shared.Extensions;
 using Cardmngr.Server.Extensions;
 using Microsoft.AspNetCore.ResponseCompression;
 using Serilog;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,21 +25,18 @@ builder.Services.AddCardmngrServices();
 
 builder.Services.AddHttpForwarderWithServiceDiscovery();
 
-// builder.WebHost.UseKestrel(opt => 
-// {
-//     var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
-//     var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
-//     var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
-
-//     var port = int.Parse(config.CheckKey("Port"));
-        
-//     opt.Listen(IPAddress.Parse(config["IPAddress"]!), port);
-//     opt.Listen(IPAddress.Parse(config["IPAddress"]!), port + 1, listenOptions =>
-//     {
-//         listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
-//         listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
-//     });
-// });
+builder.WebHost.UseKestrel(opt => 
+{
+    var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
+    var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
+    var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
+    
+    opt.Listen(IPAddress.Any, 8080);
+    opt.Listen(IPAddress.Any, 8443, listenOptions =>
+    {
+        listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
+    });
+});
 
 builder.Services.AddAuthentication();
 
