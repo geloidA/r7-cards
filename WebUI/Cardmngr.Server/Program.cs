@@ -3,14 +3,14 @@ using System.Security.Cryptography.X509Certificates;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Server.Extensions;
 using Microsoft.AspNetCore.ResponseCompression;
-using Serilog;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorPages();
+builder.Configuration.AddJsonFile($"appsettings{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
-Log.Logger = new LoggerConfiguration().CreateMyLogger(builder.Configuration.CheckKey("Logging:pathFormat"));
+builder.AddServiceDefaults();
+
+builder.Services.AddRazorPages();
 
 builder.Services.AddResponseCompression(opts =>
 {
@@ -20,27 +20,22 @@ builder.Services.AddResponseCompression(opts =>
 
 builder.Services.AddSignalR();
 
-builder.Services.AddControllers();
-
-ConfigureFeedbackDirectory(builder.Configuration);
-
 builder.Services.AddCardmngrServices();
 
-builder.WebHost.UseKestrel(opt => 
-{
-    var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
-    var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
-    var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
+builder.Services.AddHttpForwarderWithServiceDiscovery();
 
-    var port = int.Parse(config.CheckKey("Port"));
-        
-    opt.Listen(IPAddress.Parse(config["IPAddress"]!), port);
-    opt.Listen(IPAddress.Parse(config["IPAddress"]!), port + 1, listenOptions =>
-    {
-        listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
-        listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
-    });
-});
+// builder.WebHost.UseKestrel(opt => 
+// {
+//     var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
+//     var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
+//     var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
+    
+//     opt.Listen(IPAddress.Any, 8080);
+//     opt.Listen(IPAddress.Any, 8443, listenOptions =>
+//     {
+//         listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
+//     });
+// });
 
 builder.Services.AddAuthentication();
 
@@ -63,30 +58,16 @@ app.UseHttpsRedirection()
 
 app.MapHubs();
 
+app.MapSelfEndpoints()
+   .MapDefaultEndpoints();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-app.MapControllers();
 app.MapFallbackToFile("index.html");
 
+app.MapForwarder("/api/feedback/{**catch-all}", "https+http://feedback", "/api/feedback/{**catch-all}");
+app.MapForwarder("/onlyoffice/{**catch-all}", "https+http://onlyoffice", "/{**catch-all}");
+
 app.Run();
-
-static void ConfigureFeedbackDirectory(IConfiguration config)
-{
-    ArgumentNullException.ThrowIfNull(config);
-
-    var directoryPath = Path.GetFullPath(config.CheckKey("FeedbackConfig:directory"));
-    
-    DirectoryWrapper.CreateIfDoesntExists(directoryPath);
-
-    if (!File.Exists($"{directoryPath}/feedbacks.json"))
-    {
-        File.WriteAllText($"{directoryPath}/feedbacks.json", "[]");
-    }
-
-    if (!File.Exists($"{directoryPath}/counter"))
-    {
-        File.WriteAllText($"{directoryPath}/counter", "0");
-    }
-}

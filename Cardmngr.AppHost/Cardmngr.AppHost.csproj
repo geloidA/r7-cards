@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>58941e05-cafe-4497-a305-2f1a335ab06f</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Onlyoffice\Onlyoffice.ProxyServer\Onlyoffice.ProxyServer.csproj" />
+    <ProjectReference Include="..\Cardmngr.FeedbackService\Cardmngr.FeedbackService.csproj" />
+    <ProjectReference Include="..\WebUI\Cardmngr.Server\Cardmngr.Server.csproj" />
+  </ItemGroup>
+
+</Project>

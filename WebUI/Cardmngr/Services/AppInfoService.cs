@@ -3,26 +3,16 @@ using Cardmngr.Exceptions;
 
 namespace Cardmngr.Services;
 
-public class AppInfoService(IHttpClientFactory httpClientFactory)
+public class AppInfoService(HttpClient http)
 {
-    private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
-
     public async Task<string> GetVersionAsync()
     {
-        using var client = httpClientFactory.CreateClient("self-api");
-
-        var message = new HttpRequestMessage
+        var request = new HttpRequestMessage(HttpMethod.Get, "/appinfo/version")
         {
-            Method = HttpMethod.Get,
-            RequestUri = new Uri($"{client.BaseAddress}/appinfo/version")
+            Headers = { CacheControl = new CacheControlHeaderValue { NoCache = true } }
         };
 
-        message.Headers.CacheControl = new CacheControlHeaderValue
-        {
-            NoCache = true
-        };
-
-        var response = await client.SendAsync(message);
+        var response = await http.SendAsync(request);
 
         if (response.IsSuccessStatusCode)
         {

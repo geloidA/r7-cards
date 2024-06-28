@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Cardmngr.Domain.Entities;
-using Cardmngr.Domain.Feedback;
+using Cardmngr.Domain.Entities.Feedback;
 using Cardmngr.Shared.Feedbacks;
 using Onlyoffice.Api.Models;
 

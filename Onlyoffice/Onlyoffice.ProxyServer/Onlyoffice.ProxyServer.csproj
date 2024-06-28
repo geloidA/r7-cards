@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Onlyoffice.Api\Onlyoffice.Api.csproj" />
     <ProjectReference Include="..\..\WebUI\Cardmngr.Shared\Cardmngr.Shared.csproj" />
+    <ProjectReference Include="..\..\Cardmngr.ServiceDefaults\Cardmngr.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

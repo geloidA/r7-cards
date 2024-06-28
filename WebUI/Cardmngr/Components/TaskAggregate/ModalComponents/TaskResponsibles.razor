@@ -1,8 +1,6 @@
 ﻿@using System.Collections.ObjectModel
 @using Onlyoffice.Api.Models
 
-@inject IConfiguration Config
-
 <FluentAutocomplete @ref="ResponsibleList"
     TOption="UserInfo" AutoComplete="off"
     Disabled="Disabled" MaximumOptionsSearch="100"
@@ -22,14 +20,14 @@
             ImageSize="22px"
             Class="p-1"
             Style="height: 26px; background: var(--main-responsibles-bg)"
-            Image="@($"{proxyUrl}/api/people{context.AvatarSmall}")"
+            Image="@($"onlyoffice/api/people{context.AvatarSmall}")"
             OnDismissClick="@(async () => await ResponsibleList.RemoveSelectedItemAsync(context))"/>
     </SelectedOptionTemplate>
 
     <OptionTemplate>
         <FluentPersona Name="@context.DisplayName"
             ImageSize="22px"
-            Image="@($"{proxyUrl}/api/people{context.AvatarSmall}")" />
+            Image="@($"onlyoffice/api/people{context.AvatarSmall}")" />
     </OptionTemplate>
 
     <HeaderContent>
@@ -50,7 +48,6 @@
 </FluentAutocomplete>
 
 @code {
-    string proxyUrl = null!;
     FluentAutocomplete<UserInfo> ResponsibleList = default!;
     IEnumerable<UserInfo> SelectedResponsibles = [];
     [CascadingParameter] IProjectState State { get; set; } = null!;
@@ -60,7 +57,6 @@
 
     protected override void OnInitialized()
     {
-        proxyUrl = Config.CheckKey("proxy-url");
         SelectedResponsibles = State.Team.Where(x => Task.Responsibles.Any(id => id == x.Id));
     }
 

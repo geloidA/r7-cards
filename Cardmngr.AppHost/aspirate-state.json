@@ -1,0 +1,22 @@
+{
+  "projectPath": ".",
+  "inputPath": "aspirate-output",
+  "allowClearNamespace": false,
+  "containerRegistry": "localhost:5001",
+  "containerImageTags": [
+    "latest"
+  ],
+  "imagePullPolicy": "IfNotPresent",
+  "containerBuilder": "docker",
+  "kubeContext": "kind-kind",
+  "outputFormat": "kustomize",
+  "privateRegistryEmail": "aspir8@aka.ms",
+  "includeDashboard": true,
+  "useCustomNamespace": false,
+  "secrets": {
+    "salt": "h/emCLa5cEURduRC",
+    "hash": "zUguoIQuK8VtFdym8o3E6qlnjX6QJg4FtoZ5EkyYJO4=",
+    "secrets": {}
+  },
+  "processAllComponents": true
+}

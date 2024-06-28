@@ -1,12 +1,12 @@
 ﻿using Cardmngr.Domain.Entities;
-using Cardmngr.Domain.Enums;
-using Cardmngr.Domain.Feedback;
-using Cardmngr.Server.Exceptions;
-using Cardmngr.Shared.Feedbacks;
+using Cardmngr.FeedbackService.Exceptions;
 using Newtonsoft.Json;
 using Cardmngr.Shared.Extensions;
+using Cardmngr.Domain.Entities.Feedback;
+using Cardmngr.Shared.Feedbacks;
+using Cardmngr.Domain.Enums;
 
-namespace Cardmngr.Server.FeedbackApi.Service;
+namespace Cardmngr.FeedbackService.Services;
 
 public class FeedbackService : IFeedbackService
 {
@@ -19,7 +19,7 @@ public class FeedbackService : IFeedbackService
         directory = conf.CheckKey("FeedbackConfig:directory"); // not null because it is checked in ConfigureOnlyofficeClient method
 
         developerGuid = conf.CheckKey("FeedbackConfig:developerGuid");
-        
+
         feedbackFile = $"{directory}/feedbacks.json";
     }
 
@@ -27,10 +27,10 @@ public class FeedbackService : IFeedbackService
     {
         var feedbacks = await GetFeedbacksAsync();
 
-        var created = new Feedback 
+        var created = new Feedback
         {
             Id = await IncrementCounterAsync(),
-            Title = data.Title, 
+            Title = data.Title,
             Description = data.Description,
             Creator = user,
             Created = DateTime.Now
@@ -66,9 +66,9 @@ public class FeedbackService : IFeedbackService
 
         foreach (var feedback in feedbacks)
         {
-            yield return feedback with 
+            yield return feedback with
             {
-                CanEdit = CanManipulate(requestGuid, feedback), 
+                CanEdit = CanManipulate(requestGuid, feedback),
                 CanChangeStatus = developerGuid == requestGuid // TODO: can be hacked
             };
         }
@@ -103,9 +103,9 @@ public class FeedbackService : IFeedbackService
             throw new FeedbackNotFoundException(feedback);
         }
 
-        var updated = feedback with 
-        { 
-            Status = status, 
+        var updated = feedback with
+        {
+            Status = status,
             Finished = status == FeedbackStatus.Finished ? DateTime.Now : null
         };
         feedbacks.Add(updated);
@@ -160,15 +160,15 @@ public class FeedbackService : IFeedbackService
         }
 
         toggleAction(feedback);
-        
+
         feedbacks.Add(feedback);
 
         await WriteAllTextAsync(JsonConvert.SerializeObject(feedbacks));
 
-        return feedback with 
-        { 
-            CanEdit = CanManipulate(requestGuid, feedback), 
-            CanChangeStatus = requestGuid == developerGuid 
+        return feedback with
+        {
+            CanEdit = CanManipulate(requestGuid, feedback),
+            CanChangeStatus = requestGuid == developerGuid
         };
     }
 

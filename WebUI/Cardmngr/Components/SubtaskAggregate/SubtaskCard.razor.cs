@@ -15,7 +15,6 @@ namespace Cardmngr.Components.SubtaskAggregate;
 
 public partial class SubtaskCard : ComponentBase
 {
-    private string proxyUrl = null!;
 
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
@@ -28,11 +27,6 @@ public partial class SubtaskCard : ComponentBase
 
     [Parameter, EditorRequired]
     public Subtask Subtask { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        proxyUrl = Config.CheckKey("proxy-url");
-    }
 
     private string CssCompleted => Subtask.Status == Status.Closed ? "completed" : "";
     private Icon StatusIcon => Subtask.Status == Status.Open 

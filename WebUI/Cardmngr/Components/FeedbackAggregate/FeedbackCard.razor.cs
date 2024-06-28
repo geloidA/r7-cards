@@ -1,7 +1,7 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using Cardmngr.Components.FeedbackAggregate.Modals;
-using Cardmngr.Domain.Feedback;
+using Cardmngr.Domain.Entities.Feedback;
 using Microsoft.AspNetCore.Components;
 using Onlyoffice.Api.Extensions;
 

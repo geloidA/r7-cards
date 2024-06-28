@@ -39,6 +39,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "games", "games", "{89AB476E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.Tetris", "games\Cardmngr.Tetris\Cardmngr.Tetris.csproj", "{074A86B1-540B-411C-A7C1-0B3491DE1AA5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.AppHost", "Cardmngr.AppHost\Cardmngr.AppHost.csproj", "{954C128B-C5E6-44F1-B52D-0082F266DCE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.ServiceDefaults", "Cardmngr.ServiceDefaults\Cardmngr.ServiceDefaults.csproj", "{CDCDCE09-993A-4099-9F35-BA14813080C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cardmngr.FeedbackService", "Cardmngr.FeedbackService\Cardmngr.FeedbackService.csproj", "{704EB42B-56D8-4E1D-BF4E-FEC29DE75DCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +107,18 @@ Global
 		{074A86B1-540B-411C-A7C1-0B3491DE1AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{074A86B1-540B-411C-A7C1-0B3491DE1AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{074A86B1-540B-411C-A7C1-0B3491DE1AA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{954C128B-C5E6-44F1-B52D-0082F266DCE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{954C128B-C5E6-44F1-B52D-0082F266DCE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{954C128B-C5E6-44F1-B52D-0082F266DCE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{954C128B-C5E6-44F1-B52D-0082F266DCE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDCDCE09-993A-4099-9F35-BA14813080C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDCDCE09-993A-4099-9F35-BA14813080C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDCDCE09-993A-4099-9F35-BA14813080C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDCDCE09-993A-4099-9F35-BA14813080C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{704EB42B-56D8-4E1D-BF4E-FEC29DE75DCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{704EB42B-56D8-4E1D-BF4E-FEC29DE75DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{704EB42B-56D8-4E1D-BF4E-FEC29DE75DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{704EB42B-56D8-4E1D-BF4E-FEC29DE75DCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

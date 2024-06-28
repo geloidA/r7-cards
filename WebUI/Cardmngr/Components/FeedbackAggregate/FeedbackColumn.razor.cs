@@ -1,5 +1,5 @@
-﻿using Cardmngr.Domain.Enums;
-using Cardmngr.Domain.Feedback;
+﻿using Cardmngr.Domain.Entities.Feedback;
+using Cardmngr.Domain.Enums;
 using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.FeedbackAggregate;

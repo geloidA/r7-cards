@@ -1,9 +1,9 @@
 ﻿using Cardmngr.Domain.Entities;
+using Cardmngr.Domain.Entities.Feedback;
 using Cardmngr.Domain.Enums;
-using Cardmngr.Domain.Feedback;
 using Cardmngr.Shared.Feedbacks;
 
-namespace Cardmngr.Server.FeedbackApi.Service;
+namespace Cardmngr.FeedbackService.Services;
 
 public interface IFeedbackService
 {

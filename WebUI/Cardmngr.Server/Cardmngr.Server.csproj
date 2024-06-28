@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6" />
+    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="8.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog" Version="4.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.0" />
@@ -10,12 +11,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cardmngr\Cardmngr.csproj" />
+    <ProjectReference Include="..\..\Cardmngr.ServiceDefaults\Cardmngr.ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="version.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Exceptions/" />
   </ItemGroup>
 
   <PropertyGroup>

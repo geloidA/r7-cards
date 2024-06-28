@@ -22,7 +22,6 @@ public partial class Header : KolComponentBase, IDisposable
 
     [CascadingParameter] HeaderInteractionService InteractionService { get; set; } = null!;
 
-    private string proxyUrl = null!;
     private string onlyofficeUrl = null!;
 
     private UserProfile? currentUser;
@@ -35,7 +34,6 @@ public partial class Header : KolComponentBase, IDisposable
         var user = await AuthenticationState.GetAuthenticationStateAsync();
         if (user.User.Identity is { IsAuthenticated: true })
         {
-            proxyUrl = Config.CheckKey("proxy-url");
             onlyofficeUrl = Config.CheckKey("onlyoffice-url");
             var provider = AuthenticationState.ToCookieProvider();
             currentUser = JsonSerializer.Deserialize<UserProfile>(provider["Data"]);

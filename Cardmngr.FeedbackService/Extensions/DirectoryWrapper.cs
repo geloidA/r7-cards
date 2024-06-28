@@ -1,4 +1,4 @@
-﻿namespace Cardmngr.Server.Extensions;
+﻿namespace Cardmngr.FeedbackService.Extensions;
 
 public static class DirectoryWrapper
 {

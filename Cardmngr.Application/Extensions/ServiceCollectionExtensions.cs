@@ -6,6 +6,8 @@ using Cardmngr.Application.Clients.Subtask;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Group;
 using Cardmngr.Application.Mappers;
+using Cardmngr.Shared.Extensions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Onlyoffice.Api;
 using Onlyoffice.Api.Logics;
@@ -26,10 +28,15 @@ public static class ServiceCollectionExtensions
         return services
             .AddScoped<IAuthApiLogic, AuthApiLogic>()
             .AddScoped<IPeopleRepository, ApiPeopleRepository>()
-            .AddScoped<IFeedbackClient, FeedbackClient>()
             .AddScoped<IGroupRepository, ApiGroupRepository>()
             .AddScoped<IGroupClient, GroupClient>()
             .AddProjectClient();
+    }
+
+    public static IServiceCollection AddFeedbackServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped<IFeedbackClient, FeedbackClient>();
+        return services;
     }
     
     private static IServiceCollection AddProjectClient(this IServiceCollection services)

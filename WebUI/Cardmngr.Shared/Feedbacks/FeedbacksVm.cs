@@ -1,4 +1,4 @@
-﻿using Cardmngr.Domain.Feedback;
+﻿using Cardmngr.Domain.Entities.Feedback;
 
 namespace Cardmngr.Shared.Feedbacks;
 

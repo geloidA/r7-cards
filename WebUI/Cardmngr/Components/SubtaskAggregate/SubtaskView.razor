@@ -1,6 +1,4 @@
-﻿@inject IConfiguration Config
-
-<EditForm Model="Subtask" OnValidSubmit="Submit" Context="subtask" >
+﻿<EditForm Model="Subtask" OnValidSubmit="Submit" Context="subtask" >
     <DataAnnotationsValidator/>
     <FluentCard AreaRestricted="false" Width="250px" Height="200px" Style="padding: 0;">
         <div class="d-flex justify-content-end p-2">
@@ -65,13 +63,13 @@
                     ImageSize="22px"
                     Class="p-1"
                     Style="height: 26px; background: var(--main-responsibles-bg); font-size: 12px;"
-                    Image="@($"{proxyUrl}/api/people{context.AvatarSmall}")" />
+                    Image="@($"api/people{context.AvatarSmall}")" />
             </SelectedOptionTemplate>
 
             <OptionTemplate>
                 <FluentPersona Name="@context.DisplayName"
                     ImageSize="22px"
-                    Image="@($"{proxyUrl}/api/people{context.AvatarSmall}")" />
+                    Image="@($"api/people{context.AvatarSmall}")" />
             </OptionTemplate>
 
             <HeaderContent>
@@ -109,12 +107,10 @@
 @code {
     IEnumerable<UserInfo> SelectedResponsible = [];
     readonly Guid menuGuid = Guid.NewGuid();
-    string proxyUrl = null!;
     bool open;
 
     protected override void OnInitialized()
-    {        
-        proxyUrl = Config.CheckKey("proxy-url");
+    {
         if (Subtask.Responsible is { })
         {
             SelectedResponsible = [State.Team.Single(x => x.Id == Subtask.Responsible)];
