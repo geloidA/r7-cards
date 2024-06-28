@@ -11,9 +11,10 @@ builder.AddServiceDefaults();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Configuration.AddJsonFile($"appsettings{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
 ConfigureFeedbackDirectory(builder.Configuration);
 
-builder.Services.AddAuthentication();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
 var app = builder.Build();

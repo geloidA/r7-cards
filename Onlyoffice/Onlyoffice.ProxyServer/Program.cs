@@ -1,14 +1,9 @@
 using Microsoft.AspNetCore.ResponseCompression;
-using Cardmngr.Shared.Extensions;
-using Serilog;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-Log.Logger = new LoggerConfiguration().CreateMyLogger(builder.Configuration.CheckKey("Logging:pathFormat"));
-
-builder.Configuration.AddJsonFile("appsettings.json");
+builder.Configuration.AddJsonFile($"appsettings{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
 builder.Services.AddResponseCompression(opts =>
 {
