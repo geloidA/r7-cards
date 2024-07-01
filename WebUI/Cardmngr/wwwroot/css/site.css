@@ -180,3 +180,11 @@ article {
 .default-text {
     color: var(--col-title-color);
 }
+
+.text-error {
+    color: var(--error) !important;
+}
+
+.text-warning {
+    color: var(--warning) !important;
+}

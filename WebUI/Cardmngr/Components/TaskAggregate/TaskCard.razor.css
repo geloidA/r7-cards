@@ -19,3 +19,12 @@
     overflow-wrap: break-word;
     word-break: break-word;
 }
+
+.task-card .deadline-msg {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.task-card:hover .deadline-msg {
+    opacity: 1;
+}

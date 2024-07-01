@@ -89,7 +89,7 @@
 @code {
     private RenderFragment<string> RenderError = errorMsg =>
         @<Smooth Delay="TimeSpan.FromSeconds(1)">
-            <span style="font-size: 12px; color: var(--error);" class="d-flex align-content-center">
+            <span style="font-size: 12px;" class="d-flex align-content-center text-error">
                 <FluentIcon Value="@(new Icons.Filled.Size12.ErrorCircle())" 
                     Color="Color.Error" class="me-1" />
                 @errorMsg

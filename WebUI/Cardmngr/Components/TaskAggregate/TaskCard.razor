@@ -45,15 +45,22 @@
             <div class="d-flex p-0 justify-content-end align-items-center">
                 @if (Task.IsDeadlineOut())
                 {
-                    <Tool Icon="@(new Icons.Regular.Size16.Fire())" Color="Color.Error" 
-                        TooltipTitle="@(GetDeadlineString("Срок истек - {0} {1} назад"))" />
+                    <span class="small deadline-msg text-error">
+                        @GetDeadlineString("Просрочено {0} {1} назад")
+                    </span>
+                    <FluentSpacer />
+                    <FluentIcon Value="@(new Icons.Regular.Size16.Fire())" Color="Color.Error" />
                 }
                 else if (Task.IsSevenDaysDeadlineOut())
                 {
-                    <Tool Icon="@(new Icons.Filled.Size16.Warning())" Color="Color.Warning"
-                        TooltipTitle="@(GetDeadlineString("Крайний срок истечет через {0} {1}"))" />
+                    <span class="small deadline-msg" style="color: var(--warning);">
+                        @(GetDeadlineString("Истечет через {0} {1}"))
+                    </span>
+                    <FluentSpacer />
+                    <FluentIcon Value="@(new Icons.Filled.Size16.Warning())" Color="Color.Warning" />
                 }
-                <span class="small ms-2 @(Task.IsDeadlineOut() ? "text-danger" : "fw-lighter")" >
+                <span class="small ms-2 
+                    @(Task.IsDeadlineOut() ? "text-danger" : Task.IsSevenDaysDeadlineOut() ? "text-warning" : "fw-lighter")" >
                     Крайний срок:
                     @Task.Deadline?.ToString("d MMM yyyy г.")
                 </span>

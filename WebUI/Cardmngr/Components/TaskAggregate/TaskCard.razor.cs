@@ -55,6 +55,6 @@ public partial class TaskCard : ComponentBase
         var diff = DateTime.Now.Date - Task.Deadline.Value.Date;
         return diff.TotalDays != 0
             ? string.Format(format, Math.Abs(diff.TotalDays), Utils.Common.GetDayNameByDayCount(diff.TotalDays))
-            : "Крайний срок истечет сегодня";
+            : "Истечет сегодня";
     }
 }
