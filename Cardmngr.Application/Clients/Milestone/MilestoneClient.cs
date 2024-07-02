@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Onlyoffice.Api;
 using Onlyoffice.Api.Logics.Repository;
 using Onlyoffice.Api.Models;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Application.Clients.Milestone
 {

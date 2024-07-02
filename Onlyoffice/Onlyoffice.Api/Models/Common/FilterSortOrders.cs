@@ -1,4 +1,4 @@
-﻿namespace Onlyoffice.Api.Common;
+﻿namespace Onlyoffice.Api.Models.Common;
 
 public enum FilterSortOrders
 {

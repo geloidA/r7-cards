@@ -102,6 +102,13 @@ for archive in *.tar.gz; do
         echo -e "${RED}Failed to push $REPO/$name:$VERSION${NC}"
         exit 1
     fi
+
+    echo -e "${BLUE}Cleaning $name:$VERSION...${NC}"
+    docker image rm "$name:$VERSION"
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Failed to clean $name:$VERSION${NC}"
+        exit 1
+    fi
 done
 
 echo -e "${GREEN}All Docker images have been loaded, tagged, and pushed successfully to $REPO.${NC}"

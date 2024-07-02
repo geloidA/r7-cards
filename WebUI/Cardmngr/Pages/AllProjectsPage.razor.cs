@@ -3,7 +3,7 @@ using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using Onlyoffice.Api.Common;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Pages;
 

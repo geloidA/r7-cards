@@ -3,7 +3,7 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities
 {
-    public sealed record class Project : AuditableEntityBase<int>
+    public sealed record Project : AuditableEntityBase<int>
     {
         public string Title { get; init; }
         public string Description { get; init; }

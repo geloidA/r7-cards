@@ -24,18 +24,18 @@ builder.Services.AddCardmngrServices();
 
 builder.Services.AddHttpForwarderWithServiceDiscovery();
 
-builder.WebHost.UseKestrel(opt => 
-{
-    var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
-    var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
-    var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
+// builder.WebHost.UseKestrel(opt => 
+// {
+//     var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
+//     var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
+//     var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
     
-    opt.Listen(IPAddress.Any, 8080);
-    opt.Listen(IPAddress.Any, 8443, listenOptions =>
-    {
-        listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
-    });
-});
+//     opt.Listen(IPAddress.Any, 8080);
+//     opt.Listen(IPAddress.Any, 8443, listenOptions =>
+//     {
+//         listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
+//     });
+// });
 
 builder.Services.AddAuthentication();
 

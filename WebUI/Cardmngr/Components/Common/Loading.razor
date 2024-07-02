@@ -1,0 +1,8 @@
+﻿@inherits KolComponentBase
+
+<img src="images/loading-icon.svg" width=@($"{Width}px") type="image/svg+xml" class="@Class" style="@Style" @onclick="HandleClick" />
+
+@code {
+    [Parameter]
+    public int Width { get; set; } = 100;
+}

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Onlyoffice.ProxyServer.Controllers;
 
-namespace Onlyoffice.ProxyServer;
+namespace Onlyoffice.ProxyServer.Controllers;
 
 public class GroupController(IConfiguration conf) : ApiController(conf)
 {

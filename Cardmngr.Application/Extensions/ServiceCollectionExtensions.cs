@@ -1,4 +1,5 @@
 ﻿using Cardmngr.Application.Clients;
+using Cardmngr.Application.Clients.Feed;
 using Cardmngr.Application.Clients.FeedbackClient;
 using Cardmngr.Application.Clients.Milestone;
 using Cardmngr.Application.Clients.People;
@@ -6,11 +7,10 @@ using Cardmngr.Application.Clients.Subtask;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Group;
 using Cardmngr.Application.Mappers;
-using Cardmngr.Shared.Extensions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Onlyoffice.Api;
 using Onlyoffice.Api.Logics;
+using Onlyoffice.Api.Logics.Feed;
 using Onlyoffice.Api.Logics.Group;
 using Onlyoffice.Api.Logics.Milestone;
 using Onlyoffice.Api.Logics.MyTask;
@@ -30,10 +30,12 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPeopleRepository, ApiPeopleRepository>()
             .AddScoped<IGroupRepository, ApiGroupRepository>()
             .AddScoped<IGroupClient, GroupClient>()
+            .AddScoped<IFeedClient, FeedClient>()
+            .AddScoped<IFeedRepository, ApiFeedRepository>()
             .AddProjectClient();
     }
 
-    public static IServiceCollection AddFeedbackServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddFeedbackServices(this IServiceCollection services)
     {
         services.AddScoped<IFeedbackClient, FeedbackClient>();
         return services;

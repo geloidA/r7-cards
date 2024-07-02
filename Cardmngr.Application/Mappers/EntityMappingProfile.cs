@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Cardmngr.Domain;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Domain.Enums;
 using Onlyoffice.Api.Models;
@@ -18,6 +17,10 @@ public class EntityMappingProfile : Profile
         CreateMap<MilestoneDto, MilestoneInfo>();
 
         CreateMap<SubtaskDto, Subtask>();
+
+        CreateMap<Onlyoffice.Api.Models.FeedInfo, Domain.Entities.FeedInfo>();
+        CreateMap<FeedDto, Feed>()
+            .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Feed));
 
         CreateMap<TaskDto, OnlyofficeTask>()
             .ForMember(dest => dest.TaskStatusId, opt => opt.MapFrom(src => src.CustomTaskStatus));

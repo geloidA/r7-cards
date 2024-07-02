@@ -3,7 +3,7 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities
 {
-    public record class Subtask : AuditableEntityBase<int>
+    public record Subtask : AuditableEntityBase<int>
     {
         public string Title { get; init; }
         public string Description { get; init; }

@@ -16,11 +16,13 @@
 else
 {
 <FluentHeader class="siteheader" Style="height: auto; z-index: 1;" >
-    <div class="d-flex gap-1 align-items-center">
+    <div class="d-flex gap-1 align-items-center">        
+        <NavigateButtons />
+        <FluentSpacer Width="5" />
         <FluentButton Class="py-0" Appearance="Appearance.Outline"
             OnClick="OpenSidebar" IconEnd="@(new Icons.Regular.Size20.TextAlignJustify())" />
         <FluentSpacer Width="5" />
-        <NavigateButtons />
+        <FluentAnchor Href="/" Appearance="@Appearance.Hypertext" IconStart="@(new MyIcons.CardLogo())" />
         <FluentSpacer Width="25" />
         <ProjectNavigator />
         <FilterCustomizer />

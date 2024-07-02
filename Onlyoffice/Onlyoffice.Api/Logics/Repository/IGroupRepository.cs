@@ -1,9 +1,9 @@
 ﻿using Onlyoffice.Api.Models;
+using Onlyoffice.Api.Models.Common;
 
 namespace Onlyoffice.Api.Logics.Repository;
 
-public interface IGroupRepository
+public interface IGroupRepository : IRepository<GroupDto>
 {
-    IAsyncEnumerable<GroupDto> GetAllAsync();
     IAsyncEnumerable<GroupDto> GetFiltredAsync(FilterBuilder builder);
 }

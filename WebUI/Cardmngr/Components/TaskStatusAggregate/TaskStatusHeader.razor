@@ -32,8 +32,12 @@ else
         @if (TaskStatus.Available)
         {
             <div class="d-flex justify-content-end btn-hide">
-                <Tool Color="Color.Success" Icon="@(new Icons.Regular.Size20.Add())"
-                    TooltipTitle="Добавить задачу" OnClick="@ShowCreateTaskModal" />
+                <FluentButton Style="padding: 5px !important; margin-right: -5px;"
+                    BackgroundColor="@Color.Success.GetDesc()" Title="Добавить задачу"
+                    OnClick="@ShowCreateTaskModal"
+                >
+                    <FluentIcon Value="@(new Icons.Regular.Size16.Add())" CustomColor="white" Color="Color.Custom"/>
+                </FluentButton>
             </div>
         }
     </div>

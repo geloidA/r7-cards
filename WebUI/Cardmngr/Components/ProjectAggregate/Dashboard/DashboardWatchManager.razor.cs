@@ -1,10 +1,10 @@
 ﻿using Cardmngr.Application.Clients.TaskClient;
-using Cardmngr.Domain;
+using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
 using Cardmngr.Utils;
 using KolBlazor;
 using Microsoft.AspNetCore.Components;
-using Onlyoffice.Api.Common;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Components.ProjectAggregate.Dashboard;
 

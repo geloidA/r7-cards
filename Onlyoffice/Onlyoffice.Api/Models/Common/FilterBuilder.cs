@@ -1,6 +1,4 @@
-﻿using Onlyoffice.Api.Common;
-
-namespace Onlyoffice.Api;
+﻿namespace Onlyoffice.Api.Models.Common;
 
 public class FilterBuilder
 {

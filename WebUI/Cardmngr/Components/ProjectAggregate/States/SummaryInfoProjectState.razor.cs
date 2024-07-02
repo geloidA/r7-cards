@@ -6,7 +6,7 @@ using Cardmngr.Shared.Extensions;
 using Cardmngr.Shared.Project;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
-using Onlyoffice.Api.Common;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Components.ProjectAggregate.States;
 

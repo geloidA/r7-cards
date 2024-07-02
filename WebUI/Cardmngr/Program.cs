@@ -22,7 +22,7 @@ builder.Services
     .AddScoped<CookieHandler>()
     .AddCommonServices()
     .AddApiClients()
-    .AddFeedbackServices(builder.Configuration)
+    .AddFeedbackServices()
     .AddBlazoredModal()
     .AddProjectsInfo()
     .AddKolBlazor()

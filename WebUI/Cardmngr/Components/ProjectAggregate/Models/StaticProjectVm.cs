@@ -1,5 +1,4 @@
-﻿using Cardmngr.Domain;
-using Cardmngr.Domain.Entities;
+﻿using Cardmngr.Domain.Entities;
 
 namespace Cardmngr.Components.ProjectAggregate.Models;
 

@@ -1,5 +1,5 @@
 ﻿using Cardmngr.Report;
-using Onlyoffice.Api.Common;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Extensions;
 

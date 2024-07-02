@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Cardmngr.Domain.Entities;
-using Onlyoffice.Api;
 using Onlyoffice.Api.Logics.Repository;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Application.Clients.People;
 

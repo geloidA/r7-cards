@@ -3,8 +3,7 @@ using Cardmngr.Extensions;
 using Cardmngr.Report;
 using Cardmngr.Reports;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Onlyoffice.Api;
-using Onlyoffice.Api.Common;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Pages.ReportsTabs;
 

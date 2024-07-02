@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Cardmngr.Application.Extensions;
-using Cardmngr.Domain;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Project;
-using Onlyoffice.Api;
-using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Logics.Repository;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Application.Clients;
 

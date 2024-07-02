@@ -1,7 +1,6 @@
-﻿using Cardmngr.Domain;
-using Cardmngr.Domain.Entities;
+﻿using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Project;
-using Onlyoffice.Api;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Application.Clients;
 

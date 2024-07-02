@@ -3,7 +3,7 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities
 {
-    public record class OnlyofficeTaskStatus : EntityBase<int>
+    public record OnlyofficeTaskStatus : EntityBase<int>
     {
         public StatusType StatusType { get; init; }
         public bool CanChangeAvailable { get; init; }

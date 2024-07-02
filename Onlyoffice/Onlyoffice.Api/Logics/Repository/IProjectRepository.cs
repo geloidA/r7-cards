@@ -2,9 +2,8 @@
 
 namespace Onlyoffice.Api.Logics.Repository;
 
-public interface IProjectRepository
+public interface IProjectRepository : IRepository<ProjectDto>
 {
-    IAsyncEnumerable<ProjectDto> GetAllAsync();
     Task<ProjectDto> GetByIdAsync(int id);
     IAsyncEnumerable<ProjectInfoDto> GetUserProjectsAsync();    
     Task<ProjectDto> FollowAsync(int id);

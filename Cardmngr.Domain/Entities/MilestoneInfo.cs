@@ -1,5 +1,5 @@
 ﻿using Cardmngr.Domain.Entities.Base;
 
-namespace Cardmngr.Domain;
+namespace Cardmngr.Domain.Entities;
 
-public record class MilestoneInfo(string Title, DateTime Deadline) : EntityBase<int> { }
+public record MilestoneInfo(string Title, DateTime Deadline) : EntityBase<int> { }

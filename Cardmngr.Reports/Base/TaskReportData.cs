@@ -1,7 +1,6 @@
-﻿using Cardmngr.Domain;
-using Cardmngr.Domain.Entities;
+﻿using Cardmngr.Domain.Entities;
 
-using GroupedTask = System.Collections.Generic.IEnumerable<System.Linq.IGrouping<Cardmngr.Domain.ProjectInfo, System.Linq.IGrouping<Cardmngr.Domain.MilestoneInfo, Cardmngr.Reports.IOnlyofficeTaskReportData>>>;
+using GroupedTask = System.Collections.Generic.IEnumerable<System.Linq.IGrouping<Cardmngr.Domain.Entities.ProjectInfo, System.Linq.IGrouping<Cardmngr.Domain.Entities.MilestoneInfo, Cardmngr.Reports.IOnlyofficeTaskReportData>>>;
 using TaskMapper = System.Func<Cardmngr.Domain.Entities.OnlyofficeTask, Cardmngr.Reports.IOnlyofficeTaskReportData>;
 
 namespace Cardmngr.Reports.Base;

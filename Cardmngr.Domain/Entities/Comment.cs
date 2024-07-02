@@ -2,7 +2,7 @@
 
 namespace Cardmngr.Domain.Entities;
 
-public record class Comment : AuditableEntityBase<string>
+public record Comment : AuditableEntityBase<string>
 {
     public string Text { get; init; }
     public string ParentId { get; init; }

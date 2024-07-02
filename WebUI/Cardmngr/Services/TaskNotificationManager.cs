@@ -3,8 +3,8 @@ using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Onlyoffice.Api.Common;
 using Onlyoffice.Api.Extensions;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Services;
 

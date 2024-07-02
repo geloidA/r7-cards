@@ -1,5 +1,4 @@
-﻿using Cardmngr.Domain;
-using Cardmngr.Domain.Entities;
+﻿using Cardmngr.Domain.Entities;
 using Cardmngr.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;

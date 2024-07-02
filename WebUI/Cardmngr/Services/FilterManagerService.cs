@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using Cardmngr.Extensions;
-using Onlyoffice.Api.Common;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Services;
 

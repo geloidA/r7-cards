@@ -1,4 +1,4 @@
-﻿namespace Onlyoffice.Api;
+﻿namespace Onlyoffice.Api.Models.Common;
 
 public class PeopleFilterBuilder : FilterBuilder
 {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Cardmngr.Domain.Enums;
 using Onlyoffice.Api.Logics.Repository;
 using Onlyoffice.Api.Models;
+using Status = Cardmngr.Domain.Enums.Status;
 
 namespace Cardmngr.Application.Clients.Subtask
 {
@@ -26,7 +26,7 @@ namespace Cardmngr.Application.Clients.Subtask
 
         public async Task<Domain.Entities.Subtask> UpdateSubtaskStatusAsync(int taskId, int subtaskId, Status status)
         {
-            var subtaskDto = await subtaskRepository.UpdateStatusAsync(taskId, subtaskId, mapper.Map<Onlyoffice.Api.Common.Status>(status));
+            var subtaskDto = await subtaskRepository.UpdateStatusAsync(taskId, subtaskId, mapper.Map<Onlyoffice.Api.Models.Common.Status>(status));
             return mapper.Map<Domain.Entities.Subtask>(subtaskDto);
         }
     }

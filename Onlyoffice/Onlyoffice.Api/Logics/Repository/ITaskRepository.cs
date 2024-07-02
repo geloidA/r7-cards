@@ -1,5 +1,5 @@
-﻿using Onlyoffice.Api.Common;
-using Onlyoffice.Api.Models;
+﻿using Onlyoffice.Api.Models;
+using Onlyoffice.Api.Models.Common;
 
 namespace Onlyoffice.Api.Logics.Repository;
 

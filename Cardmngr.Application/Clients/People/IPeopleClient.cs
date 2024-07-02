@@ -1,5 +1,5 @@
 ﻿using Cardmngr.Domain.Entities;
-using Onlyoffice.Api;
+using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Application.Clients.People;
 

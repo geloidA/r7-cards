@@ -1,4 +1,4 @@
-﻿namespace Onlyoffice.Api.Common;
+﻿namespace Onlyoffice.Api.Models.Common;
 
 public sealed class TaskFilterBuilder : FilterBuilder
 {
@@ -123,10 +123,10 @@ public sealed class TaskFilterBuilder : FilterBuilder
     {
         if (_filters.ContainsKey("projectId") && _filters.ContainsKey("myProjects"))
             throw new ArgumentException("Filter 'projectId' and 'myProjects' are mutually exclusive");
-        
+
         if (_filters.ContainsKey("milestone") && _filters.ContainsKey("myMilestones"))
             throw new ArgumentException("Filter 'milestone' and 'myMilestones' are mutually exclusive");
-        
+
         return base.Build();
     }
 }

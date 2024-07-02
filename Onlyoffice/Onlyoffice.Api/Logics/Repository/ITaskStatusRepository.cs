@@ -2,7 +2,7 @@
 
 namespace Onlyoffice.Api.Logics.Repository;
 
-public interface ITaskStatusRepository
+public interface ITaskStatusRepository : IRepository<TaskStatusDto>
 {
-    IAsyncEnumerable<TaskStatusDto> GetAllAsync();
+    
 }

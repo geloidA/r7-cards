@@ -4,7 +4,6 @@ using Cardmngr.Reports.Extensions;
 using ClosedXML.Excel;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Domain.Enums;
-using Cardmngr.Domain;
 
 namespace Cardmngr.Reports;
 
