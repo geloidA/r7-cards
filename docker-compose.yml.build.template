@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  onlyoffice-proxyserver:
+    image: "onlyoffice-proxyserver:${VERSION}"
+    build:
+      context: .
+      dockerfile: Onlyoffice/Onlyoffice.ProxyServer/Dockerfile
+  
+  cardmngr-feedbackservice:
+    image: "cardmngr-feedbackservice:${VERSION}"
+    build:
+      context: .
+      dockerfile: Cardmngr.FeedbackService/Dockerfile
+  
+  cardmngr-server:
+    image: "cardmngr-server:${VERSION}"
+    build:
+      context: .
+      dockerfile: WebUI/Cardmngr.Server/Dockerfile

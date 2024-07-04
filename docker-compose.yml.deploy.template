@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  onlyoffice-proxyserver:
+    image: "onlyoffice-proxyserver:${VERSION}"
+    ports:
+      - "8080:8080"
+  
+  cardmngr-feedbackservice:
+    image: "cardmngr-feedbackservice:${VERSION}"
+    ports:
+      - "8081:8080"
+  
+  cardmngr-server:
+    image: "cardmngr-server:${VERSION}"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080;https://+:8443
+      - PROXY_SERVER_URL=http://onlyoffice-proxyserver:8080
+      - FEEDBACK_SERVICE_URL=http://cardmngr-feedbackservice:8080
+    ports:
+      - "5000:8080"
+      - "5001:8443"

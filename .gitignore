@@ -349,5 +349,8 @@ healthchecksdb
 # Auto-generated JS files from typescript
 Cardmngr/wwwroot/js/GeneratedJS/
 
-data/feedback/feedbacks.json
-data/feedback/counter
+feedbacks.json
+counter
+
+certs.private
+certs.public

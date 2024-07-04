@@ -3,6 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Server.Extensions;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,18 +25,7 @@ builder.Services.AddCardmngrServices();
 
 builder.Services.AddHttpForwarderWithServiceDiscovery();
 
-// builder.WebHost.UseKestrel(opt => 
-// {
-//     var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
-//     var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
-//     var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
-    
-//     opt.Listen(IPAddress.Any, 8080);
-//     opt.Listen(IPAddress.Any, 8443, listenOptions =>
-//     {
-//         listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
-//     });
-// });
+// builder.WebHost.UseKestrel(ConfigureServer);
 
 builder.Services.AddAuthentication();
 
@@ -70,4 +60,38 @@ app.MapFallbackToFile("index.html");
 app.MapForwarder("/api/feedback/{**catch-all}", "https+http://feedback", "/api/feedback/{**catch-all}");
 app.MapForwarder("/onlyoffice/{**catch-all}", "https+http://onlyoffice", "/{**catch-all}");
 
+// app.MapForwarder("/api/feedback/{**catch-all}", builder.Configuration.CheckKey("FEEDBACK_SERVICE_URL"), "/api/feedback/{**catch-all}");
+// app.MapForwarder("/onlyoffice/{**catch-all}", builder.Configuration.CheckKey("PROXY_SERVER_URL"), "/{**catch-all}");
+
 app.Run();
+
+static void ConfigureServer(KestrelServerOptions opt)
+{
+    var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();
+    
+    var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
+    var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
+
+    var certificate = X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate);
+
+    var urls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")?.Split(';');
+
+    if (urls is null) return;
+
+    foreach (var url in urls)
+    {
+        var address = Cardmngr.Shared.Utils.BindingAddress.Parse(url);
+        var host = IPAddress.Parse(address.Host);
+        if (address.Scheme == Uri.UriSchemeHttps)
+        {
+            opt.Listen(host, address.Port, listenOptions =>
+            {
+                listenOptions.UseHttps(X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate));
+            });
+        }
+        else if (address.Scheme == Uri.UriSchemeHttp)
+        {
+            opt.Listen(host, address.Port);
+        }
+    }
+}
