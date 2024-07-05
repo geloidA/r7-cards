@@ -1,0 +1,37 @@
+﻿
+@inherits KolComponentBase
+
+<div class="module-card @Class" Style="@Style">
+    <div class="header">
+        @if (string.IsNullOrEmpty(Name))
+        {
+            <FluentIcon Value="@(new Icons.Regular.Size20.BookInformation())" Color="Color.Info" />
+            <span style="color: var(--neutral-fill-inverse-rest);">Проекты</span>
+        }
+        else
+        {
+            <FluentIcon Value="@(new Icons.Regular.Size20.Book())" Color="Color.Info" />
+            <span>@Name</span>
+        }
+        <FluentSpacer/>
+        <FluentIcon Value="@(new Icons.Regular.Size24.MoreHorizontal())" Color="Color.Info" />
+    </div>
+    <div class="module-content">
+        @{
+            var isFirst = true;
+        }
+        @foreach (var feed in Feeds)
+        {
+            if (isFirst)
+            {
+                <FeedProjectMessage Feed="feed" />
+                isFirst = false;
+            }
+            else
+            {
+                <FluentDivider />
+                <FeedProjectMessage Feed="feed" />
+            }
+        }
+    </div>
+</div>

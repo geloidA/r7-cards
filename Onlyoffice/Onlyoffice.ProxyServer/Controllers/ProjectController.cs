@@ -106,10 +106,10 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
     [HttpPost("api/[controller]/{projectId}/task/status")]
     public async Task CreateTaskWithStatus(int projectId, [FromBody] TaskUpdateData updateData)
     {
-        var cookieCollection = HttpContext.Request.Cookies;
+        var authCookie = HttpContext.Request.Cookies;
 
-        var task = await CreateTaskAsync(projectId, updateData, cookieCollection);
-        var response = await UpdateTaskStatus(task.Id, updateData.Status, updateData.CustomTaskStatus, cookieCollection);
+        var task = await CreateTaskAsync(projectId, updateData, authCookie);
+        var response = await UpdateTaskStatus(task.Id, updateData.Status, updateData.CustomTaskStatus, authCookie);
         
         await response.Content.CopyToAsync(HttpContext.Response.Body);
     }
@@ -121,7 +121,7 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
             Content = new StringContent(JsonConvert.SerializeObject(state), Encoding.UTF8, "application/json")
         };
 
-        using var client = cookie.GetClientFor(apiUrl);
+        using var client = cookie.GetClientFor(apiUrl, "asc_auth_key");
         var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
@@ -136,7 +136,7 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
             Content = new StringContent(JsonConvert.SerializeObject(new { status, statusId }), Encoding.UTF8, "application/json")
         };
         
-        using var client = cookie.GetClientFor(apiUrl);
+        using var client = cookie.GetClientFor(apiUrl, "asc_auth_key");
         return await client.SendAsync(request);
     }
 }

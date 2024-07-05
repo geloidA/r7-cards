@@ -212,3 +212,11 @@ article {
 .svg-element {
   animation: colorAnimation 3s linear infinite;
 }
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

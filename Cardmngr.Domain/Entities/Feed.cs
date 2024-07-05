@@ -18,7 +18,7 @@ public record Feed
 public record FeedInfo
 {
     public string Item { get; init; } = "";
-    public int ItemId { get; init; }
+    public string ItemId { get; init; }
     public string Id { get; init; } = "";
     public Guid AuthorId { get; init; }
     public Guid ModifiedBy { get; init; }
@@ -34,5 +34,13 @@ public record FeedInfo
     public string AdditionalInfo { get; init; }
     public bool CanComment { get; init; }
     public string CommentApiUrl { get; init; }
-    public List<string> Comments { get; init; }
+    public List<FeedComment> Comments { get; init; }
+}
+
+public record FeedComment
+{
+    public string Id { get; init; }
+    public Guid AuthorId { get; init; }
+    public DateTime Date { get; init; }
+    public string Description { get; init; }
 }

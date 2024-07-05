@@ -1,0 +1,15 @@
+﻿@inject ILocalStorageService LocalStorage
+
+<div>
+    <FluentDivider />
+    <span style="font-size: small; color: var(--info);">Version: @appVersion</span>
+</div>
+
+@code {
+    private string? appVersion;
+
+    protected override async Task OnInitializedAsync()
+    {
+        appVersion = await LocalStorage.GetItemAsStringAsync("r7cards-version");
+    }
+}

@@ -1,0 +1,26 @@
+.module-card {
+    background: var(--fill-color);
+    color: var(--neutral-foreground-rest);
+    border: calc(var(--stroke-width)* 1px) solid var(--neutral-stroke-layer-rest);
+    border-radius: calc(var(--layer-corner-radius)* 1px);
+
+    padding-top: calc(var(--design-unit)* 5px);
+    padding-bottom: calc(var(--design-unit)* 5px);
+}
+
+.module-card .header {
+    width: 100%; 
+    color: var(--info); 
+    display: flex; 
+    gap: 5px; 
+    align-items: center; 
+    margin-bottom: 15px;
+    padding-left: calc(var(--design-unit)* 5px);
+    padding-right: calc(var(--design-unit)* 5px);
+}
+
+.module-card .module-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;  
+}

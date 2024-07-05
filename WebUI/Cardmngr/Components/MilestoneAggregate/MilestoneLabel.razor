@@ -21,7 +21,7 @@ else
             @if (Milestone is { })
             {
                 <div @onclick="HandleClick" title="Веха" class=@($"d-flex {(OnClick.HasDelegate ? "clickable" : "")}") >
-                    <FluentIcon Value="@(new MyIcons.Milestone())" Color="Color.Accent" class="me-1 align-self-center" />
+                    <FluentIcon Value="@(new MyIcons.Size16.Milestone())" Color="Color.Accent" class="me-1 align-self-center" />
                     <span style="font-size: 12px; font-weight: 500; color: var(--accent-fill-rest);" 
                         class="user-select-none">
                         @Milestone.Title

@@ -34,7 +34,6 @@ public partial class ProjectSummaryInfoPage : ComponentBase, IDisposable
             ElementSwitcherService.OnElementChanged += () =>
             {
                 StateHasChanged();
-                Console.WriteLine(ElementSwitcherService.Element);
                 ElementSwitcherService.BlockSwitch = true;
             };
             ElementSwitcherService.Start();
@@ -71,7 +70,6 @@ public partial class ProjectSummaryInfoPage : ComponentBase, IDisposable
 
         await Task.Delay(300);
 
-        Console.WriteLine("Next project invoked");
         ElementSwitcherService.Next();
 
         _smoothShowing = true; // show

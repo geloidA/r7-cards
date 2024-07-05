@@ -1,23 +1,21 @@
-﻿<div class="d-flex flex-row align-items-center py-1">
-    <div class="avatar-circle responsible-view" style="@($"width: {Size}px; height: {Size}px;")">
-        @if (ShowTooltip)
+﻿@inherits KolComponentBase
+
+@if (User is { })
+{
+    <div class="d-flex flex-row align-items-center py-1 @Class" style="@Style">
+        <div class="avatar-circle responsible-view" style="@($"width: {Size}px; height: {Size}px;")">
+            @if (ShowTooltip)
+            {
+                <img title="@User.DisplayName" width="@Size" src=@($"onlyoffice/api/people{User.AvatarSmall}") />
+            }
+            else
+            {
+                <img src=@($"onlyoffice/api/people{User.AvatarSmall}") />
+            }
+        </div>
+        @if (ShowName)
         {
-            <img title="@User.DisplayName" width="@Size" src=@($"onlyoffice/api/people{User.AvatarSmall}") />
-        }
-        else
-        {
-            <img src=@($"onlyoffice/api/people{User.AvatarSmall}") />
+            <div class="ms-1 fw-light">@User.DisplayName</div>
         }
     </div>
-    @if (ShowName)
-    {
-        <div class="ms-1 fw-light">@User.DisplayName</div>
-    }
-</div>
-
-@code {
-    [Parameter] public UserInfo User { get; set; } = null!;
-    [Parameter] public bool ShowTooltip { get; set; }
-    [Parameter] public bool ShowName { get; set; }
-    [Parameter] public int Size { get; set; } = 32;
 }

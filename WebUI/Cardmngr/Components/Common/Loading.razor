@@ -1,8 +1,23 @@
 ﻿@inherits KolComponentBase
 
-<img src="images/loading-icon.svg" width=@($"{Width}px") type="image/svg+xml" class="@Class" style="@Style" @onclick="HandleClick" />
+<div class="d-flex flex-column justify-content-center align-items-center">
+    <img src="images/loading-icon.svg" width=@($"{Width}px") type="image/svg+xml" class="@Class" style="@Style" @onclick="HandleClick" />
+    @if (LoadingText != null)
+    {
+        <span class="@LoadingTextCssClass" style="@LoadingTextCssStyle" >@LoadingText</span>
+    }
+</div>
 
 @code {
     [Parameter]
     public int Width { get; set; } = 100;
+
+    [Parameter]
+    public string? LoadingText { get; set; }
+
+    [Parameter]
+    public string? LoadingTextCssStyle { get; set; }
+
+    [Parameter]
+    public string? LoadingTextCssClass { get; set; } = "mt-1";
 }

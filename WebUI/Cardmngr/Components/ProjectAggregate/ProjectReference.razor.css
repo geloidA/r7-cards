@@ -1,11 +1,3 @@
-a {
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 .ref-container {
     display: -webkit-box; /* Установка элемента как flex-контейнера */
     overflow: hidden; /* Скрытие содержимого, выходящего за пределы контейнера */

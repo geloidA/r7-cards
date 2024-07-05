@@ -60,11 +60,9 @@ public class CircularElementSwitcherService<T> : ICircularElementSwitcherService
         get => _blockSwitch; 
         set
         {
-            Console.WriteLine($"Block switch set to {value} and needSwitch is {_needSwitch}");
             _blockSwitch = value;
             if (_needSwitch && !_blockSwitch)
             {
-                Console.WriteLine("Block switch invoked");
                 Next();
             }
         }
@@ -78,7 +76,6 @@ public class CircularElementSwitcherService<T> : ICircularElementSwitcherService
         
         if (!_blockSwitch)
         {
-            Console.WriteLine("Timer switch invoked");
             Next();
         }
     }

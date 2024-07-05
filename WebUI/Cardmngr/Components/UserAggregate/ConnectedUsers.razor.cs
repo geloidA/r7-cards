@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.UserAggregate;
 
-public partial class ConnectedUsers
+public partial class ConnectedUsers : ComponentBase
 {
     private bool isCollapsed = true;
     private string MaxWidth => isCollapsed ? "max-width: 39px; min-width: 39px;" : "max-width: 250px; min-width: 250px;";

@@ -1,0 +1,23 @@
+﻿
+@inherits KolComponentBase
+
+<div class="d-flex flex-column gap-3 h-100 @Class" style="@Style" @onclick="HandleClick">
+    @if (_loading)
+    {
+        <Loading />
+    }
+
+    @if (_feedsByProject.Count != 0)
+    {
+        <CascadingValue IsFixed Value="_feedUsers" >
+            @foreach (var feeds in _feedsByProject)
+            {
+                <FeedProjectModule Feeds="feeds" Name="@feeds.Key" />
+            }
+        </CascadingValue>
+    }
+    else @if (!_loading)
+    {
+        <span>НЕТ</span>
+    }
+</div>

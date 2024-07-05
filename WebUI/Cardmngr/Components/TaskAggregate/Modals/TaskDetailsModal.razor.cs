@@ -34,8 +34,6 @@ public partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskU
     {
         base.OnInitialized();
 
-        Console.WriteLine(State.ReadOnly);
-
         if (State is IRefresheableProjectState refresheableProjectState)
         {
             refresheableProjectState.RefreshService.Lock(lockGuid);
