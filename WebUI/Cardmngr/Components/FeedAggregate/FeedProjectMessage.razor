@@ -6,34 +6,48 @@
 
     private RenderFragment RenderMessage => RenderMessageWithInfo(_msgTypes[Feed.Value.Item]);
 
-    [CascadingParameter] Dictionary<string, UserInfo> FeedUsers { get; set; } = null;
-    
-    // TODO: Убрать запись, уведомляющие о добавлении комментария, разобраться с вехами
-    private RenderFragment RenderMessageWithInfo(MsgInfo info) =>
-        @<div class="d-flex flex-column gap-2 w-100" style="padding-left: calc(var(--design-unit)* 5px); padding-right: calc(var(--design-unit)* 5px);">
+    [CascadingParameter] Dictionary<string, UserInfo> FeedUsers { get; set; } = null!;
+
+    private RenderFragment RenderMessageWithInfo(FeedMsgType typeInfo) =>
+        @<div @key="Feed.Value.Id" class="d-flex flex-column gap-2 w-100" style="padding-left: calc(var(--design-unit)* 5px); padding-right: calc(var(--design-unit)* 5px);">
             <div class="d-flex gap-3 overflow-hidden">
-                <FluentIcon Value="info.Icon" Color="info.Color" style="min-width: 20px;" />
+                <FluentIcon Value="typeInfo.Icon" Color="typeInfo.Color" style="min-width: 20px;" />
                 <div>
-                    <span class="fw-bolder">@info.Header. </span>
-                    @if (Feed.Value.Item != "participant")
+                    <span class="fw-bolder">@typeInfo.Header. </span>
+                    @if (typeInfo.Type != "participant")
                     {
                         @Feed.Value.Title
                     }
                 </div>
             </div>
-            <div>@RenderHtml(Feed.Value.Description)</div>
+            <div>
+                @if (typeInfo.Type == "milestone" && Feed.GroupedFeeds.Count > 0)
+                {
+                    <ul>
+                        @foreach (var groupedFeed in Feed.GroupedFeeds)
+                        {
+                            <li>@groupedFeed.Value.Title</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    RenderHtml(Feed.Value.Description);
+                }
+            </div>
             <div class="d-flex align-items-center">
                 <div>
                     <UserAvatar User="FeedUsers[Feed.Value.AuthorId.ToString()]" ShowName />
-                    @foreach (var groupedFeed in Feed.GroupedFeeds)
+                    @if (typeInfo.Type == "participant")
                     {
-                        <UserAvatar User="FeedUsers[groupedFeed.Value.AuthorId.ToString()]" ShowName />                        
+                        foreach (var groupedFeed in Feed.GroupedFeeds)
+                        {
+                            <UserAvatar User="FeedUsers[groupedFeed.Value.AuthorId.ToString()]" ShowName />                        
+                        }
                     }
                 </div>
                 <FluentSpacer />
                 <span style="color: var(--info);" class="align-self-end">@Feed.Value.CreatedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
             </div>
         </div>;
-
-    private record MsgInfo(Icon Icon, Color Color, string Header);
 }

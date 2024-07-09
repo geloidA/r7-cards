@@ -1,0 +1,25 @@
+﻿@inherits KolComponentBase
+
+@if (FeedFilterService is { })
+{
+<div class="d-flex gap-2 flex-wrap">
+    @if (ExcludedProjects.Count > 0)
+    {
+        foreach (var project in ExcludedProjects)
+        {
+            <FluentBadge Circular title="@project"
+                style="max-width: 200px;" class="overflow-hidden" >
+                <div class="d-flex gap-2">
+                    <span>@project</span>
+                    <FluentIcon Value="@(new Icons.Regular.Size16.Dismiss())"
+                        @onclick="() => IncludeProject(project)" />
+                </div>
+            </FluentBadge>
+        }
+    }
+    else
+    {
+        <span style="color: var(--info)" class="small">Нет исключенных проектов.</span>
+    }    
+</div>
+}

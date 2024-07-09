@@ -79,6 +79,7 @@ public static class ServicesExtensions
             .AddScoped<AppInfoService>()
             .AddScoped<ICircularElementSwitcherService<int>, CircularElementSwitcherService<int>>() // for project tasks switcher in dashboard
             .AddScoped<ITaskNotificationManager, TaskNotificationManager>()
+            .AddSingleton<IFeedFilterService, FeedFilterService>()
             .AddSingleton<ITagColorManager, TagColorGetter>()
             .AddSingleton<AllProjectsPageSummaryService>()
             .AddTransient<RefreshService>();

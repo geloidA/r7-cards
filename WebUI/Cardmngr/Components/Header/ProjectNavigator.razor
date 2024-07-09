@@ -19,8 +19,8 @@
         }
     </div>
 
-    <FluentPopover Style="width: 500px; height: 150px; border-radius: 5px;" 
-        AnchorId="btn-pj-nav" @bind-Open="openPopover" class="overflow-auto" >
+    <FluentPopover Style="width: 500px; height: 150px;"
+        AnchorId="btn-pj-nav" @bind-Open="openPopover" class="overflow-auto my-popover" >
         <Body>
             <FluentGrid Spacing="1">
                 @foreach (var project in projectsByIds.Values)

@@ -1,0 +1,53 @@
+﻿@inherits KolComponentBase
+
+@if (!_loading)
+{
+<div class="d-flex flex-column gap-2">
+    <span class="small">Фильтр</span>
+    <FluentDivider />
+    <div style="max-height: 350px;" class="overflow-auto">
+        <div class="d-flex flex-column gap-1">
+            @foreach (var type in FeedMsgTypes.Types)
+            {
+                @RenderFeedType(type);
+            }
+        </div>
+        <FluentDivider />
+        <span class="fw-bold">Скрытые проекты:</span>
+    <FeedExcludedProjectsView FeedFilterService="_feedFilterService" ExcludedProjects="_feedSettings.ExcludedProjects" />
+    </div>
+    <FluentDivider class="mt-2" />
+    <div class="d-flex gap-3 justify-content-end">
+        <FluentButton Appearance="Appearance.Lightweight" Type="ButtonType.Submit"
+            @onclick="ResetSettings" >
+            Сбросить настройки
+        </FluentButton>
+        <FluentButton BackgroundColor="var(--success)"
+            @onclick="OnApplyClick" >
+            Сохранить
+        </FluentButton>
+    </div>
+</div>
+}
+
+@code {
+    private RenderFragment RenderFeedType(FeedMsgType type) =>
+        @<div class="d-flex flex-column mouse-hover p-1" style="border-radius: 5px;" 
+            @onclick="@(() => OnTypeCheckChanged(type.Type, _feedSettings.ExcludedItems.Contains(type.Type)))">
+            @{
+                var isChecked = !_feedSettings.ExcludedItems.Contains(type.Type);
+            }
+            <div class="d-flex align-items-center">
+                <FluentCheckbox @bind-Value:get="isChecked"
+                    @bind-Value:set="_ => OnTypeCheckChanged(type.Type, isChecked)" />
+                <FluentSpacer Width="10" />
+                <FluentIcon Value="type.Icon" Color="type.Color" />
+                <FluentSpacer Width="5" />
+                <span class="fw-bold">@type.Name</span>
+            </div>
+            <div class="d-flex">
+                <FluentSpacer Width="30" />
+                <span class="small" style="color: var(--info);">@type.Description</span>
+            </div>
+        </div>;
+}

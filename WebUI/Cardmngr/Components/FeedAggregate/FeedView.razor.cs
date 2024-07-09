@@ -1,34 +1,52 @@
 ﻿using Cardmngr.Application.Clients;
 using Cardmngr.Application.Clients.Feed;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Services;
 using KolBlazor;
 using Microsoft.AspNetCore.Components;
 using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Components.FeedAggregate;
 
-public partial class FeedView : KolComponentBase
+public partial class FeedView : KolComponentBase, IDisposable
 {
     private bool _loading = true;
+    private List<Feed> _allFeeds = default!;
     private List<IGrouping<string, Feed>> _feedsByProject = [];
     private readonly Dictionary<string, UserInfo> _feedUsers = [];
 
     [Inject] IFeedClient FeedClient { get; set; } = default!;
     [Inject] IUserClient UserClient { get; set; } = default!;
+    [Inject] IFeedFilterService FeedFilterService { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        var feeds = await FeedClient
+        _allFeeds = await FeedClient
             .GetFiltredAsync(FeedFilterBuilder.Instance.Product("projects"))
+            .Where(x => x.Value.Action != 2) // remove task's comment notifications
             .ToListAsync();
 
-        _feedsByProject = feeds
-            .GroupBy(x => x.Value.ExtraLocation)
-            .ToList();
+        _feedsByProject = GetFilteredFeeds();
 
-        await GetAllFacedUsersInFeeds(feeds);
+        FeedFilterService.FilterChanged += UpdateFilteredFeeds;
+
+        await GetAllFacedUsersInFeeds(_allFeeds);
 
         _loading = false;
+    }
+
+    private List<IGrouping<string, Feed>> GetFilteredFeeds()
+    {
+        return _allFeeds
+            .Where(FeedFilterService.Filter)
+            .GroupBy(x => x.Value.ExtraLocation)
+            .ToList();
+    }
+
+    private void UpdateFilteredFeeds()
+    {
+        _feedsByProject = GetFilteredFeeds();
+        StateHasChanged();
     }
 
     private async Task GetAllFacedUsersInFeeds(List<Feed> feeds)
@@ -44,5 +62,10 @@ public partial class FeedView : KolComponentBase
                 .GetUserProfileByIdAsync(user)
                 .ConfigureAwait(false);
         }
+    }
+
+    public void Dispose()
+    {
+        FeedFilterService.FilterChanged -= UpdateFilteredFeeds;
     }
 }

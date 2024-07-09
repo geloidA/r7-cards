@@ -24,3 +24,12 @@
     flex-direction: column;
     gap: 1rem;  
 }
+
+.module-card .header .hide-button {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.module-card:hover .header .hide-button {
+    opacity: 1;
+}

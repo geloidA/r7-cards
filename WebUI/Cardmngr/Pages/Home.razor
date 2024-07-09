@@ -5,6 +5,8 @@
 @inject IProjectClient ProjectClient
 @inject IJSRuntime JSRuntime
 @inject IProjectFollowChecker ProjectFollowChecker
+@inject IFeedFilterService FeedFilterService
+@inject ILocalStorageService LocalStorage
 
 <PageTitle>Р7 Карточки</PageTitle>
 
@@ -18,9 +20,51 @@
         <FluentSpacer Width="200"/>
 
         <div @ref="feed" id="feed-content" class="d-flex flex-column p-3 h-100 overflow-auto" style="width: 80%;">
-            <h3 class="fw-bold">Лента</h3>
+            <div class="d-flex gap-3">
+                <div class="d-flex gap-2" style="width: 60%;">
+                    <h3 class="fw-bold">Лента</h3>
+                    <FluentSpacer />
+                    <FluentAnchor Href="feedback-board" Appearance="Appearance.Stealth" 
+                        IconStart="@(new Icons.Filled.Size16.Lightbulb())" >
+                        Оставить отзыв
+                    </FluentAnchor>
+                    <FluentButton Id="feed-filter-btn" IconStart="@(new Icons.Regular.Size16.Filter())"
+                        @onclick="() => _showFilterPopover = !_showFilterPopover">
+                        <div class="d-flex gap-2 align-items-center">
+                            <span>Фильтр</span>
+                            @if (_feedFilterService is { })
+                            {
+                                var filterCount = FeedMsgTypes.Types.Length - _feedFilterService.ExcludedItems.Count();
+                                if (filterCount > 0)
+                                {
+                                    <FluentBadge Circular Appearance="Appearance.Accent">
+                                        @filterCount
+                                    </FluentBadge>
+                                }
+                            }
+                        </div>
+                    </FluentButton>
+                </div>
+                <div style="width: 40%;"></div>
+            </div>
             <div class="w-100 d-flex gap-3">
                 <div style="width: 60%;" >
+                    @if (_showMessageBar)
+                    {
+                        <FluentMessageBar Class="mb-3" Intent="@MessageIntent.Info" 
+                            AllowDismiss="false" >
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    Если сайт некорректно отображает элементы, попробуйте нажать <span class="fw-bold">Ctrl+F5</span>, 
+                                    это очистит кеш сайта в вашем браузере. Если это не помогло, то создайте карточку в
+                                    <a href="/feedback-board">Пожеланиях и предложениях.</a>
+                                </div>
+                                <FluentSpacer />
+                                <FluentIcon Value="@(new Icons.Regular.Size20.Dismiss())" Color="Color.FillInverse"
+                                    OnClick="DismissMessageBar" />
+                            </div>
+                        </FluentMessageBar>
+                    }
                     <FeedView />
                     <AppVersion />
                 </div>
@@ -29,37 +73,61 @@
                         Icon="@(new Icons.Regular.Size20.Library())" Href="all-projects" />
                     <FeatureCard Text="Отчеты" Desc="Создание отчетов по проектам" Href="reports"
                         Icon="@(new Icons.Regular.Size20.DataBarVerticalAscending())" />
-                    <FeatureCard Text="Пожелания и предложения"
-                        Icon="@(new Icons.Regular.Size20.Lightbulb())" Href="feedback-board" />
                 </div>
             </div>
         </div>
 
         <FluentButton 
-            Id="backtotop" 
+            Id="backtotop"
             class="position-absolute" 
             style="right: 0; bottom: 0; margin-bottom: 60px; margin-right: 30px; display: none;"
             @onclick="BackToTopAsync"
             IconEnd="@(new Icons.Regular.Size20.ArrowUp())" 
             Appearance="Appearance.Lightweight" />
+
+        <FluentPopover style="max-width: 320px; width: 320px;"
+            AnchorId="feed-filter-btn" Class="my-popover"
+            @bind-Open="_showFilterPopover">
+            <Body>
+                <FeedFilterPopover OnApply="() => _showFilterPopover = false" />
+            </Body>
+        </FluentPopover>
     </div>
 </AuthorizeView>
 
 @code {
-    ElementReference feed;
-    IJSObjectReference? module;
+    private bool _showMessageBar;
+    private ElementReference feed;
+    private IJSObjectReference? module;
     private List<Project>? userProjects;
+    private FeedFilterService _feedFilterService = null!;
+    private bool _showFilterPopover;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        if (IsAuthenticated)
+
+        userProjects = await ProjectClient
+            .GetSelfProjectsAsync()
+            .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.Id))
+            .ToListAsync();
+
+        await FeedFilterService.ConfigureAsync();
+
+        _feedFilterService = (FeedFilterService)FeedFilterService;
+
+        var dismissed = await LocalStorage.GetItemAsync<bool>("refresh-data-msg-bar-dismissed");
+        
+        if (!dismissed)
         {
-            userProjects = await ProjectClient
-                .GetSelfProjectsAsync()
-                .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.Id))
-                .ToListAsync();
+            _showMessageBar = true;
         }
+    }
+
+    private async Task DismissMessageBar()
+    {
+        await LocalStorage.SetItemAsync<bool>("refresh-data-msg-bar-dismissed", true);
+        _showMessageBar = false;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

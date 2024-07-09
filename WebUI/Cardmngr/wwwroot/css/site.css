@@ -220,3 +220,17 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+.my-popover {
+    border-radius: 5px;
+    border: 1px solid var(--neutral-stroke-divider-rest);
+}
+
+.mouse-hover:hover {
+    cursor: pointer;
+    background-color: var(--neutral-fill-hover);
+}
+
+.mouse-hover:hover:active {
+    background-color: initial;
+}

@@ -25,7 +25,7 @@ builder.Services.AddCardmngrServices();
 
 builder.Services.AddHttpForwarderWithServiceDiscovery();
 
-// builder.WebHost.UseKestrel(ConfigureServer);
+builder.WebHost.UseKestrel(ConfigureServer);
 
 builder.Services.AddAuthentication();
 
@@ -57,11 +57,11 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.MapFallbackToFile("index.html");
 
-app.MapForwarder("/api/feedback/{**catch-all}", "https+http://feedback", "/api/feedback/{**catch-all}");
-app.MapForwarder("/onlyoffice/{**catch-all}", "https+http://onlyoffice", "/{**catch-all}");
+// app.MapForwarder("/api/feedback/{**catch-all}", "https+http://feedback", "/api/feedback/{**catch-all}");
+// app.MapForwarder("/onlyoffice/{**catch-all}", "https+http://onlyoffice", "/{**catch-all}");
 
-// app.MapForwarder("/api/feedback/{**catch-all}", builder.Configuration.CheckKey("FEEDBACK_SERVICE_URL"), "/api/feedback/{**catch-all}");
-// app.MapForwarder("/onlyoffice/{**catch-all}", builder.Configuration.CheckKey("PROXY_SERVER_URL"), "/{**catch-all}");
+app.MapForwarder("/api/feedback/{**catch-all}", builder.Configuration.CheckKey("FEEDBACK_SERVICE_URL"), "/api/feedback/{**catch-all}");
+app.MapForwarder("/onlyoffice/{**catch-all}", builder.Configuration.CheckKey("PROXY_SERVER_URL"), "/{**catch-all}");
 
 app.Run();
 

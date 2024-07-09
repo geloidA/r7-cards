@@ -26,6 +26,7 @@ public record FeedInfo
     public DateTime ModifiedDate { get; init; }
     public string Product { get; init; }
     public string Module { get; init; }
+    public int? Action { get; init; }
     public string ExtraLocation { get; init; }
     public string ExtraLocationUrl { get; init; }
     public string Title { get; init; }

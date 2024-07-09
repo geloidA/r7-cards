@@ -12,9 +12,12 @@
         {
             <FluentIcon Value="@(new Icons.Regular.Size20.Book())" Color="Color.Info" />
             <span>@Name</span>
+            <FluentSpacer/>
+            <div class="hide-button">
+                <FluentButton IconStart="@(new Icons.Regular.Size20.EyeOff())" Appearance="Appearance.Lightweight"
+                    @onclick="() => _feedFilterService.ExcludeProjectAsync(Name)" Title="Скрыть проект" />
+            </div>
         }
-        <FluentSpacer/>
-        <FluentIcon Value="@(new Icons.Regular.Size24.MoreHorizontal())" Color="Color.Info" />
     </div>
     <div class="module-content">
         @{

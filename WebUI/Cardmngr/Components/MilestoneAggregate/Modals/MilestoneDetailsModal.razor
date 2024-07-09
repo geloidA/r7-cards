@@ -28,7 +28,7 @@
                     ReadOnly="!CanEdit" @bind-Value="buffer.Deadline" Label="Крайний срок:" />
                 <FluentValidationMessage For="() => buffer.Deadline" />
 
-                <FluentAutocomplete TOption="UserInfo" MaximumSelectedOptions="1"
+                <FluentAutocomplete TOption="UserInfo" MaximumSelectedOptions="1" Disabled="!CanEdit"
                     @bind-SelectedOptions="SelectedResponsible" Context="user" AutoComplete="off"
                     OnOptionsSearch="OnSearchResponsible" Placeholder="Не установлен">
 
