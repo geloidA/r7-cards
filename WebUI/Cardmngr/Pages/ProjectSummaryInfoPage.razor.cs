@@ -1,5 +1,4 @@
-﻿using System.Timers;
-using Cardmngr.Components.ProjectAggregate.States;
+﻿using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Services;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
@@ -63,26 +62,24 @@ public partial class ProjectSummaryInfoPage : ComponentBase, IDisposable
         ElementSwitcherService.BlockSwitch = false;
     }
 
-    private async void NextProject()
+    private async Task NextProject()
     {
         _smoothShowing = false; // hide
-        StateHasChanged();
 
         await Task.Delay(300);
-
         ElementSwitcherService.Next();
+        StateHasChanged();
 
         _smoothShowing = true; // show
     }
 
-    private async void PreviousProject()
+    private async Task PreviousProject()
     {
         _smoothShowing = false; // hide
-        StateHasChanged();
 
         await Task.Delay(300);
-
         ElementSwitcherService.Previous();
+        StateHasChanged();
 
         _smoothShowing = true; // show
     }

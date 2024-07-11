@@ -23,7 +23,7 @@
                     </div>
                 </ChildContent>
                 <ErrorContent Context="ex">
-                    <div class="blazor-error-boundary">@ex.Message</div>
+                    <ErrorView Exception="ex" />
                 </ErrorContent>
             </ErrorBoundary>
         </FluentBodyContent>

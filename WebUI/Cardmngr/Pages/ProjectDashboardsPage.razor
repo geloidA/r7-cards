@@ -4,7 +4,7 @@
 
 @if (Projects is { } projects && _currentProjectId < projects.Length) 
 {
-    <Smooth IsShowing="_smoothShowing" style="height: 99%;" >
+    <Smooth Show="_smoothShowing" style="height: 99%;" >
         <ProjectDashboard Id="@Projects[_currentProjectId]" />
     </Smooth>
 }

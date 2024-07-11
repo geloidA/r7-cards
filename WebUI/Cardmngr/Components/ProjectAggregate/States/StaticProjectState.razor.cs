@@ -34,14 +34,17 @@ public sealed partial class StaticProjectState : ProjectStateBase, IProjectState
         SummaryService.OnProjectsChanged += ToggleIfSelected;
     }
 
-    private async void ToggleIfSelected()
+    private void ToggleIfSelected()
     {
-        await Task.Delay(5); // wait for correct toggling
-        if (ViewModel is { } && SummaryService.FilterManager.ProjectId == ViewModel.ProjectInfo.Id)
+        _ = InvokeAsync(async () => 
         {
-            await ToggleCollapsed();
-            StateHasChanged();
-        }
+            await Task.Delay(5); // wait for correct toggling
+            if (ViewModel is { } && SummaryService.FilterManager.ProjectId == ViewModel.ProjectInfo.Id)
+            {
+                await ToggleCollapsed();
+                StateHasChanged();
+            }
+        });        
     }
 
     private Func<Task> toggleCollapsedFunc = null!;

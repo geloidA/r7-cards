@@ -1,6 +1,5 @@
 function scrollToPosition(element: HTMLElement, targetPosition: number, duration: number, dotNetObjectRef?: DotNetObjectRef): void {
     if (element.scrollTop === undefined || targetPosition === element.scrollTop) {
-        console.log('Scroll finished');
         dotNetObjectRef?.invokeMethodAsync('ScrollFinished');
         return;
     }
@@ -18,7 +17,6 @@ function scrollToPosition(element: HTMLElement, targetPosition: number, duration
         if (targetPosition !== element.scrollTop) {
             requestAnimationFrame(animateScroll);
         } else {
-            console.log('Scroll finished');
             dotNetObjectRef?.invokeMethodAsync('ScrollFinished');
         }
     }

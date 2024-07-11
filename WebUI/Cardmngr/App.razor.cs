@@ -60,26 +60,29 @@ public partial class App : ComponentBase
         await NotificationService.RequestPermissionAsync();
     }
 
-    private async void RequestPermission(Task<AuthenticationState> authState)
+    private void RequestPermission(Task<AuthenticationState> authState)
     {
-        var state = await authState;
-
-        if (state?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value is { } userId)
+        _ = InvokeAsync(async () =>
         {
-            if (NotificationHubConnection.Connected)
+            var state = await authState;
+
+            if (state?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value is { } userId)
             {
-                await NotificationHubConnection.DisposeAsync();
+                if (NotificationHubConnection.Connected)
+                {
+                    await NotificationHubConnection.DisposeAsync();
+                }
+                
+                FollowedProjectManager.Refresh(await ProjectClient
+                    .GetFollowedProjectsAsync()
+                    .Select(x => x.Id).ToListAsync());
+                await NotificationHubConnection.StartAsync(userId);
+                await TaskNotificationManager.NotifyDeadlinesAsync();
             }
-            
-            FollowedProjectManager.Refresh(await ProjectClient
-                .GetFollowedProjectsAsync()
-                .Select(x => x.Id).ToListAsync());
-            await NotificationHubConnection.StartAsync(userId);
-            await TaskNotificationManager.NotifyDeadlinesAsync();
-        }
+        });
     }
 
-    private async void ReceiveTask(OnlyofficeTask task)
+    private void ReceiveTask(OnlyofficeTask task)
     {
         var options = new NotificationOptions
         {
@@ -91,6 +94,6 @@ public partial class App : ComponentBase
 
         TaskNotificationManager.NotifyNew(task);
 
-        await NotificationService.CreateAsync("Появилась новая задача!", options);
+        _ = InvokeAsync(async () => await NotificationService.CreateAsync("Появилась новая задача!", options));
     }
 }

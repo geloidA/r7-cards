@@ -1,12 +1,12 @@
 ﻿@using Domain.Enums
 
-<Smooth Delay="TimeSpan.FromMilliseconds(500)">
+<Smooth ShowOnFirstRender Delay="TimeSpan.FromMilliseconds(500)">
     <div class="task-card default-text @Task.CssDeadline()" @onclick="openModalAction" >
         <div class="d-flex @CssMarginTitle">
             @if (Task.Priority == Domain.Enums.Priority.High)
             {
                 <FluentIcon Value="@(new Icons.Filled.Size20.ArrowCircleUp())" Color="Color.Accent" 
-                    Title="Приоритет - Высокий" Style="margin-right: 5px;" />
+                    Title="Приоритет - Высокий" Style="margin-right: 5px; min-width: 20px;" />
             }
             <div class="fw-bold fs-6 max-height-100 title pre-wrap">@Task.Title</div>
         </div>

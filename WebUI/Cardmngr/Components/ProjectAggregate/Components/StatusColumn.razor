@@ -1,6 +1,6 @@
 ﻿@implements IDisposable
 
-<Smooth >
+<Smooth ShowOnFirstRender >
     <KolBoardColumn
         CommonHeightByKey="CommonHeightByKey"
         Width="365"
@@ -13,6 +13,8 @@
         CanItemDrag="@(x => x.CanEdit)"
         KeySelector="x => x.Id"
         Items="_tasks" 
+        ShowDropPlaceholder
+        DropPlaceholderDelay="TimeSpan.FromMilliseconds(250)"
         OnDropItem="@(async task => await OnChangeTaskStatus(task, Status))" >
         
         <HeaderTemplate Context="isCollapsed">
@@ -28,5 +30,9 @@
         <ItemTemplate>
             <TaskCard Task="context" />
         </ItemTemplate>
+
+        <DropPlaceholderTemplate>
+            <div class="card-placeholder"></div>
+        </DropPlaceholderTemplate>
     </KolBoardColumn>
 </Smooth>

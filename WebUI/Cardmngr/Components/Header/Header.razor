@@ -2,7 +2,7 @@
 
 @if (InteractionService.HeaderCollapsed)
 {
-    <Smooth>
+    <Smooth ShowOnFirstRender >
         <div class="position-absolute top-0 mt-2 p-2" style="left: 50%; opacity: 30%; z-index: 1;">
             <div style="background-color: var(--neutral-layer-2); border-radius: 50%;">
                 <FluentIcon Value="@(new Icons.Regular.Size24.Dismiss())"
@@ -22,7 +22,7 @@ else
         <FluentButton Class="py-0" Appearance="Appearance.Outline"
             OnClick="OpenSidebar" IconEnd="@(new Icons.Regular.Size20.TextAlignJustify())" />
         <FluentSpacer Width="5" />
-        <FluentAnchor Href="/" Appearance="@Appearance.Hypertext" IconStart="@(new MyIcons.CardLogo())" />
+        <FluentAnchor Href="home" Appearance="@Appearance.Hypertext" IconStart="@(new MyIcons.CardLogo())" />
         <FluentSpacer Width="25" />
         <ProjectNavigator />
         <FilterCustomizer />

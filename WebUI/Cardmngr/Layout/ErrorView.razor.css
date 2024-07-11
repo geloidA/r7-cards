@@ -1,0 +1,7 @@
+.exception-emoji {
+    transition: transform 0.3s;
+}
+
+.exception-emoji:hover {
+    transform: scale(1.2);
+}

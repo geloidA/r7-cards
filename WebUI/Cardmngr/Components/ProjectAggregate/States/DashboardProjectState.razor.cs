@@ -69,9 +69,12 @@ public partial class DashboardProjectState :
         return base.CleanPreviousProjectStateAsync();
     }
 
-    private async void OnRefreshModelAsync()
+    private void OnRefreshModelAsync()
     {
-        SetModelAsync(await ProjectClient.GetProjectStateAsync(Id)).Forget();
+        _ = InvokeAsync(async () =>
+        {
+            SetModelAsync(await ProjectClient.GetProjectStateAsync(Id)).Forget();
+        });
     }
 
     public override void Dispose()

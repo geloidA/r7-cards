@@ -10,7 +10,7 @@
     
     @if (Projects is { })
     {
-        <Smooth IsShowing="_smoothShowing" style="height: 94%;" >
+        <Smooth Show="_smoothShowing" style="height: 94%;" >
             <SummaryInfoProjectState @ref="_currentState" Id="@ElementSwitcherService.Element" >
                 <ProjectSummaryInfo CanSwitch="@CanSwitchHandler" />
             </SummaryInfoProjectState>

@@ -5,7 +5,7 @@
         Вехи
     </div>
     <div style="height: 95%;" class="w-100 overflow-auto scrollbar-none">
-        <Smooth>
+        <Smooth ShowOnFirstRender >
             <div class="d-flex flex-column gap-2">
                 @foreach (var milestone in State.Milestones.OrderBy(x => x.Deadline))
                 {

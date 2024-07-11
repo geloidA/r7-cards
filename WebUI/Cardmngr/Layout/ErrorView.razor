@@ -1,0 +1,47 @@
+﻿@using Cardmngr.Application.Clients.FeedbackClient
+
+@inject IFeedbackClient FeedbackClient
+@inject AuthenticationStateProvider AuthStateProvider
+
+<div class="w-100 h-100 d-flex justify-content-center align-items-center">
+    <div class="w-50 d-flex justify-content-center">
+        <div class="exception-emoji">
+            <FluentEmoji Width="350px" Value="@(new Emojis.SmileysEmotion.Flat.Default.AnguishedFace())" />
+        </div>
+    </div>
+    <FluentSpacer Width="50" />
+    <div class="w-50">
+        <h2 class="fw-bold">
+            <div class="d-flex gap-2 align-items-center">
+                <FluentEmoji Value="@(new Emojis.AnimalsNature.Flat.Default.Bug())" /> 
+                Произошла ошибка. 
+            </div>
+            @Exception.Message
+        </h2>
+        <p>
+            Приносим свои извинения, информация о ней уже отправлена на <a href="feedback-board" target="_blank">страницу</a> с отзывами пользователей.
+        </p>
+    </div>
+</div>
+
+@code {
+    private UserInfo? _authenticatedUser;
+
+    [Parameter, EditorRequired] public Exception Exception { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _authenticatedUser = AuthStateProvider.ToCookieProvider().UserInfo
+            ?? new UserInfo { DisplayName = "Aноним" };
+
+        await FeedbackClient.CreateFeedbackAsync(new Shared.Feedbacks.FeedbackCreateRequestData
+        (
+            _authenticatedUser,
+            new Shared.Feedbacks.FeedbackUpdateData
+            {
+                Title = $"Exception in {Exception.Source}",
+                Description = $"Msg:\n{Exception.Message}\n\nStack:\n{Exception.StackTrace}"
+            }
+        ));
+    }
+}

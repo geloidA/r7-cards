@@ -44,4 +44,11 @@ public static class OnlyofficeTaskExtensions
             .OrderByDescending(x => (x.IsDeadlineOut(), x.Priority, x.Updated))
             .ThenBy(x => (x.Deadline == null, x.Deadline));
     }
+
+    public static IEnumerable<OnlyofficeTask> OrderByShortTaskCriteria(this IEnumerable<OnlyofficeTask> tasks)
+    {
+        return tasks
+            .OrderByDescending(x => (x.IsDeadlineOut(), -(int)x.Status))
+            .ThenBy(x => (x.Deadline == null, x.Deadline));
+    }
 }

@@ -7,10 +7,9 @@
     {
         foreach (var project in ExcludedProjects)
         {
-            <FluentBadge Circular title="@project"
-                style="max-width: 200px;" class="overflow-hidden" >
+            <FluentBadge Circular title="@project" >
                 <div class="d-flex gap-2">
-                    <span>@project</span>
+                    <span style="max-width: 200px;" class="overflow-hidden">@project</span>
                     <FluentIcon Value="@(new Icons.Regular.Size16.Dismiss())"
                         @onclick="() => IncludeProject(project)" />
                 </div>

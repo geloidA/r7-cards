@@ -1,4 +1,5 @@
 ﻿@page "/"
+@page "/home"
 
 @inherits AuthorizedPage
 
@@ -57,7 +58,7 @@
                                 <div>
                                     Если сайт некорректно отображает элементы, попробуйте нажать <span class="fw-bold">Ctrl+F5</span>, 
                                     это очистит кеш сайта в вашем браузере. Если это не помогло, то создайте карточку в
-                                    <a href="/feedback-board">Пожеланиях и предложениях.</a>
+                                    <a href="feedback-board">Пожеланиях и предложениях.</a>
                                 </div>
                                 <FluentSpacer />
                                 <FluentIcon Value="@(new Icons.Regular.Size20.Dismiss())" Color="Color.FillInverse"
@@ -85,7 +86,7 @@
             IconEnd="@(new Icons.Regular.Size20.ArrowUp())" 
             Appearance="Appearance.Lightweight" />
 
-        <FluentPopover style="max-width: 320px; width: 320px;"
+        <FluentPopover style="max-width: 320px; width: 320px; margin-top: 11px;"
             AnchorId="feed-filter-btn" Class="my-popover"
             @bind-Open="_showFilterPopover">
             <Body>

@@ -1,7 +1,7 @@
 ﻿@if (MilestoneTasks.Any())
 {
     <div class="overflow-auto d-flex flex-column task-container gap-2" style="max-height: 400px;">
-        @foreach (var task in MilestoneTasks.OrderByTaskCriteria())
+        @foreach (var task in MilestoneTasks.OrderByShortTaskCriteria())
         {
             <span style="z-index: 99;" class="w-100" >
                 <ShortTaskCard Task="task" />

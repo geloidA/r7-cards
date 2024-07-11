@@ -91,9 +91,12 @@ public sealed partial class MutableProjectState :
         }
     }
 
-    private async void OnRefreshModelAsync()
+    private void OnRefreshModelAsync()
     {
-        SetModelAsync(await ProjectClient.GetProjectStateAsync(Id)).Forget();
+        _ = InvokeAsync(async () =>
+        {
+            SetModelAsync(await ProjectClient.GetProjectStateAsync(Id)).Forget();
+        });
     }
 
     private ProjectHubClient GetNewHubClient()

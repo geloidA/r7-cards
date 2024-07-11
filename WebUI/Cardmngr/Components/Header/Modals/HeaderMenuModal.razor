@@ -3,7 +3,7 @@
 <Offcanvas ShowCloseBtn="false"
     Class="my-offcanvas my-offcanvas-left" Width="310">
     <OffcanvasHeader>
-        <a class="fw-bold fs-4 user-select-none d-flex" href="/">
+        <a class="fw-bold fs-4 user-select-none d-flex" href="home">
             <FluentIcon Width="32px" Value="@(new MyIcons.CardLogo())" />
             <span class="align-self-center ms-1">Р7 Карточки</span>
         </a>
@@ -11,15 +11,15 @@
     <OffcanvasBody Class="d-flex flex-column gap-2">
         <FluentNavMenu class="p-0">
             <FluentNavLink Icon="@(new Icons.Regular.Size20.Home())" 
-                Href="/" class="fw-bold">
+                Href="home" class="fw-bold">
                 Главная
             </FluentNavLink>
             <FluentNavLink Icon="@(new Icons.Regular.Size20.Library())"
-                Href="/all-projects" class="fw-bold">
+                Href="all-projects" class="fw-bold">
                 Проекты
             </FluentNavLink>
             <FluentNavLink Icon="@(new Icons.Regular.Size20.DataBarVerticalAscending())"
-                Href="/reports" class="fw-bold">
+                Href="reports" class="fw-bold">
                 Отчеты
             </FluentNavLink>
         </FluentNavMenu>

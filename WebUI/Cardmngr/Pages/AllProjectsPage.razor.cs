@@ -32,16 +32,19 @@ public partial class AllProjectsPage : AuthorizedPage, IDisposable
         initialized = true;
     }
 
-    private async void OnFilterChangedAsync(TaskFilterBuilder builder)
+    private void OnFilterChangedAsync(TaskFilterBuilder builder)
     {
-        allProjects = await ProjectClient.GetGroupedFilteredTasksAsync(builder.SortBy("updated").SortOrder(FilterSortOrders.Desc))
-            .Select(x => new StaticProjectVm(x.Key, x.Value))
-            .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.ProjectInfo.Id))
-            .ToListAsync();
+        _ = InvokeAsync(async () =>
+        {
+            allProjects = await ProjectClient.GetGroupedFilteredTasksAsync(builder.SortBy("updated").SortOrder(FilterSortOrders.Desc))
+                .Select(x => new StaticProjectVm(x.Key, x.Value))
+                .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.ProjectInfo.Id))
+                .ToListAsync();
 
-        SummaryService.SetTasks(allProjects.SelectMany(x => x.Tasks).ToList());
-        
-        StateHasChanged();
+            SummaryService.SetTasks(allProjects.SelectMany(x => x.Tasks).ToList());
+            
+            StateHasChanged();
+        });
     }
 
     public void Dispose()

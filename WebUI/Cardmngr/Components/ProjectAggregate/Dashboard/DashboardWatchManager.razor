@@ -5,7 +5,7 @@
 </div>
 
 <FluentPopover @bind-Open="_isPopoverOpen" AnchorId="@_popoverGuid" VerticalPosition="VerticalPosition.Top"
-    style="width: 500px; height: 420px; border-radius: 10px;" class="user-select-none">
+    style="width: 500px; height: 420px; border-radius: 10px; margin-bottom: 10px;" class="user-select-none">
     <Header >
         <div style="font-size: 12px; line-height: 1;">Выберите проекты для просмотра просроченных задач</div>
     </Header>
@@ -88,7 +88,7 @@
 
 @code {
     private RenderFragment<string> RenderError = errorMsg =>
-        @<Smooth Delay="TimeSpan.FromSeconds(1)">
+        @<Smooth ShowOnFirstRender Delay="TimeSpan.FromSeconds(1)">
             <span style="font-size: 12px;" class="d-flex align-content-center text-error">
                 <FluentIcon Value="@(new Icons.Filled.Size12.ErrorCircle())" 
                     Color="Color.Error" class="me-1" />
