@@ -1,11 +1,10 @@
 ﻿using Cardmngr.Domain.Entities;
-using Cardmngr.Reports.Base;
 using Cardmngr.Reports.Extensions;
 using ClosedXML.Excel;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Domain.Enums;
 
-namespace Cardmngr.Reports;
+namespace Cardmngr.Reports.Base;
 
 public class EfficiencyFactorReport : ReportGeneratorBase
 {
@@ -27,7 +26,7 @@ public class EfficiencyFactorReport : ReportGeneratorBase
         foreach (var groupByUser in EfficiencyFactorReportData.Create(Tasks, Users).GroupByUser)
         {
             row = GenerateUserHeader(ws, row, groupByUser.Key, groupByUser.SelectMany(x => x));
-            
+
             foreach (var groupByProject in groupByUser)
             {
                 row = GenerateProject(ws, row, groupByProject);
@@ -57,7 +56,7 @@ public class EfficiencyFactorReport : ReportGeneratorBase
 
         ws.Cell(row, 6).Value = "Просрочено:";
         ws.Cell(row, 7).Value = $"{tasks.Count(x => x.IsDeadlineOut())}";
-       
+
         return row + 1;
     }
 
@@ -91,7 +90,7 @@ public class EfficiencyFactorReport : ReportGeneratorBase
         ws.Cell(row, 1).Value = $"{groupByProject.Key.Title}";
         ws.Cell(row, 1).Style.Alignment.SetIndent(1);
         ws.Cell(row, 1).Style.Alignment.SetWrapText(true);
-        
+
         ws.Cell(row, 2).Value = "Всего:";
         ws.Cell(row, 3).Value = $"{groupByProject.Count()}";
 

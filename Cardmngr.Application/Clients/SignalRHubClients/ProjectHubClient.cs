@@ -56,14 +56,13 @@ public sealed class ProjectHubClient : IAsyncDisposable
 
     private void JoinGroupMemberAsync(string userId)
     {
-        if (!connectedMembers.Contains(userId))
+        if (connectedMembers.Add(userId))
         {
-            connectedMembers.Add(userId);
             OnMembersChanged(MemberAction.Join, userId);
         }
     }
 
-    private List<string> connectedMembers = [];
+    private HashSet<string> connectedMembers = [];
     public IEnumerable<string> ConnectedMemberIds
     {
         get

@@ -19,4 +19,8 @@
     <ProjectReference Include="..\..\Cardmngr.Domain\Cardmngr.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions/" />
+  </ItemGroup>
+
 </Project>

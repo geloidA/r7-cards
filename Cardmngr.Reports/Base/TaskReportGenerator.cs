@@ -1,9 +1,9 @@
 ﻿using Cardmngr.Domain.Entities;
-using Cardmngr.Reports.Base;
 using Cardmngr.Reports.Extensions;
+using Cardmngr.Reports.ReportData;
 using ClosedXML.Excel;
 
-namespace Cardmngr.Reports;
+namespace Cardmngr.Reports.Base;
 
 public class TaskReportGenerator : ReportGeneratorBase
 {
@@ -25,12 +25,12 @@ public class TaskReportGenerator : ReportGeneratorBase
         ConfigureWorksheet(ws);
 
         var row = GenerateHeader(ws, "Задачи проектов");
-        
+
         foreach (var groupedByProject in TaskReportData.Create(Tasks, x => new OnlyofficeTaskReportData(x, Statuses)).GroupedTasks)
         {
             ws.Row(row).Style.Fill.SetBackgroundColor(XLColor.LightGray);
             ws.Cell(row, 1).Style.Font.SetBold();
-            
+
             ws.Cell(row, 1).Value = $"{++Counter.Project}.  {groupedByProject.Key.Title}";
 
             Counter.Milestone = 0;
@@ -57,7 +57,7 @@ public class TaskReportGenerator : ReportGeneratorBase
                 .Alignment.SetIndent(1)
                 .Font.SetBold();
 
-        ws.Cell(row, 1).Value = groupedByMilestone.Key?.Title is { } 
+        ws.Cell(row, 1).Value = groupedByMilestone.Key?.Title is { }
             ? $"{Counter.Project}.{++Counter.Milestone}.  {groupedByMilestone.Key.Title}"
             : $"{Counter.Project}.{++Counter.Milestone}.  Задачи вне вех";
 

@@ -7,14 +7,14 @@ namespace Cardmngr.Reports.Base;
 public class EfficiencyFactorReportData
 {
     private readonly IEnumerable<OnlyofficeTask> onlyofficeTasks;
-    private readonly IEnumerable<UserInfo> users;
+    private readonly List<UserInfo> users;
 
     private EfficiencyFactorReportData() : this([], []) { }
 
     private EfficiencyFactorReportData(IEnumerable<OnlyofficeTask> tasks, IEnumerable<UserInfo> users)
     {
         onlyofficeTasks = tasks;
-        this.users = users;
+        this.users = users.ToList();
     }
 
     public static EfficiencyFactorReportData Create(IEnumerable<OnlyofficeTask> tasks, IEnumerable<UserInfo> users) => new(tasks, users);
@@ -31,9 +31,13 @@ public class EfficiencyFactorReportData
                 .GroupBy(y => y.ProjectOwner)));
     }
 
-    private IEnumerable<UserInfo> GetSelectedUsers(IEnumerable<UserInfo> responsibles) => users.Any()
-        ? users.Intersect(responsibles, UserInfoEqualityComparer.Instance)
-        : responsibles; 
+    private IEnumerable<UserInfo> GetSelectedUsers(IEnumerable<UserInfo> responsibles)
+    {
+        if (users.Count == 0) return responsibles;
+        var selectedUsers = new HashSet<UserInfo>(users, UserInfoEqualityComparer.Instance);
+        selectedUsers.IntersectWith(responsibles);
+        return selectedUsers;
+    }
 }
 
 internal class UserInfoEqualityComparer : IEqualityComparer<UserInfo>

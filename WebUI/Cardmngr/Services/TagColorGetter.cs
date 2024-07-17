@@ -46,7 +46,7 @@ public class TagColorGetter : ITagColorManager, IDisposable
         }
     }
 
-    public bool Contains(TaskTag tag) => colorByTagName.ContainsKey(tag.Name) && colorByTagName[tag.Name].Tags.Contains(tag);
+    public bool Contains(TaskTag tag) => colorByTagName.TryGetValue(tag.Name, out var data) && data.Tags.Contains(tag);
 
     public bool Contains(string tagName) => colorByTagName.ContainsKey(tagName);
 

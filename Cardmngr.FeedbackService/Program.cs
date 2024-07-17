@@ -1,4 +1,3 @@
-using System.Net;
 using Cardmngr.FeedbackService.Extensions;
 using Cardmngr.FeedbackService.Services;
 using Cardmngr.Shared.Extensions;

@@ -1,40 +1,28 @@
 ﻿
 @inherits KolComponentBase
 
-<div class="module-card @Class" Style="@Style">
-    <div class="header">
-        @if (string.IsNullOrEmpty(Name))
-        {
-            <FluentIcon Value="@(new Icons.Regular.Size20.BookInformation())" Color="Color.Info" />
-            <span style="color: var(--neutral-fill-inverse-rest);">Проекты</span>
-        }
-        else
-        {
-            <FluentIcon style="min-width: 20px;" Value="@(new Icons.Regular.Size20.Book())" Color="Color.Info" />
-            <span>@Name</span>
-            <FluentSpacer/>
-            <div class="hide-button">
-                <FluentButton IconStart="@(new Icons.Regular.Size20.EyeOff())" Appearance="Appearance.Lightweight"
-                    @onclick="() => _feedFilterService.ExcludeProjectAsync(Name)" Title="Скрыть проект" />
-            </div>
-        }
-    </div>
-    <div class="module-content">
-        @{
-            var isFirst = true;
-        }
-        @foreach (var feed in Feeds)
-        {
-            if (isFirst)
+<ModuleCard Items="Feeds" Class="@Class" Style="@Style" >
+    <Header>
+        <div class="header">
+            @if (string.IsNullOrEmpty(Name))
             {
-                <FeedProjectMessage Feed="feed" />
-                isFirst = false;
+                <FluentIcon Value="@(new Icons.Regular.Size20.BookInformation())" Color="Color.Info" />
+                <span style="color: var(--neutral-fill-inverse-rest);">Проекты</span>
             }
             else
             {
-                <FluentDivider />
-                <FeedProjectMessage Feed="feed" />
+                <FluentIcon style="min-width: 20px;" Value="@(new Icons.Regular.Size20.Book())" Color="Color.Info" />
+                <span>@Name</span>
+                <FluentSpacer/>
+                <div class="hide-button">
+                    <FluentButton IconStart="@(new Icons.Regular.Size20.EyeOff())" Appearance="Appearance.Lightweight"
+                        @onclick="() => _feedFilterService.ExcludeProjectAsync(Name)" Title="Скрыть проект" />
+                </div>
             }
-        }
-    </div>
-</div>
+        </div>
+    </Header>
+    
+    <ItemRenderer Context="feed" >
+        <FeedProjectMessage Feed="feed" />
+    </ItemRenderer>
+</ModuleCard>

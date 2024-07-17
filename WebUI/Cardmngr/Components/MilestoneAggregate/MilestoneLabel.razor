@@ -20,9 +20,13 @@ else
         @<div>
             @if (Milestone is { })
             {
-                <div @onclick="HandleClick" title="Веха" class=@($"d-flex {(OnClick.HasDelegate ? "clickable" : "")}") >
-                    <FluentIcon Value="@(new MyIcons.Size16.Milestone())" Color="Color.Accent" class="me-1 align-self-center" />
-                    <span style="font-size: 12px; font-weight: 500; color: var(--accent-fill-rest);" 
+                (string title, Color color) data = Milestone.IsDeadlineOut() 
+                    ? ("Просрочена", Color.Info)
+                    : ("Веха", Color.Accent);
+
+                <div @onclick="HandleClick" title="@data.title" class=@($"d-flex {(OnClick.HasDelegate ? "clickable" : "")}") >
+                    <FluentIcon Value="@(new MyIcons.Size16.Milestone())" Color="data.color" class="me-1 align-self-center" />
+                    <span style="font-size: 12px; font-weight: 500; color: @data.color.GetDesc();" 
                         class="user-select-none">
                         @Milestone.Title
                     </span>

@@ -1,9 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Cardmngr.Shared.Extensions;
 
 public static class CommonExtensions
 {
+    // initialize inner objects individually
+    // for example in default constructor some list property initialized with some values,
+    // but in 'source' these items are cleaned -
+    // without ObjectCreationHandling.Replace default constructor values will be added to result
+    private readonly static JsonSerializerOptions _deserializeSettings =
+        new() { PreferredObjectCreationHandling = JsonObjectCreationHandling.Replace };
+
     /// <summary>
     /// Perform a deep Copy of the object, using Json as a serialization method. NOTE: Private members are not cloned using this method.
     /// </summary>
@@ -15,12 +23,6 @@ public static class CommonExtensions
         // Don't serialize a null object, simply return the default for that object
         if (source is null) return default!;
 
-        // initialize inner objects individually
-        // for example in default constructor some list property initialized with some values,
-        // but in 'source' these items are cleaned -
-        // without ObjectCreationHandling.Replace default constructor values will be added to result
-        var deserializeSettings = new JsonSerializerSettings {ObjectCreationHandling = ObjectCreationHandling.Replace};
-
-        return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source), deserializeSettings)!;
+        return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(source), _deserializeSettings)!;
     }
 }

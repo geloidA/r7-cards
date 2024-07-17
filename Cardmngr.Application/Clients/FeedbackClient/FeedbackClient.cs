@@ -19,7 +19,7 @@ public class FeedbackClient(HttpClient httpClient, AuthenticationStateProvider a
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadFromJsonAsync<Feedback>() 
-                ?? throw new NullReferenceException("Something went wrong while creating feedback");
+            ?? throw new NullReferenceException("Something went wrong while creating feedback");
     }
 
     public async Task<Feedback?> DeleteFeedbackAsync(int feedbackId)

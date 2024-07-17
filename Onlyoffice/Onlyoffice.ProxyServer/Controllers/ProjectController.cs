@@ -1,6 +1,6 @@
 ﻿using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Onlyoffice.Api.Models;
 using Onlyoffice.ProxyServer.Extensions;
 using Task = System.Threading.Tasks.Task;
@@ -118,7 +118,7 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"{apiUrl}/project/{projectId}/task")
         {
-            Content = new StringContent(JsonConvert.SerializeObject(state), Encoding.UTF8, "application/json")
+            Content = new StringContent(JsonSerializer.Serialize(state), Encoding.UTF8, "application/json")
         };
 
         using var client = cookie.GetClientFor(apiUrl, "asc_auth_key");
@@ -133,7 +133,7 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
     {
         var request = new HttpRequestMessage(HttpMethod.Put, $"{apiUrl}/project/task/{id}/status")
         {
-            Content = new StringContent(JsonConvert.SerializeObject(new { status, statusId }), Encoding.UTF8, "application/json")
+            Content = new StringContent(JsonSerializer.Serialize(new { status, statusId }), Encoding.UTF8, "application/json")
         };
         
         using var client = cookie.GetClientFor(apiUrl, "asc_auth_key");

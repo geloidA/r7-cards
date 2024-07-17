@@ -15,7 +15,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     private List<Milestone> _milestones = [];
     private List<OnlyofficeTaskStatus> _statuses = [];
     private List<OnlyofficeTask> _tasks = [];
-    private readonly Dictionary<int, List<TaskTag>> _taskTags = [];
+    private readonly Dictionary<int, List<TaskTag>> _tagsByTaskId = [];
     
     protected readonly Dictionary<int, int> _commonHeightByKey = [];
     private CancellationTokenSource? _cts;
@@ -54,7 +54,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
 
         foreach (var task in model.Tasks)
         {
-            if (_taskTags.TryGetValue(task.Id, out var tags))
+            if (_tagsByTaskId.TryGetValue(task.Id, out var tags))
             {
                 task.Tags = tags;
             }
@@ -95,7 +95,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     private void UpdateTask(OnlyofficeTask task, TaskAction action)
     {
         _tasks.RemoveSingle(x => x.Id == task.Id);
-        task.Tags = _taskTags.TryGetValue(task.Id, out var tags) ? tags : [];
+        task.Tags = _tagsByTaskId.TryGetValue(task.Id, out var tags) ? tags : [];
         _tasks.Add(task);
 
         OnTasksChanged(action, task);
@@ -105,6 +105,11 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     {
         _tasks.Add(created);
 
+        if (created.Tags.Count > 0)
+        {
+            _tagsByTaskId.Add(created.Id, created.Tags);
+        }
+
         OnTasksChanged(TaskAction.Add, created);
     }
 
@@ -113,7 +118,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     public void RemoveTask(int taskId, OnlyofficeTask? task = null)
     {
         _tasks.RemoveSingle(x => x.Id == taskId);
-        _taskTags.Remove(taskId);
+        _tagsByTaskId.Remove(taskId);
 
         OnTasksChanged(TaskAction.Remove, task ?? new OnlyofficeTask { Id = taskId });
     }
@@ -176,15 +181,15 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     {
         foreach (var task in tasks)
         {
-            if (!_taskTags.TryGetValue(task.Id, out _))
+            if (!_tagsByTaskId.TryGetValue(task.Id, out var tags))
             {
-                var value = await TaskClient.GetTaskTagsAsync(task.Id).ToListAsync(cancellationToken);
-                _taskTags[task.Id] = value;
+                tags = await TaskClient.GetTaskTagsAsync(task.Id).ToListAsync(cancellationToken);
+                _tagsByTaskId[task.Id] = tags;
             }
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            task.Tags = _taskTags[task.Id];
+            task.Tags = tags;
             _tasks.Add(task);
             OnTasksChanged();
         }
@@ -192,7 +197,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
 
     protected virtual Task CleanPreviousProjectStateAsync()
     {
-        _taskTags.Clear();
+        _tagsByTaskId.Clear();
         _commonHeightByKey.Clear();
 
         TasksChanged = null;

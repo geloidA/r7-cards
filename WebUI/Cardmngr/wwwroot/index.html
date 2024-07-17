@@ -7,7 +7,7 @@
         <base href="/" />
         <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
         <link href="_content/Microsoft.FluentUI.AspNetCore.Components/css/reboot.css" rel="stylesheet" />
-        <link href="css/site.css?version=1.2.1" rel="stylesheet" />
+        <link href="css/site.css?version=1.2.2" rel="stylesheet" />
         <link rel="icon" type="image/svg+xml" href="favicon.svg" />
         <link href="Cardmngr.styles.css" rel="stylesheet" />
         <link href="manifest.webmanifest" rel="manifest" />
@@ -35,14 +35,9 @@
         <loading-theme storage-name="theme"></loading-theme>
         <script>
             navigator.serviceWorker.register('service-worker.js');
-            async function updateVersion(newVersion) {
-                var key = 'r7cards-version';
-                var oldVersion = localStorage.getItem(key);
-                if (oldVersion == null) {
-                    localStorage.setItem(key, newVersion);
-                }
-                else if (newVersion != oldVersion) {
-                    localStorage.setItem(key, newVersion);
+            async function updateVersion(client, server) {
+                if (client != server) {
+                    localStorage.setItem('r7cards-version', server);
                     const cacheKeys = await caches.keys();
                     await Promise.all(cacheKeys.map(key => caches.delete(key)));
                     navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' }).then(function (registration) {

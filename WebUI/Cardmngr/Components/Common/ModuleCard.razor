@@ -1,0 +1,43 @@
+﻿@inherits KolComponentBase
+
+@typeparam TItem
+
+<div class="module-card @Class" Style="@Style">
+    <div class="module-header">
+        @Header
+    </div>
+    <div class="module-content">
+        @{
+            var isFirst = true;
+        }
+        @foreach (var item in Items)
+        {
+            if (isFirst)
+            {
+                @Render(item)
+                isFirst = false;
+            }
+            else
+            {
+                <FluentDivider />
+                @Render(item)
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? Header { get; set; }
+
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; } = [];
+
+    [Parameter, EditorRequired]
+    public RenderFragment<TItem> ItemRenderer { get; set; } = null!;
+
+    private RenderFragment<TItem> Render => item =>
+        @<div class="item" >
+            @ItemRenderer(item)
+        </div>;
+}

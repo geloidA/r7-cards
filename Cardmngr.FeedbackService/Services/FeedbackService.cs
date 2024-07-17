@@ -1,10 +1,10 @@
 ﻿using Cardmngr.Domain.Entities;
 using Cardmngr.FeedbackService.Exceptions;
-using Newtonsoft.Json;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Domain.Entities.Feedback;
 using Cardmngr.Shared.Feedbacks;
 using Cardmngr.Domain.Enums;
+using System.Text.Json;
 
 namespace Cardmngr.FeedbackService.Services;
 
@@ -38,7 +38,7 @@ public class FeedbackService : IFeedbackService
 
         feedbacks.Add(created);
 
-        await WriteAllTextAsync(JsonConvert.SerializeObject(feedbacks));
+        await WriteAllTextAsync(JsonSerializer.Serialize(feedbacks));
 
         return created with { CanEdit = true };
     }
@@ -49,7 +49,7 @@ public class FeedbackService : IFeedbackService
 
         feedbacks.Remove(feedback);
 
-        await WriteAllTextAsync(JsonConvert.SerializeObject(feedbacks));
+        await WriteAllTextAsync(JsonSerializer.Serialize(feedbacks));
 
         return feedback;
     }
@@ -87,7 +87,7 @@ public class FeedbackService : IFeedbackService
 
         feedbacks.Add(nextFeedback);
 
-        await WriteAllTextAsync(JsonConvert.SerializeObject(feedbacks));
+        await WriteAllTextAsync(JsonSerializer.Serialize(feedbacks));
 
         return nextFeedback with { CanEdit = true, CanChangeStatus = developerGuid == requestGuid };
     }
@@ -110,7 +110,7 @@ public class FeedbackService : IFeedbackService
         };
         feedbacks.Add(updated);
 
-        await WriteAllTextAsync(JsonConvert.SerializeObject(feedbacks));
+        await WriteAllTextAsync(JsonSerializer.Serialize(feedbacks));
 
         return updated with { CanChangeStatus = true, CanEdit = true };
     }
@@ -163,7 +163,7 @@ public class FeedbackService : IFeedbackService
 
         feedbacks.Add(feedback);
 
-        await WriteAllTextAsync(JsonConvert.SerializeObject(feedbacks));
+        await WriteAllTextAsync(JsonSerializer.Serialize(feedbacks));
 
         return feedback with
         {
@@ -181,7 +181,7 @@ public class FeedbackService : IFeedbackService
     {
         var json = await File.ReadAllTextAsync(feedbackFile);
 
-        return JsonConvert.DeserializeObject<List<Feedback>>(json)!;
+        return JsonSerializer.Deserialize<List<Feedback>>(json) ?? [];
     }
 
     private async Task<int> IncrementCounterAsync()

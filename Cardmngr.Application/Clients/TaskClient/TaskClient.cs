@@ -44,12 +44,10 @@ public class TaskClient(ITaskRepository taskRepository, IMapper mapper) : ITaskC
             .Select(mapper.Map<OnlyofficeTask>);
     }
 
-    public async IAsyncEnumerable<Comment> GetTaskCommentsAsync(int taskId)
+    public IAsyncEnumerable<Comment> GetTaskCommentsAsync(int taskId)
     {
-        await foreach (var comment in taskRepository.GetCommentsAsync(taskId))
-        {
-            yield return mapper.Map<Comment>(comment);
-        }
+        return taskRepository.GetCommentsAsync(taskId)
+            .Select(mapper.Map<Comment>);
     }
 
     public async IAsyncEnumerable<TaskTag> GetTaskTagsAsync(int taskId)

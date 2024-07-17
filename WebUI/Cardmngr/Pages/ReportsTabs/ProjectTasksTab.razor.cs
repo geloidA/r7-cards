@@ -1,7 +1,7 @@
 ﻿using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
 using Cardmngr.Report;
-using Cardmngr.Reports;
+using Cardmngr.Reports.Base;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Onlyoffice.Api.Models.Common;
 
@@ -13,7 +13,7 @@ public partial class ProjectTasksTab
     private List<Project> projectsData = [];
     private List<UserInfo> usersData = [];
     private readonly IEnumerable<TaskStatusType> statusTypes = Enum.GetValues(typeof(TaskStatusType))
-        .Cast<TaskStatusType>();    
+        .OfType<TaskStatusType>();
 
     protected async override Task OnInitializedAsync()
     {

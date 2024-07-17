@@ -2,7 +2,7 @@
 using Cardmngr.Domain.Enums;
 using Cardmngr.Shared.Extensions;
 
-namespace Cardmngr.Reports;
+namespace Cardmngr.Reports.ReportData;
 
 public class OnlyofficeTaskReportData : IOnlyofficeTaskReportData
 {

@@ -26,7 +26,7 @@
                     <h3 class="fw-bold">Лента</h3>
                     <FluentSpacer />
                     <FluentAnchor Href="feedback-board" Appearance="Appearance.Stealth" 
-                        IconStart="@(new Icons.Filled.Size16.Lightbulb())" >
+                        IconStart="@(new Icons.Filled.Size16.Lightbulb())">
                         Оставить отзыв
                     </FluentAnchor>
                     <FluentButton Id="feed-filter-btn" IconStart="@(new Icons.Regular.Size16.Filter())"
@@ -70,10 +70,7 @@
                     <AppVersion />
                 </div>
                 <div class="d-flex flex-column gap-2" style="width: 40%;">
-                    <FeatureCard Text="Проекты" Desc="Поиск в проектах"
-                        Icon="@(new Icons.Regular.Size20.Library())" Href="all-projects" />
-                    <FeatureCard Text="Отчеты" Desc="Создание отчетов по проектам" Href="reports"
-                        Icon="@(new Icons.Regular.Size20.DataBarVerticalAscending())" />
+                    <Cardmngr.Pages.HomeComponents.RightSidebar />
                 </div>
             </div>
         </div>
@@ -107,6 +104,8 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
+        if (!IsAuthenticated) return;
 
         userProjects = await ProjectClient
             .GetSelfProjectsAsync()

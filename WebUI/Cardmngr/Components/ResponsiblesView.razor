@@ -13,17 +13,15 @@
             }
         }
     </div>
-    @if (totalCount > MaxCount)
+    @if (Responsibles.Count > MaxCount)
     {
-        <span class="d-flex justify-content-end" style="margin-right: 2px;">+@(totalCount - MaxCount)</span>
+        <span class="d-flex justify-content-end" style="margin-right: 2px;">+@(Responsibles.Count - MaxCount)</span>
     }
 </div>
 
 @code {
-    private int totalCount => Responsibles.Count();
-
     [Parameter]
-    public IEnumerable<UserInfo> Responsibles { get; set; } = null!;
+    public ICollection<UserInfo> Responsibles { get; set; } = null!;
 
     [Parameter]
     public int ImageSize { get; set; } = 32;

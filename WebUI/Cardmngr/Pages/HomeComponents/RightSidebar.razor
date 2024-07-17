@@ -1,0 +1,30 @@
+﻿
+<ModuleCard Items="_options" ItemRenderer="OptionRenderer" >
+    <Header>
+        <div class="fw-bold" >
+            Другое
+        </div>
+    </Header>
+</ModuleCard>
+
+@code {
+
+    private List<SidebarOption> _options = 
+    [
+        new SidebarOption("Проекты", "Фильтрация и управление проектами в одном месте", new Icons.Regular.Size20.Library(), "all-projects"),
+        new SidebarOption("Отчеты", "Создавайте excel-отчеты на основе ваших проектов", new Icons.Regular.Size20.DocumentTextExtract(), "reports")
+    ];
+
+    private RenderFragment<SidebarOption> OptionRenderer = opt =>
+        @<div class="d-flex flex-column gap-2">
+            <FluentAnchor Appearance="Appearance.Hypertext" Href="@opt.Href">
+                <span class="d-flex gap-2 align-items-center fs-6">
+                    <FluentIcon Value="opt.Icon" />
+                    @opt.Title
+                </span>
+            </FluentAnchor>
+            <span class="small" style="color: var(--neutral-fill-inverse-hover);">@opt.Desc</span>
+        </div>;
+
+    record SidebarOption(string Title, string? Desc, Icon Icon, string Href);
+}

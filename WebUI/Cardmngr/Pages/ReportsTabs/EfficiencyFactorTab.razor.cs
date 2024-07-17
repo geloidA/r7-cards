@@ -1,6 +1,7 @@
 ﻿using Cardmngr.Domain.Entities;
 using Cardmngr.Report;
 using Cardmngr.Reports;
+using Cardmngr.Reports.Base;
 using Cardmngr.Shared.Extensions;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Onlyoffice.Api.Models.Common;

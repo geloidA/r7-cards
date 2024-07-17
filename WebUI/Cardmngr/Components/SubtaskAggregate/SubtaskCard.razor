@@ -13,13 +13,13 @@
     {
         <div class="tools">
             <Tool 
-                Disabled="Task.IsClosed()"
+                Disabled="Disabled"
                 Icon="@(new Icons.Regular.Size20.Pen())"
                 @onclick="EditSubtask"
                 title="Редактировать" />
 
             <Tool 
-                Disabled="Task.IsClosed()"
+                Disabled="Disabled"
                 Icon="@(new Icons.Regular.Size20.Delete())" 
                 @onclick="DeleteSubtask"
                 Color="Color.Error" 
@@ -27,7 +27,7 @@
         </div>
         <div class="status-change">
             <Tool 
-                Disabled="Task.IsClosed()"
+                Disabled="Disabled"
                 Icon="@StatusIcon"
                 Color="Color.Success"
                 @onclick="async () => await ChangeSubtaskStatus(Subtask.Status.Invert())" />

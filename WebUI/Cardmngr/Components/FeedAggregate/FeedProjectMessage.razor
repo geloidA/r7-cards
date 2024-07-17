@@ -9,7 +9,7 @@
     [CascadingParameter] Dictionary<string, UserInfo> FeedUsers { get; set; } = null!;
 
     private RenderFragment RenderMessageWithInfo(FeedMsgType typeInfo) =>
-        @<div @key="Feed.Value.Id" class="d-flex flex-column gap-2 w-100" style="padding-left: calc(var(--design-unit)* 5px); padding-right: calc(var(--design-unit)* 5px);">
+        @<div @key="Feed.Value.Id" class="d-flex flex-column gap-2 w-100">
             <div class="d-flex gap-3 overflow-hidden">
                 <FluentIcon Value="typeInfo.Icon" Color="typeInfo.Color" style="min-width: 20px;" />
                 <div>

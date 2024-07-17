@@ -39,6 +39,8 @@ public class FeedFilterService(IServiceProvider serviceProvider) : IFeedFilterSe
 
     public bool Filter(Feed feed)
     {
+        if (feed.Value.ExtraLocation is null || feed.Value.Item is null) return false;
+
         return 
             !_settings.ExcludedProjects.Contains(feed.Value.ExtraLocation) &&
             !_settings.ExcludedItems.Contains(feed.Value.Item);

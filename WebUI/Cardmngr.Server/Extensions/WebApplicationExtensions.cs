@@ -15,7 +15,17 @@ public static class WebApplicationExtensions
 
     public static WebApplication MapSelfEndpoints(this WebApplication app)
     {
-        app.MapGet("/appinfo/version", async () => await File.ReadAllTextAsync("appversion"));
+        app.MapGet("/appinfo/version/{current}", async (string current, HttpContext context) =>
+        {
+            var version = await File.ReadAllTextAsync("appversion");
+
+            if (current != version)
+            {
+                context.Response.Headers.Append("Clear-Site-Data", "\"cache\"");
+            }
+
+            return version;
+        });
 
         return app;
     }

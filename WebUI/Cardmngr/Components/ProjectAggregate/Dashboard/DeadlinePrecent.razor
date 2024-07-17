@@ -16,7 +16,7 @@
         State.TaskFilter.FilterChanged += StateHasChanged;
     }
 
-    private double Value => State.FilteredTasks().Count() != 0 
+    private double Value => State.FilteredTasks().Any() 
         ? (State.FilteredTasks().Count(x => x.IsDeadlineOut()) / (double)State.FilteredTasks().Count()) * 100
         : 0;
 }

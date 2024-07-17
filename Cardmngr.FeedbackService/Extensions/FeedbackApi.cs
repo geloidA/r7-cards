@@ -29,14 +29,11 @@ public static class FeedbackApi
         return app;
     }
 
-    public static async IAsyncEnumerable<Feedback> GetFeedbacks(string requestGuid, IFeedbackService feedbackService)
+    public static IAsyncEnumerable<Feedback> GetFeedbacks(string requestGuid, IFeedbackService feedbackService)
     {
         logger.Information("GetFeedbacks by {requestGuid}", requestGuid);
 
-        await foreach (var feedback in feedbackService.GetFeedbacks(requestGuid))
-        {
-            yield return feedback;
-        }
+        return feedbackService.GetFeedbacks(requestGuid);
     }
 
     public static async Task<IResult> GetFeedback(

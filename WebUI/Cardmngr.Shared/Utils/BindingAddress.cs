@@ -2,7 +2,7 @@
 
 public class BindingAddress
 {
-    private readonly static Dictionary<string, string> _ipsByHost = new Dictionary<string, string>
+    private readonly static Dictionary<string, string> _ipsByHost = new(3)
     {
         { "localhost", "127.0.0.1" },
         { "+", "0.0.0.0" },

@@ -94,19 +94,18 @@ public class TaskFilterManager : IFilterManager<OnlyofficeTask>
 
     public void AddFilters(IEnumerable<IFilter<OnlyofficeTask>> filters)
     {
-        if (filters.Any())
+        if (!filters.Any()) return;
+
+        _filters.AddRange(filters);
+
+        foreach (var filter in filters)
         {
-            _filters.AddRange(filters);
-
-            foreach (var filter in filters)
+            if (filter is IChangeableFilter changeableFilter)
             {
-                if (filter is IChangeableFilter changeableFilter)
-                {
-                    changeableFilter.FilterChanged += OnFilterChanged;
-                }
+                changeableFilter.FilterChanged += OnFilterChanged;
             }
+        }
 
-            OnFilterChanged();
-        }        
+        OnFilterChanged();    
     }
 }

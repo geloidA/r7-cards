@@ -15,7 +15,6 @@ namespace Cardmngr.Components.SubtaskAggregate;
 
 public partial class SubtaskCard : ComponentBase
 {
-
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
 
@@ -27,6 +26,8 @@ public partial class SubtaskCard : ComponentBase
 
     [Parameter, EditorRequired]
     public Subtask Subtask { get; set; } = null!;
+
+    private bool Disabled => Task.IsClosed() || !Subtask.CanEdit;
 
     private string CssCompleted => Subtask.Status == Status.Closed ? "completed" : "";
     private Icon StatusIcon => Subtask.Status == Status.Open 

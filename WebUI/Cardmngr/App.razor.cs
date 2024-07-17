@@ -53,9 +53,11 @@ public partial class App : ComponentBase
     {
         AuthenticationProvider.AuthenticationStateChanged += RequestPermission;
         NotificationHubConnection.TaskReceived += ReceiveTask;
-        var appVersion = await AppInfoService.GetVersionAsync();
 
-        await JS.InvokeVoidAsync("updateVersion", appVersion);
+        var current = (await LocalStorage.GetItemAsync<string>("r7cards-version")) ?? "unknown";
+        var server = await AppInfoService.GetVersionAsync(current);
+
+        await JS.InvokeVoidAsync("updateVersion", current, server);
 
         await NotificationService.RequestPermissionAsync();
     }

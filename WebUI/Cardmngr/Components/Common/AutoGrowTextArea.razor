@@ -8,6 +8,8 @@
     @oninput="AutoGrow" 
     Class="@Class" 
     Style="@Style" 
+    Label="@Label"
+    Maxlength="Maxlength"
     ReadOnly="ReadOnly"
     Value="@Value"
     ValueChanged="ValueChanged"
@@ -33,6 +35,8 @@
     [Parameter] public bool Spellcheck { get; set; }
     [Parameter] public TextAreaResize? Resize { get; set; }
     [Parameter] public string? Name { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public int? Maxlength { get; set; }
 
     [Parameter] public string? Value { get; set; }
     [Parameter] public EventCallback<string?> ValueChanged { get; set; }

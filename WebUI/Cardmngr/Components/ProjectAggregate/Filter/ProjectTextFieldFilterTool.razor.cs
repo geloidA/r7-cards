@@ -30,7 +30,7 @@ public partial class ProjectTextFieldFilterTool : ComponentBase
     {
         _filters.Add(new FilterModel("мои", 
             _ => new UserRelatedFilter(AuthenticationStateProvider.ToCookieProvider().UserId), 
-            "Отображает связанные c вами задачи"));
+            "Связанные c вами задачи"));
 
         _textToFilterParser = new(_filters, x => new TitleTaskFilter(x));
     }
