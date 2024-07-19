@@ -5,25 +5,22 @@
 
 @if (buffer is { })
 {
-    <Offcanvas Placement="MyOffcanvasPlacement.End" Class="my-offcanvas my-offcanvas-right"
-        @ref="currentModal" OnClose="ShowCloseConfirm" >
-        <EditForm Model="buffer" OnValidSubmit="SubmitAsync" >
+    <Offcanvas @ref="currentModal"
+               Placement="MyOffcanvasPlacement.End" 
+               Class="my-offcanvas my-offcanvas-right"
+               OnClose="ShowCloseConfirm" >
+               
+        <EditForm Model="buffer" 
+                  OnValidSubmit="SubmitAsync" 
+                  @onkeydown="HandleKeyDown" >
             <FluentValidationValidator />
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
-                <FluentTextField style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
+                <AutoGrowTextArea style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
                     @bind-Value="buffer.Title" class="p-0 w-100" />
             </OffcanvasHeader>
             <FluentValidationMessage For="() => buffer.Title" class="ms-3" />
-            <OffcanvasBody Class="d-flex flex-column gap-2">                
-                <div class="d-flex">
-                    <FluentBadge Appearance="Appearance.Lightweight">
-                        Начало - @(Start?.ToShortDateString() ?? "???")
-                    </FluentBadge>
-                    <FluentSpacer />
-                    <FluentBadge Appearance="Appearance.Lightweight">
-                        Конец - @(buffer.Deadline?.ToShortDateString() ?? "???")
-                    </FluentBadge>
-                </div>
+            <OffcanvasBody Class="d-flex flex-column gap-2">     
+                <TimeRangeView Start="Start" End="buffer.Deadline" />
                 <FluentDatePicker Placeholder="Не установлен"
                     ReadOnly="!CanEdit" @bind-Value="buffer.Deadline" Label="Крайний срок:" />
                 <FluentValidationMessage For="() => buffer.Deadline" />
@@ -39,16 +36,16 @@
 
                     <SelectedOptionTemplate>
                         <FluentPersona Name="@user.DisplayName" 
-                            ImageSize="22px"
-                            Class="p-1"
-                            Style="height: 26px; background: var(--main-responsibles-bg)"
-                            Image="@($"onlyoffice/api/people{user.AvatarSmall}")" />
+                                       ImageSize="22px"
+                                       Class="p-1"
+                                       Style="height: 26px; background: var(--main-responsibles-bg)"
+                                       Image="@($"onlyoffice/api/people{user.AvatarSmall}")" />
                     </SelectedOptionTemplate>
 
                     <OptionTemplate>
                         <FluentPersona Name="@user.DisplayName"
-                            ImageSize="22px"
-                            Image="@($"onlyoffice/api/people{user.AvatarSmall}")" />
+                                       ImageSize="22px"
+                                       Image="@($"onlyoffice/api/people{user.AvatarSmall}")" />
                     </OptionTemplate>
 
                     <HeaderContent>
@@ -69,27 +66,42 @@
                 </FluentAutocomplete>
                 <FluentValidationMessage For="() => buffer.Responsible" />
 
-                <FluentTextArea Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100 mb-2" Rows="6"
+                <AutoGrowTextArea Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100 mb-2"
                     @bind-Value="buffer.Description" Spellcheck="true" ReadOnly="!CanEdit" />
+
                 @if (!IsAdd)
                 {
-                    <div>
-                        <CascadingValue Value="State" IsFixed="true">
-                            <CascadingValue Value="ProjectHubClient" IsFixed="true">
-                                <MelistoneShortTasks MilestoneTasks="milestoneTasks" />
-                            </CascadingValue>
+                    <CascadingValue Value="State" IsFixed="true">
+                        <CascadingValue Value="ProjectHubClient" IsFixed="true">
+                            <MelistoneShortTasks MilestoneTasks="@milestoneTasks" />
                         </CascadingValue>
-                    </div>
+                    </CascadingValue>
                 }
-                <div class="d-flex flex-row">
+
+                <div class="d-flex flex-row mt-2">
+
+                    @if (!IsAdd && milestoneTasks.All(x => x.IsClosed()))
+                    {
+                        var isClosed = Model!.IsClosed();
+                        Icon icon = isClosed ? new Icons.Filled.Size20.ArrowClockwise() : new Icons.Filled.Size20.CheckmarkCircle();
+
+                        <FluentButton IconStart="icon" Appearance="Appearance.Lightweight"
+                            @onclick="ToggleMilestonekStatus" >
+                            @(isClosed ? "Открыть веху" : "Закрыть веху")
+                        </FluentButton>
+                    }
+
+                    <FluentSpacer />
+
                     <FluentButton Disabled="!CanEdit" Type="ButtonType.Submit" >
                         @SubmitText
                     </FluentButton>
+
                     @if (!IsAdd)
                     {
                         <FluentButton Class="ms-2" Disabled="!Model!.CanDelete || State.ReadOnly"
-                                OnClick="DeleteAsync" >
-                                Удалить
+                            OnClick="DeleteAsync" >
+                            Удалить
                         </FluentButton>
                     }
                 </div>
@@ -101,4 +113,11 @@
 @code{
     private RenderFragment<UserInfo> UserInfoRenderFragment = u =>
         @<UserAvatar ShowName="true" User="@u" />;
+
+    bool enterPressed;
+
+    void HandleKeyDown(KeyboardEventArgs e)
+    {
+        enterPressed = e.Key == "Enter";
+    }
 }

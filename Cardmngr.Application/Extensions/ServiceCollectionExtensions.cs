@@ -52,7 +52,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<ISubtaskRepository, ApiSubtaskRepository>()
             .AddScoped<ITaskStatusClient, TaskStatusClient>()
             .AddScoped<IPeopleClient, PeopleClient>()
-            .AddScoped<IUserClient, UserClient>()
             .AddScoped<IProjectClient, ProjectClient>()
             .AddScoped<ITaskClient, TaskClient>()
             .AddScoped<ISubtaskClient, SubtaskClient>()

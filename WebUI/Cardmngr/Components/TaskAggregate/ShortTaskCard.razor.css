@@ -7,6 +7,12 @@
     width: 100%;
     z-index: -2;
     position: relative;
+
+    transition: filter 0.25s ease-in-out;
+}
+
+.short-task:hover {
+    filter: brightness(0.9);
 }
 
 .info-container {
@@ -19,15 +25,8 @@
     z-index: 999;
 }
 
-.info-text {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: end;
-}
-
 .bg-progress {
-    background: #55be98;
+    background: #47977a;
     border-radius: 6px;
     height: 100%;
     z-index: -1;

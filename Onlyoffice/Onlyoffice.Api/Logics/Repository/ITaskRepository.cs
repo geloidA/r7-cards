@@ -10,7 +10,7 @@ public interface ITaskRepository
     Task<CommentDto> CreateCommentAsync(int id, CommentUpdateData comment);
     Task RemoveCommentAsync(string commentId);
     IAsyncEnumerable<CommentDto> GetCommentsAsync(int id);
-    IAsyncEnumerable<TaskDto> GetFiltredAsync(FilterBuilder builder);
+    IAsyncEnumerable<TaskDto> GetFilteredAsync(FilterBuilder builder);
     Task<TaskDto> CreateAsync(int projectId, TaskUpdateData updateData);
     IAsyncEnumerable<TaskDto> GetAllSelfAsync();
     Task<TaskDto> UpdateAsync(int id, TaskUpdateData state);

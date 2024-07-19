@@ -1,21 +1,23 @@
 ﻿@if (MilestoneTasks.Any())
 {
-    <div class="overflow-auto d-flex flex-column task-container gap-2" style="max-height: 400px;">
-        @foreach (var task in MilestoneTasks.OrderByShortTaskCriteria())
-        {
-            <span style="z-index: 99;" class="w-100" >
-                <ShortTaskCard Task="task" />
-            </span>
-        }
+    <div>
+        <div class="overflow-auto d-flex flex-column task-container gap-2" style="max-height: 400px;">
+            @foreach (var task in MilestoneTasks.OrderByShortTaskCriteria())
+            {
+                <span style="z-index: 99;" class="w-100" >
+                    <ShortTaskCard Task="task" />
+                </span>
+            }
+        </div>
+        <FluentFooter class="d-flex flex-row align-items-center mt-2">
+            <FluentIcon Value="@(new Icons.Filled.Size20.CheckmarkCircleSquare())" />
+            <span class="ms-1">Задачи</span>
+            <FluentSpacer />
+            <span>@($"{MilestoneTasks.Count(x => x.Status == Status.Closed)} / {MilestoneTasks.Count()}")</span>
+            <FluentIcon class="ms-1" Color="Color.Success"
+                Value="@(new Icons.Filled.Size20.CheckmarkCircle())" />
+        </FluentFooter>
     </div>
-    <FluentFooter class="d-flex flex-row align-items-center mt-2">
-        <FluentIcon Value="@(new Icons.Regular.Size20.CheckmarkStarburst())" />
-        <span class="ms-1">Задачи</span>
-        <FluentSpacer />
-        <span>@($"{MilestoneTasks.Count(x => x.Status == Status.Closed)} / {MilestoneTasks.Count()}")</span>
-        <FluentIcon class="ms-1" Color="Color.Success"
-            Value="@(new Icons.Filled.Size20.CheckmarkCircle())" />
-    </FluentFooter>
 }
 else
 {

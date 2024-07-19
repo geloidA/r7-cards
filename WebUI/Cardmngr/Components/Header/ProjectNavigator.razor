@@ -4,42 +4,39 @@
 @inherits KolComponentBase
 @implements IDisposable
 
-@if (ProjectInfo.SelectedProject is { })
+@if (ProjectInfo.SelectedProject is not null)
 {
-    <div class="d-flex">
-        <FluentButton Id="btn-pj-nav" @onclick="() => openPopover = !openPopover" Appearance="Appearance.Outline" >
-            @ProjectInfo.SelectedProject.Title
-        </FluentButton>
-        @if (ProjectInfo.OpenProjectInfoFunc is { })
+    <PageTitle>@ProjectInfo.SelectedProject.Title</PageTitle>
+    <div class="d-flex gap-1">
+        @if (ProjectInfo.OpenProjectInfoFunc is not null)
         {
-            <div class="d-flex gap-2 ms-2 align-items-center">
-                <FluentIcon Value="@(new Icons.Filled.Size20.Info())" 
-                    OnClick="ProjectInfo.OpenProjectInfoFunc" Title="О проекте" />
-            </div>
+            <FluentIcon class="align-self-center" 
+                        @onmouseenter="() => isInfoIconHovered = true"
+                        @onmouseleave="() => isInfoIconHovered = false"
+                        Value="@InfoIcon" 
+                        OnClick="ProjectInfo.OpenProjectInfoFunc" 
+                        Title="О проекте" />
         }
+        <div id="btn-pj-nav" 
+             class="clickable"
+             style="color: var(--neutral-fill-inverse-rest);"
+             @onclick="() => openPopover = !openPopover" >
+            @ProjectInfo.SelectedProject.Title
+        </div>
     </div>
 
-    <FluentPopover Style="width: 500px; height: 150px;"
-        AnchorId="btn-pj-nav" @bind-Open="openPopover" class="overflow-auto my-popover" >
+    <FluentPopover AnchorId="btn-pj-nav"
+                   HorizontalPosition="HorizontalPosition.Center"
+                   @bind-Open="openPopover"
+                   class="my-popover popup-proj-nav scrollbar-none" >
         <Body>
-            <FluentGrid Spacing="1">
-                @foreach (var project in projectsByIds.Values)
-                {
-                    <FluentGridItem>
-                        <FluentAnchor OnClick="() => openPopover = !openPopover" 
-                            Appearance="Appearance.Stealth" title="@project.Title"
-                            Style="max-width: 450px;" Class="overflow-hidden"
-                            Href="@($"/project/{project.Id}")">
-                            @project.Title
-                        </FluentAnchor>
-                    </FluentGridItem>
-                }
-            </FluentGrid>            
+            <ProjectNavigatorPopup Projects="projectsByIds.Values" OnProjectRefClick="() => openPopover = false" />
         </Body>
     </FluentPopover>
 }
 
 @code {
+    bool isInfoIconHovered;
     bool openPopover;
     Dictionary<int, Project> projectsByIds = [];
 
@@ -49,7 +46,7 @@
     {
         projectsByIds = (await ProjectClient
             .GetSelfProjectsAsync()
-            .ToListAsync())
+            .ToListAsync().ConfigureAwait(false))
             .ToDictionary(x => x.Id, x => x);
 
         ProjectInfo.SelectedProjectChanged += StateHasChanged;
@@ -57,6 +54,8 @@
         UpdateStateByLocation(null, new LocationChangedEventArgs(NavigationManager.Uri, true));
         NavigationManager.LocationChanged += UpdateStateByLocation;
     }
+    
+    private Icon InfoIcon => isInfoIconHovered ? new Icons.Filled.Size16.Info() : new Icons.Regular.Size16.Info();
 
     private void UpdateStateByLocation(object? sender, LocationChangedEventArgs args)
     {

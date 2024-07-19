@@ -13,6 +13,20 @@ public class ApiProjectRepository(IHttpClientFactory httpClientFactory) : ApiLog
         return projectDao?.Response ?? throw new NullReferenceException("Project was not followed");
     }
 
+    public async Task<ProjectDto> DeleteAsync(int id)
+    {
+        var response = await InvokeHttpClientAsync(c => c.DeleteAsync($"{ApiPaths.Project}/{id}"));
+        var projectDao = await response.Content.ReadFromJsonAsync<SingleProjectDao>();
+        return projectDao?.Response ?? throw new NullReferenceException("Project was not deleted");
+    }
+
+    public async Task<ProjectDto> CreateAsync(ProjectCreateDto project)
+    {
+        var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync(ApiPaths.Project, project));
+        var projectDao = await response.Content.ReadFromJsonAsync<SingleProjectDao>();
+        return projectDao?.Response ?? throw new NullReferenceException("Project was not created");
+    }
+
     public async IAsyncEnumerable<ProjectDto> GetAllFollowAsync()
     {
         var followProjectsDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<ProjectDao>($"{ApiPaths.Project}/@follow"));

@@ -6,7 +6,9 @@
     <OffcanvasHeader Class="py-1 d-flex flex-column" Style="padding-top: 20px !important;" >
         <div class="d-flex flex-row align-self-start mb-2 w-100">
             <span class="align-self-center w-75">@State.Project.Title</span>
-            <FluentBadge title="Открытых задач" class="p-1 ms-1 user-select-none align-self-center" Appearance="Appearance.Accent" >
+            <FluentBadge title="Всего задач" 
+                         class="p-1 ms-1 user-select-none align-self-center" 
+                         Appearance="Appearance.Accent" >
                 @State.Tasks.Count
             </FluentBadge>
             @if (State.Project.IsPrivate)
@@ -33,15 +35,7 @@
         </div>
     </div>
     <OffcanvasBody Class="d-flex flex-column gap-2">
-        <div class="d-flex mt-1 mb-1">
-            <FluentBadge Appearance="Appearance.Lightweight">
-                Начало - @(State.Start()?.ToShortDateString() ?? "???")
-            </FluentBadge>
-            <FluentSpacer />
-            <FluentBadge Appearance="Appearance.Lightweight">
-                Конец - @(State.Deadline()?.ToShortDateString() ?? "???")
-            </FluentBadge>
-        </div>
+        <TimeRangeView Start="State.Start()" End="State.Deadline()" />
         <span>@State.Project.Description</span>
         <FluentCard >
             <div class="d-flex align-items-center">

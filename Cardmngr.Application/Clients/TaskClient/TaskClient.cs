@@ -33,7 +33,7 @@ public class TaskClient(ITaskRepository taskRepository, IMapper mapper) : ITaskC
     public IAsyncEnumerable<OnlyofficeTask> GetEntitiesAsync(FilterBuilder? filterBuilder = null)
     {
         return taskRepository
-            .GetFiltredAsync(filterBuilder ?? FilterBuilder.Empty)
+            .GetFilteredAsync(filterBuilder ?? FilterBuilder.Empty)
             .Select(mapper.Map<OnlyofficeTask>);
     }
 

@@ -23,19 +23,19 @@ else
             <span class="title ms-1 user-select-none">
                 @TaskStatus.Title
             </span>
-            @if (TaskStatus.Image is { })
+            @if (TaskStatus.Image is not null)
             {
-                <img src=@($"data:{TaskStatus.ImageType};base64, {TaskStatus.Image}") class="ms-1" style="width: 20px;">
+                <img alt="" src=@($"data:{TaskStatus.ImageType};base64, {TaskStatus.Image}") class="ms-1" style="width: 20px;">
             }
         </div>
         <FluentSpacer/>
         @if (TaskStatus.Available)
         {
             <div class="d-flex justify-content-end btn-hide">
-                <FluentButton Style="padding: 5px !important; margin-right: -5px;"
+                <FluentButton 
+                    Style="padding: 5px !important; margin-right: -5px;"
                     BackgroundColor="@Color.Success.GetDesc()" Title="Добавить задачу"
-                    OnClick="@ShowCreateTaskModal"
-                >
+                    OnClick="@ShowCreateTaskModal" >
                     <FluentIcon Value="@(new Icons.Regular.Size16.Add())" CustomColor="white" Color="Color.Custom"/>
                 </FluentButton>
             </div>

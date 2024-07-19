@@ -7,7 +7,7 @@
         <div class="clickable" @ondblclick="@toggleCollapsedFunc">
             <div class="d-flex user-select-none">
                 <div class="d-flex fw-bold gap-1">
-                    @if (ViewModel is { })
+                    @if (ViewModel is not null)
                     {
                         <FluentIcon style="min-width: 16px;" class="align-self-center" OnClick="() => ToggleFollowAsync()"
                             Value="IconFollow" Title="@(isFollow ? "Перестать отслеживать" : "Отслеживать")" />
@@ -23,7 +23,7 @@
                         <div class="align-self-center">
                             @ViewModel.ProjectInfo.Title
                         </div>
-                        <a class="align-self-center" href=@($"/project/{ViewModel.ProjectInfo.Id}")>
+                        <a class="align-self-center" href=@($"/project/board/{ViewModel.ProjectInfo.Id}")>
                             <FluentIcon Width="23" Value="@(new Icons.Regular.Size20.ArrowCircleUpRight())" />
                         </a>
                     }

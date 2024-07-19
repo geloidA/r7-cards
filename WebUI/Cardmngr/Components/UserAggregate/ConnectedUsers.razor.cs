@@ -1,4 +1,5 @@
 ﻿using Cardmngr.Application.Clients;
+using Cardmngr.Application.Clients.People;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Domain.Entities;
 using Microsoft.AspNetCore.Components;
@@ -13,7 +14,7 @@ public partial class ConnectedUsers : ComponentBase
 
     private readonly List<UserInfo> userInfos = [];
 
-    [Inject] IUserClient UserClient { get; set; } = null!;
+    [Inject] private IPeopleClient UserClient { get; set; } = null!;
     
     [CascadingParameter] ProjectHubClient HubClient { get; set; } = null!;
 

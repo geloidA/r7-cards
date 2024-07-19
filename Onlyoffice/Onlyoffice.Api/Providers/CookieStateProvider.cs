@@ -33,10 +33,7 @@ public class CookieStateProvider(IMapper mapper) : AuthenticationStateProvider
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
-    public string this[string claim]
-    {
-        get => claimsPrincipal.FindFirst(claim)?.Value ?? throw new NullReferenceException($"{claim} property is null");
-    }
+    public string this[string claim] => claimsPrincipal.FindFirst(claim)?.Value ?? throw new NullReferenceException($"{claim} property is null");
 
     public void ClearAuthInfo()
     {

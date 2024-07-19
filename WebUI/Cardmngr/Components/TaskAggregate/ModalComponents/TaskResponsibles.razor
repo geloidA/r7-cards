@@ -52,7 +52,7 @@
     IEnumerable<UserInfo> SelectedResponsibles = [];
     [CascadingParameter] IProjectState State { get; set; } = null!;
 
-    [Parameter] public TaskUpdateData Task { get; set; } = null!;
+    [CascadingParameter] TaskUpdateData Task { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
 
     protected override void OnInitialized()

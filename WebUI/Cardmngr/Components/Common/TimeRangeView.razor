@@ -1,0 +1,11 @@
+﻿
+<div class="d-flex fw-bold small gap-2 justify-content-center">
+    <span>@(Start?.ToShortDateString() ?? "???")</span>
+    <span>−</span>
+    <span>@(End?.ToShortDateString() ?? "???")</span>
+</div>
+
+@code {
+    [Parameter] public DateTime? Start { get; set; }
+    [Parameter] public DateTime? End { get; set; }
+}

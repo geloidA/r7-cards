@@ -1,4 +1,6 @@
-﻿namespace Onlyoffice.Api.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace Onlyoffice.Api.Models;
 
 public class SingleProjectDao : SingleResponseDao<ProjectDto> { }
 
@@ -41,8 +43,19 @@ public class ProjectInfoDto : IEntityDto<int>
         {
             return dto.Id == Id;
         }
+
         return false;
     }
 
     public override int GetHashCode() => Id;
+}
+
+public class ProjectCreateDto
+{
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+    public string? ResponsibleId { get; set; }
+    
+    [JsonPropertyName("private")]
+    public bool IsPrivate { get; set; }
 }

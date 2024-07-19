@@ -26,7 +26,7 @@ public sealed partial class StaticProjectState : ProjectStateBase
         toggleCollapsedFunc = ToggleCollapsed;
         if (ViewModel is { IsCollapsed: false })
         {
-            await SetModelAsync(await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks));
+            await SetModelAsync(await ProjectClient.CollectProjectWithTasksAsync(ViewModel.Tasks));
         }
 
         isFollow = ProjectSummaryService.IsFollow(ViewModel?.ProjectInfo.Id ?? -1);
@@ -60,7 +60,7 @@ public sealed partial class StaticProjectState : ProjectStateBase
             if (!ViewModel.IsCollapsed)
             {
                 Initialized = false;
-                var model = await ProjectClient.CreateProjectWithTasksAsync(ViewModel.Tasks);
+                var model = await ProjectClient.CollectProjectWithTasksAsync(ViewModel.Tasks);
                 await SetModelAsync(model, !isTagsInitialized);
                 Initialized = true;
 

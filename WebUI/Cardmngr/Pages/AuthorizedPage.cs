@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Cardmngr.Application.Extensions;
 
-namespace Cardmngr;
+namespace Cardmngr.Pages;
 
 public abstract class AuthorizedPage : ComponentBase
 {
@@ -10,7 +10,7 @@ public abstract class AuthorizedPage : ComponentBase
     protected string? IdOnInitialization { get; private set; }
     [Inject] protected NavigationManager NavigationManager { get; set; } = null!;
     [CascadingParameter] protected Task<AuthenticationState>? AuthenticationState { get; set; }
-    
+
     protected async override Task OnInitializedAsync()
     {
         if (AuthenticationState is { })

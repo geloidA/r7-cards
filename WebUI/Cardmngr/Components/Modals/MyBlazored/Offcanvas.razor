@@ -1,7 +1,11 @@
 ﻿@inherits OffcanvasBase
 
-<div class="offcanvas @DelayedShow @CssPlacement @Class" style="@Style z-index: 99; @($"width: {Width}px;")" 
-    tabindex="-1" id="offcanvasWithBackdrop" @onkeyup="HandleKeyUp" @ref="myOffcanvas" >
+<div @ref="myOffcanvas" 
+    class="offcanvas @DelayedShow @CssPlacement @Class" 
+    style="@Style z-index: 99; @($"width: {Width}px;")" 
+    tabindex="-1" 
+    id="offcanvasWithBackdrop" 
+    @onkeyup="HandleKeyUp" >
     @if (ShowCloseBtn) 
     {
         <div class="position-absolute clickable w-100" style="z-index: 999; @CloseBtnRadiusStyle" 

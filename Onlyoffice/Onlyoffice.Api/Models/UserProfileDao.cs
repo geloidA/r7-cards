@@ -7,28 +7,28 @@ public class UserProfileDao : SingleResponseDao<UserProfileDto> { }
 public class UserProfileDto : IUser, IEntityDto<string?>
 {
     public string? Id { get; set; }
-    public string? UserName { get; set; }
-    public bool IsVisitor { get; set; }
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
-    public string? Email { get; set; }
-    public int Status { get; set; }
-    public int ActivationStatus { get; set; }
-    public DateTime? Terminated { get; set; }
-    public string? Department { get; set; }
-    public DateTime WorkFrom { get; set; }
+    public string? UserName { get; init; }
+    public bool IsVisitor { get; init; }
+    public string? FirstName { get; init; }
+    public string? LastName { get; init; }
+    public string? Email { get; init; }
+    public int Status { get; init; }
+    public int ActivationStatus { get; init; }
+    public DateTime? Terminated { get; init; }
+    public string? Department { get; init; }
+    public DateTime WorkFrom { get; init; }
     public string? DisplayName { get; set; }
-    public string? AvatarMedium { get; set; }
-    public string? Avatar { get; set; }
-    public bool IsAdmin { get; set; }
-    public bool IsLDAP { get; set; }
-    public bool IsOwner { get; set; }
-    public bool IsSSO { get; set; }
+    public string? AvatarMedium { get; init; }
+    public string? Avatar { get; init; }
+    public bool IsAdmin { get; init; }
+    public bool IsLdap { get; init; }
+    public bool IsOwner { get; init; }
+    public bool IsSso { get; init; }
     public string? AvatarSmall { get; set; }
-    public int QuotaLimit { get; set; }
-    public int UsedSpace { get; set; }
-    public int DocsSpace { get; set; }
-    public int MailSpace { get; set; }
-    public int TalkSpace { get; set; }
+    public int QuotaLimit { get; init; }
+    public int UsedSpace { get; init; }
+    public int DocsSpace { get; init; }
+    public int MailSpace { get; init; }
+    public int TalkSpace { get; init; }
     public string? ProfileUrl { get; set; }
 }

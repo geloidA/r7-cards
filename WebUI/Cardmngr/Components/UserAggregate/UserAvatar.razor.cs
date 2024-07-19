@@ -1,4 +1,5 @@
 ﻿using Cardmngr.Application.Clients;
+using Cardmngr.Application.Clients.People;
 using Cardmngr.Domain.Entities;
 using KolBlazor;
 using Microsoft.AspNetCore.Components;
@@ -7,7 +8,7 @@ namespace Cardmngr.Components.UserAggregate;
 
 public partial class UserAvatar : KolComponentBase
 {
-    [Inject] IUserClient UserClient { get; set; } = null!;
+    [Inject] private IPeopleClient UserClient { get; set; } = null!;
 
     [Parameter] public UserInfo? User { get; set; }
     [Parameter] public bool ShowTooltip { get; set; }

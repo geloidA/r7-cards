@@ -1,17 +1,25 @@
 ﻿@inject IProjectFollowChecker ProjectFollowChecker
 
-<a class="fw-light small py-1" title="@Project.Title" href=@($"/project/{Project.Id}")>
+@inherits KolComponentBase
+
+<a @key="@Project.Id" 
+   class="fw-light small py-1 @Class" 
+   title="@(ShowTitle ? Project.Title : "")"
+   style="@Style"
+   @onclick="HandleClick"
+   href=@($"/project/board/{Project.Id}")>
     <div class="ref-container">
         @if (ProjectFollowChecker.IsFollow(Project.Id))
         {
-            <FluentIcon Value="new Icons.Filled.Size12.Star()" style="margin-bottom: 2px;" />
-            <FluentSpacer Width="1" />
+            <FluentIcon Value="new Icons.Filled.Size12.Star()" style="margin-bottom: 2px;"/>
+            <FluentSpacer Width="1"/>
         }
         @Project.Title
-        <FluentIcon Value="@(new Icons.Regular.Size12.ArrowRight())" />
+        <FluentIcon Value="@(new Icons.Regular.Size12.ArrowRight())"/>
     </div>
 </a>
 
 @code {
     [Parameter] public Project Project { get; set; } = null!;
+    [Parameter] public bool ShowTitle { get; set; } = true;
 }

@@ -41,7 +41,7 @@ public partial class SummaryInfoProjectState : ProjectStateBase, IRefresheablePr
         }
         else
         {
-            await SetModelAsync(await ProjectClient.CreateProjectWithTasksAsync(tasks));
+            await SetModelAsync(await ProjectClient.CollectProjectWithTasksAsync(tasks));
         }
     }
 

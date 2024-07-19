@@ -16,22 +16,21 @@ namespace Cardmngr.Components.ProjectAggregate.States;
 public sealed partial class MutableProjectState :
     ProjectStateBase,
     IFilterableProjectState,
-    IRefresheableProjectState,
-    IAsyncDisposable
+    IRefresheableProjectState
 {
     private int previousId = -1;
     private readonly Guid _refreshLocker = Guid.NewGuid();
-    private ProjectHubClient hubClient = null!;
+    private ProjectHubClient? hubClient;
 
     [Parameter] public int Id { get; set; }
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    [Inject] ITaskClient TaskClient { get; set; } = null!;
-    [Inject] IProjectClient ProjectClient { get; set; } = null!;
-    [Inject] NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private ITaskClient TaskClient { get; set; } = null!;
+    [Inject] private IProjectClient ProjectClient { get; set; } = null!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
     [Inject] public RefreshService RefreshService { get; set; } = null!;
-    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
+    [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
 
     private readonly TaskFilterManager taskFilterManager = new();
     public IFilterManager<OnlyofficeTask> TaskFilter => taskFilterManager;
@@ -44,7 +43,7 @@ public sealed partial class MutableProjectState :
 
     public async Task ToggleFollowAsync()
     {
-        await ProjectClient.FollowProjectAsync(Project.Id);
+        await ProjectClient.FollowProjectAsync(Project.Id).ConfigureAwait(false);
         Project.IsFollow = !Project.IsFollow;
     }
 
@@ -112,7 +111,7 @@ public sealed partial class MutableProjectState :
 
     protected override async Task CleanPreviousProjectStateAsync()
     {
-        if (hubClient is { })
+        if (hubClient is not null)
         {
             await hubClient.DisposeAsync();
         }
@@ -124,7 +123,7 @@ public sealed partial class MutableProjectState :
 
     public async ValueTask DisposeAsync()
     {
-        if (hubClient is { })
+        if (hubClient is not null)
         {
             await hubClient.DisposeAsync();
         }

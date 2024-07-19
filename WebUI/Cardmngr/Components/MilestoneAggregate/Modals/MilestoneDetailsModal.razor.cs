@@ -18,6 +18,7 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
 {
     private Guid lockGuid;
     Offcanvas currentModal = null!;
+    private IEnumerable<OnlyofficeTask> milestoneTasks = [];
 
     private bool CanEdit => !State.ReadOnly && (Model == null || Model.CanEdit);
 
@@ -26,14 +27,17 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
     private int TotalTasks => Model == null ? 0 : milestoneTasks.Count();
     private int ActiveTasks => Model == null ? 0 : milestoneTasks.Count(x => !x.IsClosed());
 
+    [Inject] IMilestoneClient MilestoneClient { get; set; } = null!;
     [Parameter] public IProjectState State { get; set; } = null!;
     [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
 
-    [Inject] IMilestoneClient MilestoneClient { get; set; } = null!;
-    
-    [Inject] IConfiguration Config { get; set; } = null!;
-
-    private IEnumerable<OnlyofficeTask> milestoneTasks = [];
+    public void Dispose()
+    {
+        if (State is IRefresheableProjectState refresheableState)
+        {
+            refresheableState.RefreshService.RemoveLock(lockGuid);
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -55,8 +59,22 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
         }
     }
 
+    private async Task ToggleMilestonekStatus()
+    {
+        var updated = await MilestoneClient.UpdateStatusAsync(Model!.Id, Model!.IsClosed() ? 0 : 1);
+
+        State.UpdateMilestone(updated);
+        Model = updated;
+    }
+
     private async Task SubmitAsync()
     {
+        if (enterPressed)
+        {
+            enterPressed = false;
+            return;
+        }
+
         if (IsAdd)
         {
             var added = await MilestoneClient.CreateAsync(State.Project.Id, buffer);
@@ -97,13 +115,5 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
     private void OnSearchResponsible(OptionsSearchEventArgs<UserInfo> e)
     {
         e.Items = State.Team.Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase));
-    }
-
-    public void Dispose()
-    {
-        if (State is IRefresheableProjectState refresheableState)
-        {
-            refresheableState.RefreshService.RemoveLock(lockGuid);
-        }
     }
 }

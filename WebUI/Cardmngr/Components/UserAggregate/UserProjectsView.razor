@@ -4,9 +4,16 @@
     <div class="d-flex align-items-center gap-2">
         <FluentIcon Value="@(new Icons.Filled.Size20.ClipboardBulletList())" />
         Ваши проекты
+        <FluentSpacer />
+        <FluentAnchor
+            Href="/project/new"
+            Style="padding: 5px !important;"
+            Title="Создать проект" >
+            <FluentIcon Value="@(new Icons.Regular.Size16.Add())" CustomColor="white" Color="Color.Custom"/>
+        </FluentAnchor>
     </div>
     <div class="p-1 overflow-auto" style=@($"max-height: {MaxHeight}px; {Style}")>
-        @if (UserProjects is { } && UserProjects.Any())
+        @if (UserProjects is not null && UserProjects.Any())
         { 
             @foreach (var proj in UserProjects)
             {
@@ -21,8 +28,3 @@
         }
     </div>
 </div>
-
-@code {
-    [Parameter] public List<Project>? UserProjects { get; set; }
-    [Parameter] public int MaxHeight { get; set; }
-}

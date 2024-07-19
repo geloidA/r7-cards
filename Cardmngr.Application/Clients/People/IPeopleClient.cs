@@ -7,4 +7,5 @@ public interface IPeopleClient
 {
     IAsyncEnumerable<UserProfile> GetUsersAsync();
     IAsyncEnumerable<UserProfile> GetFilteredUsersAsync(FilterBuilder filterBuilder);
+    Task<UserProfile> GetUserProfileByIdAsync(string userId);
 }

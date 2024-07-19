@@ -35,5 +35,16 @@ namespace Cardmngr.Application.Clients.Milestone
             var milestoneDto = await milestoneRepository.UpdateAsync(milestoneId, updateData);
             return mapper.Map<Domain.Entities.Milestone>(milestoneDto);
         }
+
+        public async Task<Domain.Entities.Milestone> UpdateStatusAsync(int id, int status)
+        {
+            if (status < 0 || status > 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(status));
+            }
+            
+            var milestoneDto = await milestoneRepository.UpdateStatusAsync(id, status);
+            return mapper.Map<Domain.Entities.Milestone>(milestoneDto);
+        }
     }
 }

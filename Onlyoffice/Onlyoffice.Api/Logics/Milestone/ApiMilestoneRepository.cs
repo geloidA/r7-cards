@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Json;
 using Onlyoffice.Api.Logics.Repository;
 using Onlyoffice.Api.Models;
-using Onlyoffice.Api.Models.Common;
 
 namespace Onlyoffice.Api.Logics.Milestone;
 
@@ -40,8 +39,10 @@ public class ApiMilestoneRepository(IHttpClientFactory httpClientFactory) : ApiL
         return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not updated " + response.ReasonPhrase);
     }
 
-    public Task UpdateStatusAsync(int id, Status status)
+    public async Task<MilestoneDto> UpdateStatusAsync(int id, int status)
     {
-        return InvokeHttpClientAsync(c => c.PutAsJsonAsync($"{ApiPaths.Milestone}/{id}/status", new { status }));
+        var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"{ApiPaths.Milestone}/{id}/status", new { status }));
+        var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
+        return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not updated " + response.ReasonPhrase);
     }
 }

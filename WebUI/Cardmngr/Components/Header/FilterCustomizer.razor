@@ -5,13 +5,16 @@
     <div id="toolbar-fluent-components" class="d-flex gap-2" >
         <div class="d-flex flex-wrap gap-1">
             <FluentAutocomplete Placeholder="Проект"
-                TOption="Domain.Entities.ProjectInfo" Width="228px"
-                SelectedOptionsChanged="SelectionProjectChanged"
-                MaximumSelectedOptions="1" MaximumOptionsSearch="100" AutoComplete="off"
-                IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())"
-                SelectedOptions="SelectedProject"
-                OptionText="@(p => p.Title)" ShowOverlayOnEmptyResults="false"
-                OnOptionsSearch="OnProjectSearch" >
+                                TOption="Domain.Entities.ProjectInfo" 
+                                Width="228px"
+                                SelectedOptionsChanged="SelectionProjectChanged"
+                                MaximumSelectedOptions="1" 
+                                MaximumOptionsSearch="100" AutoComplete="off"
+                                IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())"
+                                SelectedOptions="SelectedProject"
+                                OptionText="@(p => p.Title)" 
+                                ShowOverlayOnEmptyResults="false"
+                                OnOptionsSearch="OnProjectSearch" >
 
                     <OptionTemplate>
                         <div title="@context.Title">
@@ -21,28 +24,52 @@
                 </FluentAutocomplete>
 
             <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.Person())"
-                TOption="UserInfo" Placeholder="Ответственный" AutoComplete="off" Width="228px"
-                SelectedOptionsChanged="SelectionResponsibleChanged"
-                MaximumSelectedOptions="1" MaximumOptionsSearch="100"
-                OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
-                SelectedOptions="SelectedResponsible"
-                OnOptionsSearch="OnResponsibleSearch" />
+                                TOption="UserInfo"
+                                Placeholder="Ответственный"
+                                AutoComplete="off"
+                                Width="228px"
+                                SelectedOptionsChanged="SelectionResponsibleChanged"
+                                MaximumSelectedOptions="1"
+                                MaximumOptionsSearch="100"
+                                OptionText="@(u => u.DisplayName)"
+                                ShowOverlayOnEmptyResults="false"
+                                SelectedOptions="SelectedResponsible"
+                                OnOptionsSearch="OnResponsibleSearch">
+                
+                <OptionTemplate>
+                    <FluentPersona Name="@context.DisplayName"
+                        ImageSize="22px"
+                        Image="@($"onlyoffice/api/people{context.AvatarSmall}")" />
+                </OptionTemplate>
+            </FluentAutocomplete>
 
             <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())"
-                TOption="UserInfo" Placeholder="Автор" Width="228px"
-                SelectedOptionsChanged="SelectionCreatedByChanged"
-                MaximumSelectedOptions="1" MaximumOptionsSearch="100" AutoComplete="off"
-                OptionText="@(u => u.DisplayName)" ShowOverlayOnEmptyResults="false"
-                SelectedOptions="SelectedCreatedBy"
-                OnOptionsSearch="OnCreatedBySearch" />
+                                TOption="UserInfo"
+                                Placeholder="Автор"
+                                Width="228px"
+                                SelectedOptionsChanged="SelectionCreatedByChanged"
+                                MaximumSelectedOptions="1"
+                                MaximumOptionsSearch="100"
+                                AutoComplete="off"
+                                OptionText="@(u => u.DisplayName)"
+                                ShowOverlayOnEmptyResults="false"
+                                SelectedOptions="SelectedCreatedBy"
+                                OnOptionsSearch="OnCreatedBySearch">
+                
+                <OptionTemplate>
+                    <FluentPersona Name="@context.DisplayName"
+                        ImageSize="22px"
+                        Image="@($"onlyoffice/api/people{context.AvatarSmall}")" />
+                </OptionTemplate>
+            </FluentAutocomplete>
 
             <FluentSelect TOption="TaskSelectorType"
-              Class="align-self-start"
-              Items="@_taskSelectorTypes"
-              Width="228px"
-              Height="136px"
-              OptionText="@(s => s.GetDesc())"
-              @bind-SelectedOption="SummaryService.FilterManager.TaskSelectorType" />
+                          Class="align-self-start"
+                          Items="@_taskSelectorTypes"
+                          Width="228px"
+                          Height="136px"
+                          OptionText="@(s => s.GetDesc())"
+                          @bind-SelectedOption="SummaryService.FilterManager.TaskSelectorType" />
         </div>        
     </div>
 }

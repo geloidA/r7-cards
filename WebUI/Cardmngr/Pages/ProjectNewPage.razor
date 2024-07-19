@@ -1,0 +1,55 @@
+@page "/project/new"
+
+<div class="bob ">
+    
+    <FluentEditForm Model="_project"
+                    class="d-flex flex-column gap-2"
+                    OnValidSubmit="CreateProject">
+        <FluentValidationValidator />
+
+        <FluentTextField Name="Title"
+                         Label="Название проекта"
+                         @bind-Value="_project.Title" />
+
+        <FluentValidationMessage For="() => _project.Title" />
+
+        <AutoGrowTextArea Name="Description"
+                          Label="Описание проекта"
+                          @bind-Value="_project.Description" />
+        <FluentDivider />
+
+        <FluentAutocomplete Items="_users"
+                            Class="mt-2"
+                            Label="Менеджер проекта"
+                            MaximumSelectedOptions="1"
+                            @bind-SelectedOptions="SelectedResponsible"
+                            Placeholder="Пользователи">
+
+            <OptionTemplate Context="user">
+                <FluentPersona Name="@user.DisplayName"
+                               ImageSize="22px"
+                               Image="@($"onlyoffice/api/people{user.AvatarSmall}")"/>
+            </OptionTemplate>
+
+            <SelectedOptionTemplate Context="user">
+                <FluentPersona Name="@user.DisplayName"
+                               ImageSize="22px"
+                               Image="@($"onlyoffice/api/people{user.AvatarSmall}")"/>
+            </SelectedOptionTemplate>
+        </FluentAutocomplete>
+
+        <FluentValidationMessage For="() => _project.ResponsibleId" />
+        
+        Команда
+        Теги
+        Приватный/Публичный
+
+        <FluentButton Type="ButtonType.Submit"
+                      Class="align-self-end"
+                      Color="white"
+                      BackgroundColor="var(--success)">
+            Создать проект
+        </FluentButton>
+    </FluentEditForm>
+    
+</div>

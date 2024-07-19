@@ -3,6 +3,7 @@ using Cardmngr.Application.Extensions;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Project;
 using Onlyoffice.Api.Logics.Repository;
+using Onlyoffice.Api.Models;
 using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Application.Clients;
@@ -18,7 +19,7 @@ public class ProjectClient(
     public async Task<ProjectStateDto> GetProjectStateAsync(int projectId)
     {
         var tasks = taskRepository
-            .GetFiltredAsync(TaskFilterBuilder.Instance
+            .GetFilteredAsync(TaskFilterBuilder.Instance
                 .ProjectId(projectId)
                 .SortBy("updated")
                 .SortOrder(FilterSortOrders.Desc))
@@ -87,7 +88,7 @@ public class ProjectClient(
             .GetAllAsync()
             .ToListAsync(mapper.Map<OnlyofficeTaskStatus>);
 
-        await foreach (var projectTasks in taskRepository.GetFiltredAsync(filter).GroupBy(x => x.ProjectOwner!.Id))
+        await foreach (var projectTasks in taskRepository.GetFilteredAsync(filter).GroupBy(x => x.ProjectOwner!.Id))
         {
             var project = projectRepository.GetByIdAsync(projectTasks.Key);
 
@@ -110,14 +111,19 @@ public class ProjectClient(
         }
     }
 
-    public async IAsyncEnumerable<KeyValuePair<ProjectInfo, ICollection<OnlyofficeTask>>> GetGroupedFilteredTasksAsync(FilterBuilder filter)
+    public IAsyncEnumerable<KeyValuePair<ProjectInfo, ICollection<OnlyofficeTask>>> GetGroupedFilteredTasksAsync(FilterBuilder filter)
     {
-        await foreach (var project in taskRepository.GetFiltredAsync(filter).GroupBy(x => x.ProjectOwner))
-        {
-            yield return new KeyValuePair<ProjectInfo, ICollection<OnlyofficeTask>>(
-                mapper.Map<ProjectInfo>(project.Key), 
-                mapper.Map<List<OnlyofficeTask>>(project));
-        }
+        return taskRepository.GetFilteredAsync(filter)
+            .GroupBy(x => x.ProjectOwner)
+            .Select(project => new KeyValuePair<ProjectInfo, ICollection<OnlyofficeTask>>(
+            mapper.Map<ProjectInfo>(project.Key), 
+            mapper.Map<List<OnlyofficeTask>>(project)));
+    }
+
+    public async Task<Project> DeleteProjectAsync(int projectId)
+    {
+        var project = await projectRepository.DeleteAsync(projectId);
+        return mapper.Map<Project>(project);
     }
 
     public IAsyncEnumerable<Project> GetSelfProjectsAsync()
@@ -125,7 +131,7 @@ public class ProjectClient(
         return projectRepository.GetUserProjectsAsync().Select(mapper.Map<Project>);
     }
 
-    public async Task<ProjectStateDto> CreateProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks)
+    public async Task<ProjectStateDto> CollectProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks)
     {
         if (tasks.Count == 0)
         {
@@ -162,6 +168,12 @@ public class ProjectClient(
         };
     }
 
+    public async Task<Project> CreateProjectAsync(ProjectCreateDto project)
+    {
+        var created = await projectRepository.CreateAsync(project);
+        return mapper.Map<Project>(created);
+    }
+
     public async Task<Project> FollowProjectAsync(int projectId)
     {
         return mapper.Map<Project>(await projectRepository.FollowAsync(projectId));
@@ -174,10 +186,10 @@ public class ProjectClient(
             .Select(mapper.Map<Project>);
     }
 
-    public IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync(FilterBuilder filter)
+    private IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync(FilterBuilder filter)
     {
         return taskRepository
-            .GetFiltredAsync(filter)
+            .GetFilteredAsync(filter)
             .Select(mapper.Map<OnlyofficeTask>);
     }
 

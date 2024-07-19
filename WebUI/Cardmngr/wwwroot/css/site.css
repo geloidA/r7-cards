@@ -157,6 +157,7 @@ article {
     -webkit-box-orient: vertical;
     overflow: hidden;
     -webkit-line-clamp: 5;
+    line-clamp: 5;
  }
 
 .pre-wrap {
@@ -168,6 +169,7 @@ article {
     overflow: hidden;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
+    line-clamp: 1;
     text-overflow: ellipsis;
     max-width: 200px;
 }
@@ -181,6 +183,14 @@ article {
 .popup-filter-tool .narrow-tip {
     border-bottom: 1px solid var(--neutral-layer-2); 
     padding-bottom: 5px;
+}
+
+.popup-proj-nav {
+    width: 700px;
+    height: 400px; 
+    background-color: var(--neutral-layer-3) !important;
+    overflow: auto;
+    margin-top: 1.5rem;
 }
 
 .red-border {

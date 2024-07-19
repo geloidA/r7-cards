@@ -18,7 +18,6 @@ public partial class SubtaskCard : ComponentBase
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
 
-    [Inject] IConfiguration Config { get; set; } = null!;
     [Inject] public ISubtaskClient SubtaskClient { get; set; } = null!;
 
     [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;

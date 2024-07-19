@@ -40,6 +40,7 @@ public static class ServicesExtensions
             .AddScoped<LoginDataValidator>()
             .AddScoped<FeedbackUpdateDataValidator>()
             .AddScoped<TaskUpdateDataValidator>()
+            .AddScoped<ProjectCreateDtoValidator>()
             .AddScoped<MilestoneUpdateDataValidator>();
     }
 

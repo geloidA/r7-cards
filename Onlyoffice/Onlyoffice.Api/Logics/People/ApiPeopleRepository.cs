@@ -20,7 +20,7 @@ public class ApiPeopleRepository(IHttpClientFactory httpClientFactory) : ApiLogi
         return response?.Response;
     }
 
-    public async IAsyncEnumerable<UserProfileDto> GetFiltredAsync(FilterBuilder builder)
+    public async IAsyncEnumerable<UserProfileDto> GetFilteredAsync(FilterBuilder builder)
     {
         var response = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<UserProfilesDao>($"{ApiPaths.People}/filter/{builder.Build()}"));
         foreach (var user in response?.Response ?? [])

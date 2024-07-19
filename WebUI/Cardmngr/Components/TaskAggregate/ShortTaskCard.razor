@@ -8,38 +8,34 @@
         <div class="d-flex w-100 h-100">
             @if(Task.Responsibles.Any())
             {
-                <UserAvatar ShowTooltip="true" User="Task.Responsibles.First()" />
+                <UserAvatar ShowTooltip="true" 
+                            User="Task.Responsibles.First()" />
             }
             <span class="ms-2 align-self-center">@Task.Title</span>
         </div>
-        <div class="col d-flex flex-column w-100 h-100" style="margin-right: 5px;">
-            <div class="d-flex info-text">
-                @if (Task.Priority == Domain.Enums.Priority.High)
-                {
-                    <FluentIcon Value="@(new Icons.Filled.Size16.ArrowCircleUp())" 
-                        Color="Color.Accent" />
-                }
-            </div>
-            <div class="info-text align-items-end">
+        <div class="d-flex flex-column h-100 p-1">
+            @if (Task.Priority == Domain.Enums.Priority.High)
+            {
+                <FluentIcon Value="@(new Icons.Filled.Size16.ArrowCircleUp())" 
+                            Color="Color.Accent"
+                            class="align-self-end" />
+            }
+            <FluentSpacer />
+            <div class="d-flex gap-1">
                 @if (Task.IsDeadlineOut())
                 {
                     <FluentIcon Value="@(new Icons.Regular.Size16.Fire())" 
-                        Color="Color.Error" />
-                    <span class="text-danger ms-1" style="font-size: 14px;">@Task.Deadline?.ToShortDateString()</span>
+                                Color="Color.Error" />
+                    <span class="text-danger" style="font-size: 14px;">@Task.Deadline?.ToShortDateString()</span>
                 }
                 else
                 {
                     <span style="font-size: 14px;">@Task.Deadline?.ToShortDateString()</span>
                 }
-                @if (Task.Status == Domain.Enums.Status.Open)
-                {
-                    <FluentIcon Value="@(new Icons.Filled.Size16.ArrowForward())" 
-                        Color="Color.Info" class="ms-1" />
-                }
-                else
+                @if (Task.IsClosed())
                 {
                     <FluentIcon Value="@(new Icons.Filled.Size16.CheckmarkCircle())" 
-                        Color="Color.Success" class="ms-1" />
+                                Color="Color.Success" />
                 }
             </div>
         </div>

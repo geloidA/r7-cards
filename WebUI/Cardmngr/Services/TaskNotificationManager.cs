@@ -22,7 +22,7 @@ public class TaskNotificationManager(IMessageService messageService,
             options.Body = $"Задача \"{task.Title}\" просрочена! В проекте: {task.ProjectOwner.Title}";
             options.Link = new ActionLink<Message>
             {
-                Href = $"/project/{task.ProjectOwner.Id}",
+                Href = $"/project/board/{task.ProjectOwner.Id}",
                 Text = "Подробнее",
                 Target = "_self"
             };
@@ -61,7 +61,7 @@ public class TaskNotificationManager(IMessageService messageService,
             options.Timestamp = DateTime.Now;
             options.Link = new ActionLink<Message>
             {
-                Href = $"/project/{task.ProjectOwner.Id}",
+                Href = $"/project/board/{task.ProjectOwner.Id}",
                 Text = "Подробнее в проекте",
                 Target = "_self"
             };

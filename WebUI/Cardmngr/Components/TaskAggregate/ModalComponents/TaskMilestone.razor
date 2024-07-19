@@ -52,7 +52,7 @@
     FluentAutocomplete<Milestone> MilestoneList = default!;
     IEnumerable<Milestone> SelectedMilestone = [];
 
-    [Parameter] public TaskUpdateData Task { get; set; } = null!;    
+    [CascadingParameter] TaskUpdateData Task { get; set; } = null!;    
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
 

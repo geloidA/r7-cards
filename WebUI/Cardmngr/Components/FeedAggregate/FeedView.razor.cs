@@ -1,5 +1,6 @@
 ﻿using Cardmngr.Application.Clients;
 using Cardmngr.Application.Clients.Feed;
+using Cardmngr.Application.Clients.People;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Services;
 using KolBlazor;
@@ -15,22 +16,22 @@ public partial class FeedView : KolComponentBase, IDisposable
     private List<IGrouping<string, Feed>> _feedsByProject = [];
     private readonly Dictionary<string, UserInfo> _feedUsers = [];
 
-    [Inject] IFeedClient FeedClient { get; set; } = default!;
-    [Inject] IUserClient UserClient { get; set; } = default!;
-    [Inject] IFeedFilterService FeedFilterService { get; set; } = default!;
+    [Inject] private IFeedClient FeedClient { get; set; } = default!;
+    [Inject] private IPeopleClient UserClient { get; set; } = default!;
+    [Inject] private IFeedFilterService FeedFilterService { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
         _allFeeds = await FeedClient
             .GetFiltredAsync(FeedFilterBuilder.Instance.Product("projects"))
             .Where(x => x.Value.Action != 2) // remove task's comment notifications
-            .ToListAsync();
+            .ToListAsync().ConfigureAwait(false);
 
         _feedsByProject = GetFilteredFeeds();
 
         FeedFilterService.FilterChanged += UpdateFilteredFeeds;
 
-        await GetAllFacedUsersInFeeds(_allFeeds);
+        await GetAllFacedUsersInFeeds(_allFeeds).ConfigureAwait(false);
 
         _loading = false;
     }

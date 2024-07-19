@@ -89,7 +89,7 @@ public partial class App : ComponentBase
         var options = new NotificationOptions
         {
             Body = $"От: {task.CreatedBy.DisplayName}\nПоручена задача - {task.Title}\nВ проекте: {task.ProjectOwner.Title}",
-            Href = $"/project/{task.ProjectOwner.Id}",
+            Href = $"/project/board/{task.ProjectOwner.Id}",
             Icon = "/favicon.png",
             RequireInteraction = true
         };

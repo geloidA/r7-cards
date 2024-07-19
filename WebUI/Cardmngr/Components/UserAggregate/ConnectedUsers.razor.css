@@ -1,6 +1,7 @@
 .connected-users {
     display: flex;
-    background-color: rgba(250, 235, 215, 0.589);
+    backdrop-filter: blur(10px);
+    background-color: var(--neutral-fill-layer-rest);
     opacity: 0.8;
     border-radius: 8px;
     gap: 3px;

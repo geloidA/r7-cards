@@ -59,7 +59,7 @@ public class ApiTaskRepository(IHttpClientFactory httpClientFactory) : ApiLogicB
             yield return comment;
     }
 
-    public async IAsyncEnumerable<TaskDto> GetFiltredAsync(FilterBuilder builder)
+    public async IAsyncEnumerable<TaskDto> GetFilteredAsync(FilterBuilder builder)
     {
         var filterTasksDao = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<FilterTasksDao>($"{ApiPaths.Task}/filter/{builder.Build()}"));
         await foreach (var task in filterTasksDao?.Response?.ToAsyncEnumerable() ?? AsyncEnumerable.Empty<TaskDto>())
