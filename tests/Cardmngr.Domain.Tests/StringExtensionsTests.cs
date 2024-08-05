@@ -30,7 +30,7 @@ public class UnitTest1
     [InlineData("#")]
     [InlineData("")]
     [InlineData(null)]
-    public void TryParseToTagName_ShouldBeFalse_WhenWrong(string wrongText)
+    public void TryParseToTagName_ShouldBeFalse_WhenWrong(string? wrongText)
     {
         wrongText.TryParseToTagName(out _).Should().BeFalse();
     }

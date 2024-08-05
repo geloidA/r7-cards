@@ -1,16 +1,12 @@
-﻿using Cardmngr.Utils;
+﻿using Microsoft.FluentUI.AspNetCore.Components.Utilities;
 using Microsoft.JSInterop;
 
 namespace Cardmngr.Report;
 
-public class ReportJSModule(IJSRuntime jsRuntime) : IAsyncDisposable
+public class ReportJsModule(IJSRuntime jsRuntime) : JSModule(jsRuntime, "/js/GeneratedJS/saveFile.js")
 {
-    private readonly JSModule module = jsRuntime.LoadJSModule("/js/GeneratedJS/saveFile.js");
-
     public ValueTask SaveAsAsync(string fileName, byte[] fileData)
     {
-        return module.InvokeVoidAsync("saveAs", Convert.ToBase64String(fileData), fileName);
+        return InvokeVoidAsync("saveAs", Convert.ToBase64String(fileData), fileName);
     }
-
-    public ValueTask DisposeAsync() => module.DisposeAsync();
 }

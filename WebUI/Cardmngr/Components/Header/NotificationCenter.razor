@@ -3,9 +3,9 @@
 @inject IMessageService MessageService
 
 <div class="align-self-center clickable user-select-none" @onclick="OpenNotificationCenterAsync" >
-@if (MessageService.Count(App.MESSAGES_NOTIFICATION_CENTER) > 0)
+@if (MessageService.Count(App.MessagesNotificationCenter) > 0)
 {
-    <FluentCounterBadge Count="@MessageService.Count(App.MESSAGES_NOTIFICATION_CENTER)"
+    <FluentCounterBadge Count="@MessageService.Count(App.MessagesNotificationCenter)"
                         Max="9"
                         ShowOverflow="true"
                         BackgroundColor="@Color.Error"

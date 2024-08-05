@@ -22,13 +22,13 @@
                 @if (_deadlineoutTasks.Count > 0)
                 {
                     <div class="col d-flex justify-content-center text-error">
-                        @RenderInscription("ПРОСРОЧЕНО")
+                        @renderInscription("ПРОСРОЧЕНО")
                     </div>
                 }
                 @if (_deadlineoutSoonTasks.Count > 0)
                 {
                     <div style="color: var(--warning);" class="col d-flex justify-content-center">
-                        @RenderInscription("СРОК СКОРО ИСТЕЧЕТ")
+                        @renderInscription("СРОК СКОРО ИСТЕЧЕТ")
                     </div>
                 }
             </div>
@@ -41,15 +41,7 @@
 </div>
 
 @code {
-    private RenderFragment<IEnumerable<OnlyofficeTask>> RenderTasks = tasks =>
-        @<div class=@(tasks.Any() ? "task-column col" : "") style="overflow-x: hidden;" >
-            @foreach (var task in tasks)
-            {
-                <DashboardTaskCard Task="task" />
-            }
-        </div>;
-
-    private RenderFragment<string> RenderInscription = inscription =>
+    private RenderFragment<string> renderInscription = inscription =>
         @<div class="inscription">
             @inscription
         </div>;

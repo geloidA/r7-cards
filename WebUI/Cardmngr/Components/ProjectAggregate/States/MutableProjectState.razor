@@ -1,22 +1,12 @@
-﻿@using Cardmngr.Components.ProjectAggregate.Components
-@attribute [Authorize]
+﻿@attribute [Authorize]
 
 @inherits ProjectStateBase
-@implements IAsyncDisposable
 
 @if (Initialized)
 {
     <CascadingValue Value="this" IsFixed="true" >
-        <CascadingValue Value="hubClient" IsFixed="true">
-            <CascadingValue Value="_commonHeightByKey" IsFixed="true" >
-                @ChildContent
-                @if (_isHubInitialized)
-                {
-                    <div class="right-bottom-corner user-select-none">
-                        <ConnectedUsers></ConnectedUsers>
-                    </div>
-                }
-            </CascadingValue>
+        <CascadingValue Value="CommonHeightByKey" IsFixed="true" >
+            @ChildContent
         </CascadingValue>
     </CascadingValue>
 }

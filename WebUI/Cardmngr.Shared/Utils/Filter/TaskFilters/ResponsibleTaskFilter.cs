@@ -1,4 +1,5 @@
 ﻿using Cardmngr.Domain.Entities;
+using Cardmngr.Shared.Utils.Filter.TaskFilters;
 
 namespace Cardmngr.Shared.Utils.Filter;
 

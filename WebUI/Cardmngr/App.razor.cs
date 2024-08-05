@@ -15,28 +15,28 @@ namespace Cardmngr;
 
 public partial class App : ComponentBase
 {
-    public const string MESSAGES_NOTIFICATION_CENTER = "messages-notification-center";
+    public const string MessagesNotificationCenter = "messages-notification-center";
 
-    [Inject] ILocalStorageService LocalStorage { get; set; } = null!;
-    [Inject] AuthenticationStateProvider AuthenticationProvider { get; set; } = null!;
-    [Inject] IAuthApiLogic AuthApiLogic { get; set; } = null!;
-    [Inject] AppInfoService AppInfoService { get; set; } = null!;
-    [Inject] NotificationService NotificationService { get; set; } = null!;
-    [Inject] NotificationHubConnection NotificationHubConnection { get; set; } = null!;
-    [Inject] IJSRuntime JS { get; set; } = null!;
-    [Inject] IProjectClient ProjectClient { get; set; } = null!;    
-    [Inject] IFollowedProjectManager FollowedProjectManager { get; set; } = null!;
-    [Inject] ITaskNotificationManager TaskNotificationManager { get; set; } = null!;
+    [Inject] private ILocalStorageService LocalStorage { get; set; } = null!;
+    [Inject] private AuthenticationStateProvider AuthenticationProvider { get; set; } = null!;
+    [Inject] private IAuthApiLogic AuthApiLogic { get; set; } = null!;
+    [Inject] private AppInfoService AppInfoService { get; set; } = null!;
+    [Inject] private NotificationService NotificationService { get; set; } = null!;
+    [Inject] private NotificationHubConnection NotificationHubConnection { get; set; } = null!;
+    [Inject] private IJSRuntime Js { get; set; } = null!;
+    [Inject] private IProjectClient ProjectClient { get; set; } = null!;    
+    [Inject] private IFollowedProjectManager FollowedProjectManager { get; set; } = null!;
+    [Inject] private ITaskNotificationManager TaskNotificationManager { get; set; } = null!;
 
     private async Task OnNavigateAsync(NavigationContext args)
     {
-        var auth =  await LocalStorage.GetItemAsync<string>("isauthenticated");
-        var user = await AuthenticationProvider.GetAuthenticationStateAsync();
+        var auth =  await LocalStorage.GetItemAsync<string>("isauthenticated").ConfigureAwait(false);
+        var user = await AuthenticationProvider.GetAuthenticationStateAsync().ConfigureAwait(false);
 
         if (!string.IsNullOrEmpty(auth) && !user.User.Identity!.IsAuthenticated)
         {
-            var userDao = await AuthApiLogic.GetSelfProfileAsync();
-            if (userDao is { })
+            var userDao = await AuthApiLogic.GetSelfProfileAsync().ConfigureAwait(false);
+            if (userDao is not null)
             {
                 AuthenticationProvider
                     .ToCookieProvider()
@@ -44,7 +44,7 @@ public partial class App : ComponentBase
             }
             else 
             {
-                await LocalStorage.RemoveItemAsync("isauthenticated");
+                await LocalStorage.RemoveItemAsync("isauthenticated").ConfigureAwait(false);
             }
         }
     }
@@ -54,32 +54,32 @@ public partial class App : ComponentBase
         AuthenticationProvider.AuthenticationStateChanged += RequestPermission;
         NotificationHubConnection.TaskReceived += ReceiveTask;
 
-        var current = (await LocalStorage.GetItemAsync<string>("r7cards-version")) ?? "unknown";
-        var server = await AppInfoService.GetVersionAsync(current);
+        var current = (await LocalStorage.GetItemAsync<string>("r7cards-version").ConfigureAwait(false)) ?? "unknown";
+        var server = await AppInfoService.GetVersionAsync(current).ConfigureAwait(false);
 
-        await JS.InvokeVoidAsync("updateVersion", current, server);
+        await Js.InvokeVoidAsync("updateVersion", current, server).ConfigureAwait(false);
 
-        await NotificationService.RequestPermissionAsync();
+        await NotificationService.RequestPermissionAsync().ConfigureAwait(false);
     }
 
     private void RequestPermission(Task<AuthenticationState> authState)
     {
         _ = InvokeAsync(async () =>
         {
-            var state = await authState;
+            var state = await authState.ConfigureAwait(false);
 
-            if (state?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value is { } userId)
+            if (state.User.FindFirst(ClaimTypes.NameIdentifier)?.Value is { } userId)
             {
                 if (NotificationHubConnection.Connected)
                 {
-                    await NotificationHubConnection.DisposeAsync();
+                    await NotificationHubConnection.DisposeAsync().ConfigureAwait(false);
                 }
                 
                 FollowedProjectManager.Refresh(await ProjectClient
                     .GetFollowedProjectsAsync()
-                    .Select(x => x.Id).ToListAsync());
-                await NotificationHubConnection.StartAsync(userId);
-                await TaskNotificationManager.NotifyDeadlinesAsync();
+                    .Select(x => x.Id).ToListAsync().ConfigureAwait(false));
+                await NotificationHubConnection.StartAsync(userId).ConfigureAwait(false);
+                await TaskNotificationManager.NotifyDeadlinesAsync().ConfigureAwait(false);
             }
         });
     }
@@ -89,13 +89,13 @@ public partial class App : ComponentBase
         var options = new NotificationOptions
         {
             Body = $"От: {task.CreatedBy.DisplayName}\nПоручена задача - {task.Title}\nВ проекте: {task.ProjectOwner.Title}",
-            Href = $"/project/board/{task.ProjectOwner.Id}",
+            Href = $"/project/board?ProjectId={task.ProjectOwner.Id}",
             Icon = "/favicon.png",
             RequireInteraction = true
         };
 
         TaskNotificationManager.NotifyNew(task);
 
-        _ = InvokeAsync(async () => await NotificationService.CreateAsync("Появилась новая задача!", options));
+        _ = InvokeAsync(async () => await NotificationService.CreateAsync("Появилась новая задача!", options).ConfigureAwait(false));
     }
 }

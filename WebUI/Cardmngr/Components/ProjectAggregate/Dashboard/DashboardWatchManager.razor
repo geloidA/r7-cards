@@ -37,7 +37,7 @@
 
                 @foreach (var project in Projects)
                 {
-                    bool isChecked = _selectedProjects.Contains(project.Id);
+                    var isChecked = _selectedProjects.Contains(project.Id);
                     <FluentCheckbox Disabled="_onlyShowDeadlineContainedProjects"
                                     @bind-Value:get="isChecked"
                                     @bind-Value:set="c => OnSelectionProjectChanged(project.Id, c)" >
@@ -52,7 +52,7 @@
 
             @if (_showSelectionErrorMsg)
             {
-                @RenderError("Выберите по крайней мере два проекта");
+                @renderError("Выберите по крайней мере два проекта")
             }
 
             <FluentNumberField Max="@_maxUnitValue" Min="@_minUnitValue" @bind-Value="ChangeInterval" >
@@ -75,7 +75,7 @@
 
             @if (_showOnlyDeadlineContainedProjectsError)
             {
-                @RenderError("Ни один проект не содержит просроченных или скоро просрочившихся задач.");
+                @renderError("Ни один проект не содержит просроченных или скоро просрочившихся задач.")
             }
 
             <FluentButton class="d-flex" @onclick="NavigateToDashboard" >
@@ -87,7 +87,7 @@
 </FluentPopover>
 
 @code {
-    private RenderFragment<string> RenderError = errorMsg =>
+    private RenderFragment<string> renderError = errorMsg =>
         @<Smooth ShowOnFirstRender Delay="TimeSpan.FromSeconds(1)">
             <span style="font-size: 12px;" class="d-flex align-content-center text-error">
                 <FluentIcon Value="@(new Icons.Filled.Size12.ErrorCircle())" 

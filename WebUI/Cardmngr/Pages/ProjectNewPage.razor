@@ -1,7 +1,9 @@
-@page "/project/new"
+@* @page "/project/new" *@
 
-<div class="bob ">
-    
+@attribute [Authorize]
+
+<div class="middle-container ">
+    <h3 class="fw-bold mb-2">Создание проекта</h3>
     <FluentEditForm Model="_project"
                     class="d-flex flex-column gap-2"
                     OnValidSubmit="CreateProject">
@@ -42,7 +44,31 @@
         
         Команда
         Теги
-        Приватный/Публичный
+        
+        <FluentDivider />
+        
+        <FluentRadioGroup @bind-Value="_project.IsPrivate" Orientation="Orientation.Vertical" Class="gap-1">
+            <FluentRadio Value="true">
+                <div class="d-flex gap-2">
+                    <FluentIcon Style="min-width: 24px;" Value="@(new Icons.Regular.Size28.LockClosed())"/>
+                    <div class="d-flex flex-column">
+                        <span class="fw-bold">Приватный</span>
+                        <span class="text-info">Проект будет доступен только участникам команды</span>
+                    </div>
+                </div>
+            </FluentRadio>
+            <FluentRadio Value="false">
+                <div class="d-flex gap-2">
+                    <FluentIcon Style="min-width: 28px;" Width="28px" Value="@(new Icons.Regular.Size24.BookGlobe())"/>
+                    <div class="d-flex flex-column">
+                        <span class="fw-bold">Публичный</span>
+                        <span class="text-info">Проект будет доступен всем</span>
+                    </div>
+                </div>
+            </FluentRadio>
+        </FluentRadioGroup>
+        
+        <FluentDivider />
 
         <FluentButton Type="ButtonType.Submit"
                       Class="align-self-end"

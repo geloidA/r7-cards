@@ -1,7 +1,7 @@
 ﻿using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Utils;
 
-namespace Cardmngr.Reports;
+namespace Cardmngr.Report;
 
 public class EfficiencyFactorReportRequest
 {

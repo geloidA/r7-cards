@@ -13,29 +13,29 @@ using Cardmngr.Shared.Utils.Comparer;
 
 namespace Cardmngr.Components.MilestoneAggregate.Modals;
 
-public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, MilestoneUpdateData>(new MilestoneMilestoneUpdateDataEqualityComparer()), 
+public sealed partial class MilestoneDetailsModal() : 
+    AddEditModalBase<Milestone, MilestoneUpdateData>(new MilestoneMilestoneUpdateDataEqualityComparer()), 
     IDisposable
 {
     private Guid lockGuid;
-    Offcanvas currentModal = null!;
+    private Offcanvas currentModal = null!;
     private IEnumerable<OnlyofficeTask> milestoneTasks = [];
 
     private bool CanEdit => !State.ReadOnly && (Model == null || Model.CanEdit);
 
-    private DateTime? Start => Model == null ? buffer.Deadline?.AddDays(-7) : State.GetMilestoneStart(Model);
+    private DateTime? Start => Model == null ? Buffer.Deadline?.AddDays(-7) : State.GetMilestoneStart(Model);
 
     private int TotalTasks => Model == null ? 0 : milestoneTasks.Count();
     private int ActiveTasks => Model == null ? 0 : milestoneTasks.Count(x => !x.IsClosed());
 
-    [Inject] IMilestoneClient MilestoneClient { get; set; } = null!;
+    [Inject] private IMilestoneClient MilestoneClient { get; set; } = null!;
     [Parameter] public IProjectState State { get; set; } = null!;
-    [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     public void Dispose()
     {
-        if (State is IRefresheableProjectState refresheableState)
+        if (State is IRefreshableProjectState refreshableState)
         {
-            refresheableState.RefreshService.RemoveLock(lockGuid);
+            refreshableState.RefreshService.RemoveLock(lockGuid);
         }
     }
 
@@ -43,15 +43,15 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
     {
         base.OnInitialized();
 
-        if (State is IRefresheableProjectState refresheableState)
+        if (State is IRefreshableProjectState refreshableState)
         {
             lockGuid = Guid.NewGuid();
-            refresheableState.RefreshService.Lock(lockGuid);
+            refreshableState.RefreshService.Lock(lockGuid);
         }
 
         if (IsAdd)
         {
-            buffer.Title = "Новая веха";
+            Buffer.Title = "Новая веха";
         }
         else
         {
@@ -59,7 +59,7 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
         }
     }
 
-    private async Task ToggleMilestonekStatus()
+    private async Task ToggleMilestoneStatus()
     {
         var updated = await MilestoneClient.UpdateStatusAsync(Model!.Id, Model!.IsClosed() ? 0 : 1);
 
@@ -77,12 +77,12 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
 
         if (IsAdd)
         {
-            var added = await MilestoneClient.CreateAsync(State.Project.Id, buffer);
+            var added = await MilestoneClient.CreateAsync(State.Project.Id, Buffer);
             State.AddMilestone(added);
         }
         else
         {
-            var updated = await MilestoneClient.UpdateAsync(Model!.Id, buffer);
+            var updated = await MilestoneClient.UpdateAsync(Model!.Id, Buffer);
             State.UpdateMilestone(updated);
         }
 
@@ -106,10 +106,10 @@ public partial class MilestoneDetailsModal() : AddEditModalBase<Milestone, Miles
 
     private IEnumerable<UserInfo> SelectedResponsible
     {
-        get => State.Team.FirstOrDefault(x => x.Id == buffer.Responsible) is { } 
-            ? [State.Team.Single(x => x.Id == buffer.Responsible)] 
+        get => State.Team.FirstOrDefault(x => x.Id == Buffer.Responsible) is { } 
+            ? [State.Team.Single(x => x.Id == Buffer.Responsible)] 
             : [];
-        set => buffer.Responsible = value.FirstOrDefault()?.Id;
+        set => Buffer.Responsible = value.FirstOrDefault()?.Id;
     }
 
     private void OnSearchResponsible(OptionsSearchEventArgs<UserInfo> e)

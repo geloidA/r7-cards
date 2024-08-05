@@ -2,23 +2,24 @@
 
 namespace Onlyoffice.ProxyServer.Controllers;
 
+[Route("api/[controller]")]
 public class PeopleController(IConfiguration conf) : ApiController(conf)
 {
-    [Route("api/[controller]/@self")]
-    public Task ProxySelf() => ProxyRequestAsync($"{apiUrl}/people/@self");
+    [Route("@self")]
+    public Task ProxySelf() => ProxyRequestAsync($"{ApiUrl}/people/@self");
 
-    [Route("api/[controller]/storage/userPhotos/{**rest}")]
-    public Task ProxyStorageUserPhotos(string rest) => ProxyRequestAsync($"{serverUrl}/storage/userPhotos/{rest}");
+    [Route("storage/userPhotos/{**rest}")]
+    public Task ProxyStorageUserPhotos(string rest) => ProxyRequestAsync($"{ServerUrl}/storage/userPhotos/{rest}");
 
-    [Route("api/[controller]/skins/default/images/{**rest}")]
-    public Task ProxySkinsDefaultImages(string rest) => ProxyRequestAsync($"{serverUrl}/skins/default/images/{rest}");
+    [Route("skins/default/images/{**rest}")]
+    public Task ProxySkinsDefaultImages(string rest) => ProxyRequestAsync($"{ServerUrl}/skins/default/images/{rest}");
 
-    [HttpGet("api/[controller]/{id}")]
-    public Task ProxyGetProfileById(string id) => ProxyRequestAsync($"{apiUrl}/people/{id}");
+    [HttpGet("{id}")]
+    public Task ProxyGetProfileById(string id) => ProxyRequestAsync($"{ApiUrl}/people/{id}");
 
-    [HttpGet("api/[controller]/filter/{**rest}")]
-    public Task ProxyFilterPeople(string rest) => ProxyRequestAsync($"{apiUrl}/people/filter?{rest}");
+    [HttpGet("filter/{**rest}")]
+    public Task ProxyFilterPeople(string rest) => ProxyRequestAsync($"{ApiUrl}/people/filter?{rest}");
 
-    [HttpGet("api/[controller]")]
-    public Task ProxyGetUsers() => ProxyRequestAsync($"{apiUrl}/people");
+    [HttpGet("")]
+    public Task ProxyGetUsers() => ProxyRequestAsync($"{ApiUrl}/people");
 }

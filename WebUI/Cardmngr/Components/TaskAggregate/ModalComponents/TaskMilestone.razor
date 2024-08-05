@@ -1,10 +1,10 @@
 ﻿@using Onlyoffice.Api.Models
 
-<FluentAutocomplete @ref="MilestoneList"
+<FluentAutocomplete @ref="milestoneList"
         TOption="Milestone" Width="487px"
         Disabled="Disabled" AutoComplete="off"
         MaximumSelectedOptions="1" MaximumOptionsSearch="100"
-        SelectedOptions="SelectedMilestone"
+        SelectedOptions="_selectedMilestone"
         SelectedOptionsChanged="OnSelectionChanged"
         OnOptionsSearch="OnSearch"
         Placeholder="Нет" >
@@ -49,8 +49,8 @@
 </FluentAutocomplete>
 
 @code {
-    FluentAutocomplete<Milestone> MilestoneList = default!;
-    IEnumerable<Milestone> SelectedMilestone = [];
+    FluentAutocomplete<Milestone> milestoneList = default!;
+    IEnumerable<Milestone> _selectedMilestone = [];
 
     [CascadingParameter] TaskUpdateData Task { get; set; } = null!;    
     [CascadingParameter] IProjectState State { get; set; } = null!;
@@ -59,16 +59,17 @@
     protected override void OnInitialized()
     {
         var selected = State.Milestones.SingleOrDefault(x => x.Id == Task.MilestoneId);
-        if (selected is { })
+        if (selected is not null)
         {
-            SelectedMilestone = [selected];
+            _selectedMilestone = [selected];
         }
     }
 
     void OnSelectionChanged(IEnumerable<Milestone> e)
     {
-        Task.MilestoneId = e.Any() ? e.Single().Id : null;
-        SelectedMilestone = e;
+        var selectedMilestone = e.ToList();
+        Task.MilestoneId = selectedMilestone.Any() ? selectedMilestone.Single().Id : null;
+        this._selectedMilestone = selectedMilestone;
     }
 
     void OnSearch(OptionsSearchEventArgs<Milestone> e)

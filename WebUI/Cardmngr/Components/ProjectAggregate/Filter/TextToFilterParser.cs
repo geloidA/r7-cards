@@ -6,17 +6,18 @@ public class TextToFilterParser
 {
     private readonly Func<string, IFilter> _defaultFilter;
     private readonly Dictionary<string, Func<string, IFilter>> _filtersByPrefix;
-    private static readonly char[] separator = [' '];
+    private static readonly char[] Separators = [' '];
 
     /// <param name="filters">Filters to search</param>
     /// <param name="defaultFilter">Used when no prefix is found</param>
     /// <exception cref="ArgumentException"></exception>
     public TextToFilterParser(IEnumerable<IFilterModel> filters, Func<string, IFilter> defaultFilter)
     {
-        if (filters is null || !filters.Any()) 
+        var filterModels = filters.ToList();
+        if (filters is null || filterModels.Count == 0) 
             throw new ArgumentException("'filters' cannot be null or empty", nameof(filters));
 
-        _filtersByPrefix = filters.ToDictionary(x => x.Prefix, x => new Func<string, IFilter>(x.GetFilter));
+        _filtersByPrefix = filterModels.ToDictionary(x => x.Prefix, x => new Func<string, IFilter>(x.GetFilter));
         _defaultFilter = defaultFilter;
     }
 
@@ -27,7 +28,7 @@ public class TextToFilterParser
             yield break;
         }
 
-        foreach (var filterSegment in text.Split(separator, StringSplitOptions.RemoveEmptyEntries))
+        foreach (var filterSegment in text.Split(Separators, StringSplitOptions.RemoveEmptyEntries))
         {
             var splitSegment = filterSegment.Split(':', 2);
 

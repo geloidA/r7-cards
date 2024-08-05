@@ -1,5 +1,4 @@
 ﻿using Cardmngr.Shared.Utils.Filter;
-using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.Filter;
 

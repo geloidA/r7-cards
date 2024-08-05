@@ -1,5 +1,4 @@
-﻿using Cardmngr.Components.ProjectAggregate.Models;
-using Cardmngr.Components.ProjectAggregate.States;
+﻿using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.AspNetCore.Components;

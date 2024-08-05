@@ -14,19 +14,19 @@ public partial class ProjectSummaryInfo : ComponentBase, IDisposable
 
     private ICollection<OnlyofficeTask> _deadlineoutTasks = null!;
     private ICollection<OnlyofficeTask> _deadlineoutSoonTasks = null!;
-    private IRefresheableProjectState? _refreshableState;
+    private IRefreshableProjectState? _refreshableState;
 
-    [CascadingParameter] IProjectState State { get; set; } = null!;
+    [CascadingParameter] private IProjectState State { get; set; } = null!;
 
-    [Inject] IJSRuntime JSRuntime { get; set; } = null!;
+    [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
 
     [Parameter] public EventCallback CanSwitch { get; set; }
 
     protected override void OnInitialized()
     {
-        if (State is IRefresheableProjectState refresheable)
+        if (State is IRefreshableProjectState refreshable)
         {
-            _refreshableState = refresheable;
+            _refreshableState = refreshable;
             _refreshableState.RefreshService.Refreshed += RefreshState;
         }
         
@@ -41,15 +41,15 @@ public partial class ProjectSummaryInfo : ComponentBase, IDisposable
         {
             _dotNetObjectReference = DotNetObjectReference.Create(this);
 
-            await JSRuntime.InvokeVoidAsync("scrollToBottom", 
+            await JsRuntime.InvokeVoidAsync("scrollToBottom", 
                 _deadlineoutTasksRef, 
                 ScrollDuration,
-                _dotNetObjectReference);
+                _dotNetObjectReference).ConfigureAwait(false);
 
-            await JSRuntime.InvokeVoidAsync("scrollToBottom", 
+            await JsRuntime.InvokeVoidAsync("scrollToBottom", 
                 _deadlineoutSoonTasksRef, 
                 ScrollDuration,
-                _dotNetObjectReference);
+                _dotNetObjectReference).ConfigureAwait(false);
         }
     }
 

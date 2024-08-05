@@ -20,11 +20,11 @@ public partial class EfficiencyFactorTab
 
     protected override async Task OnInitializedAsync()
     {
-        groups = await GroupClient.GetGroupsAsync().ToListAsync();
-        projectsData = await ProjectClient.GetProjectsAsync().ToListAsync();
+        groups = await GroupClient.GetGroupsAsync().ToListAsync().ConfigureAwait(false);
+        projectsData = await ProjectClient.GetProjectsAsync().ToListAsync().ConfigureAwait(false);
         usersData = await PeopleClient.GetUsersAsync()
             .Cast<UserInfo>()
-            .ToListAsync();
+            .ToListAsync().ConfigureAwait(false);
     }
 
     #region Search
@@ -51,7 +51,7 @@ public partial class EfficiencyFactorTab
         var scope = ServiceProvider.CreateScope(); // for escape downloading saveFile.js
         var reportService = scope.ServiceProvider.GetRequiredService<IReportService>();
 
-        var tasks = await GetFilteredTasksAsync();
+        var tasks = await GetFilteredTasksAsync().ConfigureAwait(false);
 
         if (tasks.Count == 0)
         {
@@ -66,7 +66,7 @@ public partial class EfficiencyFactorTab
             Users = reportRequest.Group.Any() ? groupUsers : reportRequest.Responsibles
         };
 
-        await reportService.GenerateReport($"Эффективность пользователей-{DateTime.Now:dd.MM.yyyy HH_mm}");
+        await reportService.GenerateReport($"Эффективность пользователей-{DateTime.Now:dd.MM.yyyy HH_mm}").ConfigureAwait(false);
 
         generating = false;
     }
@@ -78,9 +78,9 @@ public partial class EfficiencyFactorTab
         if (reportRequest.Group.Any())
         {
             groupUsers = await PeopleClient.GetFilteredUsersAsync(PeopleFilterBuilder.Instance
-                .GroupId(reportRequest.Group.Single().Id).Simple())
-                    .Cast<UserInfo>()
-                    .ToListAsync();
+                    .GroupId(reportRequest.Group.Single().Id).Simple())
+                .Cast<UserInfo>()
+                .ToListAsync().ConfigureAwait(false);
 
             tasks = tasks.Where(x => x.Responsibles.Any(tR => groupUsers.Any(u => u.Id == tR.Id)));
         }
@@ -92,9 +92,9 @@ public partial class EfficiencyFactorTab
 
         return await tasks
             .Where(x => !reportRequest.Projects.Any() || 
-                reportRequest.Projects.Any(p => p.Id == x.ProjectOwner.Id))
+                        reportRequest.Projects.Any(p => p.Id == x.ProjectOwner.Id))
             .Where(x => x.IsDeadlineOut() || x.Status == Domain.Enums.Status.Closed)
-            .ToListAsync();
+            .ToListAsync().ConfigureAwait(false);
     }
 
     private TaskFilterBuilder GetFilterBuilder()

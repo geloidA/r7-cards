@@ -2,9 +2,9 @@
 
 namespace Cardmngr.Services;
 
-public sealed class NotificationService(NotificationJSModule notification) : IAsyncDisposable
+public sealed class NotificationService(NotificationJsModule notification) : IAsyncDisposable
 {
-    private readonly NotificationJSModule notification = notification;
+    private readonly NotificationJsModule notification = notification;
 
     public async ValueTask<PermissionType> RequestPermissionAsync()
     {

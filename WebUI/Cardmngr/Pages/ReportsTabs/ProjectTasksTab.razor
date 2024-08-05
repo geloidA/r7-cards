@@ -1,9 +1,6 @@
 ﻿@using Cardmngr.Application
 @using Cardmngr.Application.Clients.People
 @using Cardmngr.Application.Clients.TaskClient
-@using Cardmngr.Report
-@using Onlyoffice.Api
-@using Cardmngr.Reports
 
 @inject IProjectClient ProjectClient
 @inject IPeopleClient PeopleClient
@@ -19,8 +16,7 @@
         <p>Чтобы посмотреть список всех задач во всех ваших проектах, сразу нажмите <i>'Сгенерировать отчет'.</i></p>
         <p>Настройка интервалов начала и крайнего срока позволит сделать выборку интересующих вас задач, входящих в определенные временные границы.</p>
         <p>Пример отчета:</p>
-        <img src="images/project-tasks-report-example.png" class="mb-2" width="800" 
-            style="border-radius: 10px; opacity: 0.8; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);" />
+        <img src="images/project-tasks-report-example.png" class="mb-2" width="800" style="border-radius: 10px; opacity: 0.8; box-shadow: 0 0 10px 0 rgba(0,0,0,0.5);" alt=""/>
     </div>
     <div class="col">
         <FluentCard AreaRestricted="false"
@@ -82,7 +78,7 @@
             <div class="d-flex mt-4">
                 <FluentSpacer />
                 <FluentButton IconStart="@(new Icons.Filled.Size16.ArrowDownload())" 
-                    Loading="generating" Appearance="Appearance.Stealth" @onclick="async () => await GenerateReport()" >
+                    Loading="generating" Appearance="Appearance.Stealth" @onclick="async () => await GenerateReport().ConfigureAwait(false)" >
                     Сгенерировать отчет
                 </FluentButton>
             </div>

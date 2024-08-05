@@ -7,12 +7,12 @@ namespace Cardmngr.Components.Modals.MyBlazored;
 
 public partial class Offcanvas : OffcanvasBase
 {
-    private string DelayedShow = "";
+    private string delayedShow = "";
     private string CloseBtnRadiusStyle => Placement == MyOffcanvasPlacement.Start 
         ? "border-radius: 0px 7px 0px 0px;"
         : "border-radius: 7px 0px 0px 0px;";
 
-    [CascadingParameter] BlazoredModalInstance CurrentModel { get; set; } = null!;
+    [CascadingParameter] private BlazoredModalInstance CurrentModel { get; set; } = null!;
 
     [Parameter] public MyOffcanvasPlacement Placement { get; set; }
     [Parameter] public bool ShowCloseBtn { get; set; } = true;
@@ -25,7 +25,7 @@ public partial class Offcanvas : OffcanvasBase
     {
         if (e.Key == "Escape")
         {
-            await CloseAsync(ModalResult.Cancel());
+            await CloseAsync(ModalResult.Cancel()).ConfigureAwait(false);
         }
     }
 
@@ -33,34 +33,34 @@ public partial class Offcanvas : OffcanvasBase
     {
         if (firstRender)
         {
-            await Task.Delay(100);
-            await myOffcanvas.FocusAsync();
+            await Task.Delay(100).ConfigureAwait(false);
+            await myOffcanvas.FocusAsync().ConfigureAwait(false);
         }
     }
 
     public async Task CloseAsync(ModalResult? result = null)
     {
-        if (OnClose is { })
+        if (OnClose is not null)
         {
-            if ((await OnClose()).Cancelled)
+            if ((await OnClose().ConfigureAwait(false)).Cancelled)
             {
                 return;
             }
         }
 
-        await ToggleDelayShowAsync();
-        await CurrentModel.CloseAsync(result ?? ModalResult.Ok());
+        await ToggleDelayShowAsync().ConfigureAwait(false);
+        await CurrentModel.CloseAsync(result ?? ModalResult.Ok()).ConfigureAwait(false);
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await ToggleDelayShowAsync();
+        await ToggleDelayShowAsync().ConfigureAwait(false);
     }
 
     private async Task ToggleDelayShowAsync() // need for animation showing
     {
-        await Task.Delay(1);
-        DelayedShow = string.IsNullOrEmpty(DelayedShow) ? "show" : "";
+        await Task.Delay(1).ConfigureAwait(false);
+        delayedShow = string.IsNullOrEmpty(delayedShow) ? "show" : "";
     }
 
     private string CssPlacement

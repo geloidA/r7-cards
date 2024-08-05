@@ -6,16 +6,15 @@ using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
-public partial class MilestoneTimeline : KolComponentBase, IAsyncDisposable
+public sealed partial class MilestoneTimeline : KolComponentBase, IAsyncDisposable
 {
-    
-    [CascadingParameter] IFilterableProjectState State { get; set; } = null!;
     private readonly MilestoneTaskFilter milestoneTaskFilter = [];
+    
+    [Inject] private KolTimelineJsInterop TimelineInterop { get; set; } = null!;
+    
+    [CascadingParameter] private IFilterableProjectState State { get; set; } = null!;
 
-    [Parameter]
-    public bool Collapsed { get; set; }
-
-    [Inject] KolTimelineJsInterop TimelineInterop { get; set; } = null!;
+    [Parameter] public bool Collapsed { get; set; }
 
     protected override void OnInitialized()
     {
@@ -32,12 +31,12 @@ public partial class MilestoneTimeline : KolComponentBase, IAsyncDisposable
             }
         };
 
-        if (State is IRefresheableProjectState refresheableProjectState)
+        if (State is IRefreshableProjectState refreshableProjectState)
         {
-            refresheableProjectState.RefreshService.Refreshed += OnRefresh;
+            refreshableProjectState.RefreshService.Refreshed += OnRefresh;
         }
 
-        State.MilestonesChanged += StateHasChanged;
+        State.MilestonesChanged += _ => StateHasChanged();
         State.TasksChanged += _ => StateHasChanged();
     }
 
@@ -47,11 +46,9 @@ public partial class MilestoneTimeline : KolComponentBase, IAsyncDisposable
     /// </summary>
     private void OnRefresh()
     {
-        if (milestoneTaskFilter.Count > 0)
-        {
-            var deletedMilestones = milestoneTaskFilter.Except(State.Milestones);
-            milestoneTaskFilter.RemoveRange(deletedMilestones);
-        }
+        if (milestoneTaskFilter.Count <= 0) return;
+        var deletedMilestones = milestoneTaskFilter.Except(State.Milestones);
+        milestoneTaskFilter.RemoveRange(deletedMilestones);
     }
 
     /// <summary>
@@ -60,9 +57,9 @@ public partial class MilestoneTimeline : KolComponentBase, IAsyncDisposable
     /// <returns>A ValueTask representing the asynchronous operation.</returns>
     public ValueTask DisposeAsync()
     {
-        if (State is IRefresheableProjectState refresheableProjectState)
+        if (State is IRefreshableProjectState refreshableProjectState)
         {
-            refresheableProjectState.RefreshService.Refreshed -= OnRefresh;
+            refreshableProjectState.RefreshService.Refreshed -= OnRefresh;
         }
 
         return TimelineInterop.DisposeAsync();

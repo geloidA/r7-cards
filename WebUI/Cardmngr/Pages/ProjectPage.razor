@@ -1,11 +1,12 @@
-﻿@page "/project/board/{ProjectId:int}"
+﻿@page "/project/board"
 
-@inherits AuthorizedPage
+@attribute [Authorize]
 
 <PageTitle>Проект</PageTitle>
 
-<AuthorizeView>
-    <MutableProjectState Id="ProjectId ?? 0" >
+@if (ProjectId is not null)
+{
+    <MutableProjectState Id="ProjectId.Value" >
         <div class="d-flex flex-column h-100 p-3">
             <div class="mb-2">
                 <ProjectBoardHeader></ProjectBoardHeader>
@@ -15,8 +16,8 @@
             </div>
         </div>
     </MutableProjectState>
-</AuthorizeView>
+}
 
 @code {
-    [Parameter] public int? ProjectId { get; set; }
+    [SupplyParameterFromQuery] public int? ProjectId { get; set; }
 }

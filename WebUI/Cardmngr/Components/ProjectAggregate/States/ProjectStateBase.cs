@@ -10,22 +10,21 @@ namespace Cardmngr.Components.ProjectAggregate.States;
 
 public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase, IProjectState, IDisposable
 {
-    private Project _project = null!;
     private List<UserProfile> _team = [];
     private List<Milestone> _milestones = [];
     private List<OnlyofficeTaskStatus> _statuses = [];
     private List<OnlyofficeTask> _tasks = [];
     private readonly Dictionary<int, List<TaskTag>> _tagsByTaskId = [];
     
-    protected readonly Dictionary<int, int> _commonHeightByKey = [];
+    protected readonly Dictionary<int, int> CommonHeightByKey = [];
     private CancellationTokenSource? _cts;
 
-    public async Task SetModelAsync(ProjectStateDto model, bool firstRender = false)
+    protected async Task SetModelAsync(ProjectStateDto model, bool firstRender = false)
     {
         Initialized = false;
         
         _team = model.Team;
-        _project = model.Project;
+        Project = model.Project;
         _statuses = model.Statuses;
         _milestones = model.Milestones;
 
@@ -68,7 +67,8 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     }
 
 
-    public Project Project => _project;
+    public Project Project { get; private set; } = null!;
+
     public IReadOnlyList<UserProfile> Team => _team;
     public IReadOnlyList<OnlyofficeTask> Tasks => _tasks;
     public IReadOnlyList<Milestone> Milestones => _milestones;
@@ -76,29 +76,29 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
 
     public bool Initialized { get; protected set; }
 
-    public event Action? MilestonesChanged;
-    protected void OnMilestonesChanged() => MilestonesChanged?.Invoke();
+    public event Action<EntityChangedEventArgs<Milestone>?>? MilestonesChanged;
+    private void OnMilestonesChanged(EntityChangedEventArgs<Milestone>? args = null) => MilestonesChanged?.Invoke(args);
 
-    public event Action<TaskChangedEventArgs?>? TasksChanged;
-    private void OnTasksChanged(TaskAction action, OnlyofficeTask task) 
-        => TasksChanged?.Invoke(new TaskChangedEventArgs(action, task));
+    public event Action<EntityChangedEventArgs<OnlyofficeTask>?>? TasksChanged;
+    private void OnTasksChanged(EntityActionType actionType, OnlyofficeTask task) 
+        => TasksChanged?.Invoke(new EntityChangedEventArgs<OnlyofficeTask>(actionType, task));
 
     private void OnTasksChanged() => TasksChanged?.Invoke(null);
 
     public event Action? SubtasksChanged;
-    protected void OnSubtasksChanged() => SubtasksChanged?.Invoke();
+    private void OnSubtasksChanged() => SubtasksChanged?.Invoke();
 
-    public void UpdateTask(OnlyofficeTask task) => UpdateTask(task, TaskAction.Update);
+    public void UpdateTask(OnlyofficeTask task) => UpdateTask(task, EntityActionType.Update);
     
-    public void ChangeTaskStatus(OnlyofficeTask task) => UpdateTask(task, TaskAction.ChangeStatus);
+    public void ChangeTaskStatus(OnlyofficeTask task) => UpdateTask(task, EntityActionType.ChangeStatus);
 
-    private void UpdateTask(OnlyofficeTask task, TaskAction action)
+    private void UpdateTask(OnlyofficeTask task, EntityActionType actionType)
     {
         _tasks.RemoveSingle(x => x.Id == task.Id);
         task.Tags = _tagsByTaskId.TryGetValue(task.Id, out var tags) ? tags : [];
         _tasks.Add(task);
 
-        OnTasksChanged(action, task);
+        OnTasksChanged(actionType, task);
     }
 
     public void AddTask(OnlyofficeTask created)
@@ -110,17 +110,17 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
             _tagsByTaskId.Add(created.Id, created.Tags);
         }
 
-        OnTasksChanged(TaskAction.Add, created);
+        OnTasksChanged(EntityActionType.Add, created);
     }
 
     public void RemoveTask(OnlyofficeTask task) => RemoveTask(task.Id, task);
 
-    public void RemoveTask(int taskId, OnlyofficeTask? task = null)
+    protected void RemoveTask(int taskId, OnlyofficeTask? task = null)
     {
         _tasks.RemoveSingle(x => x.Id == taskId);
         _tagsByTaskId.Remove(taskId);
 
-        OnTasksChanged(TaskAction.Remove, task ?? new OnlyofficeTask { Id = taskId });
+        OnTasksChanged(EntityActionType.Remove, task ?? new OnlyofficeTask { Id = taskId });
     }
 
     public void AddMilestone(Milestone milestone)
@@ -147,7 +147,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     {
         _milestones.RemoveSingle(x => x.Id == milestone.Id);
         _milestones.Add(milestone);
-        OnMilestonesChanged();
+        OnMilestonesChanged(new EntityChangedEventArgs<Milestone>(EntityActionType.Update, milestone));
     }
 
     public void AddSubtask(int taskId, Subtask subtask)
@@ -173,7 +173,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
         OnSubtasksChanged();
     }
 
-    [Inject] ITaskClient TaskClient { get; set; } = null!;
+    [Inject] private ITaskClient TaskClient { get; set; } = null!;
 
     public bool ReadOnly => isReadOnly;
 
@@ -183,7 +183,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
         {
             if (!_tagsByTaskId.TryGetValue(task.Id, out var tags))
             {
-                tags = await TaskClient.GetTaskTagsAsync(task.Id).ToListAsync(cancellationToken);
+                tags = await TaskClient.GetTaskTagsAsync(task.Id).ToListAsync(cancellationToken).ConfigureAwait(false);
                 _tagsByTaskId[task.Id] = tags;
             }
 
@@ -198,7 +198,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     protected virtual Task CleanPreviousProjectStateAsync()
     {
         _tagsByTaskId.Clear();
-        _commonHeightByKey.Clear();
+        CommonHeightByKey.Clear();
 
         TasksChanged = null;
         MilestonesChanged = null;

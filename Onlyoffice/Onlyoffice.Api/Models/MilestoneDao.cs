@@ -32,7 +32,7 @@ public class MilestoneUpdateData
     public int Status { get; set; }
     public bool IsNotify { get; set; }
     public DateTime? Deadline { get; set; }
-    public int ProjectID { get; set; }
+    public int ProjectId { get; set; }
     public string? Responsible { get; set; }
     public bool NotifyResponsible { get; set; }
 }

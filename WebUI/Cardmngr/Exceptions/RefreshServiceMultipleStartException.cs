@@ -1,8 +1,3 @@
-﻿using Cardmngr.Utils;
+﻿namespace Cardmngr.Exceptions;
 
-namespace Cardmngr.Exceptions;
-
-public class RefreshServiceMultipleStartException() : Exception("Refresh service is already started")
-{
-
-}
+public class RefreshServiceMultipleStartException() : Exception("Refresh service is already started");

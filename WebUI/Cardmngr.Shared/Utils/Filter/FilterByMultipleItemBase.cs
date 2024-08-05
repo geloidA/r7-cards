@@ -4,7 +4,6 @@ namespace Cardmngr.Shared.Utils.Filter;
 
 public abstract class FilterByMultipleItemBase<TFilter, TItem>(FilterType filterType) : IFilterByMultipleItem<TFilter, TItem>
 {
-    private readonly FilterType filterType = filterType;
     private readonly List<TFilter> _filterItems = [];
 
     public int Count => _filterItems.Count;
@@ -13,11 +12,6 @@ public abstract class FilterByMultipleItemBase<TFilter, TItem>(FilterType filter
 
     public event Action? FilterChanged;
     private void OnFilterChanged() => FilterChanged?.Invoke();
-
-    public FilterByMultipleItemBase(IEnumerable<TFilter> items, FilterType filterType) : this(filterType)
-    {
-        _filterItems = items.ToList();
-    }
 
     public void Add(TFilter filterItem)
     {
@@ -32,13 +26,10 @@ public abstract class FilterByMultipleItemBase<TFilter, TItem>(FilterType filter
 
     public bool Remove(TFilter filterItem)
     {
-        if (_filterItems.Remove(filterItem))
-        {
-            OnFilterChanged();
-            return true;
-        }
+        if (!_filterItems.Remove(filterItem)) return false;
+        OnFilterChanged();
+        return true;
 
-        return false;
     }
 
     public void Toggle(TFilter filterItem)
@@ -70,8 +61,8 @@ public abstract class FilterByMultipleItemBase<TFilter, TItem>(FilterType filter
             _ => throw new NotSupportedException(nameof(filterType))
         };
     }
-    
-    public abstract bool FilterItem(TFilter filterItem, TItem item);
+
+    protected abstract bool FilterItem(TFilter filterItem, TItem item);
 
     public IEnumerator<TFilter> GetEnumerator()
     {
@@ -88,7 +79,7 @@ public abstract class FilterByMultipleItemBase<TFilter, TItem>(FilterType filter
 
     public void RemoveRange(IEnumerable<TFilter> filters)
     {
-        if (_filterItems.RemoveAll(x => filters.Contains(x)) > 0)
+        if (_filterItems.RemoveAll(filters.Contains) > 0)
         {
             OnFilterChanged();
         }

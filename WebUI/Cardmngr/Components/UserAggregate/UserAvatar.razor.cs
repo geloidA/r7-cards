@@ -1,5 +1,4 @@
-﻿using Cardmngr.Application.Clients;
-using Cardmngr.Application.Clients.People;
+﻿using Cardmngr.Application.Clients.People;
 using Cardmngr.Domain.Entities;
 using KolBlazor;
 using Microsoft.AspNetCore.Components;
@@ -21,9 +20,9 @@ public partial class UserAvatar : KolComponentBase
         if (User is null && UserId is null)
             throw new ArgumentException($"You need initialize {nameof(User)} or {nameof(UserId)}");
 
-        if (UserId is { })
+        if (UserId is not null)
         {
-            User = await UserClient.GetUserProfileByIdAsync(UserId);
+            User = await UserClient.GetUserProfileByIdAsync(UserId).ConfigureAwait(false);
         }
     }
 }

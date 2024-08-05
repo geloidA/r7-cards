@@ -8,8 +8,8 @@ public partial class ProjectDashboardsPage : ComponentBase, IDisposable
 {
     private readonly System.Timers.Timer _timer = new();
     private readonly System.Timers.Timer _progressTimer = new() { Interval = 1000 };
-    private int _progress = 0;
-    private int _currentProjectId = 0;
+    private int _progress;
+    private int _currentProjectId;
 
     [SupplyParameterFromQuery]
     public int MeasurementUnit { get; set; }

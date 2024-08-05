@@ -1,16 +1,14 @@
-﻿@using Domain.Enums
-
-<Smooth ShowOnFirstRender Delay="TimeSpan.FromMilliseconds(500)">
+﻿<Smooth ShowOnFirstRender Delay="TimeSpan.FromMilliseconds(500)">
     <div class="task-card default-text @Task.CssDeadline()" @onclick="openModalAction" >
         <div class="d-flex @CssMarginTitle">
-            @if (Task.Priority == Domain.Enums.Priority.High)
+            @if (Task.Priority == Priority.High)
             {
                 <FluentIcon Value="@(new Icons.Filled.Size20.ArrowCircleUp())" Color="Color.Accent" 
                     Title="Приоритет - Высокий" Style="margin-right: 5px; min-width: 20px;" />
             }
             <div class="fw-bold fs-6 max-height-100 title pre-wrap">@Task.Title</div>
         </div>
-        @if (Task.Description is { })
+        @if (Task.Description is not null)
         {
             <div class="fw-light max-height-100 title pre-wrap" >
                 @Task.Description
@@ -22,7 +20,7 @@
                 + @Task.Subtasks.Count подзадачи
             </div>
         }
-        @if (Task.MilestoneId is { })
+        @if (Task.MilestoneId is not null)
         {
             <MilestoneLabel class="d-flex justify-content-end align-baseline me-1" 
                 Milestone="@State.GetMilestone(Task.MilestoneId)" />
@@ -40,7 +38,7 @@
                 }
             </div>
         }
-        @if (Task.Deadline is { })
+        @if (Task.Deadline is not null)
         {
             <div class="d-flex p-0 justify-content-end align-items-center">
                 @if (Task.IsDeadlineOut())

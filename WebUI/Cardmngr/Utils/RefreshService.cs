@@ -2,35 +2,31 @@
 
 namespace Cardmngr.Utils;
 
-public class RefreshService : IDisposable
+public sealed class RefreshService : IDisposable
 {
-    private bool _started = false;
-    private bool _disposed = false;
     private Timer? timer;
     private readonly HashSet<Guid> locks = [];
-    private TimeSpan refreshInterval;
+    private TimeSpan _refreshInterval;
 
     public void Start(TimeSpan refreshInterval)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        if (_started) throw new RefreshServiceMultipleStartException();
+        ObjectDisposedException.ThrowIf(Disposed, this);
+        if (Started) throw new RefreshServiceMultipleStartException();
 
-        this.refreshInterval = refreshInterval;
+        _refreshInterval = refreshInterval;
 
         timer = locks.Count == 0
             ? new Timer(OnRefreshElapsed, null, refreshInterval, refreshInterval)
             : new Timer(OnRefreshElapsed, null, Timeout.Infinite, Timeout.Infinite);
     
-        _started = true;
+        Started = true;
     }
 
     public void RemoveLock(Guid lockGuid)
     {
-        if (locks.Remove(lockGuid))
-        {
-            if (locks.Count == 0)
-                timer?.Change(refreshInterval, refreshInterval);
-        }
+        if (!locks.Remove(lockGuid)) return;
+        if (locks.Count == 0)
+            timer?.Change(_refreshInterval, _refreshInterval);
     }
 
     public void Lock(Guid lockGuid)
@@ -41,9 +37,10 @@ public class RefreshService : IDisposable
             timer?.Change(Timeout.Infinite, Timeout.Infinite);
     }
 
-    public bool Enabled => locks.Count == 0 && _started;
-    public bool Started => _started;
-    public bool Disposed => _disposed;
+    public bool Enabled => locks.Count == 0 && Started;
+    public bool Started { get; private set; }
+
+    public bool Disposed { get; private set; }
 
     public event Action? Refreshed;
     private void OnRefreshElapsed(object? sender) => Refreshed?.Invoke();
@@ -52,6 +49,6 @@ public class RefreshService : IDisposable
     {
         Refreshed = null;
         timer?.Dispose();
-        _disposed = true;
+        Disposed = true;
     }
 }

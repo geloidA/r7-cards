@@ -2,11 +2,11 @@
 
 namespace Onlyoffice.Api.Models;
 
-public class SingleProjectDao : SingleResponseDao<ProjectDto> { }
+public class SingleProjectDao : SingleResponseDao<ProjectDto>;
 
-public class ProjectDao : MultiResponseDao<ProjectDto> { }
+public class ProjectDao : MultiResponseDao<ProjectDto>;
 
-public class ProjectInfoDao : MultiResponseDao<ProjectInfoDto> { }
+public class ProjectInfoDao : MultiResponseDao<ProjectInfoDto>;
 
 public class ProjectDto : IEntityDto<int>
 {
@@ -55,7 +55,6 @@ public class ProjectCreateDto
     public string? Title { get; set; }
     public string? Description { get; set; }
     public string? ResponsibleId { get; set; }
-    
-    [JsonPropertyName("private")]
-    public bool IsPrivate { get; set; }
+    public string? Tags { get; set; }
+    [JsonPropertyName("private")] public bool IsPrivate { get; set; } = true;
 }

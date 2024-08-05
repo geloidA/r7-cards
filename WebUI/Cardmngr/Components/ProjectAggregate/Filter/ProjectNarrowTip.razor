@@ -7,19 +7,17 @@
 
 @code {
     private object countLock = new();
-    private static int Count;
+    private static int _count;
     private int _selfCount;
 
     protected override void OnAfterRender(bool firstRender)
     {
-        if (firstRender)
+        if (!firstRender) return;
+        lock(countLock)
         {
-            lock(countLock)
-            {
-                _selfCount = Count;
-                Count++;
-                StateHasChanged();
-            }
+            _selfCount = _count;
+            _count++;
+            StateHasChanged();
         }
     }
 

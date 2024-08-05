@@ -17,11 +17,11 @@ public static class ServicesExtensions
     public static IServiceCollection AddMyCascadingValues(this IServiceCollection services)
     {
         return services
-            .AddCascadingValue(sp => new CascadingValueSource<ModalOptions>(
+            .AddCascadingValue(_ => new CascadingValueSource<ModalOptions>(
                     "MiddleModal",
                     new ModalOptions { Position = ModalPosition.Middle },
                     true))
-            .AddCascadingValue(sp => new CascadingValueSource<ModalOptions>(
+            .AddCascadingValue(_ => new CascadingValueSource<ModalOptions>(
                     "DetailsModal",
                     new ModalOptions
                     {
@@ -31,7 +31,7 @@ public static class ServicesExtensions
                         UseCustomLayout = true
                     },
                     true))
-            .AddCascadingValue(sp => new CascadingValueSource<HeaderInteractionService>(new HeaderInteractionService(), true));
+            .AddCascadingValue(_ => new CascadingValueSource<HeaderInteractionService>(new HeaderInteractionService(), true));
     }
 
     public static IServiceCollection AddValidators(this IServiceCollection services)
@@ -49,7 +49,7 @@ public static class ServicesExtensions
         return services
             .AddSingleton<NotificationHubConnection>()
             .AddScoped<NotificationService>()
-            .AddScoped<NotificationJSModule>();
+            .AddScoped<NotificationJsModule>();
     }
 
     public static IServiceCollection AddProjectsInfo(this IServiceCollection services)
@@ -64,7 +64,7 @@ public static class ServicesExtensions
     {
         return services
             .AddScoped<IReportService, ReportService>()
-            .AddScoped<ReportJSModule>();
+            .AddScoped<ReportJsModule>();
     }
 
     public static void ConfigureHttpClients(this WebAssemblyHostBuilder builder)

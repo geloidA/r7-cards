@@ -7,103 +7,105 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Onlyoffice.ProxyServer.Controllers;
 
+[Route("api/[controller]")]
 public class ProjectController(IConfiguration conf) : ApiController(conf)
 {
     #region Project Proxy
-    [Route("api/[controller]")]
-    public Task ProxyProject() => ProxyRequestAsync($"{apiUrl}/project");
+    [Route("")]
+    public Task ProxyProject() => ProxyRequestAsync($"{ApiUrl}/project");
 
-    [Route("api/[controller]/{projectId}")]
-    public Task ProxyProjectById(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}");
+    [Route("{projectId:int}")]
+    public Task ProxyProjectById(int projectId) => ProxyRequestAsync($"{ApiUrl}/project/{projectId}");
 
-    [Route("api/[controller]/@self")]
-    public Task ProxyGetSelfProjects() => ProxyRequestAsync($"{apiUrl}/project/@self");
+    [Route("@self")]
+    public Task ProxyGetSelfProjects() => ProxyRequestAsync($"{ApiUrl}/project/@self");
 
-    [Route("api/[controller]/{projectId}/team")]
-    public Task ProxyGetSelfProjectById(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/team");
+    [Route("{projectId:int}/team")]
+    public Task ProxyGetSelfProjectById(int projectId) => ProxyRequestAsync($"{ApiUrl}/project/{projectId}/team");
 
-    [HttpPut("api/[controller]/{projectId}/follow")]
-    public Task ProxyFollowProject(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/follow");
+    [HttpPut("{projectId:int}/follow")]
+    public Task ProxyFollowProject(int projectId) => ProxyRequestAsync($"{ApiUrl}/project/{projectId}/follow");
     #endregion
 
     #region Task Proxy
-    [Route("api/[controller]/status")]
-    public Task ProxyTaskStatuses() => ProxyRequestAsync($"{apiUrl}/project/status");
+    [Route("status")]
+    public Task ProxyTaskStatuses() => ProxyRequestAsync($"{ApiUrl}/project/status");
 
-    [Route("api/[controller]/{projectId}/task")]
-    public Task ProxyTasksByProjectId(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/task");
+    [Route("{projectId:int}/task")]
+    public Task ProxyTasksByProjectId(int projectId) => ProxyRequestAsync($"{ApiUrl}/project/{projectId}/task");
 
-    [Route("api/[controller]/task/{taskId}/status")]
-    public Task ProxyUpdateTaskStatus(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/status");
+    [Route("task/{taskId:int}/status")]
+    public Task ProxyUpdateTaskStatus(int taskId) => ProxyRequestAsync($"{ApiUrl}/project/task/{taskId}/status");
 
-    [Route("api/[controller]/task/filter/{**rest}")]
-    public Task ProxyFilterTasks(string rest) => ProxyRequestAsync($"{apiUrl}/project/task/filter?{rest}");
+    [Route("task/filter/{**rest}")]
+    public Task ProxyFilterTasks(string rest) => ProxyRequestAsync($"{ApiUrl}/project/task/filter?{rest}");
 
-    [Route("api/[controller]/task/@self")]
-    public Task ProxyGetSelfTasks() => ProxyRequestAsync($"{apiUrl}/project/task/@self");
+    [Route("task/@self")]
+    public Task ProxyGetSelfTasks() => ProxyRequestAsync($"{ApiUrl}/project/task/@self");
 
-    [HttpGet("api/[controller]/@follow")]
-    public Task ProxyGetFollowedProjects() => ProxyRequestAsync($"{apiUrl}/project/@follow");
+    [HttpGet("@follow")]
+    public Task ProxyGetFollowedProjects() => ProxyRequestAsync($"{ApiUrl}/project/@follow");
 
-    [HttpPost("api/[controller]/{projectId}/task")]
-    public Task ProxyCreateTask(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/task");
+    [HttpPost("{projectId:int}/task")]
+    public Task ProxyCreateTask(int projectId) => ProxyRequestAsync($"{ApiUrl}/project/{projectId}/task");
 
-    [HttpDelete("api/[controller]/task/{taskId}")]
-    public Task ProxyDeleteTask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+    [HttpDelete("task/{taskId:int}")]
+    public Task ProxyDeleteTask(int taskId) => ProxyRequestAsync($"{ApiUrl}/project/task/{taskId}");
 
-    [HttpPut("api/[controller]/task/{taskId}")]
-    public Task ProxyUpdateTask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+    [HttpPut("task/{taskId:int}")]
+    public Task ProxyUpdateTask(int taskId) => ProxyRequestAsync($"{ApiUrl}/project/task/{taskId}");
 
-    [HttpGet("api/[controller]/task/{taskId}")]
-    public Task ProxyTaskById(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+    [HttpGet("task/{taskId:int}")]
+    public Task ProxyTaskById(int taskId) => ProxyRequestAsync($"{ApiUrl}/project/task/{taskId}");
 
-    [HttpGet("api/[controller]/task/{taskId}/comment")]
-    public Task ProxyGetTaskComments(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/comment");
+    [HttpGet("task/{taskId:int}/comment")]
+    public Task ProxyGetTaskComments(int taskId) => ProxyRequestAsync($"{ApiUrl}/project/task/{taskId}/comment");
 
-    [HttpPost("api/[controller]/task/{taskId}/comment")]
-    public Task ProxyCreateTaskComment(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/comment");
+    [HttpPost("task/{taskId:int}/comment")]
+    public Task ProxyCreateTaskComment(int taskId) => ProxyRequestAsync($"{ApiUrl}/project/task/{taskId}/comment");
 
-    [HttpDelete("api/[controller]/comment/{commentId}")]
-    public Task ProxyDeleteTaskComment(string commentId) => ProxyRequestAsync($"{apiUrl}/project/comment/{commentId}");
+    [HttpDelete("comment/{commentId}")]
+    public Task ProxyDeleteTaskComment(string commentId) => ProxyRequestAsync($"{ApiUrl}/project/comment/{commentId}");
 
     
     #endregion
 
     #region Subtask Proxy
-    [HttpPut("api/[controller]/task/{taskId}/{subtaskId}")]
-    public Task ProxyUpdateSubtask(int taskId, int subtaskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/{subtaskId}");
+    
+    [HttpPut("task/{taskId:int}/{subtaskId:int}")]
+    public Task ProxyUpdateSubtask(int taskId, int subtaskId) => ProxyRequestAsync($"{ApiUrl}/project/task/{taskId}/{subtaskId}");
 
-    [HttpPut("api/[controller]/task/{taskId}/{subtaskId}/status")]
-    public Task ProxyUpdateSubtaskStatus(int taskId, int subtaskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/{subtaskId}/status");
+    [HttpPut("task/{taskId:int}/{subtaskId:int}/status")]
+    public Task ProxyUpdateSubtaskStatus(int taskId, int subtaskId) => ProxyRequestAsync($"{ApiUrl}/project/task/{taskId}/{subtaskId}/status");
 
-    [HttpDelete("api/[controller]/task/{taskId}/{subtaskId}")]
-    public Task ProxyDeleteSubtask(int taskId, int subtaskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}/{subtaskId}");
+    [HttpDelete("task/{taskId:int}/{subtaskId:int}")]
+    public Task ProxyDeleteSubtask(int taskId, int subtaskId) => ProxyRequestAsync($"{ApiUrl}/project/task/{taskId}/{subtaskId}");
 
-    [HttpPost("api/[controller]/task/{taskId}")]
-    public Task ProxyCreateSubtask(int taskId) => ProxyRequestAsync($"{apiUrl}/project/task/{taskId}");
+    [HttpPost("task/{taskId:int}")]
+    public Task ProxyCreateSubtask(int taskId) => ProxyRequestAsync($"{ApiUrl}/project/task/{taskId}");
     #endregion
 
     #region Milestone Proxy
-    [HttpGet("api/[controller]/{projectId}/milestone")]
-    public Task ProxyMilestones(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/milestone");
+    [HttpGet("{projectId:int}/milestone")]
+    public Task ProxyMilestones(int projectId) => ProxyRequestAsync($"{ApiUrl}/project/{projectId}/milestone");
 
-    [HttpGet("api/[controller]/milestone/{milestoneId}")]
-    public Task ProxyMilestoneById(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}");
+    [HttpGet("milestone/{milestoneId:int}")]
+    public Task ProxyMilestoneById(int milestoneId) => ProxyRequestAsync($"{ApiUrl}/project/milestone/{milestoneId}");
 
-    [HttpPost("api/[controller]/{projectId}/milestone")]
-    public Task ProxyCreateMilestone(int projectId) => ProxyRequestAsync($"{apiUrl}/project/{projectId}/milestone");
+    [HttpPost("{projectId:int}/milestone")]
+    public Task ProxyCreateMilestone(int projectId) => ProxyRequestAsync($"{ApiUrl}/project/{projectId}/milestone");
 
-    [HttpDelete("api/[controller]/milestone/{milestoneId}")]
-    public Task ProxyDeleteMilestone(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}");
+    [HttpDelete("milestone/{milestoneId:int}")]
+    public Task ProxyDeleteMilestone(int milestoneId) => ProxyRequestAsync($"{ApiUrl}/project/milestone/{milestoneId}");
 
-    [HttpPut("api/[controller]/milestone/{milestoneId}/status")]
-    public Task ProxyUpdateMilestoneStatus(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}/status");
+    [HttpPut("milestone/{milestoneId:int}/status")]
+    public Task ProxyUpdateMilestoneStatus(int milestoneId) => ProxyRequestAsync($"{ApiUrl}/project/milestone/{milestoneId}/status");
 
-    [HttpPut("api/[controller]/milestone/{milestoneId}")]
-    public Task ProxyUpdateMilestone(int milestoneId) => ProxyRequestAsync($"{apiUrl}/project/milestone/{milestoneId}");
+    [HttpPut("milestone/{milestoneId:int}")]
+    public Task ProxyUpdateMilestone(int milestoneId) => ProxyRequestAsync($"{ApiUrl}/project/milestone/{milestoneId}");
     #endregion
 
-    [HttpPost("api/[controller]/{projectId}/task/status")]
+    [HttpPost("{projectId:int}/task/status")]
     public async Task CreateTaskWithStatus(int projectId, [FromBody] TaskUpdateData updateData)
     {
         var authCookie = HttpContext.Request.Cookies;
@@ -116,12 +118,12 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
 
     private async Task<TaskDto> CreateTaskAsync(int projectId, TaskUpdateData state, IRequestCookieCollection cookie)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{apiUrl}/project/{projectId}/task")
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{ApiUrl}/project/{projectId}/task")
         {
             Content = new StringContent(JsonSerializer.Serialize(state), Encoding.UTF8, "application/json")
         };
 
-        using var client = cookie.GetClientFor(apiUrl, "asc_auth_key");
+        using var client = cookie.GetClientFor(ApiUrl, "asc_auth_key");
         var response = await client.SendAsync(request);
         response.EnsureSuccessStatusCode();
 
@@ -131,12 +133,12 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
 
     private async Task<HttpResponseMessage> UpdateTaskStatus(int id, int? status, int? statusId, IRequestCookieCollection cookie)
     {
-        var request = new HttpRequestMessage(HttpMethod.Put, $"{apiUrl}/project/task/{id}/status")
+        var request = new HttpRequestMessage(HttpMethod.Put, $"{ApiUrl}/project/task/{id}/status")
         {
             Content = new StringContent(JsonSerializer.Serialize(new { status, statusId }), Encoding.UTF8, "application/json")
         };
         
-        using var client = cookie.GetClientFor(apiUrl, "asc_auth_key");
+        using var client = cookie.GetClientFor(ApiUrl, "asc_auth_key");
         return await client.SendAsync(request);
     }
 }

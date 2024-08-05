@@ -8,6 +8,6 @@ public abstract class CreationModalBase : ComponentBase
 {
     [CascadingParameter] protected BlazoredModalInstance BlazoredModal { get; set; } = default!;
     
-    protected virtual async Task SumbitCreate() => await BlazoredModal.CloseAsync(ModalResult.Ok());
+    protected virtual async Task SubmitCreate() => await BlazoredModal.CloseAsync(ModalResult.Ok());
     protected virtual async Task Cancel() => await BlazoredModal.CancelAsync();
 }

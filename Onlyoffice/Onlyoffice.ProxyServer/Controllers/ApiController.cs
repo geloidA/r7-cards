@@ -9,13 +9,13 @@ namespace Onlyoffice.ProxyServer.Controllers;
 public abstract class ApiController : Controller
 {
     private readonly Serilog.ILogger logger;
-    protected readonly string serverUrl;
-    protected readonly string apiUrl;
+    protected readonly string ServerUrl;
+    protected readonly string ApiUrl;
 
-    public ApiController(IConfiguration conf)
+    protected ApiController(IConfiguration conf)
     {
-        serverUrl = conf.CheckKey("ServerUrl");
-        apiUrl = conf.CheckKey("ApiUrl");
+        ServerUrl = conf.CheckKey("ServerUrl");
+        ApiUrl = conf.CheckKey("ApiUrl");
         logger = Log.Logger.ForContext(GetType());
     }
 

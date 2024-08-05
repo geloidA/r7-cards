@@ -22,16 +22,6 @@
 
 ## deployment
 
-приложение развертывается в kubernetes кластере см. [Kubernetes docs](https://kubernetes.io/docs/home/)
-
-как делал я:
-
-1. Развернуть локально kubernetes кластер с помощью [kind](https://kind.sigs.k8s.io/docs/user/working-offline/);
-2. С помощью aspirate dotnet tool (см. [aspirate repo](https://github.com/prom3theu5/aspirational-manifests)) создал kubernetes конфигурацию (в окружении без доступа к Интернет вручную переносил все необходимые docker-контейнеры);
-3. Добавил к имеющимся файлам некоторые собственные (напр. [configmap.yaml](Cardmngr.AppHost/aspirate-output/configmap.yaml) хранит сертификаты для `Cardmngr.Server` приложения);
-4. выполнил скрипт [release.sh](/release.sh);
-5. выполнил скрипт deploy.sh
-6. Используя kubectl развернул приложение одной командой
-```bash
-kubectl apply -k /aspirate-output
-```
+1. выполнил скрипт [release.sh](/release.sh);
+2. перенести созданную папку в deploy-окружение 
+2. выполнил скрипт deploy.sh

@@ -47,7 +47,6 @@
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
     [CascadingParameter] IProjectState State { get; set; } = null!;
-    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     [Parameter, EditorRequired] public OnlyofficeTask Task { get; set; } = null!;
 
@@ -57,20 +56,19 @@
         {
             if (Task.IsClosed()) return "width: 100%;";
             if (Task.Subtasks.Count == 0) return "width: 0%;";
-            var completeProcentage = (Task.Subtasks.Count(x => x.Status == Domain.Enums.Status.Closed) * 100.0) / Task.Subtasks.Count;
-            return $"width: {completeProcentage.ToString(CultureInfo.InvariantCulture)}%;";
+            var completePercentage = (Task.Subtasks.Count(x => x.Status == Status.Closed) * 100.0) / Task.Subtasks.Count;
+            return $"width: {completePercentage.ToString(CultureInfo.InvariantCulture)}%;";
         }
     }
 
     private async Task ShowTaskDetails()
     {
-        var paramerters = new ModalParameters
+        var parameters = new ModalParameters
         {
             { "Model", Task },
-            { "State", State },
-            { "ProjectHubClient", ProjectHubClient }
+            { "State", State }
         };
 
-        await Modal.Show<TaskDetailsModal>("", paramerters, Options).Result;
+        await Modal.Show<TaskDetailsModal>("", parameters, Options).Result.ConfigureAwait(false);
     }
 }

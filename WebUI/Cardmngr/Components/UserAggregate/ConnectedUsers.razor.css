@@ -7,10 +7,10 @@
     gap: 3px;
 }
 
-.collapseble-items {
+.collapsable-items {
     transition: max-width 0.5s ease-in-out, min-width 0.5s ease-in-out;
 }
 
-.collapseble-items::-webkit-scrollbar {
+.collapsable-items::-webkit-scrollbar {
     height: 3px;
 }

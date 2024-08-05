@@ -2,7 +2,7 @@
 
 namespace Cardmngr.Utils;
 
-public class ConcurrentHashSet<T> : IEnumerable<T>, IDisposable
+public sealed class ConcurrentHashSet<T> : IEnumerable<T>, IDisposable
 {
     private readonly ReaderWriterLockSlim _lock = new(LockRecursionPolicy.SupportsRecursion);
     private readonly HashSet<T> _hashSet = [];
@@ -83,10 +83,11 @@ public class ConcurrentHashSet<T> : IEnumerable<T>, IDisposable
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-    protected virtual void Dispose(bool disposing)
+
+    private void Dispose(bool disposing)
     {
         if (disposing)
-            _lock?.Dispose();
+            _lock.Dispose();
     }
 
     public IEnumerator<T> GetEnumerator()

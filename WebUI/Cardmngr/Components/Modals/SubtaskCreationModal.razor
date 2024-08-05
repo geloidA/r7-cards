@@ -46,7 +46,7 @@
     </FluentAutocomplete>
 </div>
 <div class="mt-2 d-flex justify-content-end">
-    <FluentButton Type="ButtonType.Submit" OnClick="SumbitCreate" Disabled="string.IsNullOrWhiteSpace(subtask.Title)"
+    <FluentButton Type="ButtonType.Submit" OnClick="SubmitCreate" Disabled="string.IsNullOrWhiteSpace(subtask.Title)"
         Color="ButtonColor.Success" >ОК</FluentButton>
     <FluentButton Class="ms-2" OnClick="Cancel" >Отмена</FluentButton>
 </div>
@@ -64,19 +64,11 @@
 
     [Parameter] public string? ResponsibleId { get; set; }
 
-    private IEnumerable<UserInfo?> SelectedResponsible
-    {
-        get => subtask.Responsible is { }
-            ? [Team.First(x => x.Id == subtask.Responsible)]
-            : [];
-        set => subtask.Responsible = value.FirstOrDefault()?.Id;
-    }
-
     [Parameter] public IEnumerable<UserInfo> Team { get; set; } = null!;
 
     public IEnumerable<UserInfo?> Responsible
     {
-        get => subtask.Responsible is { } 
+        get => subtask.Responsible is not null
             ? [Team.First(x => x.Id == subtask.Responsible)] 
             : [];
         set => subtask.Responsible = value.FirstOrDefault()?.Id;
@@ -87,5 +79,5 @@
         e.Items = Team.Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase));
     }
 
-    protected override async Task SumbitCreate() => await BlazoredModal.CloseAsync(ModalResult.Ok(subtask));
+    protected override async Task SubmitCreate() => await BlazoredModal.CloseAsync(ModalResult.Ok(subtask)).ConfigureAwait(false);
 }

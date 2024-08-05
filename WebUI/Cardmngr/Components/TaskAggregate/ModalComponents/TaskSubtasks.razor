@@ -5,7 +5,7 @@
 @implements IDisposable
 
 @inject IMapper Mapper
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime JsRuntime
 
 <div class="d-flex align-items-center fs-6">
     <FluentIcon Value="@(new Icons.Regular.Size24.Check())"/>
@@ -41,12 +41,12 @@
     async Task ShowCreationModal()
     {
         var res = await Modal.Show<SubtaskCreationModal>("Добавление подзадачи", 
-            new ModalParameters { { "Team", State.Team } }, ModalOptions).Result;
+            new ModalParameters { { "Team", State.Team } }, ModalOptions).Result.ConfigureAwait(false);
 
         if (res.Confirmed)
         {
             var data = (SubtaskUpdateData)res.Data!;
-            var added = await SubtaskClient.CreateAsync(Task.Id, data);
+            var added = await SubtaskClient.CreateAsync(Task.Id, data).ConfigureAwait(false);
             State.AddSubtask(Task.Id, added);
         }
     }

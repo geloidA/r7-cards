@@ -12,7 +12,7 @@ public class EqualityModalComparer : IEqualityComparer<IDetailsModal>
         return x.Guid == y.Guid;
     }
 
-    public int GetHashCode([DisallowNull] IDetailsModal obj)
+    public int GetHashCode(IDetailsModal obj)
     {
         return obj.Guid.GetHashCode();
     }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Pages;
 
-public partial class ProjectSummaryInfoPage : ComponentBase, IDisposable
+public sealed partial class ProjectSummaryInfoPage : ComponentBase, IDisposable
 {
     private readonly Guid _lockGuid = Guid.NewGuid();
     private readonly System.Timers.Timer _timer = new() { Interval = 100 };
@@ -20,28 +20,26 @@ public partial class ProjectSummaryInfoPage : ComponentBase, IDisposable
     [SupplyParameterFromQuery(Name = "projects")]
     public int[]? Projects { get; set; }
 
-    [Inject] ICircularElementSwitcherService<int> ElementSwitcherService { get; set; } = null!;
+    [Inject] private ICircularElementSwitcherService<int> ElementSwitcherService { get; set; } = null!;
 
     protected override void OnInitialized()
     {
         _timer.Elapsed += (_, _) => StateHasChanged();
         _timer.Start();
 
-        if (Projects is { })
+        if (Projects is null) return;
+        ElementSwitcherService.SetElements(Projects);
+        ElementSwitcherService.OnElementChanged += () =>
         {
-            ElementSwitcherService.SetElements(Projects);
-            ElementSwitcherService.OnElementChanged += () =>
-            {
-                StateHasChanged();
-                ElementSwitcherService.BlockSwitch = true;
-            };
-            ElementSwitcherService.Start();
-        }
+            StateHasChanged();
+            ElementSwitcherService.BlockSwitch = true;
+        };
+        ElementSwitcherService.Start();
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
-        if (firstRender && _currentState is { })
+        if (firstRender)
         {
             _currentState.OnAfterIdChanged += state => 
             {

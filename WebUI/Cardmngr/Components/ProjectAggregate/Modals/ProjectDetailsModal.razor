@@ -1,8 +1,4 @@
-﻿@using Milestone = Onlyoffice.Api.Models.MilestoneDto
-
-@implements IDisposable
-
-<Offcanvas Class="my-offcanvas my-offcanvas-left" @ref="currentModal">
+﻿<Offcanvas Class="my-offcanvas my-offcanvas-left">
     <OffcanvasHeader Class="py-1 d-flex flex-column" Style="padding-top: 20px !important;" >
         <div class="d-flex flex-row align-self-start mb-2 w-100">
             <span class="align-self-center w-75">@State.Project.Title</span>
@@ -48,12 +44,7 @@
                     OnClick="ShowMilestoneCreation" TooltipTitle="Добавить веху" />
             </div>
             <div class="m-0 user-select-none" style="max-height: 190px; overflow: auto;">
-                @if (currentModal is { })
-                {
-                    <CascadingValue Value="ProjectHubClient" IsFixed="true">
-                        <MilestoneList State="State" />
-                    </CascadingValue>
-                }
+                <MilestoneList State="State" />
             </div>
         </FluentCard>
         <FluentCard >

@@ -8,14 +8,7 @@ public abstract class ClientsManager<TKey, TValue>
 {    
     private readonly ConcurrentDictionary<TKey, TValue> keyValuePairs = [];
 
-    public IEnumerable<KeyValuePair<TKey, TValue>> ValuePairs
-    {
-        get
-        {
-            foreach (var pair in keyValuePairs)
-                yield return pair;
-        }
-    }
+    protected IEnumerable<KeyValuePair<TKey, TValue>> ValuePairs => keyValuePairs;
 
     public int Count => keyValuePairs.Count;
 
@@ -28,24 +21,14 @@ public abstract class ClientsManager<TKey, TValue>
 
     public bool Remove(TKey key)
     {
-        if (keyValuePairs.TryRemove(key, out var value))
-        {
-            return true;
-        }
-        return false;
+        return keyValuePairs.TryRemove(key, out _);
     }
 
     public TValue this[TKey key]
     {
-        get
-        {
-            return keyValuePairs[key];
-        }
+        get => keyValuePairs[key];
 
-        set
-        {
-            keyValuePairs[key] = value;
-        }
+        set => keyValuePairs[key] = value;
     }
 
     public bool TryGet(TKey key, out TValue? data) => keyValuePairs.TryGetValue(key, out data);

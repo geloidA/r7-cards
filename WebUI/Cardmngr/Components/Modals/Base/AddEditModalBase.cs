@@ -11,7 +11,7 @@ public abstract class AddEditModalBase<TModel, TUpdateData>(IEqualityComparer<TM
     where TUpdateData : new()
 {
     private readonly IEqualityComparer<TModel, TUpdateData> comparer = comparer;
-    protected TUpdateData buffer = new();
+    protected TUpdateData Buffer = new();
 
     [CascadingParameter(Name = "MiddleModal")] protected ModalOptions MiddleModal { get; set; } = null!;
     [CascadingParameter] protected IModalService Modal { get; set; } = null!;
@@ -25,11 +25,11 @@ public abstract class AddEditModalBase<TModel, TUpdateData>(IEqualityComparer<TM
     {
         if (!IsAdd)
         {
-            buffer = Mapper.Map<TUpdateData>(Model);
+            Buffer = Mapper.Map<TUpdateData>(Model);
         }
     }
 
-    public virtual string SubmitText => IsAdd ? "Создать" : "Сохранить";
+    protected virtual string SubmitText => IsAdd ? "Создать" : "Сохранить";
 
     /// <summary>
     /// Use to skip <see cref="ShowCloseConfirm"/> before closing
@@ -43,7 +43,7 @@ public abstract class AddEditModalBase<TModel, TUpdateData>(IEqualityComparer<TM
             return Task.FromResult(ModalResult.Ok());
         }
 
-        if (!comparer.Equals(Model, buffer))
+        if (!comparer.Equals(Model, Buffer))
         {
             return Modal.Show<DefaultConfirmModal>(
                 "Состояние не сохранено", 

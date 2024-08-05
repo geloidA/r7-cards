@@ -16,11 +16,10 @@ namespace Cardmngr.Components.ProjectAggregate.States;
 public sealed partial class MutableProjectState :
     ProjectStateBase,
     IFilterableProjectState,
-    IRefresheableProjectState
+    IRefreshableProjectState
 {
     private int previousId = -1;
     private readonly Guid _refreshLocker = Guid.NewGuid();
-    private ProjectHubClient? hubClient;
 
     [Parameter] public int Id { get; set; }
 
@@ -47,12 +46,9 @@ public sealed partial class MutableProjectState :
         Project.IsFollow = !Project.IsFollow;
     }
 
-    private bool _isHubInitialized = false;
-
     protected override async Task OnParametersSetAsync()
     {
         Initialized = false;
-        _isHubInitialized = false;
 
         if (previousId != Id)
         {
@@ -69,11 +65,6 @@ public sealed partial class MutableProjectState :
                 RefreshService.RemoveLock(_refreshLocker);
                 return;
             }
-
-            hubClient = GetNewHubClient();
-            await hubClient.StartAsync();
-
-            _isHubInitialized = true;
 
             previousId = Id;
             RefreshService.RemoveLock(_refreshLocker);
@@ -111,23 +102,14 @@ public sealed partial class MutableProjectState :
 
     protected override async Task CleanPreviousProjectStateAsync()
     {
-        if (hubClient is not null)
-        {
-            await hubClient.DisposeAsync();
-        }
-
         await base.CleanPreviousProjectStateAsync();
         
         TaskFilter.Clear();
     }
 
-    public async ValueTask DisposeAsync()
+    public override void Dispose()
     {
-        if (hubClient is not null)
-        {
-            await hubClient.DisposeAsync();
-        }
-
+        base.Dispose();
         RefreshService.Dispose();
     }
 }

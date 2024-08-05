@@ -1,5 +1,5 @@
 ﻿@code {
-    private static RenderFragment<UserInfo> RenderUser = user =>
+    private static readonly RenderFragment<UserInfo> RenderUser = user =>
         @<div class="d-flex flex-row py-2 align-items-center">
             <div class="ms-1">
                 <UserAvatar User="user"/>

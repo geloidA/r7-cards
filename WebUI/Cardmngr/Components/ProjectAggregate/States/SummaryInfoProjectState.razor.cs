@@ -10,7 +10,7 @@ using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Components.ProjectAggregate.States;
 
-public partial class SummaryInfoProjectState : ProjectStateBase, IRefresheableProjectState, IDisposable
+public sealed partial class SummaryInfoProjectState : ProjectStateBase, IRefreshableProjectState
 {
     private int _previousId;
 
@@ -21,8 +21,8 @@ public partial class SummaryInfoProjectState : ProjectStateBase, IRefresheablePr
 
     [Inject] public RefreshService RefreshService { get; set; } = null!;
 
-    [Inject] IProjectClient ProjectClient { get; set; } = null!;
-    [Inject] ITaskClient TaskClient { get; set; } = null!;
+    [Inject] private IProjectClient ProjectClient { get; set; } = null!;
+    [Inject] private ITaskClient TaskClient { get; set; } = null!;
 
     public event Action<SummaryInfoProjectState>? OnAfterIdChanged;
 
@@ -33,15 +33,15 @@ public partial class SummaryInfoProjectState : ProjectStateBase, IRefresheablePr
 
     private async Task OnRefreshModelAsync()
     {
-        var tasks = await GetFilteredTasksAsync().ToListAsync();
+        var tasks = await GetFilteredTasksAsync().ToListAsync().ConfigureAwait(false);
                 
         if (tasks.Count == 0)
         {
-            await SetModelAsync(new ProjectStateDto { Project = await ProjectClient.GetProjectAsync(Id) });
+            await SetModelAsync(new ProjectStateDto { Project = await ProjectClient.GetProjectAsync(Id).ConfigureAwait(false) }).ConfigureAwait(false);
         }
         else
         {
-            await SetModelAsync(await ProjectClient.CollectProjectWithTasksAsync(tasks));
+            await SetModelAsync(await ProjectClient.CollectProjectWithTasksAsync(tasks).ConfigureAwait(false)).ConfigureAwait(false);
         }
     }
 
@@ -53,7 +53,7 @@ public partial class SummaryInfoProjectState : ProjectStateBase, IRefresheablePr
         {
             try
             {
-                await OnRefreshModelAsync();
+                await OnRefreshModelAsync().ConfigureAwait(false);
 
                 OnAfterIdChanged?.Invoke(this);
             }            

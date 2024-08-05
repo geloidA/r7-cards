@@ -1,10 +1,10 @@
 ﻿@page "/"
 @page "/home"
 
-@inherits AuthorizedPage
+@attribute [Authorize]
 
 @inject IProjectClient ProjectClient
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime JsRuntime
 @inject IProjectFollowChecker ProjectFollowChecker
 @inject IFeedFilterService FeedFilterService
 @inject ILocalStorageService LocalStorage
@@ -33,7 +33,7 @@
                         @onclick="() => _showFilterPopover = !_showFilterPopover">
                         <div class="d-flex gap-2 align-items-center">
                             <span>Фильтр</span>
-                            @if (_feedFilterService is { })
+                            @if (_feedFilterService != null)
                             {
                                 var filterCount = FeedMsgTypes.Types.Length - _feedFilterService.ExcludedItems.Count();
                                 if (filterCount > 0)
@@ -98,25 +98,22 @@
     private ElementReference feed;
     private IJSObjectReference? module;
     private List<Project>? userProjects;
-    private FeedFilterService _feedFilterService = null!;
+    private FeedFilterService? _feedFilterService;
     private bool _showFilterPopover;
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
-
-        if (!IsAuthenticated) return;
-
         userProjects = await ProjectClient
             .GetSelfProjectsAsync()
             .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.Id))
-            .ToListAsync();
+            .ToListAsync().ConfigureAwait(false);
 
-        await FeedFilterService.ConfigureAsync();
+        await FeedFilterService.ConfigureAsync().ConfigureAwait(false);
 
         _feedFilterService = (FeedFilterService)FeedFilterService;
 
-        var dismissed = await LocalStorage.GetItemAsync<bool>("refresh-data-msg-bar-dismissed");
+        var dismissed = await LocalStorage.GetItemAsync<bool>("refresh-data-msg-bar-dismissed")
+            .ConfigureAwait(false);
         
         if (!dismissed)
         {
@@ -126,7 +123,7 @@
 
     private async Task DismissMessageBar()
     {
-        await LocalStorage.SetItemAsync<bool>("refresh-data-msg-bar-dismissed", true);
+        await LocalStorage.SetItemAsync("refresh-data-msg-bar-dismissed", true).ConfigureAwait(false);
         _showMessageBar = false;
     }
 
@@ -134,14 +131,14 @@
     {
         if (firstRender)
         {
-            module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", 
-                "/js/GeneratedJS/backtotop.js");
-            await module.InvokeVoidAsync("registerHandlers", "feed-content", "backtotop");
+            module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", 
+                "/js/GeneratedJS/backtotop.js").ConfigureAwait(false);
+            await module.InvokeVoidAsync("registerHandlers", "feed-content", "backtotop").ConfigureAwait(false);
         }
     }
 
     async Task BackToTopAsync()
     {
-        await JSRuntime.InvokeVoidAsync("scrollToPosition", feed, 0, 150);
+        await JsRuntime.InvokeVoidAsync("scrollToPosition", feed, 0, 150).ConfigureAwait(false);
     }
 }

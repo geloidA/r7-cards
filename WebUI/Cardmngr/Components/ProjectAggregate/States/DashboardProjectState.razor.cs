@@ -11,7 +11,7 @@ namespace Cardmngr.Components.ProjectAggregate.States;
 public partial class DashboardProjectState : 
     ProjectStateBase, 
     IFilterableProjectState,
-    IRefresheableProjectState
+    IRefreshableProjectState
 {
     public DashboardProjectState() : base(isReadOnly: true)
     {

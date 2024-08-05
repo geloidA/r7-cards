@@ -13,20 +13,19 @@ using Cardmngr.Shared.Utils.Comparer;
 
 namespace Cardmngr.Components.TaskAggregate.Modals;
 
-public partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskUpdateData>(new OnlyofficeTaskUpdateDataEqualityComparer()), 
+public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskUpdateData>(new OnlyofficeTaskUpdateDataEqualityComparer()), 
     IDisposable
 {
     private readonly Guid lockGuid = Guid.NewGuid();
-    Components.Modals.MyBlazored.Offcanvas currentModal = null!;
+    private Components.Modals.MyBlazored.Offcanvas currentModal = null!;
     private bool CanEdit => !State.ReadOnly && (Model == null || Model.CanEdit);
 
-    [Inject] ITaskClient TaskClient { get; set; } = null!;
-    [Inject] ITagColorManager TagColorGetter { get; set; } = null!;
-    [Inject] IToastService ToastService { get; set; } = null!;
-    [Inject] NotificationHubConnection NotificationHubConnection { get; set; } = null!;
+    [Inject] private ITaskClient TaskClient { get; set; } = null!;
+    [Inject] private ITagColorManager TagColorGetter { get; set; } = null!;
+    [Inject] private IToastService ToastService { get; set; } = null!;
+    [Inject] private NotificationHubConnection NotificationHubConnection { get; set; } = null!;
 
     [Parameter] public IProjectState State { get; set; } = null!;
-    [Parameter] public ProjectHubClient? ProjectHubClient { get; set; }
     [Parameter] public int TaskStatusId { get; set; }
     [Parameter] public List<TaskTag> TaskTags { get; set; } = [];
 
@@ -34,49 +33,39 @@ public partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskU
     {
         base.OnInitialized();
 
-        if (State is IRefresheableProjectState refresheableProjectState)
+        if (State is IRefreshableProjectState refreshableProjectState)
         {
-            refresheableProjectState.RefreshService.Lock(lockGuid);
+            refreshableProjectState.RefreshService.Lock(lockGuid);
         }
 
         if (IsAdd)
         {
-            buffer.Title = "Новая задача";
-            buffer.CustomTaskStatus = TaskStatusId;
+            Buffer.Title = "Новая задача";
+            Buffer.CustomTaskStatus = TaskStatusId;
         }
         else
         {
-            if (ProjectHubClient is { })
-            {
-                ProjectHubClient.OnUpdatedTask += NotifyThatTaskWasChanged;
-                ProjectHubClient.OnDeletedTask += NotifyThatTaskWasDeleted;
-            }
-
-            buffer.Status = null; // need because onlyoffice api update by this value on default task's status
+            Buffer.Status = null; // need because onlyoffice api update by this value on default task's status
         }
         
     }
 
     private void NotifyThatTaskWasChanged(OnlyofficeTask upd)
     {
-        if (upd.Id == Model!.Id)
-        {
-            ToastService.ShowInfo("Задача была изменена кем-то другим");
+        if (upd.Id != Model!.Id) return;
+        ToastService.ShowInfo("Задача была изменена кем-то другим");
 
-            SkipConfirmation = true;
-            currentModal.CloseAsync().Forget();
-        }
+        SkipConfirmation = true;
+        currentModal.CloseAsync().Forget();
     }
 
     private void NotifyThatTaskWasDeleted(int taskId)
     {
-        if (taskId == Model?.Id)
-        {
-            ToastService.ShowInfo("Задача была удалена кем-то другим");
+        if (taskId != Model?.Id) return;
+        ToastService.ShowInfo("Задача была удалена кем-то другим");
 
-            SkipConfirmation = true;
-            currentModal.CloseAsync().Forget();
-        }
+        SkipConfirmation = true;
+        currentModal.CloseAsync().Forget();
     }
 
     private bool submitting;
@@ -92,63 +81,48 @@ public partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskU
         submitting = true;
         if (IsAdd)
         {
-            var created = await TaskClient.CreateAsync(State.Project.Id, buffer);
+            var created = await TaskClient.CreateAsync(State.Project.Id, Buffer).ConfigureAwait(false);
             
             var tagsTasks = TaskTags.Select(x => TaskClient.CreateTagAsync(created.Id, x.Name));
-            var tags = await Task.WhenAll(tagsTasks);
+            var tags = await Task.WhenAll(tagsTasks).ConfigureAwait(false);
 
             created.Tags = [.. tags];
 
             State.AddTask(created);
-
-            ProjectHubClient?.SendCreatedTaskAsync(created.ProjectOwner.Id, created.Id).Forget();
             NotificationHubConnection.NotifyAboutCreatedTaskAsync(created).Forget();
         }
         else
         {
-            var updated = await TaskClient.UpdateAsync(Model!.Id, buffer);
+            var updated = await TaskClient.UpdateAsync(Model!.Id, Buffer).ConfigureAwait(false);
             State.UpdateTask(updated);
-
-            ProjectHubClient?.SendUpdatedTaskAsync(updated.ProjectOwner.Id, updated.Id).Forget();
         }
 
         SkipConfirmation = true;
-        await currentModal.CloseAsync();
+        await currentModal.CloseAsync().ConfigureAwait(false);
     }
 
     private async Task DeleteAsync()
     {
-        var answer = await ShowDeleteConfirm("Удаление задачи");
+        var answer = await ShowDeleteConfirm("Удаление задачи").ConfigureAwait(false);
 
         if (answer.Confirmed)
         {
-            foreach (var tag in TaskTags ?? [])
+            foreach (var tag in TaskTags)
                 TagColorGetter.RemoveTag(tag);
 
-            await TaskClient.RemoveAsync(Model!.Id);
+            await TaskClient.RemoveAsync(Model!.Id).ConfigureAwait(false);
             State.RemoveTask(Model);
-            
-            ProjectHubClient?.SendDeletedTaskAsync(Model.ProjectOwner.Id, Model!.Id).Forget();
 
             SkipConfirmation = true;
-            await currentModal.CloseAsync();
+            await currentModal.CloseAsync().ConfigureAwait(false);
         }
     }
 
     public void Dispose()
     {
-        if (State is IRefresheableProjectState refresheableProjectState)
+        if (State is IRefreshableProjectState { RefreshService.Disposed: false } refreshableProjects)
         {
-            if (!refresheableProjectState.RefreshService.Disposed)
-            {
-                refresheableProjectState.RefreshService.RemoveLock(lockGuid);
-            }
-        }
-        
-        if (ProjectHubClient is { })
-        {
-            ProjectHubClient.OnUpdatedTask -= NotifyThatTaskWasChanged;
-            ProjectHubClient.OnDeletedTask -= NotifyThatTaskWasDeleted;
+            refreshableProjects.RefreshService.RemoveLock(lockGuid);
         }
     }
 }

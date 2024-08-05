@@ -1,5 +1,4 @@
-﻿using Cardmngr.Application.Clients;
-using Cardmngr.Application.Clients.People;
+﻿using Cardmngr.Application.Clients.People;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Domain.Entities;
 using Microsoft.AspNetCore.Components;
@@ -16,19 +15,19 @@ public partial class ConnectedUsers : ComponentBase
 
     [Inject] private IPeopleClient UserClient { get; set; } = null!;
     
-    [CascadingParameter] ProjectHubClient HubClient { get; set; } = null!;
+    [CascadingParameter] private ProjectHubClient HubClient { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
         foreach (var id in HubClient.ConnectedMemberIds)
         {
-            userInfos.Add(await UserClient.GetUserProfileByIdAsync(id));
+            userInfos.Add(await UserClient.GetUserProfileByIdAsync(id).ConfigureAwait(false));
         }
 
-        HubClient.ConnectedMembersChanged += async args => await OnMembersChangedAsync(args);
+        HubClient.ConnectedMembersChanged += async args => await OnMembersChangedAsync(args).ConfigureAwait(false);
     }
 
-    private async Task OnMembersChangedAsync(MembersChangedEventArgs args)
+    private async Task OnMembersChangedAsync(MembersChangedEventArgs args) // TODO: ConfigureAwait
     {
         if (args.Action == MemberAction.Leave)
         {
@@ -36,7 +35,7 @@ public partial class ConnectedUsers : ComponentBase
         }
         else
         {
-            userInfos.Add(await UserClient.GetUserProfileByIdAsync(args.UserId));
+            userInfos.Add(await UserClient.GetUserProfileByIdAsync(args.UserId).ConfigureAwait(false));
         }
 
         StateHasChanged();

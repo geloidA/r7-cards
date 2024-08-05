@@ -20,7 +20,7 @@ public partial class FeedbackDetailsModal() : AddEditModalBase<Feedback, Feedbac
 
         if (IsAdd)
         {
-            buffer.Title = "Название";
+            Buffer.Title = "Название";
         }
     }
 
@@ -34,11 +34,11 @@ public partial class FeedbackDetailsModal() : AddEditModalBase<Feedback, Feedbac
 
         if (IsAdd)
         {
-            await State.CreateFeedbackAsync(buffer);
+            await State.CreateFeedbackAsync(Buffer);
         }
         else
         {
-            await State.UpdateFeedbackAsync(Model!.Id, buffer);
+            await State.UpdateFeedbackAsync(Model!.Id, Buffer);
         }
 
         SkipConfirmation = true;

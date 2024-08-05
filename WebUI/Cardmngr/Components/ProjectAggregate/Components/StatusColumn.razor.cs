@@ -26,14 +26,10 @@ public partial class StatusColumn : ComponentBase, IDisposable
     [CascadingParameter] 
     private IProjectState State { get; set; } = null!;
 
-    [CascadingParameter] 
-    ProjectHubClient? ProjectHubClient { get; set; }
+    [CascadingParameter] private IModalService Modal { get; set; } = default!;
 
-    [CascadingParameter] 
-    IModalService Modal { get; set; } = default!;
-
-    [CascadingParameter(Name = "MiddleModal")] 
-    ModalOptions ModalOptions { get; set; } = null!;
+    [CascadingParameter(Name = "MiddleModal")]
+    private ModalOptions ModalOptions { get; set; } = null!;
 
     [Parameter]
     public Dictionary<int, int>? CommonHeightByKey { get; set; }
@@ -49,7 +45,7 @@ public partial class StatusColumn : ComponentBase, IDisposable
         }
     }
 
-    private void RefreshColumn(TaskChangedEventArgs? args)
+    private void RefreshColumn(EntityChangedEventArgs<OnlyofficeTask>? args)
     {
         _tasks = GetTasksForStatus(State, Status);
         StateHasChanged();
@@ -81,8 +77,6 @@ public partial class StatusColumn : ComponentBase, IDisposable
         {
             var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, status);
             State.ChangeTaskStatus(updated);
-
-            ProjectHubClient?.SendUpdatedTaskAsync(task.ProjectOwner.Id, task.Id).Forget();
         }
     }
 

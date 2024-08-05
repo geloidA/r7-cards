@@ -1,42 +1,37 @@
 ﻿@page "/all-projects"
+@attribute [Authorize]
 
-@using Cardmngr.Components.TaskAggregate
-@using Shared.Project
 @using Cardmngr.Components.ProjectAggregate.Dashboard
-
-@inherits AuthorizedPage
 
 <PageTitle>Проекты</PageTitle>
 
 @if (initialized)
 {
-    <AuthorizeView>
-        <div class="d-flex flex-column p-2" style="overflow-y: auto; overflow-x: hidden;">
-            <CascadingValue Value="IdOnInitialization" Name="UserId" IsFixed="true" >
-                <div style="height: 100%; overflow-y:auto; overflow-x:hidden">
-                    <Virtualize Items="allProjects" Context="project">
-                        <ItemContent>
-                            <div class="mb-2" @key="project.ProjectInfo.Id" >
-                                <StaticProjectState ViewModel="project" />
-                            </div>
-                        </ItemContent>
-                        <EmptyContent>
-                            <div class="d-flex justify-content-center">
-                                <FluentBadge class="w-100 mx-5"><i>Список пуст</i></FluentBadge>
-                            </div>
-                        </EmptyContent>
-                    </Virtualize>
-                </div>
-            </CascadingValue>            
+<div class="d-flex flex-column p-2" style="overflow-y: auto; overflow-x: hidden;">
+    <CascadingValue Value="userId" Name="UserId" IsFixed >
+        <div style="height: 100%; overflow-y:auto; overflow-x:hidden">
+            <Virtualize Items="allProjects" Context="project">
+                <ItemContent>
+                    <div class="mb-2" @key="project.ProjectInfo.Id" >
+                        <StaticProjectState ViewModel="project" />
+                    </div>
+                </ItemContent>
+                <EmptyContent>
+                    <div class="d-flex justify-content-center">
+                        <i class="w-100 mx-5">Список пуст</i>
+                    </div>
+                </EmptyContent>
+            </Virtualize>
         </div>
-        <div class="position-absolute bottom-0" style="right: 0; margin-bottom: 60px !important; margin-right: 5px;">
-            <DashboardWatchManager Projects="allProjects.Select(x => x.ProjectInfo)" />
-        </div>
-    </AuthorizeView>
+    </CascadingValue>            
+</div>
+<div class="position-absolute bottom-0" style="right: 0; margin-bottom: 60px !important; margin-right: 5px;">
+    <DashboardWatchManager Projects="allProjects.Select(x => x.ProjectInfo)" />
+</div>
 }
 else
 {
-    <div style="position:absolute; top:30vh; width:100%; text-align:center">
-        <Loading />
-    </div>
+<div style="position:absolute; top:30vh; width:100%; text-align:center">
+    <Loading />
+</div>
 }

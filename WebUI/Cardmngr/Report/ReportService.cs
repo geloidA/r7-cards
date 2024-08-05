@@ -2,10 +2,10 @@
 
 namespace Cardmngr.Report;
 
-public class ReportService(ReportJSModule jsModule) : IReportService
+public class ReportService(ReportJsModule jsModule) : IReportService
 {
     private IReportGenerator? generator;
-    private readonly ReportJSModule jsModule = jsModule;
+    private readonly ReportJsModule jsModule = jsModule;
 
     public IReportGenerator? Generator { set => generator = value; }
 

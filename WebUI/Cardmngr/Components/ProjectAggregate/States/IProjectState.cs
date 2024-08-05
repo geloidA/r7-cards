@@ -7,11 +7,10 @@ namespace Cardmngr.Components.ProjectAggregate.States;
 
 public interface IProjectState
 {
-    event Action? MilestonesChanged;
-    event Action<TaskChangedEventArgs?>? TasksChanged;
+    event Action<EntityChangedEventArgs<Milestone>?>? MilestonesChanged;
+    event Action<EntityChangedEventArgs<OnlyofficeTask>?>? TasksChanged;
     event Action? SubtasksChanged;
 
-    bool Initialized { get; }
     bool ReadOnly { get; }
 
     Project Project { get; }
@@ -40,7 +39,7 @@ public interface IFilterableProjectState : IProjectState
     IFilterManager<OnlyofficeTask> TaskFilter { get; }
 }
 
-public interface IRefresheableProjectState : IProjectState
+public interface IRefreshableProjectState : IProjectState
 {
     RefreshService RefreshService { get; }
 }

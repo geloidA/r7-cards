@@ -7,23 +7,22 @@ namespace Cardmngr.Notification;
 
 public sealed class NotificationHubConnection(IServiceProvider serviceProvider) : IAsyncDisposable
 {
-    private readonly IServiceProvider serviceProvider = serviceProvider;
     private string lastUserId = string.Empty;
-    private HubConnection? connection;
+    private HubConnection? _connection;
 
-    public bool Connected => connection is { State: HubConnectionState.Connected };
+    public bool Connected => _connection is { State: HubConnectionState.Connected };
 
     public async Task StartAsync(string userId)
     {
         lastUserId = userId;
-        connection = InitializeHubConnection();
+        _connection = InitializeHubConnection();
 
-        await connection.StartAsync();
+        await _connection.StartAsync();
 
-        await connection.SendAsync("Join", userId);
+        await _connection.SendAsync("Join", userId);
     }
 
-    public async Task ReconnectAsync()
+    private async Task ReconnectAsync()
     {
         await DisposeAsync();
 
@@ -34,7 +33,7 @@ public sealed class NotificationHubConnection(IServiceProvider serviceProvider) 
 
     private HubConnection InitializeHubConnection()
     {
-        if (connection is { }) throw new InvalidOperationException("Hub connection already initialized.");
+        if (_connection is not null) throw new InvalidOperationException("Hub connection already initialized.");
 
         using var scope = serviceProvider.CreateScope();
 
@@ -66,19 +65,14 @@ public sealed class NotificationHubConnection(IServiceProvider serviceProvider) 
             await ReconnectAsync();
         }
 
-        if (connection is { })
+        if (_connection is not null)
         {
-            await connection.SendAsync(nameof(NotifyAboutCreatedTaskAsync), task, lastUserId);
+            await _connection.SendAsync(nameof(NotifyAboutCreatedTaskAsync), task, lastUserId);
         }
     }
 
     public ValueTask DisposeAsync()
     {
-        if (connection is { })
-        {
-            return connection.DisposeAsync();
-        }
-
-        return default;
+        return _connection?.DisposeAsync() ?? default;
     }
 }

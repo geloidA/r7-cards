@@ -7,7 +7,7 @@ public class PeopleFilterBuilder : FilterBuilder
 
     public PeopleFilterBuilder GroupId(string groupId)
     {
-        _filters["groupId"] = groupId;
+        Filters["groupId"] = groupId;
         return this;
     }
 }

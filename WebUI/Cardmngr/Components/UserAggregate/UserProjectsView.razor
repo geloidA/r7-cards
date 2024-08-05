@@ -6,10 +6,11 @@
         Ваши проекты
         <FluentSpacer />
         <FluentAnchor
-            Href="/project/new"
+            Href="#"
             Style="padding: 5px !important;"
-            Title="Создать проект" >
-            <FluentIcon Value="@(new Icons.Regular.Size16.Add())" CustomColor="white" Color="Color.Custom"/>
+            Appearance="Appearance.Outline"
+            Title="В разработке" >
+            <FluentIcon Value="@(new Icons.Regular.Size16.Add())" Color="Color.Success"/>
         </FluentAnchor>
     </div>
     <div class="p-1 overflow-auto" style=@($"max-height: {MaxHeight}px; {Style}")>

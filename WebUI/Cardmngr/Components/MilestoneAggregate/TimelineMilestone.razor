@@ -34,7 +34,6 @@
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
     [CascadingParameter] IProjectState State { get; set; } = null!;
-    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
     [CascadingParameter] MilestoneTaskFilter MilestoneTaskFilter { get; set; } = null!;
 
     [Parameter] public Milestone Milestone { get; set; } = null!;
@@ -55,8 +54,7 @@
         var paramerters = new ModalParameters
         {
             { "Model", Milestone },
-            { "State", State },
-            { "ProjectHubClient", ProjectHubClient }
+            { "State", State }
         };
 
         await Modal.Show<MilestoneDetailsModal>("", paramerters, Options).Result;

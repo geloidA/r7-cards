@@ -1,5 +1,5 @@
 ﻿
-<ModuleCard Items="_options" ItemRenderer="OptionRenderer" >
+<ModuleCard Items="_options" ItemRenderer="optionRenderer" >
     <Header>
         <div class="fw-bold" >
             Другое
@@ -15,7 +15,7 @@
         new SidebarOption("Отчеты", "Создавайте excel-отчеты на основе ваших проектов", new Icons.Regular.Size20.DocumentTextExtract(), "reports")
     ];
 
-    private RenderFragment<SidebarOption> OptionRenderer = opt =>
+    private RenderFragment<SidebarOption> optionRenderer = opt =>
         @<div class="d-flex flex-column gap-2">
             <FluentAnchor Appearance="Appearance.Hypertext" Href="@opt.Href">
                 <span class="d-flex gap-2 align-items-center fs-6">

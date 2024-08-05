@@ -18,10 +18,10 @@ public partial class DashboardWatchManager : KolComponentBase
     private readonly HashSet<int> _selectedProjects = [];
 
     [Parameter, EditorRequired] public IEnumerable<ProjectInfo> Projects { get; set; } = null!;
-    [Inject] NavigationManager NavigationManager { get; set; } = null!;
-    [Inject] ITaskClient TaskClient { get; set; } = null!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private ITaskClient TaskClient { get; set; } = null!;
 
-    protected void OnSelectionProjectChanged(int projectId, bool isSelected)
+    private void OnSelectionProjectChanged(int projectId, bool isSelected)
     {
         if (isSelected)
         {
@@ -45,13 +45,14 @@ public partial class DashboardWatchManager : KolComponentBase
         }
         set
         {
-            if (value is true)
+            switch (value)
             {
-                _selectedProjects.UnionWith(Projects.Select(x => x.Id));
-            }
-            else if (value is false)
-            {
-                _selectedProjects.Clear();
+                case true:
+                    _selectedProjects.UnionWith(Projects.Select(x => x.Id));
+                    break;
+                case false:
+                    _selectedProjects.Clear();
+                    break;
             }
         }
     }
@@ -88,7 +89,7 @@ public partial class DashboardWatchManager : KolComponentBase
         {
             var tasks = await TaskClient
                 .GetEntitiesAsync(TaskFilterBuilder.Instance.DeadlineOutside(7))
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
             
             if (tasks.Count == 0)
             {
@@ -111,7 +112,7 @@ public partial class DashboardWatchManager : KolComponentBase
             {
                 {"measurementUnit", (int)MeasurementUnit },
                 {"changeInterval", ChangeInterval },
-                {"projects", projects ?? [.. _selectedProjects] }
+                {"projects", projects }
             }
         ));
     }

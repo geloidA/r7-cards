@@ -1,4 +1,4 @@
-﻿using Cardmngr.Application.Clients.TaskClient;
+using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Hubs;
 using Microsoft.AspNetCore.Components;
@@ -7,27 +7,27 @@ using Onlyoffice.Api.Providers;
 
 namespace Cardmngr.Application.Clients.SignalRHubClients;
 
-public sealed class ProjectHubClient : IAsyncDisposable
+public sealed class ProjectHubClient : IAsyncDisposable // TODO: Not working
 {
     private readonly string userIdentity;
     private readonly ITaskClient taskClient;
-    private readonly int projectId;
-    private readonly HubConnection connection;
+    private readonly int _projectId;
+    private readonly HubConnection _connection;
 
-    public ProjectHubClient(NavigationManager navigationManager, 
+    public ProjectHubClient(NavigationManager navigationManager,
         ITaskClient taskClient,
         int projectId,
         CookieStateProvider authStateProvider)
     {
-        connection = new HubConnectionBuilder()
+        _connection = new HubConnectionBuilder()
             .WithUrl(navigationManager.ToAbsoluteUri(HubPatterns.ProjectBoard))
             .Build();
 
-        RegisterHandlers(connection);
+        RegisterHandlers(_connection);
 
         userIdentity = authStateProvider.UserId;
 
-        this.projectId = projectId;
+        _projectId = projectId;
         this.taskClient = taskClient;
     }
 
@@ -43,7 +43,7 @@ public sealed class ProjectHubClient : IAsyncDisposable
 
     public event Action<MembersChangedEventArgs>? ConnectedMembersChanged;
 
-    private void OnMembersChanged(MemberAction action, string userId) 
+    private void OnMembersChanged(MemberAction action, string userId)
         => ConnectedMembersChanged?.Invoke(new MembersChangedEventArgs(action, userId));
 
     private void LeaveGroupMemberAsync(string userId)
@@ -63,39 +63,32 @@ public sealed class ProjectHubClient : IAsyncDisposable
     }
 
     private HashSet<string> connectedMembers = [];
-    public IEnumerable<string> ConnectedMemberIds
-    {
-        get
-        {
-            foreach (var member in connectedMembers)
-                yield return member;
-        }
-    }
+    public IEnumerable<string> ConnectedMemberIds => connectedMembers;
 
-    public bool IsConnected => connection.State == HubConnectionState.Connected;
+    private bool IsConnected => _connection.State == HubConnectionState.Connected;
 
     public async Task StartAsync()
     {
-        await connection.StartAsync();
-        await connection.SendAsync("JoinToProjectBoard", projectId, userIdentity);
+        await _connection.StartAsync();
+        await _connection.SendAsync("JoinToProjectBoard", _projectId, userIdentity);
 
-        var members = await connection.InvokeAsync<string[]>("GetConnectedMembers", projectId);
+        var members = await _connection.InvokeAsync<string[]>("GetConnectedMembers", _projectId);
         connectedMembers = [.. members.Where(x => x != userIdentity)];
     }
 
     public Task SendUpdatedTaskAsync(int projectId, int taskId)
     {
-        return SendWithAutoReconnect(() => connection.SendAsync(nameof(SendUpdatedTaskAsync), projectId, taskId));
+        return SendWithAutoReconnect(() => _connection.SendAsync(nameof(SendUpdatedTaskAsync), projectId, taskId));
     }
 
     public Task SendCreatedTaskAsync(int projectId, int taskId)
     {
-        return SendWithAutoReconnect(() => connection.SendAsync(nameof(SendCreatedTaskAsync), projectId, taskId));
+        return SendWithAutoReconnect(() => _connection.SendAsync(nameof(SendCreatedTaskAsync), projectId, taskId));
     }
 
     public Task SendDeletedTaskAsync(int projectId, int taskId)
     {
-        return SendWithAutoReconnect(() => connection.SendAsync(nameof(SendDeletedTaskAsync), projectId, taskId));
+        return SendWithAutoReconnect(() => _connection.SendAsync(nameof(SendDeletedTaskAsync), projectId, taskId));
     }
 
     private async Task SendWithAutoReconnect(Func<Task> action)
@@ -107,7 +100,7 @@ public sealed class ProjectHubClient : IAsyncDisposable
 
         await action();
     }
-    
+
     public event Action<OnlyofficeTask>? OnCreatedTask;
     public event Action<OnlyofficeTask>? OnUpdatedTask;
     public event Action<int>? OnDeletedTask;
@@ -131,14 +124,11 @@ public sealed class ProjectHubClient : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (connection is { State: HubConnectionState.Connected })
+        if (_connection is { State: HubConnectionState.Connected })
         {
-            await connection.SendAsync("LeaveFromProjectBoard", projectId, userIdentity);
+            await _connection.SendAsync("LeaveFromProjectBoard", _projectId, userIdentity);
         }
 
-        if (connection is { })
-        {
-            await connection.DisposeAsync();
-        }
+        await _connection.DisposeAsync();
     }
 }

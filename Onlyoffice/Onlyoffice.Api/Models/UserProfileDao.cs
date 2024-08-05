@@ -1,8 +1,8 @@
 ﻿namespace Onlyoffice.Api.Models;
 
-public class UserProfilesDao : MultiResponseDao<UserProfileDto> { }
+public class UserProfilesDao : MultiResponseDao<UserProfileDto>;
 
-public class UserProfileDao : SingleResponseDao<UserProfileDto> { }
+public class UserProfileDao : SingleResponseDao<UserProfileDto>;
 
 public class UserProfileDto : IUser, IEntityDto<string?>
 {

@@ -1,7 +1,7 @@
 ﻿@inherits OffcanvasBase
 
 <div @ref="myOffcanvas" 
-    class="offcanvas @DelayedShow @CssPlacement @Class" 
+    class="offcanvas @delayedShow @CssPlacement @Class" 
     style="@Style z-index: 99; @($"width: {Width}px;")" 
     tabindex="-1" 
     id="offcanvasWithBackdrop" 
@@ -20,11 +20,11 @@
             {
                 <FluentIcon Value="@(new Icons.Regular.Size20.ArrowCircleRight())" />
             }
-        </div>;
+        </div>
     }
     <div style="overflow-y: auto; overflow-x: hidden;" class="mt-2 h-100"> 
         @ChildContent
     </div>
 </div>
-<div class="offcanvas-backdrop fade @DelayedShow" style="z-index: 2;" 
+<div class="offcanvas-backdrop fade @delayedShow" style="z-index: 2;" 
     @onclick="async () => await CloseAsync(ModalResult.Cancel())"></div>

@@ -1,22 +1,22 @@
-﻿using Cardmngr.Utils;
+﻿using Microsoft.FluentUI.AspNetCore.Components.Utilities;
 using Microsoft.JSInterop;
 
 namespace Cardmngr.Notification;
 
-public class NotificationJSModule(IJSRuntime jsRuntime) : IAsyncDisposable
+public class NotificationJsModule(IJSRuntime jsRuntime) : JSModule(jsRuntime, "/js/GeneratedJS/notifications.js")
 {
-    private readonly JSModule module = jsRuntime.LoadJSModule("/js/GeneratedJS/notifications.js");
-
-    public PermissionType PermissionStatus { get; private set; }
+    private PermissionType PermissionStatus { get; set; }
 
     public ValueTask CreateAsync(string title, NotificationOptions? options = null)
     {
-        return module.InvokeVoidAsync("create", title, options);
+        return options is null 
+            ? InvokeVoidAsync("create", title)
+            : InvokeVoidAsync("create", title, options);
     }
 
     public async ValueTask<PermissionType> RequestPermissionAsync()
     {
-        var permission = await module.InvokeAsync<string>("requestPermission");
+        var permission = await InvokeAsync<string>("requestPermission").ConfigureAwait(false);
 
         if (permission.Equals("granted", StringComparison.InvariantCultureIgnoreCase))
             PermissionStatus = PermissionType.Granted;
@@ -29,11 +29,6 @@ public class NotificationJSModule(IJSRuntime jsRuntime) : IAsyncDisposable
 
     public ValueTask<bool> IsSupportedByBrowserAsync()
     {
-        return module.InvokeAsync<bool>("isSupported");
-    }
-
-    public ValueTask DisposeAsync()
-    {
-        return module.DisposeAsync();
+        return InvokeAsync<bool>("isSupported");
     }
 }

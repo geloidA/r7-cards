@@ -1,22 +1,21 @@
 ﻿using Cardmngr.Domain.Entities;
-using Cardmngr.Shared.Utils.Filter;
 
-namespace Cardmngr.Shared;
+namespace Cardmngr.Shared.Utils.Filter.TaskFilters;
 
 public abstract class UserTaskFilterBase : IFilter<OnlyofficeTask>
 {
-    public UserTaskFilterBase(UserInfo? user)
+    protected UserTaskFilterBase(UserInfo? user)
     {
         User = user;   
     }
 
-    public UserTaskFilterBase(string userName)
+    protected UserTaskFilterBase(string userName)
     {
         UserName = userName;
     }
 
-    public readonly UserInfo? User;
-    public readonly string? UserName;
+    protected readonly UserInfo? User;
+    protected readonly string? UserName;
 
     public abstract bool Filter(OnlyofficeTask item);
 }

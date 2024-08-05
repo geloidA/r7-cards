@@ -4,7 +4,7 @@ namespace Cardmngr.Services;
 
 public class AllProjectsPageSummaryService
 {
-    private List<OnlyofficeTask>? tasks = [];
+    private List<OnlyofficeTask>? _tasks = [];
 
     public FilterManagerService FilterManager { get; } = new();
 
@@ -12,7 +12,7 @@ public class AllProjectsPageSummaryService
 
     public void SetTasks(List<OnlyofficeTask> tasks, bool notify = true)
     {
-        this.tasks = tasks;
+        _tasks = tasks;
         
         if (notify)
         {
@@ -20,17 +20,17 @@ public class AllProjectsPageSummaryService
         }
     }
 
-    public IEnumerable<UserInfo> GetResponsibles() => tasks?
+    public IEnumerable<UserInfo> GetResponsibles() => _tasks?
         .SelectMany(x => x.Responsibles)
         .Distinct() ?? [];
 
-    public IEnumerable<ProjectInfo> GetProjects() => tasks?
+    public IEnumerable<ProjectInfo> GetProjects() => _tasks?
         .Select(x => x.ProjectOwner)
         .Distinct() ?? [];
 
-    public IEnumerable<UserInfo> GetCreatedBys() => tasks?
+    public IEnumerable<UserInfo> GetCreatedBys() => _tasks?
         .Select(x => x.CreatedBy)
         .Distinct() ?? [];
     
-    public void LeftPage() => tasks = null;
+    public void LeftPage() => _tasks = null;
 }

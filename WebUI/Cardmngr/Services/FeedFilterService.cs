@@ -5,18 +5,17 @@ namespace Cardmngr.Services;
 
 public class FeedFilterService(IServiceProvider serviceProvider) : IFeedFilterService
 {
-    private bool _configured = false;
-    private FeedSettings _settings = default!;
+    private FeedSettings _settings = new();
 
     public IEnumerable<string> ExcludedItems => _settings.ExcludedItems;
 
     public IEnumerable<string> ExcludedProjects => _settings.ExcludedProjects;
 
-    public bool Configured => _configured;
+    public bool Configured { get; private set; }
 
     public async Task ConfigureAsync()
     {
-        if (_configured) return;
+        if (Configured) return;
 
         using var scope = serviceProvider.CreateScope();
         var localStorage = scope.ServiceProvider.GetRequiredService<ILocalStorageService>();
@@ -30,7 +29,7 @@ public class FeedFilterService(IServiceProvider serviceProvider) : IFeedFilterSe
         
         _settings = settings ?? new FeedSettings();
 
-        _configured = true;
+        Configured = true;
     }
 
     public event Action? FilterChanged;
@@ -113,6 +112,6 @@ public interface IFeedFilterService
 
 public class FeedSettings
 {
-    public HashSet<string> ExcludedProjects { get; set; } = [];
-    public HashSet<string> ExcludedItems { get; set; } = [];
+    public HashSet<string> ExcludedProjects { get; init; } = [];
+    public HashSet<string> ExcludedItems { get; init; } = [];
 }

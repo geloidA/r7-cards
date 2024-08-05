@@ -1,12 +1,11 @@
-﻿@using System.Collections.ObjectModel
-@using Onlyoffice.Api.Models
+﻿@using Onlyoffice.Api.Models
 
-<FluentAutocomplete @ref="ResponsibleList"
+<FluentAutocomplete @ref="responsibleList"
     TOption="UserInfo" AutoComplete="off"
     Disabled="Disabled" MaximumOptionsSearch="100"
     OptionStyle="min-height: 40px;"
     OnOptionsSearch="OnSearch"
-    SelectedOptions="SelectedResponsibles"
+    SelectedOptions="selectedResponsibles"
     SelectedOptionsChanged="SelectedChanged"
     Placeholder="Нет" >
 
@@ -21,7 +20,7 @@
             Class="p-1"
             Style="height: 26px; background: var(--main-responsibles-bg)"
             Image="@($"onlyoffice/api/people{context.AvatarSmall}")"
-            OnDismissClick="@(async () => await ResponsibleList.RemoveSelectedItemAsync(context))"/>
+            OnDismissClick="@(async () => await responsibleList.RemoveSelectedItemAsync(context).ConfigureAwait(false))"/>
     </SelectedOptionTemplate>
 
     <OptionTemplate>
@@ -48,8 +47,8 @@
 </FluentAutocomplete>
 
 @code {
-    FluentAutocomplete<UserInfo> ResponsibleList = default!;
-    IEnumerable<UserInfo> SelectedResponsibles = [];
+    FluentAutocomplete<UserInfo> responsibleList = default!;
+    IEnumerable<UserInfo> selectedResponsibles = [];
     [CascadingParameter] IProjectState State { get; set; } = null!;
 
     [CascadingParameter] TaskUpdateData Task { get; set; } = null!;
@@ -57,7 +56,7 @@
 
     protected override void OnInitialized()
     {
-        SelectedResponsibles = State.Team.Where(x => Task.Responsibles.Any(id => id == x.Id));
+        selectedResponsibles = State.Team.Where(x => Task.Responsibles.Any(id => id == x.Id));
     }
 
     void OnSearch(OptionsSearchEventArgs<UserInfo> e)

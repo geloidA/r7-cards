@@ -16,12 +16,13 @@
 else
 {
 <FluentHeader class="siteheader" Style="height: auto; z-index: 1;" >
-    <div class="d-flex gap-1 align-items-center">        
+    <div class="d-flex gap-3 align-items-center">        
         <NavigateButtons />
-        <FluentSpacer Width="5" />
-        <FluentButton Class="py-0" Appearance="Appearance.Outline"
-            OnClick="OpenSidebar" IconEnd="@(new Icons.Regular.Size20.TextAlignJustify())" />
-        <FluentSpacer Width="5" />
+        <FluentButton Style="padding: 2px;"
+                      Appearance="Appearance.Outline"
+                      OnClick="OpenSidebar" >
+        <FluentIcon Width="16px" Value="@(new Icons.Regular.Size20.TextAlignJustify())" />
+        </FluentButton>
         <FluentAnchor Href="home" Appearance="@Appearance.Hypertext" IconStart="@(new MyIcons.CardLogo())" />
         <FluentSpacer />
         <FilterCustomizer />
@@ -31,7 +32,7 @@ else
     <FluentSpacer />
     <div class="d-flex gap-2">
         <Toolbar />
-        @if (currentUser is { })
+        @if (currentUser is not null)
         {
             <FluentIcon OnClick="OpenSettings"
                 Value="@(new Icons.Regular.Size24.Settings())"

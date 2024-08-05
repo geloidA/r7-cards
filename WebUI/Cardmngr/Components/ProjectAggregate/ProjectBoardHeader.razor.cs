@@ -13,7 +13,6 @@ public partial class ProjectBoardHeader : ComponentBase
     private bool collapsed;
 
     [CascadingParameter] IProjectState State { get; set; } = null!;
-    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
@@ -29,8 +28,7 @@ public partial class ProjectBoardHeader : ComponentBase
     {
         var parameters = new ModalParameters 
         { 
-            { "State", State },
-            { "ProjectHubClient", ProjectHubClient }
+            { "State", State }
         };
         await Modal.Show<ProjectDetailsModal>("",  parameters, Options).Result;
     }

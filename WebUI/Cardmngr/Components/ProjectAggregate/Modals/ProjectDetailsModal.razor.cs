@@ -9,17 +9,19 @@ using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.Modals;
 
-public partial class ProjectDetailsModal : ComponentBase, IDisposable
+public sealed partial class ProjectDetailsModal : ComponentBase, IDisposable
 {
     private readonly Guid lockGuid = Guid.NewGuid();
-    private Offcanvas currentModal = null!;
+    
     [Parameter] public MutableProjectState State { get; set; } = null!;
-    [Parameter] public ProjectHubClient ProjectHubClient { get; set; } = null!;
 
-    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
-    [CascadingParameter] IModalService Modal { get; set; } = null!;
+    [CascadingParameter(Name = "DetailsModal")]
+    private ModalOptions Options { get; set; } = null!;
+    
+    [CascadingParameter] 
+    private IModalService Modal { get; set; } = null!;
 
-    Icon IconFollow => State.Project.IsFollow ? new Icons.Filled.Size20.Star() : new Icons.Regular.Size20.Star();
+    private Icon IconFollow => State.Project.IsFollow ? new Icons.Filled.Size20.Star() : new Icons.Regular.Size20.Star();
 
     protected override void OnInitialized()
     {
@@ -31,8 +33,7 @@ public partial class ProjectDetailsModal : ComponentBase, IDisposable
         var parameters = new ModalParameters
         {
             { "IsAdd", true },
-            { "State", State },
-            { "ProjectHubClient", ProjectHubClient }
+            { "State", State }
         };
 
         Modal.Show<MilestoneDetailsModal>("", parameters, Options);

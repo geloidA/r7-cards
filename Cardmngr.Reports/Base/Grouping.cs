@@ -1,8 +1,8 @@
 ﻿namespace Cardmngr.Reports.Base;
 
-class Grouping<TKey, TValue>(TKey key, IEnumerable<TValue> items) : IGrouping<TKey, TValue>
+internal class Grouping<TKey, TValue>(TKey key, IEnumerable<TValue> items) : IGrouping<TKey, TValue>
 {
-    private readonly List<TValue> items = new(items);
+    private readonly List<TValue> items = [..items];
 
     public TKey Key => key;
 

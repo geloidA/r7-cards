@@ -1,9 +1,9 @@
-﻿@if (userInfos is { } && userInfos.Any())
+﻿@if (userInfos.Any())
 {    
     <div class="d-flex align-items-center">
         <FluentIcon class="clickable" title="Сейчас на странице" Value="@(isCollapsed ? closed : opened)"
             OnClick="@(() => isCollapsed = !isCollapsed)" />
-        <div class="connected-users py-0 px-1 collapseble-items" style="@MaxWidth @StyleScroll">
+        <div class="connected-users py-0 px-1 collapsable-items" style="@MaxWidth @StyleScroll">
             @foreach (var user in userInfos)
             {
                 <UserAvatar User="user" ShowTooltip="true" />

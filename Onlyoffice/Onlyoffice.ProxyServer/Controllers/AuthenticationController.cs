@@ -8,6 +8,6 @@ public class AuthenticationController(IConfiguration conf) : ApiController(conf)
     [Route("api/[controller]")]
     public Task ProxyLogin()
     {
-        return ProxyRequestAsync($"{apiUrl}/authentication", HttpProxyOptionsBuilder.Instance.WithHttpClientName("NoCookie"));
+        return ProxyRequestAsync($"{ApiUrl}/authentication", HttpProxyOptionsBuilder.Instance.WithHttpClientName("NoCookie"));
     }
 }

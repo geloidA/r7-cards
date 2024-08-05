@@ -258,3 +258,7 @@ a:hover {
 .mouse-hover:hover:active {
     background-color: initial;
 }
+
+.text-info {
+    color: var(--info) !important;
+}

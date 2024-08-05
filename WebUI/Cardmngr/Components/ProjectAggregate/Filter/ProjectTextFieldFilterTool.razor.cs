@@ -16,8 +16,8 @@ public partial class ProjectTextFieldFilterTool : ComponentBase
     private bool _popupVisible = false;
     private string _inputValue = string.Empty;
 
-    [CascadingParameter] IFilterableProjectState State { get; set; } = null!;
-    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
+    [CascadingParameter] private IFilterableProjectState State { get; set; } = null!;
+    [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
 
     private readonly IList<IFilterModel> _filters = 
     [
@@ -32,7 +32,7 @@ public partial class ProjectTextFieldFilterTool : ComponentBase
             _ => new UserRelatedFilter(AuthenticationStateProvider.ToCookieProvider().UserId), 
             "Связанные c вами задачи"));
 
-        _textToFilterParser = new(_filters, x => new TitleTaskFilter(x));
+        _textToFilterParser = new TextToFilterParser(_filters, x => new TitleTaskFilter(x));
     }
 
     private IEnumerable<IFilter<OnlyofficeTask>> previousFilters = [];

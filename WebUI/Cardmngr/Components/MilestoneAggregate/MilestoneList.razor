@@ -37,15 +37,13 @@ else
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
-    [CascadingParameter] ProjectHubClient ProjectHubClient { get; set; } = null!;
 
     void ShowModal(Milestone milestone)
     {
         var parameters = new ModalParameters
         {
             { "Model", milestone },
-            { "State", State },
-            { "ProjectHubClient", ProjectHubClient }
+            { "State", State }
         };
 
         Modal.Show<MilestoneDetailsModal>("", parameters, Options);

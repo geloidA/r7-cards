@@ -3,11 +3,11 @@
 @inherits KolComponentBase
 
 <a @key="@Project.Id" 
-   class="fw-light small py-1 @Class" 
+   class="proj-ref @Class" 
    title="@(ShowTitle ? Project.Title : "")"
    style="@Style"
    @onclick="HandleClick"
-   href=@($"/project/board/{Project.Id}")>
+   href=@($"/project/board?ProjectId={Project.Id}")>
     <div class="ref-container">
         @if (ProjectFollowChecker.IsFollow(Project.Id))
         {

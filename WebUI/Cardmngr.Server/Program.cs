@@ -64,6 +64,7 @@ app.MapForwarder("/onlyoffice/{**catch-all}", "https+http://onlyoffice", "/{**ca
 // app.MapForwarder("/onlyoffice/{**catch-all}", builder.Configuration.CheckKey("PROXY_SERVER_URL"), "/{**catch-all}");
 
 app.Run();
+return;
 
 static void ConfigureServer(KestrelServerOptions opt)
 {
@@ -71,8 +72,6 @@ static void ConfigureServer(KestrelServerOptions opt)
     
     var certificatePath = config.CheckKey("CertificateSettings:CertificatePublic");
     var keyCertificate = config.CheckKey("CertificateSettings:CertificatePrivate");
-
-    var certificate = X509Certificate2.CreateFromPemFile(certificatePath, keyCertificate);
 
     var urls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")?.Split(';');
 

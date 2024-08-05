@@ -4,11 +4,11 @@
     <Columns>
         @{ 
             var isFirst = true;
-            foreach (var status in State.Statuses.InLogicalOrder() ?? [])
+            foreach (var status in State.Statuses.InLogicalOrder())
             {
                 @if (!isFirst)
                 {
-                    <div class="status-column" style="width: 1px;"/>
+                    <div class="status-column" style="width: 1px;"></div>
                 }
                 <StatusColumn CommonHeightByKey="CommonHeightByKey" Status="status" />
                 isFirst = false;

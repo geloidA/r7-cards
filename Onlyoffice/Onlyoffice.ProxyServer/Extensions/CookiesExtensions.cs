@@ -10,7 +10,7 @@ public static class CookiesExtensions
     {
         var handler = new HttpClientHandler
         {
-            CookieContainer = new()
+            CookieContainer = new CookieContainer()
         };
 
         foreach (var cookie in cookies.Where(x => allowedKeys.Length == 0 || allowedKeys.Contains(x.Key)))

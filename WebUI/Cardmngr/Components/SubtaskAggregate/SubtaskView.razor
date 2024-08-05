@@ -55,7 +55,7 @@
             IconSearch="@(new Icons.Regular.Size16.Person())"
             MaximumSelectedOptions="1" Placeholder="Без ответственного"
             SelectedOptionsChanged="SelectedResponsibleChanged"
-            SelectedOptions="SelectedResponsible"
+            SelectedOptions="_selectedResponsible"
             OnOptionsSearch="OnSearch">
 
             <SelectedOptionTemplate>
@@ -105,15 +105,15 @@
 </EditForm>
 
 @code {
-    IEnumerable<UserInfo> SelectedResponsible = [];
+    IEnumerable<UserInfo> _selectedResponsible = [];
     readonly Guid menuGuid = Guid.NewGuid();
     bool open;
 
     protected override void OnInitialized()
     {
-        if (Subtask.Responsible is { })
+        if (Subtask.Responsible is not null)
         {
-            SelectedResponsible = [State.Team.Single(x => x.Id == Subtask.Responsible)];
+            _selectedResponsible = [State.Team.Single(x => x.Id == Subtask.Responsible)];
         }
     }
 
@@ -126,7 +126,8 @@
 
     void SelectedResponsibleChanged(IEnumerable<UserInfo> newVal)
     {
-        Subtask.Responsible = newVal.SingleOrDefault()?.Id;
-        SelectedResponsible = newVal;
+        var selectedResponsible = newVal as UserInfo[] ?? newVal.ToArray();
+        Subtask.Responsible = selectedResponsible.SingleOrDefault()?.Id;
+        _selectedResponsible = selectedResponsible;
     }
 }
