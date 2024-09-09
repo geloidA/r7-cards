@@ -1,11 +1,11 @@
 ﻿@inherits KolComponentBase
 
-<div class="@Class d-flex flex-column gap-1" style="@Style">
+<div class="@Class flex flex-col gap-1" style="@Style">
     @if(Label is { })
     {
         <span>@Label</span>
     }
-    <div class="d-flex gap-1">
+    <div class="flex gap-1">
         <FluentDatePicker Disabled="Disabled" style="width: 125px;" DisabledDateFunc="DisableAfter"
             Placeholder="—" Value="Start" ValueChanged="StartChanged" />
         <FluentDatePicker Disabled="Disabled" style="width: 125px;" DisabledDateFunc="DisableBefore"

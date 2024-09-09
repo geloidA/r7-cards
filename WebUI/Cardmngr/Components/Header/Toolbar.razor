@@ -6,7 +6,7 @@
 
 @inherits KolComponentBase
 
-<div class="d-flex align-items-center gap-2 @Class" style="@Style">
+<div class="flex items-center gap-2 @Class" style="@Style">
     <FluentIcon Value="@(new Icons.Regular.Size24.ArrowClockwise())"
         Title="Обновить страницу"
         @onclick="@(async () => await Js.InvokeVoidAsync("reloadPage"))" />

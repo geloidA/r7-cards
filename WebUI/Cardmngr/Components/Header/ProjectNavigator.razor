@@ -7,10 +7,10 @@
 @if (ProjectInfo.SelectedProject is not null)
 {
     <PageTitle>@ProjectInfo.SelectedProject.Title</PageTitle>
-    <div class="d-flex gap-1">
+    <div class="flex gap-1">
         @if (ProjectInfo.OpenProjectInfoFunc is not null)
         {
-            <FluentIcon class="align-self-center" 
+            <FluentIcon class="self-center" 
                         @onmouseenter="() => isInfoIconHovered = true"
                         @onmouseleave="() => isInfoIconHovered = false"
                         Value="@InfoIcon" 

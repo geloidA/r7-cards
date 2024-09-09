@@ -3,12 +3,12 @@
     <div>@AdditionalText</div>
 }
 <div class="row @(AdditionalText is { } ? "mt-4" : "")">
-    <div class="col d-flex justify-content-center">
+    <div class="col flex justify-center">
         <FluentButton OnClick="async () => await Modal.CloseAsync(ModalResult.Ok())">
             @OkTitle
         </FluentButton>
     </div>
-    <div class="col d-flex justify-content-center">
+    <div class="col flex justify-center">
         <FluentButton Appearance="Appearance.Accent" OnClick="async () => await Modal.CloseAsync(ModalResult.Cancel())" >
             @CancelTitle
         </FluentButton>

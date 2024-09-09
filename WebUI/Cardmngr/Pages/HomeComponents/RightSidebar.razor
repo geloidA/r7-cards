@@ -1,7 +1,7 @@
 ﻿
 <ModuleCard Items="_options" ItemRenderer="optionRenderer" >
     <Header>
-        <div class="fw-bold" >
+        <div class="font-bold" >
             Другое
         </div>
     </Header>
@@ -16,14 +16,14 @@
     ];
 
     private RenderFragment<SidebarOption> optionRenderer = opt =>
-        @<div class="d-flex flex-column gap-2">
+        @<div class="flex flex-col gap-2">
             <FluentAnchor Appearance="Appearance.Hypertext" Href="@opt.Href">
-                <span class="d-flex gap-2 align-items-center fs-6">
+                <span class="flex gap-2 items-center text-sm">
                     <FluentIcon Value="opt.Icon" />
                     @opt.Title
                 </span>
             </FluentAnchor>
-            <span class="small" style="color: var(--neutral-fill-inverse-hover);">@opt.Desc</span>
+            <span class="text-sm" style="color: var(--neutral-fill-inverse-hover);">@opt.Desc</span>
         </div>;
 
     record SidebarOption(string Title, string? Desc, Icon Icon, string Href);

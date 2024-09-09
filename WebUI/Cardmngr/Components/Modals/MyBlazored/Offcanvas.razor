@@ -8,11 +8,11 @@
     @onkeyup="HandleKeyUp" >
     @if (ShowCloseBtn) 
     {
-        <div class="position-absolute clickable w-100" style="z-index: 999; @CloseBtnRadiusStyle" 
+        <div class="absolute clickable w-full" style="z-index: 999; @CloseBtnRadiusStyle" 
             @onclick="async () => await CloseAsync()" >
             @if (Placement == MyOffcanvasPlacement.Start)
             {
-                <div class="d-flex justify-content-end">
+                <div class="flex justify-end">
                     <FluentIcon Value="@(new Icons.Regular.Size20.ArrowCircleLeft())" />
                 </div>
             }
@@ -22,7 +22,7 @@
             }
         </div>
     }
-    <div style="overflow-y: auto; overflow-x: hidden;" class="mt-2 h-100"> 
+    <div style="overflow-y: auto; overflow-x: hidden;" class="mt-2 h-full"> 
         @ChildContent
     </div>
 </div>

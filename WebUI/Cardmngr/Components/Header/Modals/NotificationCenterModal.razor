@@ -3,11 +3,11 @@
 <Offcanvas Width="324"
     Class="my-offcanvas my-offcanvas-right" Placement="MyOffcanvasPlacement.End" >
     <OffcanvasHeader>
-        <span class="fw-bold fs-4 user-select-none">
+        <span class="font-bold text-xl select-none">
             Уведомления
         </span>
     </OffcanvasHeader>
-    <OffcanvasBody Class="d-flex flex-column overflow-auto">
+    <OffcanvasBody Class="flex flex-col overflow-auto">
         <FluentMessageBarProvider MaxMessageCount="int.MaxValue" 
             Type="MessageType.Notification" 
             Section="@App.MessagesNotificationCenter" />

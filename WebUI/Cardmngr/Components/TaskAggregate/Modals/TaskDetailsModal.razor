@@ -12,16 +12,16 @@
     <CascadingValue Value="Buffer" IsFixed >
         <FluentEditForm Model="Buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown" >
             <FluentValidationValidator />
-            <OffcanvasHeader Class="py-0 d-flex gap-2 align-items-center" Style="padding-top: 20px !important;">
+            <OffcanvasHeader Class="py-0 flex gap-2 items-center" Style="padding-top: 20px !important;">
                 <AutoGrowTextArea Name="Title" Style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
-                                  @bind-Value="Buffer.Title" Class="p-0 w-100" />
+                                  @bind-Value="Buffer.Title" Class="p-0 w-full" />
                 <TaskPriorityChanger Disabled="@(!CanEdit)" />
             </OffcanvasHeader>
             <FluentValidationMessage For="() => Buffer.Title" class="ms-3" />
-            <OffcanvasBody Class="d-flex flex-column form-group gap-2">
+            <OffcanvasBody Class="flex flex-col form-group gap-2">
                 @if (Model is not null)
                 {
-                    <i style="font-size: 13px; margin-right: 5px;" class="d-flex justify-content-end">
+                    <i style="font-size: 13px; margin-right: 5px;" class="flex justify-end">
                         Создатель: @Model.CreatedBy.DisplayName
                     </i>
                 }
@@ -30,7 +30,7 @@
                 <FluentDatePicker Name="Deadline" Placeholder="Не установлен"
                                   ReadOnly="!CanEdit" @bind-Value="Buffer.Deadline" Label="Крайний срок:" />
                 <FluentValidationMessage For="() => Buffer.Deadline" />
-                <AutoGrowTextArea Name="Description" Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100"
+                <AutoGrowTextArea Name="Description" Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-full"
                                   @bind-Value="Buffer.Description" ImmediateDelay="500" Immediate Spellcheck="true" ReadOnly="!CanEdit" />
                 <CascadingValue Value="State" IsFixed="true">
                     <TaskResponsibles Disabled="!CanEdit" />
@@ -44,8 +44,8 @@
                         </CascadingValue>
                     }
                 </CascadingValue>
-                <div class="d-flex justify-content-end user-select-none">
-                    <div class="d-flex flex-row">
+                <div class="flex justify-end select-none">
+                    <div class="flex flex-row">
                         <FluentButton Type="ButtonType.Submit"
                                       Disabled="!CanEdit" Loading="submitting" >
                             @SubmitText

@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace Cardmngr.Report;
 
-public class ReportJsModule(IJSRuntime jsRuntime) : JSModule(jsRuntime, "/js/GeneratedJS/saveFile.js")
+public class ReportJsModule(IJSRuntime jsRuntime) : JSModule(jsRuntime, "/js/saveFile.js")
 {
     public ValueTask SaveAsAsync(string fileName, byte[] fileData)
     {

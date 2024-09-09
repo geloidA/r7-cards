@@ -2,13 +2,13 @@
 
 @if (FeedFilterService is { })
 {
-<div class="d-flex gap-2 flex-wrap">
+<div class="flex gap-2 flex-wrap">
     @if (ExcludedProjects.Count > 0)
     {
         foreach (var project in ExcludedProjects)
         {
             <FluentBadge Circular title="@project" >
-                <div class="d-flex gap-2">
+                <div class="flex gap-2">
                     <span style="max-width: 200px;" class="overflow-hidden">@project</span>
                     <FluentIcon Value="@(new Icons.Regular.Size16.Dismiss())"
                         @onclick="() => IncludeProject(project)" />
@@ -18,7 +18,7 @@
     }
     else
     {
-        <span style="color: var(--info)" class="small">Нет исключенных проектов.</span>
+        <span style="color: var(--info)" class="text-sm">Нет исключенных проектов.</span>
     }    
 </div>
 }

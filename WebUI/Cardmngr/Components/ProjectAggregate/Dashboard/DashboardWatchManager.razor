@@ -5,15 +5,15 @@
 </div>
 
 <FluentPopover @bind-Open="_isPopoverOpen" AnchorId="@_popoverGuid" VerticalPosition="VerticalPosition.Top"
-    style="width: 500px; height: 420px; border-radius: 10px; margin-bottom: 10px;" class="user-select-none">
+    style="width: 500px; height: 420px; border-radius: 10px; margin-bottom: 10px;" class="select-none">
     <Header >
         <div style="font-size: 12px; line-height: 1;">Выберите проекты для просмотра просроченных задач</div>
     </Header>
     <Body >
-        <div class="d-flex flex-column gap-1">
-            <div class="d-flex flex-column gap-1 overflow-auto p-1" 
+        <div class="flex flex-col gap-1">
+            <div class="flex flex-col gap-1 overflow-auto p-1" 
                 style="height: 200px; border: 1px solid var(--neutral-layer-4); border-radius: 5px;">
-                <FluentCheckbox class="align-self-end" 
+                <FluentCheckbox class="self-end" 
                         title="Отобразить только те проекты, которые содержат просроченные или скоро просрочившиеся задачи."
                         @bind-Value="_onlyShowDeadlineContainedProjects" >
                         <LabelTemplate>
@@ -57,7 +57,7 @@
 
             <FluentNumberField Max="@_maxUnitValue" Min="@_minUnitValue" @bind-Value="ChangeInterval" >
                 <LabelTemplate>
-                    <div style="font-size: 12px; width: 100%;" class="d-flex align-items-center" >
+                    <div style="font-size: 12px; width: 100%;" class="flex items-center" >
                         Смена проекта через:
                         <FluentSpacer />
                         <FluentCombobox Items="Enum.GetValues<TimeMeasurementUnit>()"
@@ -78,7 +78,7 @@
                 @renderError("Ни один проект не содержит просроченных или скоро просрочившихся задач.")
             }
 
-            <FluentButton class="d-flex" @onclick="NavigateToDashboard" >
+            <FluentButton class="flex" @onclick="NavigateToDashboard" >
                 Начать просмотр
             </FluentButton>
 
@@ -89,7 +89,7 @@
 @code {
     private RenderFragment<string> renderError = errorMsg =>
         @<Smooth ShowOnFirstRender Delay="TimeSpan.FromSeconds(1)">
-            <span style="font-size: 12px;" class="d-flex align-content-center text-error">
+            <span style="font-size: 12px;" class="flex align-content-center text-error">
                 <FluentIcon Value="@(new Icons.Filled.Size12.ErrorCircle())" 
                     Color="Color.Error" class="me-1" />
                 @errorMsg

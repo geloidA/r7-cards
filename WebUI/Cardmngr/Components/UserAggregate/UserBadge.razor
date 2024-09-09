@@ -1,6 +1,6 @@
 ﻿@inherits KolComponentBase
 
-<div class="d-flex flex-column @(OnClick.HasDelegate ? "clickable" : "") @Class" style="@Style" @onclick="HandleClick" >    
+<div class="flex flex-col @(OnClick.HasDelegate ? "clickable" : "") @Class" style="@Style" @onclick="HandleClick" >    
     <FluentBadge class="@(User is { } ? "py-0" : "")" Circular="true" BackgroundColor="@BadgeColor" >
         @if (User is { })
         {
@@ -8,10 +8,10 @@
         }
         else
         {
-            <span class="user-select-none">Выберите ответственного</span>
+            <span class="select-none">Выберите ответственного</span>
         }
     </FluentBadge>
-    <span style="font-size: 11px; margin-right: 8px;" class="d-flex justify-content-end">@Text</span>
+    <span style="font-size: 11px; margin-right: 8px;" class="flex justify-end">@Text</span>
 </div>
 
 @code {

@@ -7,10 +7,10 @@
 
 <div @onmouseenter="@(() => isHover = true)" @onmouseleave="@(() => isHover = false)"
     @onclick:preventDefault @onclick:stopPropagation @ondblclick:stopPropagation >
-    <div class="w-100 d-flex overflow-hidden clickable timeline-badge @CssSelected" 
+    <div class="w-full flex overflow-hidden clickable timeline-badge @CssSelected" 
         style="background-color: @BadgeColor;"
         @onclick="() => ToggleMilestone(Milestone)" >
-        <div class="position-relative hided-opt ms-1 @CssShowOptions" >
+        <div class="relative hided-opt ms-1 @CssShowOptions" >
             <FluentIcon Title="Фильтр по вехе"
                 Value="@(new Icons.Filled.Size16.Eye())" Color="Color.Fill" />
         </div>
@@ -20,7 +20,7 @@
         </div>
         <FluentSpacer />
     </div>
-    <div class="d-flex justify-content-center hided-opt @CssShowOptions" style="margin-top: 1px;" >
+    <div class="flex justify-center hided-opt @CssShowOptions" style="margin-top: 1px;" >
         <FluentIcon @onclick="@ShowDetailsModal" 
             Value="@(new Icons.Filled.Size16.Info())" />
     </div>

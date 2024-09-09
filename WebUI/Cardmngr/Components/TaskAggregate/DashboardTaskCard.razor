@@ -1,10 +1,10 @@
 ﻿
 <div>
     <div class="dashboard-task-card @CssHighPriority @Task.CssDeadline()">
-        <div class="d-flex">
+        <div class="flex">
             <div class="fs-1 max-height-100 title pre-wrap " style="text-align: center;">@Task.Title</div>
         </div>
-        <div class="align-self-end d-flex mt-1">
+        <div class="self-end flex mt-1">
             @if (Task.IsDeadlineOut())
             {
                 <FluentIcon Value="@(new Icons.Regular.Size24.Fire())" Color="Color.Error" />
@@ -13,7 +13,7 @@
             {
                 <FluentIcon Value="@(new Icons.Filled.Size24.Warning())" Color="Color.Warning" />
             }
-            <span class="fs-5 ms-2 @(Task.IsDeadlineOut() ? "text-danger" : "fw-lighter")" >
+            <span class="fs-5 ms-2 @(Task.IsDeadlineOut() ? "text-error" : "font-light")" >
                 @Task.Deadline?.ToString("d MMM yyyy г.")
             </span>
         </div>

@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace Cardmngr.Notification;
 
-public class NotificationJsModule(IJSRuntime jsRuntime) : JSModule(jsRuntime, "/js/GeneratedJS/notifications.js")
+public class NotificationJsModule(IJSRuntime jsRuntime) : JSModule(jsRuntime, "/js/notifications.js")
 {
     private PermissionType PermissionStatus { get; set; }
 

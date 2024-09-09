@@ -1,9 +1,9 @@
 ﻿@using ColorType = System.Drawing.Color
 
-<FluentBadge class="d-flex user-select-none py-1" Circular="true"
+<FluentBadge class="flex select-none py-1" Circular="true"
     Fill="val" BackgroundColor="@Color.WithAlpha(0.5).ToRgbaText()" >
     <FluentIcon Width="15" Value="@(new Icons.Filled.Size20.Tag())" />
-    <div class="ms-1 align-self-center" style="margin-right: 2px;">@Tag.Name</div>
+    <div class="ms-1 self-center" style="margin-right: 2px;">@Tag.Name</div>
 </FluentBadge>
 
 @code {

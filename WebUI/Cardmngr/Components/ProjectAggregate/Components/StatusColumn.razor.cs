@@ -1,6 +1,5 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
-using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Domain.Enums;
@@ -10,6 +9,7 @@ using Cardmngr.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Components.ProjectAggregate.States;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.Components;
 
@@ -19,6 +19,9 @@ public partial class StatusColumn : ComponentBase, IDisposable
 
     [Inject] 
     private ITaskClient TaskClient { get; set; } = null!;
+
+    [Inject]
+    private IToastService ToastService { get; set; } = null!;
 
     [Parameter, EditorRequired]
     public OnlyofficeTaskStatus Status { get; set; } = null!;
@@ -75,8 +78,15 @@ public partial class StatusColumn : ComponentBase, IDisposable
 
         if (!task.HasStatus(status))
         {
-            var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, status);
-            State.ChangeTaskStatus(updated);
+            try 
+            {
+                var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, status);
+                State.ChangeTaskStatus(updated);
+            }
+            catch (HttpRequestException e)
+            {
+                ToastService.ShowError(e.HttpRequestError.ToString());
+            }
         }
     }
 

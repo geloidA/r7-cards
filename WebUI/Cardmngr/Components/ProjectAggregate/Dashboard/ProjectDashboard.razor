@@ -1,7 +1,7 @@
 ﻿@inherits KolComponentBase
 
 <DashboardProjectState Id="Id" >
-    <div class="d-flex flex-column @Class" style="height: 100%; @Style">
+    <div class="flex flex-col @Class" style="height: 100%; @Style">
 
         @* HEADER *@
         <div class="p-2" style="height: 5%;">
@@ -9,7 +9,7 @@
         </div>
 
         @* BODY *@
-        <div class="d-flex" style="height: 95%;">
+        <div class="flex" style="height: 95%;">
             <div class="p-2" style="width: 20%;">
                 @* DEADLINED *@
                 <DashboardCardsColumn 
@@ -18,26 +18,26 @@
                     TaskRefreshFunc="@_columns[0].TaskRefreshFunc" />
             </div>
             <div class="" style="width: 60%;">
-                <div class="d-flex" style="height: 65%;">
-                    <div class="h-100 p-2" style="width: 33%;">
+                <div class="flex" style="height: 65%;">
+                    <div class="h-full p-2" style="width: 33%;">
                         @* SEVEN DAYS DEADLINE OUT *@
                         <DashboardCardsColumn 
                             Header="@_columns[1].Header" 
                             Color="Color.Warning"
                             TaskRefreshFunc="@_columns[1].TaskRefreshFunc" />
                     </div>
-                    <div class="h-100 p-2" style="width: 45%;">
+                    <div class="h-full p-2" style="width: 45%;">
                         <DashboardSegment >
                             <MilestonesSummary />
                         </DashboardSegment>
                     </div>
-                    <div class="h-100" style="width: 22%;">
-                        <div class="w-100 p-2" style="height: 60%;">
+                    <div class="h-full" style="width: 22%;">
+                        <div class="w-full p-2" style="height: 60%;">
                             <DashboardSegment >
                                 <ClosedCounter />
                             </DashboardSegment>
                         </div>
-                        <div class="w-100 p-2" style="height: 40%;">
+                        <div class="w-full p-2" style="height: 40%;">
                             <DashboardSegment >
                                 <DeadlinePrecent />
                             </DashboardSegment>

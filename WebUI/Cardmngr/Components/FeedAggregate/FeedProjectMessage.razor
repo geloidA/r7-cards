@@ -9,11 +9,11 @@
     [CascadingParameter] Dictionary<string, UserInfo> FeedUsers { get; set; } = null!;
 
     private RenderFragment RenderMessageWithInfo(FeedMsgType typeInfo) =>
-        @<div @key="Feed.Value.Id" class="d-flex flex-column gap-2 w-100">
-            <div class="d-flex gap-3 overflow-hidden">
+        @<div @key="Feed.Value.Id" class="flex flex-col gap-2 w-full">
+            <div class="flex gap-3 overflow-hidden">
                 <FluentIcon Value="typeInfo.Icon" Color="typeInfo.Color" style="min-width: 20px;" />
                 <div>
-                    <span class="fw-bolder">@typeInfo.Header. </span>
+                    <span class="font-bolder">@typeInfo.Header. </span>
                     @if (typeInfo.Type != "participant")
                     {
                         @Feed.Value.Title
@@ -35,7 +35,7 @@
                     RenderHtml(Feed.Value.Description);
                 }
             </div>
-            <div class="d-flex align-items-center">
+            <div class="flex items-center">
                 <div>
                     <UserAvatar User="FeedUsers[Feed.Value.AuthorId.ToString()]" ShowName />
                     @if (typeInfo.Type == "participant")
@@ -47,7 +47,7 @@
                     }
                 </div>
                 <FluentSpacer />
-                <span style="color: var(--info);" class="align-self-end">@Feed.Value.CreatedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
+                <span style="color: var(--info);" class="self-end">@Feed.Value.CreatedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
             </div>
         </div>;
 }

@@ -1,6 +1,6 @@
 ﻿@if (userInfos.Any())
 {    
-    <div class="d-flex align-items-center">
+    <div class="flex items-center">
         <FluentIcon class="clickable" title="Сейчас на странице" Value="@(isCollapsed ? closed : opened)"
             OnClick="@(() => isCollapsed = !isCollapsed)" />
         <div class="connected-users py-0 px-1 collapsable-items" style="@MaxWidth @StyleScroll">

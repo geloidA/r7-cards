@@ -3,7 +3,7 @@
 @if (InteractionService.HeaderCollapsed)
 {
     <Smooth ShowOnFirstRender >
-        <div class="position-absolute top-0 mt-2 p-2" style="left: 50%; opacity: 30%; z-index: 1;">
+        <div class="absolute top-0 mt-2 p-2" style="left: 50%; opacity: 30%; z-index: 1;">
             <div style="background-color: var(--neutral-layer-2); border-radius: 50%;">
                 <FluentIcon Value="@(new Icons.Regular.Size24.Dismiss())"
                     @onclick="() => InteractionService.HeaderCollapsed = false"
@@ -16,7 +16,7 @@
 else
 {
 <FluentHeader class="siteheader" Style="height: auto; z-index: 1;" >
-    <div class="d-flex gap-3 align-items-center">        
+    <div class="flex gap-3 items-center">        
         <NavigateButtons />
         <FluentButton Style="padding: 2px;"
                       Appearance="Appearance.Outline"
@@ -30,7 +30,7 @@ else
     <FluentSpacer />
     <ProjectNavigator />
     <FluentSpacer />
-    <div class="d-flex gap-2">
+    <div class="flex gap-2">
         <Toolbar />
         @if (currentUser is not null)
         {

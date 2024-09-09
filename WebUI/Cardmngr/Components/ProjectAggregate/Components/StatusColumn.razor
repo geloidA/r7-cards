@@ -19,7 +19,7 @@
             <TaskStatusHeader TaskStatus="@Status" />
             @if (State is IFilterableProjectState { TaskFilter.Filters.Count: > 0 })
             {
-                <div class="mt-1 d-flex justify-content-center fw-light" style="font-size: small;">
+                <div class="mt-1 flex justify-center font-light" style="font-size: small;">
                     @_tasks.Count результатов
                 </div>
             }

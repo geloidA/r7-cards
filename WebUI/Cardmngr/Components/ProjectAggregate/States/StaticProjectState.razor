@@ -3,33 +3,33 @@
 <CascadingValue Value="this" IsFixed="true">
     <div class="proj-state scrollbar-none" style="@CssHeight">
         <div class="clickable" @ondblclick="@toggleCollapsedFunc">
-            <div class="d-flex user-select-none">
-                <div class="d-flex fw-bold gap-1">
-                    <FluentIcon style="min-width: 16px;" class="align-self-center" OnClick="() => ToggleFollowAsync()"
+            <div class="flex select-none">
+                <div class="flex font-bold gap-1">
+                    <FluentIcon style="min-width: 16px;" class="self-center" OnClick="() => ToggleFollowAsync()"
                                 Value="IconFollow" Title="@(isFollow ? "Перестать отслеживать" : "Отслеживать")" />
                     @if (ViewModel.ProjectInfo.IsPrivate)
                     {
-                        <div class="align-self-center">
+                        <div class="self-center">
                             <FluentIcon
                                 Value="@(new Icons.Filled.Size16.LockClosed())"
                                 title="Приватный проект"
                                 Color="Color.Warning" />
                         </div>
                     }
-                    <div class="align-self-center">
+                    <div class="self-center">
                         @ViewModel.ProjectInfo.Title
                     </div>
-                    <FluentBadge Class="align-self-center">
+                    <FluentBadge Class="self-center">
                         @ViewModel.Tasks.Count
                     </FluentBadge>
                 </div>
                 <FluentSpacer/>
                 <FluentSpacer Width="12" />
-                <div class="align-self-center d-flex gap-1 justify-content-end">
+                <div class="self-center flex gap-1 justify-end">
                     <i class="tip-hide" style="font-size: small;">
                         Двойной клик для рыскрытия/закрытия
                     </i>
-                    <a class="align-self-center" href=@($"/project/board?ProjectId={ViewModel.ProjectInfo.Id}")>
+                    <a class="self-center" href=@($"/project/board?ProjectId={ViewModel.ProjectInfo.Id}")>
                         <FluentIcon Width="23" Value="@(new Icons.Regular.Size20.ArrowCircleUpRight())" />
                     </a>
                     <FluentIcon style="min-width: 20px;" OnClick="@toggleCollapsedFunc"
@@ -41,8 +41,8 @@
         {
             if (Initialized)
             {
-                <div class="d-flex flex-column position-relative mt-1" style="flex: auto !important;">
-                    <div class="d-flex flex-column ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
+                <div class="flex flex-col relative mt-1" style="flex: auto !important;">
+                    <div class="flex flex-col ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
                         <ProjectBoard></ProjectBoard>
                     </div>
                 </div>

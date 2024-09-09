@@ -1,4 +1,4 @@
-export function saveAs(bytesBase64: string, filename: string) {
+export function saveAs(bytesBase64, filename) {
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = "data:application/octet-stream;base64," + bytesBase64;

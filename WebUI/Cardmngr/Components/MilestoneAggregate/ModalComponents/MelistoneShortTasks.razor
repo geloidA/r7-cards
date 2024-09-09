@@ -1,15 +1,15 @@
 ﻿@if (MilestoneTasks.Any())
 {
     <div>
-        <div class="overflow-auto d-flex flex-column task-container gap-2" style="max-height: 400px;">
+        <div class="overflow-auto flex flex-col task-container gap-2" style="max-height: 400px;">
             @foreach (var task in MilestoneTasks.OrderByShortTaskCriteria())
             {
-                <span style="z-index: 99;" class="w-100" >
+                <span style="z-index: 99;" class="w-full" >
                     <ShortTaskCard Task="task" />
                 </span>
             }
         </div>
-        <FluentFooter class="d-flex flex-row align-items-center mt-2">
+        <FluentFooter class="flex flex-row items-center mt-2">
             <FluentIcon Value="@(new Icons.Filled.Size20.CheckmarkCircleSquare())" />
             <span class="ms-1">Задачи</span>
             <FluentSpacer />

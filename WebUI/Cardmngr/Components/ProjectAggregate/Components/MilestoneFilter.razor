@@ -8,7 +8,7 @@
             <div class="col">
                 <MilestoneLabel Milestone="item.Milestone" />
             </div>
-            <div class="col d-flex justify-content-end">
+            <div class="col flex justify-end">
                 <InputCheckbox class="clickable form-check-input" 
                     @bind-Value="item.Selected" 
                     @onclick="@(() => ToggleMilestone(item.Milestone))" />
@@ -18,7 +18,7 @@
 }
 else
 {
-    <div class="text-muted d-flex justify-content-center">
+    <div class="text-muted flex justify-center">
         В проекте нет вех
     </div>
 }

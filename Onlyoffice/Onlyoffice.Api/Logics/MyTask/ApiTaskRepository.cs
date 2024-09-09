@@ -82,6 +82,9 @@ public class ApiTaskRepository(IHttpClientFactory httpClientFactory) : ApiLogicB
     public async Task<TaskDto> UpdateStatusAsync(int id, Status status, int? statusId = null)
     {
         var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"{ApiPaths.Task}/{id}/status", new { status, statusId }));
+
+        response.EnsureSuccessStatusCode();
+        
         var taskDao = await response.Content.ReadFromJsonAsync<SingleTaskDao>();
         return taskDao?.Response ?? throw new NullReferenceException("Task was not updated");
     }

@@ -3,16 +3,16 @@
 @inject IFeedbackClient FeedbackClient
 @inject AuthenticationStateProvider AuthStateProvider
 
-<div class="w-100 h-100 d-flex justify-content-center align-items-center">
-    <div class="w-50 d-flex justify-content-center">
+<div class="w-full h-full flex justify-center items-center">
+    <div class="w-1/2 flex justify-center">
         <div class="exception-emoji">
             <FluentEmoji Width="350px" Value="@(new Emojis.SmileysEmotion.Flat.Default.AnguishedFace())" />
         </div>
     </div>
     <FluentSpacer Width="50" />
-    <div class="w-50">
-        <h2 class="fw-bold">
-            <div class="d-flex gap-2 align-items-center">
+    <div class="w-1/2">
+        <h2 class="font-bold">
+            <div class="flex gap-2 items-center">
                 <FluentEmoji Value="@(new Emojis.AnimalsNature.Flat.Default.Bug())" /> 
                 Произошла ошибка. 
             </div>

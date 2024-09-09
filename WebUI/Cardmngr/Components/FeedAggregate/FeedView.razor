@@ -2,7 +2,7 @@
 @using KolBlazor.Components.Virtualization
 @inherits KolComponentBase
 
-<div class="d-flex flex-column gap-3 h-100 @Class" style="@Style" @onclick="HandleClick">
+<div class="flex flex-col gap-3 h-full @Class" style="@Style" @onclick="HandleClick">
     @if (_loading)
     {
         <Loading />
@@ -19,8 +19,8 @@
     }
     else @if (!_loading)
     {
-        <FluentCard MinimalStyle Width="100%" Height="125px" class="d-flex flex-column justify-content-center align-items-center" >
-            <h2 class="fw-bold">Здесь пока ничего нет</h2>
+        <FluentCard MinimalStyle Width="100%" Height="125px" class="flex flex-col justify-center items-center" >
+            <h2 class="font-bold">Здесь пока ничего нет</h2>
             <span style="color: var(--info);">
                 Вы можете настроить фильтр, чтобы увидеть больше.
             </span>

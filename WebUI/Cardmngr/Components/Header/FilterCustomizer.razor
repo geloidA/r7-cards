@@ -2,8 +2,8 @@
 
 @if(show)
 {
-    <div id="toolbar-fluent-components" class="d-flex gap-2" >
-        <div class="d-flex flex-wrap gap-1">
+    <div id="toolbar-fluent-components" class="flex gap-2" >
+        <div class="flex flex-wrap gap-1">
             <FluentAutocomplete Placeholder="Проект"
                                 TOption="Domain.Entities.ProjectInfo" 
                                 Width="228px"
@@ -64,7 +64,7 @@
             </FluentAutocomplete>
 
             <FluentSelect TOption="TaskSelectorType"
-                          Class="align-self-start"
+                          Class="self-start"
                           Items="@_taskSelectorTypes"
                           Width="228px"
                           Height="136px"

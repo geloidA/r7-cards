@@ -2,7 +2,7 @@
 
 @inject IMessageService MessageService
 
-<div class="align-self-center clickable user-select-none" @onclick="OpenNotificationCenterAsync" >
+<div class="self-center clickable select-none" @onclick="OpenNotificationCenterAsync" >
 @if (MessageService.Count(App.MessagesNotificationCenter) > 0)
 {
     <FluentCounterBadge Count="@MessageService.Count(App.MessagesNotificationCenter)"

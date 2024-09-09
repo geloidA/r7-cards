@@ -3,8 +3,8 @@
 <div class="project-summary-info" style="height: 94%;">
     @if (_deadlineoutSoonTasks.Count > 0 || _deadlineoutTasks.Count > 0)
     {
-        <div class="h-100">
-            <div class="row align-items-center justify-content-center h-100">
+        <div class="h-full">
+            <div class="row items-center justify-center h-full">
                 <div @ref="_deadlineoutTasksRef" class=@(_deadlineoutTasks.Any() ? "task-column col scrollbar-none" : "") style="overflow-x: hidden;" >
                     @foreach (var task in _deadlineoutTasks)
                     {
@@ -18,16 +18,16 @@
                     }
                 </div>
             </div>
-            <div class="row position-absolute w-100" style="bottom: 60px; left: 0;">
+            <div class="row absolute w-full" style="bottom: 60px; left: 0;">
                 @if (_deadlineoutTasks.Count > 0)
                 {
-                    <div class="col d-flex justify-content-center text-error">
+                    <div class="col flex justify-center text-error">
                         @renderInscription("ПРОСРОЧЕНО")
                     </div>
                 }
                 @if (_deadlineoutSoonTasks.Count > 0)
                 {
-                    <div style="color: var(--warning);" class="col d-flex justify-content-center">
+                    <div style="color: var(--warning);" class="col flex justify-center">
                         @renderInscription("СРОК СКОРО ИСТЕЧЕТ")
                     </div>
                 }
@@ -36,7 +36,7 @@
     }
     else
     {
-        <div class="fs-1 fw-bold" style="color: var(--neutral-layer-2);" >НЕТ ЗАДАЧ</div>
+        <div class="fs-1 font-bold" style="color: var(--neutral-layer-2);" >НЕТ ЗАДАЧ</div>
     }
 </div>
 

@@ -1,7 +1,7 @@
 ﻿<EditForm Model="Subtask" OnValidSubmit="Submit" Context="subtask" >
     <DataAnnotationsValidator/>
     <FluentCard AreaRestricted="false" Width="250px" Height="200px" Style="padding: 0;">
-        <div class="d-flex justify-content-end p-2">
+        <div class="flex justify-end p-2">
             @if (!Disabled)
             {
                 if (Subtask.Status != (int)Status.Closed)
@@ -42,7 +42,7 @@
                 }
                 else
                 {
-                    <p class="user-select-none">@Subtask.Title</p>
+                    <p class="select-none">@Subtask.Title</p>
                 }
             }
             else
@@ -89,7 +89,7 @@
             </FooterContent>
 
         </FluentAutocomplete>
-        <FluentFooter class="d-flex flex-row ps-1">
+        <FluentFooter class="flex flex-row ps-1">
             @if (Subtask.Status == (int)Status.Open)
             {
                 <Tool Icon="@(new Icons.Filled.Size20.Clock())" Color="@Color.Info" Disabled="@Disabled"

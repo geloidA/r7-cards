@@ -12,11 +12,11 @@
             <FluentValidationValidator />
             <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
                 <AutoGrowTextArea style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
-                    @bind-Value="Buffer.Title" class="p-0 w-100" Autofocus="true" />
+                    @bind-Value="Buffer.Title" class="p-0 w-full" Autofocus="true" />
             </OffcanvasHeader>
             <FluentValidationMessage For="() => Buffer.Title" class="ms-3" />
-            <OffcanvasBody Class="d-flex flex-column">
-                <AutoGrowTextArea Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-100"
+            <OffcanvasBody Class="flex flex-col">
+                <AutoGrowTextArea Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-full"
                     @bind-Value="Buffer.Description" Spellcheck="true" ReadOnly="!CanEdit" />
             </OffcanvasBody>
             @if (!IsAdd)
@@ -25,7 +25,7 @@
                     <UserBadge User="Model!.Creator" Text="Создатель" />
                 </div>
             }
-            <div class="d-flex ms-3 flex-row">
+            <div class="flex ms-3 flex-row">
                 <FluentButton Disabled="@(!CanEdit)" Type="ButtonType.Submit" >
                     @SubmitText
                 </FluentButton>

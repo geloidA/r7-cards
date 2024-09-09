@@ -3,17 +3,17 @@
 <Offcanvas ShowCloseBtn="false" Width="300"
     Class="my-offcanvas my-offcanvas-right" Placement="MyOffcanvasPlacement.End" >
     <OffcanvasHeader>
-        <span class="fw-bold fs-4 gap-2 d-flex align-items-center user-select-none">
+        <span class="font-bold text-xl gap-2 flex items-center select-none">
             <FluentIcon Value="@(new Icons.Regular.Size24.Settings())" />
             <span>Настройки сайта</span>
         </span>
     </OffcanvasHeader>
-    <OffcanvasBody Class="d-flex flex-column h-50">
+    <OffcanvasBody Class="flex flex-col h-1/2">
         <FluentDesignTheme @bind-Mode="@Mode"
                    @bind-OfficeColor="@OfficeColor"
                    StorageName="theme" />
 
-        <FluentGrid class="h-100">
+        <FluentGrid class="h-full">
             <FluentGridItem>
                 <FluentSelect Label="Тема" OptionText="GetThemeModeLabel"
                             Items="@(Enum.GetValues<DesignThemeModes>())"

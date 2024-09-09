@@ -5,11 +5,11 @@
         Overscan="4" CanItemDrag="x => x.CanChangeStatus"
         OnDropItem="DropFeedback" Items="Items" KeySelector="f => f.Id">
         <HeaderTemplate>
-            <div class="d-flex mb-2">
+            <div class="flex mb-2">
                 <div class="col col-sm-1">
                     <FluentBadge BackgroundColor="black">@Items.Count()</FluentBadge>
                 </div>
-                <div class="col w-100">                    
+                <div class="col w-full">                    
                     @HeaderTemplate
                 </div>
             </div>

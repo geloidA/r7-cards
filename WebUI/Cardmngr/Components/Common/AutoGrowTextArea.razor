@@ -46,7 +46,7 @@
         if (firstRender)
         {
             module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", 
-                "/js/GeneratedJS/autogrowtextarea.js");
+                "/js/autogrowtextarea.js");
             await module.InvokeVoidAsync("autoGrowHeight", guid);
         }
     }

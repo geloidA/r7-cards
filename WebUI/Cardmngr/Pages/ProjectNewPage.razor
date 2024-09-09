@@ -3,9 +3,9 @@
 @attribute [Authorize]
 
 <div class="middle-container ">
-    <h3 class="fw-bold mb-2">Создание проекта</h3>
+    <h3 class="font-bold mb-2">Создание проекта</h3>
     <FluentEditForm Model="_project"
-                    class="d-flex flex-column gap-2"
+                    class="flex flex-col gap-2"
                     OnValidSubmit="CreateProject">
         <FluentValidationValidator />
 
@@ -49,19 +49,19 @@
         
         <FluentRadioGroup @bind-Value="_project.IsPrivate" Orientation="Orientation.Vertical" Class="gap-1">
             <FluentRadio Value="true">
-                <div class="d-flex gap-2">
+                <div class="flex gap-2">
                     <FluentIcon Style="min-width: 24px;" Value="@(new Icons.Regular.Size28.LockClosed())"/>
-                    <div class="d-flex flex-column">
-                        <span class="fw-bold">Приватный</span>
+                    <div class="flex flex-col">
+                        <span class="font-bold">Приватный</span>
                         <span class="text-info">Проект будет доступен только участникам команды</span>
                     </div>
                 </div>
             </FluentRadio>
             <FluentRadio Value="false">
-                <div class="d-flex gap-2">
+                <div class="flex gap-2">
                     <FluentIcon Style="min-width: 28px;" Width="28px" Value="@(new Icons.Regular.Size24.BookGlobe())"/>
-                    <div class="d-flex flex-column">
-                        <span class="fw-bold">Публичный</span>
+                    <div class="flex flex-col">
+                        <span class="font-bold">Публичный</span>
                         <span class="text-info">Проект будет доступен всем</span>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
         <FluentDivider />
 
         <FluentButton Type="ButtonType.Submit"
-                      Class="align-self-end"
+                      Class="self-end"
                       Color="white"
                       BackgroundColor="var(--success)">
             Создать проект

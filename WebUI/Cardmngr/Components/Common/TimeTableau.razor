@@ -4,8 +4,8 @@
 @using System.Globalization
 
 <div class="time-tableau font-jetbrainsmono">
-    <div style="font-size: xxx-large;" class="fw-bold">@showedTime.ToLongTimeString()</div>
-    <div class="fs-5 align-self-center">@showedTime.ToString("dddd",culture), 
+    <div style="font-size: xxx-large;" class="font-bold">@showedTime.ToLongTimeString()</div>
+    <div class="fs-5 self-center">@showedTime.ToString("dddd",culture), 
         @showedTime.Day @genitiveCasesByMonthNum[showedTime.Month]</div>
 </div>
 

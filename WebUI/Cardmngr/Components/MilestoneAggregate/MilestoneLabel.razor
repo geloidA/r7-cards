@@ -24,10 +24,10 @@ else
                     ? ("Просрочена", Color.Info)
                     : ("Веха", Color.Accent);
 
-                <div @onclick="HandleClick" title="@data.title" class=@($"d-flex {(OnClick.HasDelegate ? "clickable" : "")}") >
-                    <FluentIcon Value="@(new MyIcons.Size16.Milestone())" Color="data.color" class="me-1 align-self-center" />
+                <div @onclick="HandleClick" title="@data.title" class=@($"flex {(OnClick.HasDelegate ? "clickable" : "")}") >
+                    <FluentIcon Value="@(new MyIcons.Size16.Milestone())" Color="data.color" class="me-1 self-center" />
                     <span style="font-size: 12px; font-weight: 500; color: @data.color.GetDesc();" 
-                        class="user-select-none">
+                        class="select-none">
                         @Milestone.Title
                     </span>
                 </div>

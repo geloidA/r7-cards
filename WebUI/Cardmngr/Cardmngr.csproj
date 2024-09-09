@@ -12,7 +12,7 @@
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="Blazored.Modal" Version="7.3.1" />
     <PackageReference Include="FluentValidation" Version="11.9.2" />
-    <PackageReference Include="KolBlazor" Version="1.0.9.3" />
+    <!-- <PackageReference Include="KolBlazor" Version="1.0.9.3" /> -->
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.7" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.7" />
@@ -20,11 +20,6 @@
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.9.3" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Emoji" Version="4.6.0" />
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.9.3" />
-    
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.5.3">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -33,31 +28,11 @@
     <Folder Include="wwwroot/js/Decompression/" />
   </ItemGroup>
 
-  <PropertyGroup Label="Typescript Config">
-    <TypeScriptTarget>ES2015</TypeScriptTarget>
-    <TypeScriptToolsVersion>4.0.5</TypeScriptToolsVersion>
-    <TypeScriptModuleKind>ES6</TypeScriptModuleKind>
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
-    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
-    <TypeScriptOutDir>wwwroot\js\GeneratedJS</TypeScriptOutDir>
-    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
-    <TypeScriptSourceMap>false</TypeScriptSourceMap>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
-  <PropertyGroup Label="Typescript Config (Debug)">
-    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
-    <TypeScriptSourceMap>false</TypeScriptSourceMap>
-    <TypeScriptOutDir>wwwroot\js\GeneratedJS</TypeScriptOutDir>
-    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="../../Onlyoffice/Onlyoffice.Api/Onlyoffice.Api.csproj" />
     <ProjectReference Include="../../Cardmngr.Application\Cardmngr.Application.csproj" />
     <ProjectReference Include="../../Cardmngr.Reports\Cardmngr.Reports.csproj" />
+    <ProjectReference Include="../../../KolBlazor/KolBlazor/KolBlazor.csproj" />
   </ItemGroup>
 
   <ItemGroup>

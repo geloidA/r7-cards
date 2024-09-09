@@ -23,7 +23,7 @@
     <HeaderContent>
         @if (!IsAdd)
         {
-            <div class="d-flex" style="font-size: small;">
+            <div class="flex" style="font-size: small;">
                 <FluentTextField Placeholder="Название метки" @bind-Value="newTagText" />
                 <FluentButton Disabled="!CanCreate" class="ms-1" Appearance="Appearance.Outline" Type="ButtonType.Button" @onclick="CreateTag">
                     <FluentIcon Value="@(new Icons.Regular.Size12.Add())" Color="Color.Success" />

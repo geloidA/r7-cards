@@ -2,7 +2,7 @@
 
 @if (User is { })
 {
-    <div class="d-flex flex-row align-items-center py-1 @Class" style="@Style">
+    <div class="flex flex-row items-center py-1 @Class" style="@Style">
         <div class="avatar-circle responsible-view" style="@($"width: {Size}px; height: {Size}px;")">
             @if (ShowTooltip)
             {
@@ -15,7 +15,7 @@
         </div>
         @if (ShowName)
         {
-            <div class="ms-1 fw-light">@User.DisplayName</div>
+            <div class="ms-1 font-light">@User.DisplayName</div>
         }
     </div>
 }

@@ -1,22 +1,5 @@
-.proj-ref {
-    font-weight: lighter;
-    font-size: .875em;
-    padding-top: .25rem !important;
-    padding-bottom: .25rem !important
-}
-            
 .proj-ref:focus {
     outline: none;
     border-radius: 5px;
     background-color: var(--neutral-fill-rest);
-}
-
-.ref-container {
-    display: -webkit-box; /* Установка элемента как flex-контейнера */
-    overflow: hidden; /* Скрытие содержимого, выходящего за пределы контейнера */
-    -webkit-box-orient: vertical; /* Установка ориентации блоков по вертикали */
-    -webkit-line-clamp: 2; /* Ограничение количества строк до 2 */
-    text-overflow: ellipsis; /* Вывод многоточия, если текст обрезан */
-    padding-left: 0;
-    padding-right: 0;
 }

@@ -8,7 +8,7 @@
    style="@Style"
    @onclick="HandleClick"
    href=@($"/project/board?ProjectId={Project.Id}")>
-    <div class="ref-container">
+    <div class="line-clamp-2 flex px-0">
         @if (ProjectFollowChecker.IsFollow(Project.Id))
         {
             <FluentIcon Value="new Icons.Filled.Size12.Star()" style="margin-bottom: 2px;"/>

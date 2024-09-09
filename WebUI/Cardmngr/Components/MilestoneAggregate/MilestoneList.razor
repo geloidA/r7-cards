@@ -7,13 +7,13 @@
     @foreach (var milestone in State.Milestones.OrderByMilestoneCriteria())
     {
         <div @key="milestone.Id" class="mt-2">
-            <div class="d-flex align-items-center">
+            <div class="flex items-center">
                 <MilestoneLabel OnClick="() => ShowModal(milestone)" Milestone="milestone" />
                 <FluentSpacer />
-                <i class="d-flex flex-row" style="font-size: 11px;">
+                <i class="flex flex-row" style="font-size: 11px;">
                     <span>@State.GetMilestoneStart(milestone).ToShortDateString()</span>
                     <span class="ms-1">-</span>
-                    <span class="ms-1 @(milestone.IsDeadlineOut() ? "text-danger fw-bolder" : "")">
+                    <span class="ms-1 @(milestone.IsDeadlineOut() ? "text-error font-semibold" : "")">
                         @milestone.Deadline.ToShortDateString()
                     </span>
                 </i>

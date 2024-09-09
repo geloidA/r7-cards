@@ -10,19 +10,19 @@
     Items="_tasks" >
     
     <HeaderTemplate>
-        <div class="d-flex mb-2">
-            <div style="font-size: 24px; border-radius: 7px; background-color: @Color.GetDesc(); color: white;" class="align-self-center p-1" >
+        <div class="flex mb-2">
+            <div style="font-size: 24px; border-radius: 7px; background-color: @Color.GetDesc(); color: white;" class="self-center p-1" >
                 @_tasks.Count
             </div>
             <FluentSpacer />
-            <span style="font-size: 22px;" class="align-self-center">@Header</span>
+            <span style="font-size: 22px;" class="self-center">@Header</span>
         </div>
     </HeaderTemplate>
     <ItemTemplate>
         <TaskCard Task="context" />
     </ItemTemplate>
     <EmptyTemplate>
-        <DashboardSegment class="d-flex align-items-center justify-content-center fs-1 fw-bold"
+        <DashboardSegment class="flex items-center justify-center fs-1 font-bold"
             style="color: var(--neutral-layer-4);">
             Нет задач
         </DashboardSegment>
