@@ -15,7 +15,7 @@
         transform: translateY(-50%);
     }
     50% {
-        transform: translateY(50%);
+        transform: translateY(0);
     }
     100% {
         transform: translateY(-50%);
@@ -24,13 +24,13 @@
 
 @keyframes moveHorizontal {
     0% {
-        transform: translateX(-50%) translateY(-10%);
+        transform: translateX(-15%) translateY(-10%);
     }
     50% {
-        transform: translateX(50%) translateY(10%);
+        transform: translateX(10%) translateY(10%);
     }
     100% {
-        transform: translateX(-50%) translateY(-10%);
+        transform: translateX(-15%) translateY(-10%);
     }
 }
 
@@ -66,8 +66,8 @@
 
     width: var(--circle-size);
     height: var(--circle-size);
-    top: calc(50% - var(--circle-size) / 2);
-    left: calc(50% - var(--circle-size) / 2);
+    top: calc(75% - var(--circle-size) / 2);
+    left: calc(75% - var(--circle-size) / 2);
 
     transform-origin: center center;
     animation: moveVertical 30s ease infinite;
@@ -87,8 +87,8 @@
 
     width: var(--circle-size);
     height: var(--circle-size);
-    top: calc(50% - var(--circle-size) / 2);
-    left: calc(50% - var(--circle-size) / 2);
+    top: calc(75% - var(--circle-size) / 2);
+    left: calc(75% - var(--circle-size) / 2);
 
     transform-origin: calc(50% - 400px);
     animation: moveInCircle 20s reverse infinite;
@@ -108,8 +108,8 @@
 
     width: var(--circle-size);
     height: var(--circle-size);
-    top: calc(50% - var(--circle-size) / 2 + 200px);
-    left: calc(50% - var(--circle-size) / 2 - 500px);
+    top: calc(75% - var(--circle-size) / 2 + 200px);
+    left: calc(75% - var(--circle-size) / 2 - 500px);
 
     transform-origin: calc(50% + 400px);
     animation: moveInCircle 40s linear infinite;
@@ -129,8 +129,8 @@
 
     width: var(--circle-size);
     height: var(--circle-size);
-    top: calc(50% - var(--circle-size) / 2);
-    left: calc(50% - var(--circle-size) / 2);
+    top: calc(75% - var(--circle-size) / 2);
+    left: calc(75% - var(--circle-size) / 2);
 
     transform-origin: calc(50% - 200px);
     animation: moveHorizontal 40s ease infinite;
@@ -149,8 +149,8 @@
 
     width: calc(var(--circle-size) * 2);
     height: calc(var(--circle-size) * 2);
-    top: calc(50% - var(--circle-size));
-    left: calc(50% - var(--circle-size));
+    top: calc(100% - var(--circle-size));
+    left: calc(100% - var(--circle-size));
 
     transform-origin: calc(50% - 800px) calc(50% + 200px);
     animation: moveInCircle 20s ease infinite;

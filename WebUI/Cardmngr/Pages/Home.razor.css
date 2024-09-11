@@ -1,6 +1,6 @@
 .projects-view {
   width: 20%;
   border-right: 1px solid var(--accent-fill-rest);
-  background: var(--neutral-layer-3);
+  background: rgba(var(--neutral-layer-3), 0.3);
   padding: 2rem;
 }

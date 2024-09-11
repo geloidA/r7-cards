@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot/fonts/" />
-    <Folder Include="wwwroot/images/" />
     <Folder Include="wwwroot/js/Decompression/" />
   </ItemGroup>
 

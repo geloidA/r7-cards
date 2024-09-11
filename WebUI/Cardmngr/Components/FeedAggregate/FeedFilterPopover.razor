@@ -3,20 +3,17 @@
 @if (!_loading)
 {
 <div class="flex flex-col gap-2">
-    <span class="text-sm">Фильтр</span>
-    <FluentDivider />
+    <span class="text-sm font-bold mb-5">Фильтр</span>
     <div style="max-height: 350px;" class="overflow-auto">
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 mb-5">
             @foreach (var type in FeedMsgTypes.Types)
             {
                 @RenderFeedType(type);
             }
         </div>
-        <FluentDivider />
         <span class="font-bold">Скрытые проекты:</span>
     <FeedExcludedProjectsView FeedFilterService="_feedFilterService" ExcludedProjects="_feedSettings.ExcludedProjects" />
     </div>
-    <FluentDivider class="mt-2" />
     <div class="flex gap-3 justify-end">
         <FluentButton Appearance="Appearance.Lightweight" Type="ButtonType.Submit"
             @onclick="ResetSettings" >

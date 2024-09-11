@@ -34,9 +34,7 @@ else
         <Toolbar />
         @if (currentUser is not null)
         {
-            <FluentIcon OnClick="OpenSettings"
-                Value="@(new Icons.Regular.Size24.Settings())"
-                />        
+            <NotificationCenter />     
 
             <FluentProfileMenu Image="@($"onlyoffice/api/people{currentUser.Avatar}")"
                             HeaderLabel="УПКБ Деталь" HeaderButton="Выйти" OnHeaderButtonClick="LogoutAsync"
@@ -55,7 +53,8 @@ else
 
             </FluentProfileMenu>
 
-            <NotificationCenter />
+            <FluentIcon OnClick="OpenSettings"
+                Value="@(new Icons.Regular.Size24.Settings())" />   
         }
     </div>
 </FluentHeader>

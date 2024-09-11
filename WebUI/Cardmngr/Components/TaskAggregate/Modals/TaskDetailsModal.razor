@@ -46,13 +46,16 @@
                 </CascadingValue>
                 <div class="flex justify-end select-none">
                     <div class="flex flex-row">
-                        <FluentButton Type="ButtonType.Submit"
+                        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Stealth"
                                       Disabled="!CanEdit" Loading="submitting" >
                             @SubmitText
                         </FluentButton>
                         @if(!IsAdd)
                         {
-                            <FluentButton Class="ms-2" OnClick="DeleteAsync" Disabled="!Model!.CanDelete || State.ReadOnly" >
+                            <FluentButton Class="ms-2" OnClick="DeleteAsync" 
+                                BackgroundColor="var(--error)"
+                                Color="var(--neutral-fill-inverse-rest)"
+                                Disabled="!Model!.CanDelete || State.ReadOnly" >
                                 Удалить
                             </FluentButton>
                         }

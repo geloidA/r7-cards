@@ -7,6 +7,8 @@ namespace Cardmngr.Components.FeedAggregate;
 
 public partial class FeedProjectModule : KolComponentBase
 {
+    private string? _projectUrl;
+
     [Parameter, EditorRequired] 
     public string Name { get; set; } = "";
 
@@ -20,5 +22,12 @@ public partial class FeedProjectModule : KolComponentBase
     protected override void OnInitialized()
     {
         _feedFilterService = (FeedFilterService)FeedFilterService;
+
+        if (Feeds.Any())
+        {
+            var extraUrl = Feeds.First().Value.ExtraLocationUrl;
+            var idStartIndex = extraUrl.LastIndexOf('=') + 1;
+            _projectUrl = $"/project/board?ProjectId={extraUrl[idStartIndex..]}";
+        }
     }
 }

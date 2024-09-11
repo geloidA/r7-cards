@@ -17,30 +17,6 @@
     --color5: 116, 226, 145;
     --circle-size: 80%;
     --blending: hard-light;
-
-    --body-font: "YSText", sans-serif !important;
-}
-
-@font-face {
-    font-family: "JetBrainsMono", monospace;
-    src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2"),
-         url("/fonts/JetBrainsMono-Regular.woff") format("woff");
-}
-
-@font-face {
-    font-family: "YSText", sans-serif;
-    src: url("/fonts/YSText-Regular.woff2") format("woff2");
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: "YSText", sans-serif;
-    src: url("/fonts/YSText-Bold.woff2") format("woff2");
-    font-weight: bold;
-}
-
-.font-jetbrainsmono {
-    font-family: "JetBrainsMono", monospace;
 }
 
 .my-modal {
@@ -263,11 +239,11 @@ article {
 }
 
 .red-border {
-    border: 1px solid var(--error) !important;
+    border-top: 5px solid var(--error) !important;
 }
 
 .warning-border {
-    border: 1px solid var(--warning) !important;
+    border-top: 5px solid var(--warning) !important;
 }
 
 .default-text {

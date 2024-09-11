@@ -9,6 +9,7 @@ using Cardmngr.Services;
 using Cardmngr.Report;
 using Blazored.Modal;
 using Cardmngr.Utils;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Extensions;
 
@@ -31,7 +32,24 @@ public static class ServicesExtensions
                         UseCustomLayout = true
                     },
                     true))
-            .AddCascadingValue(_ => new CascadingValueSource<HeaderInteractionService>(new HeaderInteractionService(), true));
+            .AddCascadingValue(_ => new CascadingValueSource<HeaderInteractionService>(new HeaderInteractionService(), true))
+            .AddCascadingValue(_ => new CascadingValueSource<TimeAgoOptions>(
+                    new TimeAgoOptions
+                    {
+                        DayAgo = "{0} ден. назад",
+                        DaysAgo = "{0} ден. назад",
+                        HourAgo = "{0} ч. назад",
+                        HoursAgo = "{0} ч. назад",
+                        MinuteAgo = "{0} мин. назад",
+                        MinutesAgo = "{0} мин. назад",
+                        SecondAgo = "{0} сек. назад",
+                        SecondsAgo = "{0} сек. назад",
+                        MonthAgo = "{0} мес. назад",
+                        MonthsAgo = "{0} мес. назад",
+                        YearAgo = "{0} г. назад",
+                        YearsAgo = "{0} г. назад",
+                    },
+                    true));
     }
 
     public static IServiceCollection AddValidators(this IServiceCollection services)

@@ -6,30 +6,32 @@
 
 <FluentEditForm Model="loginData" OnValidSubmit="SubmitAuth">
     <FluentValidationValidator />
-    <FluentMessageBar AllowDismiss="false" Title="Внимание!" Intent="@MessageIntent.Warning">
+    <FluentMessageBar AllowDismiss="false" Intent="@MessageIntent.Warning">
         Используйте учетные данные от Р7 Офис
     </FluentMessageBar>
 
-    <div class="flex flex-col mt-2">
-        <FluentTextField id="UserName" @bind-Value="loginData.UserName" Label="Почта" />
-        <FluentValidationMessage For="() => loginData.UserName" />
-    </div>
+    <div class="flex flex-col gap-6">
+        <div class="flex flex-col">
+            <FluentTextField id="UserName" @bind-Value="loginData.UserName" Placeholder="Почта" />
+            <FluentValidationMessage For="() => loginData.UserName" />
+        </div>
 
-    <div class="flex flex-col mt-4">
-        <FluentTextField id="Password" TextFieldType="@(showPassword ? TextFieldType.Text : TextFieldType.Password)"
-                         @bind-Value="loginData.Password" Label="Пароль" Immediate >
-            <FluentIcon Slot="end" Value="ShowPasswordIcon" 
-                        @onclick="() => showPassword = !showPassword" />
-        </FluentTextField>
-        <FluentValidationMessage For="() => loginData.Password" />
-    </div>
+        <div class="flex flex-col">
+            <FluentTextField id="Password" TextFieldType="@(showPassword ? TextFieldType.Text : TextFieldType.Password)"
+                            @bind-Value="loginData.Password" Immediate Placeholder="Пароль">
+                <FluentIcon Slot="end" Value="ShowPasswordIcon" 
+                            @onclick="() => showPassword = !showPassword" />
+            </FluentTextField>
+            <FluentValidationMessage For="() => loginData.Password" />
+        </div>
 
-    <div class="mt-2 flex justify-center">
-        <FluentButton Type="ButtonType.Submit"
-                      Loading="busy" >
-            Войти
-        </FluentButton>
-    </div>        
+        <div class="flex justify-center">
+            <FluentButton Type="ButtonType.Submit"
+                        Loading="busy" >
+                Войти
+            </FluentButton>
+        </div>
+    </div>
 </FluentEditForm>
 
 @code {

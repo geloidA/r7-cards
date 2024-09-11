@@ -6,12 +6,8 @@
         OnDropItem="DropFeedback" Items="Items" KeySelector="f => f.Id">
         <HeaderTemplate>
             <div class="flex mb-2">
-                <div class="col col-sm-1">
-                    <FluentBadge BackgroundColor="black">@Items.Count()</FluentBadge>
-                </div>
-                <div class="col w-full">                    
-                    @HeaderTemplate
-                </div>
+                <FluentBadge BackgroundColor="black" Class="mr-2">@Items.Count</FluentBadge>
+                @HeaderTemplate
             </div>
         </HeaderTemplate>
         

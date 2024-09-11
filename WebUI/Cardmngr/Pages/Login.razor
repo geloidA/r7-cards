@@ -1,9 +1,62 @@
 ﻿@page "/login"
+@using Cardmngr.Validators
+@using Onlyoffice.Api.Models.Authentication
 
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
+@inject IAuthApiLogic AuthApiLogic
+@inject IToastService ToastService
 
 <PageTitle>Вход</PageTitle>
+
+<div class="absolute z-10 left-5 top-5">    
+    <div class="flex gap-2 items-center justify-center select-none">
+        <img src="favicon.svg" width="32px" />
+        <div class="text-lg font-semibold">Р7 карточки</div>
+    </div>
+
+</div>
+
+<div class="absolute z-10 left-[10%] h-full w-[400px]">
+    <div class="flex flex-col h-full">
+        <FluentSpacer />
+        <div class="mb-10">
+            <div class="font-bold text-5xl text-inverse mb-5">Вход</div>
+            <FluentMessageBar AllowDismiss="false" Intent="@MessageIntent.Warning">
+                Используйте учетные данные от Р7 Офис
+            </FluentMessageBar>
+        </div>
+        <FluentEditForm Model="loginData" OnValidSubmit="AuthorizeAsync">
+            <FluentValidationValidator />
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-col">
+                    <FluentTextField id="UserName" @bind-Value="loginData.UserName" Placeholder="Почта" />
+                    <FluentValidationMessage For="() => loginData.UserName" />
+                </div>
+
+                <div class="flex flex-col">
+                    <FluentTextField id="Password" TextFieldType="@(showPassword ? TextFieldType.Text : TextFieldType.Password)"
+                                    @bind-Value="loginData.Password" Immediate Placeholder="Пароль">
+                        <FluentIcon Slot="end" Value="ShowPasswordIcon" 
+                                    @onclick="() => showPassword = !showPassword" />
+                    </FluentTextField>
+                    <FluentValidationMessage For="() => loginData.Password" />
+                </div>
+
+                <div class="flex justify-center mt-5">
+                    <FluentButton Type="ButtonType.Submit" 
+                                Class="w-full"
+                                BackgroundColor="var(--neutral-fill-inverse-rest)"
+                                Color="var(--neutral-fill-rest)"
+                                Loading="busy" >
+                        <span class="font-bold">Войти</span>
+                    </FluentButton>
+                </div>
+            </div>
+        </FluentEditForm>
+        <FluentSpacer />
+    </div>
+</div>
 
 <div class="gradient-bg">
     <svg xmlns="http://www.w3.org/2000/svg">
@@ -26,6 +79,12 @@
 </div>
 
 @code {
+    private readonly LoginData loginData = new();    
+    private bool showPassword;
+    private bool busy;
+    
+    Icon ShowPasswordIcon => showPassword ? new Icons.Regular.Size16.EyeOff() : new Icons.Regular.Size16.Eye();
+
     [CascadingParameter] Task<AuthenticationState>? AuthenticationState { get; set; }
     [CascadingParameter] IModalService Modal { get; set; } = default!;
     
@@ -41,28 +100,26 @@
             {
                 NavigationManager.NavigateTo(ReturnUrl ?? "/", true);
             }
-            else
-            {
-                var res = await ShowAuthentication().ConfigureAwait(false);
-
-                if (res.Confirmed)
-                {
-                    await LocalStorage.SetItemAsStringAsync("isauthenticated", "true").ConfigureAwait(false);
-                    NavigationManager.NavigateTo(ReturnUrl ?? "/", true);
-                }
-            }
         }
     }
 
-    private async Task<ModalResult> ShowAuthentication()
+    private async Task AuthorizeAsync()
     {
-        var options = new ModalOptions
-        {
-            DisableBackgroundCancel = true,
-            HideCloseButton = true,
-            Position = ModalPosition.Middle
-        };
+        busy = true;
 
-        return await Modal.Show<AuthModal>("Авторизация", options).Result.ConfigureAwait(false);
+        var status = await AuthApiLogic.LoginAsync(new LoginModel(loginData.UserName, loginData.Password))
+            .ConfigureAwait(false);
+
+        if (status == AuthenticationResponseType.Error)
+        {
+            ToastService.ShowError("Ошибка авторизации");
+        }
+        else
+        {
+            await LocalStorage.SetItemAsStringAsync("isauthenticated", "true").ConfigureAwait(false);
+            NavigationManager.NavigateTo(ReturnUrl ?? "/", true);
+        }
+
+        busy = false;
     }
 }

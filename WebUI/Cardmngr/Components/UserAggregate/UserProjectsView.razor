@@ -1,6 +1,6 @@
 ﻿@inherits KolComponentBase
 
-<div class=@($"flex flex-col gap-3 {Class}") style="@Style" >
+<div class="flex flex-col gap-3 border-2 rounded-xl border-dashed p-3 @Class" style="border-color: var(--accent-fill-rest); @Style" >
     <div class="flex items-center gap-2">
         <FluentIcon Value="@(new Icons.Filled.Size20.ClipboardBulletList())" />
         Ваши проекты
@@ -13,7 +13,7 @@
             <FluentIcon Value="@(new Icons.Regular.Size16.Add())" Color="Color.Success"/>
         </FluentAnchor>
     </div>
-    <div class="p-1 overflow-auto" style=@($"max-height: {MaxHeight}px; {Style}")>
+    <div class="p-1 overflow-auto" style=@($"max-height: 100%; {Style}")>
         @if (UserProjects is not null && UserProjects.Any())
         { 
             @foreach (var proj in UserProjects)

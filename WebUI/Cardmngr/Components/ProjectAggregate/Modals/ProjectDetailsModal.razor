@@ -15,7 +15,7 @@
                 </div>
             }
             <FluentSpacer />
-            <FluentIcon id="follow-icon" class="select-none ms-1" OnClick="() => State.ToggleFollowAsync()"
+            <FluentIcon id="follow-icon" class="select-none ms-1 min-w-5" OnClick="() => State.ToggleFollowAsync()"
                 Value="IconFollow" Title="@(State.Project.IsFollow ? "Перестать отслеживать" : "Отслеживать")" />
         </div>            
         <div class="w-full header"></div>

@@ -1,7 +1,7 @@
 ﻿
 @inherits KolComponentBase
 
-<ModuleCard Items="Feeds" Class="@Class" Style="@Style" >
+<ModuleCard Items="@Feeds" Class="@Class" Style="@Style" >
     <Header>
         <div class="header">
             @if (string.IsNullOrEmpty(Name))
@@ -12,7 +12,7 @@
             else
             {
                 <FluentIcon style="min-width: 20px;" Value="@(new Icons.Regular.Size20.Book())" Color="Color.Info" />
-                <span>@Name</span>
+                <a href="@_projectUrl">@Name</a>
                 <FluentSpacer/>
                 <div class="hide-button">
                     <FluentButton IconStart="@(new Icons.Regular.Size20.EyeOff())" Appearance="Appearance.Lightweight"

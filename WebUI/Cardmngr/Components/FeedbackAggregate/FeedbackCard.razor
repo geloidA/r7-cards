@@ -16,20 +16,16 @@
                 @if (Feedback.Status == FeedbackStatus.Todo)
                 {
                     <FluentBadge @onclick:stopPropagation>
-                        <div class="flex self-center" >
-                            <div @onclick="ToggleLike">
-                                <FluentIcon Value="@(new Icons.Filled.Size16.ThumbLike())" 
-                                    Color="@(likePressed ? Color.Success : Color.Info)" />
-                                <span class="ms-1">@Feedback.LikedUsers.Count</span>
-                            </div>
+                        <div class="flex self-center" @onclick="ToggleLike" >
+                            <FluentIcon Value="@(new Icons.Filled.Size16.ThumbLike())" 
+                                Color="@(likePressed ? Color.Success : Color.Info)" />
+                            <span class="ms-1">@Feedback.LikedUsers.Count</span>
                         </div>
 
-                        <div class="flex self-center ms-2" >
-                            <div @onclick="ToggleDislike">
-                                <FluentIcon Value="@(new Icons.Filled.Size16.ThumbDislike())" 
-                                    Color="@(dislikePressed ? Color.Error : Color.Info)" />
-                                <span class="ms-1">@Feedback.DislikedUsers.Count</span>
-                            </div>
+                        <div class="flex self-center ms-2" @onclick="ToggleDislike">
+                            <FluentIcon Value="@(new Icons.Filled.Size16.ThumbDislike())" 
+                                Color="@(dislikePressed ? Color.Error : Color.Info)" />
+                            <span class="ms-1">@Feedback.DislikedUsers.Count</span>
                         </div>
                     </FluentBadge>
                 }

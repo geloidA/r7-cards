@@ -1,7 +1,7 @@
 ﻿@inject IProjectFollowChecker ProjectFollowChecker
 
 <div class="px-3 flex flex-col gap-2">
-    <div class="position-sticky" style="top: 30px;">
+    <div class="sticky" style="top: 30px;">
         <FluentSearch Placeholder="Поиск"
                       ValueChanged="SearchTextChanged" 
                       Immediate
@@ -11,11 +11,11 @@
     <div class="flex flex-wrap flex-col gap-4 mt-4">
         @foreach (var prjG in searchedProjects.GroupBy(x => x.Title[0]).OrderBy(x => x.Key))
         {
-            <div class="flex flex-col gap-1">
-                <span class="font-bold" style="color: var(--neutral-fill-inverse-rest);">@prjG.Key</span>
+            <div class="flex flex-col gap-1" style="color: var(--neutral-fill-inverse-rest);">
+                <span class="font-bold">@prjG.Key</span>
                 @foreach (var prj in prjG.OrderBy(x => (!ProjectFollowChecker.IsFollow(x.Id), x.Title)))
                 {
-                    <ProjectReference Project="prj" ShowTitle="false" @onclick="OnProjectRefClick" />
+                    <ProjectReference Project="prj" ShowTitle="false" @onclick="@OnProjectRefClick" />
                 }
             </div>
         }

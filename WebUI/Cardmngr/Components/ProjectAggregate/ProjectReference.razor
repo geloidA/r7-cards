@@ -8,14 +8,12 @@
    style="@Style"
    @onclick="HandleClick"
    href=@($"/project/board?ProjectId={Project.Id}")>
-    <div class="line-clamp-2 flex px-0">
+    <div class="flex gap-1 px-1">
         @if (ProjectFollowChecker.IsFollow(Project.Id))
         {
-            <FluentIcon Value="new Icons.Filled.Size12.Star()" style="margin-bottom: 2px;"/>
-            <FluentSpacer Width="1"/>
+            <FluentIcon Value="new Icons.Filled.Size12.Star()" Style="min-width: 12px;"/>
         }
-        @Project.Title
-        <FluentIcon Value="@(new Icons.Regular.Size12.ArrowRight())"/>
+        <span class="line-clamp-2">@Project.Title</span>
     </div>
 </a>
 

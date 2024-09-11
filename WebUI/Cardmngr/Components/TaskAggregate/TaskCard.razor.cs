@@ -6,6 +6,8 @@ using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Components.TaskAggregate.Modals;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Services;
+using Microsoft.FluentUI.AspNetCore.Components.Extensions;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.TaskAggregate;
 
@@ -13,6 +15,7 @@ public sealed partial class TaskCard : ComponentBase, IDisposable
 {
     [Inject] private ITagColorManager TagColorGetter { get; set; } = null!;
 
+    [CascadingParameter] private TimeAgoOptions TimeAgoOpt { get; set; } = null!;
     [CascadingParameter] private IProjectState State { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")]
@@ -53,7 +56,7 @@ public sealed partial class TaskCard : ComponentBase, IDisposable
         }
     }
 
-/// <summary>
+    /// <summary>
     /// Returns a string that represents the deadline of the task. 
     /// If the deadline is not known, the string "Срок неизвестен" is returned.
     /// If the deadline is today, the string "Истечет сегодня" is returned.
@@ -64,13 +67,11 @@ public sealed partial class TaskCard : ComponentBase, IDisposable
     /// </summary>
     /// <param name="format">The format string to use for the returned string.</param>
     /// <returns>A string that represents the deadline of the task.</returns>
-    private string GetDeadlineString(string format)
+    private string GetDeadlineString()
     {
         if (Task.Deadline is null) return "Срок неизвестен";
-        var diff = DateTime.Now.Date - Task.Deadline.Value.Date;
-        return diff.TotalDays != 0
-            ? string.Format(format, Math.Abs(diff.TotalDays), Utils.Common.GetDayNameByDayCount(diff.TotalDays))
-            : "Истечет сегодня";
+        var diff = DateTime.Now - Task.Deadline.Value;
+        return $"Истекло {diff.ToTimeAgo(TimeAgoOpt)}";
     }
 
     public void Dispose()

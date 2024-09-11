@@ -1,5 +1,4 @@
-﻿using Cardmngr.Application.Clients;
-using Cardmngr.Application.Clients.Feed;
+﻿using Cardmngr.Application.Clients.Feed;
 using Cardmngr.Application.Clients.People;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Services;

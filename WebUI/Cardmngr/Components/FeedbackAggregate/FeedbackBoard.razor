@@ -2,8 +2,8 @@
     <Columns>
         <FeedbackColumn Width="420" Status="FeedbackStatus.Todo">
             <HeaderTemplate>
-                <div class="flex">
-                    <div style="font-size: 13px;">
+                <div class="flex w-full">
+                    <div style="font-size: 13px;" class="flex gap-1">
                         Предложения и найденные ошибки 
                         <FluentEmoji Value="@(new Emojis.SmileysEmotion.Flat.Default.ShushingFace())" Width="22px" />
                     </div>
@@ -19,7 +19,7 @@
 
         <FeedbackColumn Width="420" Status="FeedbackStatus.InProgress">
             <HeaderTemplate>
-                <div style="margin-top: 1px;">
+                <div class="flex gap-1">
                     В работе 
                     <FluentEmoji Value="@(new Emojis.SmileysEmotion.Flat.Default.ThinkingFace())" Width="22px" />
                 </div>
@@ -28,7 +28,7 @@
 
         <FeedbackColumn Width="420" Status="FeedbackStatus.Finished">
             <HeaderTemplate >
-                <div style="margin-top: 1px;">
+                <div class="flex gap-1">
                     Готово 
                     <FluentEmoji Value="@(new Emojis.SmileysEmotion.Flat.Default.LyingFace())" Width="22px" />
                 </div>

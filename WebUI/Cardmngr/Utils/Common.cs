@@ -17,7 +17,7 @@ public class Common
     public static string GetDayNameByDayCount(double dayCount)
     {
         return GetLastDigit((int)dayCount) switch
-        {            
+        {
             1 => "день",
             2 => "дня",
             3 => "дня",

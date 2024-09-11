@@ -1,7 +1,7 @@
 .module-card {
     background: var(--fill-color);
     color: var(--neutral-foreground-rest);
-    border: calc(var(--stroke-width)* 1px) solid var(--neutral-stroke-divider-rest);
+    border: 0;
     border-radius: calc(var(--layer-corner-radius)* 1px);
 
     padding-top: calc(var(--design-unit)* 5px);

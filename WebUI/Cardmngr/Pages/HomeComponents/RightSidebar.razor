@@ -16,15 +16,13 @@
     ];
 
     private RenderFragment<SidebarOption> optionRenderer = opt =>
-        @<div class="flex flex-col gap-2">
-            <FluentAnchor Appearance="Appearance.Hypertext" Href="@opt.Href">
-                <span class="flex gap-2 items-center text-sm">
-                    <FluentIcon Value="opt.Icon" />
-                    @opt.Title
-                </span>
-            </FluentAnchor>
+        @<a href="@opt.Href" class="flex flex-col gap-2 p-1 rounded hover:bg-neutral-hover" style="text-decoration-line: none !important;">
+            <span class="flex gap-2 items-center text-sm text-accent">
+                <FluentIcon Value="opt.Icon" />
+                @opt.Title
+            </span>
             <span class="text-sm" style="color: var(--neutral-fill-inverse-hover);">@opt.Desc</span>
-        </div>;
+        </a>;
 
     record SidebarOption(string Title, string? Desc, Icon Icon, string Href);
 }

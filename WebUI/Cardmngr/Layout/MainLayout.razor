@@ -44,7 +44,7 @@
 
         var user = (await AuthState.ConfigureAwait(false)).User;
 
-        if (!user.Identity!.IsAuthenticated)
+        if (!user.Identity!.IsAuthenticated && !NavigationManager.Uri.Contains("/login"))
         {
             NavigationManager.NavigateTo($"/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
         }
