@@ -30,6 +30,6 @@ public partial class ProjectBoardHeader : ComponentBase
         { 
             { "State", State }
         };
-        await Modal.Show<ProjectDetailsModal>("",  parameters, Options).Result;
+        await Modal.Show<ProjectDetailsModal>(parameters, Options).Result;
     }
 }

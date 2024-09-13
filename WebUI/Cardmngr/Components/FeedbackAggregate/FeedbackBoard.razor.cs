@@ -24,6 +24,6 @@ public partial class FeedbackBoard
             { "IsAdd", true }
         };
 
-        await Modal.Show<FeedbackDetailsModal>("", parameters, ModalOptions).Result;
+        await Modal.Show<FeedbackDetailsModal>(parameters, ModalOptions).Result;
     }
 }

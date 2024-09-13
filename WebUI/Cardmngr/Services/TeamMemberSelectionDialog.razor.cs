@@ -15,7 +15,7 @@ public partial class TeamMemberSelectionDialog(IModalService modal)
             { "ItemRender", RenderUser }
         };
 
-        var result = await modal.Show<SelectionModal<UserInfo>>("Выберите ответственного", parameters, options).Result;
+        var result = await modal.Show<SelectionModal<UserInfo>>(parameters, options).Result;
 
         return result.Confirmed ? (UserInfo)result.Data! : null;
     }

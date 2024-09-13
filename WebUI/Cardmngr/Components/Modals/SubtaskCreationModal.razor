@@ -2,9 +2,13 @@
 
 @inherits CreationModalBase
 
-<div class="flex-row">
-    <AutoGrowTextArea Label="Название" Maxlength="255" @bind-Value="subtask.Title" Style="width: 300px; margin-bottom: 10px;" />
-    <FluentAutocomplete TOption="UserInfo" MaximumSelectedOptions="1" Width="300px"
+
+<div class="flex flex-col gap-5">
+    <div class="font-bold text-3xl ">
+        @(IsEdit ? "Изменение подзадачи" : "Создание подзадачи")
+    </div>
+    <AutoGrowTextArea Placeholder="Название" Maxlength="255" @bind-Value="subtask.Title" />
+    <FluentAutocomplete TOption="UserInfo" MaximumSelectedOptions="1"
                     MaximumOptionsSearch="100"
                     @bind-SelectedOptions="Responsible" Context="user" AutoComplete="off"
                     OnOptionsSearch="OnSearchResponsible" Placeholder="Не установлен">
@@ -45,10 +49,13 @@
             </FooterContent>
     </FluentAutocomplete>
 </div>
-<div class="mt-2 flex justify-end">
-    <FluentButton Type="ButtonType.Submit" OnClick="SubmitCreate" Disabled="string.IsNullOrWhiteSpace(subtask.Title)"
-        Color="ButtonColor.Success" >ОК</FluentButton>
-    <FluentButton Class="ms-2" OnClick="Cancel" >Отмена</FluentButton>
+<div class="mt-5 flex justify-end">
+    <FluentButton Class="mr-2 font-bold" OnClick="Cancel" Appearance="Appearance.Stealth" >Отмена</FluentButton>
+    <FluentButton Type="ButtonType.Submit" Class="font-bold" OnClick="SubmitCreate" 
+        Disabled="string.IsNullOrWhiteSpace(subtask.Title)"
+        Color="white" BackgroundColor="@CardmngrColors.Success" >
+        @(IsEdit ? "Изменить" : "Создать")
+    </FluentButton>
 </div>
 
 @code {
@@ -63,6 +70,8 @@
     [Parameter] public string? Title { get; set; }
 
     [Parameter] public string? ResponsibleId { get; set; }
+
+    [Parameter] public bool IsEdit { get; set; }
 
     [Parameter] public IEnumerable<UserInfo> Team { get; set; } = null!;
 

@@ -1,0 +1,16 @@
+﻿
+<div class="flex gap-1 items-center">
+    <DateView Date="Start" 
+              DateChanged="StartChanged"
+              ReadOnly="ReadOnly"
+              NotShowYearIfCurrent="NotShowYearIfCurrent"
+              DateRender="StartDateRender" />
+
+    <FluentIcon Value="@(new Icons.Regular.Size12.ArrowRight())" Color="Color.FillInverse" />
+
+    <DateView Date="End" 
+              DateChanged="EndChanged" 
+              ReadOnly="ReadOnly"
+              NotShowYearIfCurrent="NotShowYearIfCurrent"
+              DateRender="EndDateRender" />
+</div>

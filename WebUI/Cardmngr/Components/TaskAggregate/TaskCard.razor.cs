@@ -29,12 +29,8 @@ public sealed partial class TaskCard : ComponentBase, IDisposable
 
     protected override void OnInitialized()
     {
-        openModalAction = OpenModal;
-
         State.MilestonesChanged += OnMilestoneChanged;
     }
-
-    private Func<Task> openModalAction = null!; // TODO: maybe remove, because not improve performance too much
 
     private async Task OpenModal()
     {
@@ -45,7 +41,7 @@ public sealed partial class TaskCard : ComponentBase, IDisposable
             { "TaskTags", Task.Tags }
         };
 
-        await Modal.Show<TaskDetailsModal>("", parameters, DetailsModal).Result;
+        await Modal.Show<TaskDetailsModal>(parameters, DetailsModal).Result;
     }
 
     private void OnMilestoneChanged(EntityChangedEventArgs<Milestone>? args)
@@ -56,22 +52,11 @@ public sealed partial class TaskCard : ComponentBase, IDisposable
         }
     }
 
-    /// <summary>
-    /// Returns a string that represents the deadline of the task. 
-    /// If the deadline is not known, the string "Срок неизвестен" is returned.
-    /// If the deadline is today, the string "Истечет сегодня" is returned.
-    /// If the deadline is tomorrow, the string "Истечет завтра" is returned.
-    /// If the deadline is in the future, the string "{days left} {day count name} осталось" is returned,
-    /// where {days left} is the number of days left until the deadline and {day count name} 
-    /// is the name of the day count (e.g. день, дня, дней).
-    /// </summary>
-    /// <param name="format">The format string to use for the returned string.</param>
-    /// <returns>A string that represents the deadline of the task.</returns>
     private string GetDeadlineString()
     {
         if (Task.Deadline is null) return "Срок неизвестен";
         var diff = DateTime.Now - Task.Deadline.Value;
-        return $"Истекло {diff.ToTimeAgo(TimeAgoOpt)}";
+        return $"Истек {diff.ToTimeAgo(TimeAgoOpt)}";
     }
 
     public void Dispose()

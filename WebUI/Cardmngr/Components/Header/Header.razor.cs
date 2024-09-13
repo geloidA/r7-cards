@@ -44,13 +44,13 @@ public partial class Header : KolComponentBase, IDisposable
 
     private async Task OpenSidebar()
     {
-        await Modal.Show<HeaderMenuModal>("", new ModalParameters { { "Nothing", new object() } }, Options).Result;
+        await Modal.Show<HeaderMenuModal>(new ModalParameters { { "Nothing", new object() } }, Options).Result;
             // TODO: ??? close animation works only with parameter ???
     }
 
     private async Task OpenSettings()
     {
-        await Modal.Show<SettingsModal>("", new ModalParameters { { "Nothing", new object() } }, Options).Result;
+        await Modal.Show<SettingsModal>(new ModalParameters { { "Nothing", new object() } }, Options).Result;
     }
 
     private async Task LogoutAsync()

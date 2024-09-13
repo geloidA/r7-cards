@@ -2,7 +2,11 @@
 
 @inherits KolComponentBase
 
-<FluentIcon Value="Icon" OnClick="TogglePriority" Style="@Style" Class="@Class" Title="@IconTitle" />
+<div style="@Style" @onclick="TogglePriority" 
+     class="w-fit flex items-center gap-1 px-2 py-1 select-none rounded-full text-xs @Class @CssDisabled @CssColor">
+    <div class="w-2 h-2 rounded-full @CircleCssColor"></div>
+    @(IsHighPriority ? "Высокий" : "Обычный")
+</div>
 
 @code {
     [CascadingParameter] TaskUpdateData Task { get; set; } = null!;
@@ -10,11 +14,9 @@
 
     bool IsHighPriority => Task.Priority == (int)Priority.High;
 
-    private string IconTitle => IsHighPriority ? "Приоритет - Высокий" : "Приоритет - Обычный";        
-
-    Icon Icon => IsHighPriority 
-        ? new Icons.Filled.Size24.ArrowCircleUp() 
-        : new Icons.Regular.Size24.ArrowCircleUp();
+    private string CssDisabled => Disabled ? "" : "cursor-pointer";
+    private string CssColor => IsHighPriority ? "bg-orange-300 text-orange-600" : "bg-teal-300 text-teal-600";
+    private string CircleCssColor => IsHighPriority ? "bg-orange-600" : "bg-teal-600";
 
     void TogglePriority()
     {

@@ -1,0 +1,13 @@
+﻿@using Onlyoffice.Api.Models
+
+<div class="text-xs font-bold px-2 py-1 rounded-lg bg-inverse text-forground-on-accent w-fit">
+    @StatusTitle
+</div>
+
+@code {
+
+    [CascadingParameter] TaskUpdateData Task { get; set; } = null!;
+    [CascadingParameter] IProjectState State { get; set; } = null!;
+
+    private string StatusTitle => State.Statuses.Single(Task.HasStatus).Title;
+}

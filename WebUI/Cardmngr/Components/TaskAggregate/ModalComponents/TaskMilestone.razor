@@ -1,18 +1,13 @@
 ﻿@using Onlyoffice.Api.Models
 
 <FluentAutocomplete @ref="milestoneList"
-        TOption="Milestone" Width="487px"
+        TOption="Milestone"
         Disabled="Disabled" AutoComplete="off"
         MaximumSelectedOptions="1" MaximumOptionsSearch="100"
         SelectedOptions="_selectedMilestone"
         SelectedOptionsChanged="OnSelectionChanged"
         OnOptionsSearch="OnSearch"
         Placeholder="Нет" >
-
-    <LabelTemplate>
-        Веха 
-        <FluentIcon Value="@(new Icons.Regular.Size20.Star())" Style="margin: 0 4px;" />
-    </LabelTemplate>
 
     <SelectedOptionTemplate>
         <FluentBadge Appearance="Appearance.Accent">
@@ -49,10 +44,12 @@
 </FluentAutocomplete>
 
 @code {
+    private bool _popoverOpen;
+    private string _popoverGuid = Guid.NewGuid().ToString();
     FluentAutocomplete<Milestone> milestoneList = default!;
     IEnumerable<Milestone> _selectedMilestone = [];
 
-    [CascadingParameter] TaskUpdateData Task { get; set; } = null!;    
+    [CascadingParameter] TaskUpdateData Task { get; set; } = null!;
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
 
@@ -63,6 +60,11 @@
         {
             _selectedMilestone = [selected];
         }
+    }
+
+    private void OpenPopover()
+    {
+        _popoverOpen = true;
     }
 
     void OnSelectionChanged(IEnumerable<Milestone> e)

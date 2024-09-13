@@ -1,12 +1,22 @@
 ﻿@using ColorType = System.Drawing.Color
 
-<FluentBadge class="flex select-none py-1" Circular="true"
-    Fill="val" BackgroundColor="@Color.WithAlpha(0.5).ToRgbaText()" >
+@inherits KolComponentBase
+
+<div class="flex gap-1 px-1 select-none rounded-lg @Class" 
+     style="background-color: @Color.WithAlpha(0.5).ToRgbaText(); @Style"
+     @onclick="HandleClick" >
     <FluentIcon Width="15" Value="@(new Icons.Filled.Size20.Tag())" />
-    <div class="ms-1 self-center" style="margin-right: 2px;">@Tag.Name</div>
-</FluentBadge>
+    <div class="self-center" style="margin-right: 2px;">@Tag.Name</div>
+    @if (Editable)
+    {
+        <FluentIcon Width="15" Value="@(new Icons.Filled.Size20.Dismiss())" OnClick="() => OnDismiss.InvokeAsync(Tag)" />
+    }
+</div>
 
 @code {
     [Parameter] public TaskTag Tag { get; set; } = null!;
-    [Parameter] public ColorType Color { get; set; } = ColorType.Red;
+    [Parameter] public ColorType Color { get; set; } = ColorType.Beige;
+    [Parameter] public bool Editable { get; set; }
+
+    [Parameter] public EventCallback<TaskTag> OnDismiss { get; set; }
 }

@@ -3,6 +3,7 @@ using Blazored.Modal;
 using Blazored.Modal.Services;
 using Cardmngr.Components.Modals.ConfirmModals;
 using Cardmngr.Shared.Utils.Comparer;
+using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.Modals.Base;
@@ -45,20 +46,32 @@ public abstract class AddEditModalBase<TModel, TUpdateData>(IEqualityComparer<TM
 
         if (!comparer.Equals(Model, Buffer))
         {
-            return Modal.Show<DefaultConfirmModal>(
-                "Состояние не сохранено", 
-                new ModalParameters { { "AdditionalText", "Вы уверены, что хотите закрыть без сохранения?" } }, 
+            return Modal.Show<DefaultConfirmModal>( 
+                new ModalParameters 
+                { 
+                    { "AdditionalText", "Вы уверены, что хотите закрыть без сохранения?" },
+                    { "HeaderText", "Закрыть без сохранения?" },
+                    { "OkTitle", "Закрыть" },
+                    { "OkBgColor", CardmngrColors.Accent },
+                    { "OkTextColor", CardmngrColors.ForegroundOnAccent }
+                }, 
                 MiddleModal).Result;
         }
 
         return Task.FromResult(ModalResult.Ok());
     }
 
-    protected Task<ModalResult> ShowDeleteConfirm(string title, string message = "Вы уверены? Действие необратимо.")
+    protected Task<ModalResult>ShowDeleteConfirm(string title, string message = "Вы уверены? Действие необратимо.")
     {
         return Modal.Show<DefaultConfirmModal>(
-            title, 
-            new ModalParameters { { "AdditionalText", message } }, 
+            new ModalParameters 
+            {
+                { "OkTitle", "Удалить" },
+                { "HeaderText", title },
+                { "OkBgColor", CardmngrColors.Error },
+                { "OkTextColor", "white" },
+                { "AdditionalText", message } 
+            }, 
             MiddleModal).Result;
     }
 }

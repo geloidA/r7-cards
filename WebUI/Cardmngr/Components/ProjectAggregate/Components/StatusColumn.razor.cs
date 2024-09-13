@@ -72,7 +72,7 @@ public partial class StatusColumn : ComponentBase, IDisposable
     {
         if (status.StatusType == StatusType.Close && task.HasUnclosedSubtask())
         {
-            var confirmModal = await Modal.Show<CloseCardConfirmModal>("Закрытие задачи", ModalOptions).Result;
+            var confirmModal = await Modal.Show<CloseCardConfirmModal>(ModalOptions).Result;
             if (confirmModal.Cancelled) return;
         }
 

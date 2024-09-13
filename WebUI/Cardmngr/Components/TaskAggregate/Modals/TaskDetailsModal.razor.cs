@@ -4,7 +4,6 @@ using Cardmngr.Components.Modals.Base;
 using Cardmngr.Domain.Entities;
 using Onlyoffice.Api.Models;
 using Cardmngr.Application.Clients.TaskClient;
-using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Notification;
 using Cardmngr.Services;
@@ -41,7 +40,7 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
         if (IsAdd)
         {
             Buffer.Title = "Новая задача";
-            Buffer.CustomTaskStatus = TaskStatusId;
+            Buffer.TaskStatusId = TaskStatusId;
         }
         else
         {
@@ -103,7 +102,7 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
 
     private async Task DeleteAsync()
     {
-        var answer = await ShowDeleteConfirm("Удаление задачи").ConfigureAwait(false);
+        var answer = await ShowDeleteConfirm("Удалить задачу?").ConfigureAwait(false);
 
         if (answer.Confirmed)
         {

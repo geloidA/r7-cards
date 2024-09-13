@@ -3,7 +3,7 @@
 @if (User is { })
 {
     <div class="flex flex-row items-center py-1 @Class" style="@Style">
-        <div class="avatar-circle responsible-view" style="@($"width: {Size}px; height: {Size}px;")">
+        <div class="avatar-circle responsible-view" style="@($"width: {Size}px; height: {Size}px; min-width: {Size}px;")">
             @if (ShowTooltip)
             {
                 <img title="@User.DisplayName" width="@Size" src=@($"onlyoffice/api/people{User.AvatarSmall}") />

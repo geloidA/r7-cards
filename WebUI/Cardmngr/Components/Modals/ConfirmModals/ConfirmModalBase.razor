@@ -1,19 +1,24 @@
-﻿@if (AdditionalText is { })
-{
-    <div>@AdditionalText</div>
-}
-<div class="flex w-full @(AdditionalText is { } ? "mt-4" : "")">
+﻿<div class="flex flex-col gap-4 h-full">
+    <div class="font-bold text-3xl">@HeaderText</div>
+    @if (AdditionalText is { })
+    {
+        <div class="text-info text-base">@AdditionalText</div>
+    }
     <FluentSpacer />
-    <div class="flex">
-        <FluentButton OnClick="async () => await Modal.CloseAsync(ModalResult.Ok())">
-            @OkTitle
-        </FluentButton>
+    <div class="flex w-full @(AdditionalText is { } ? "mt-4" : "")">
+        <FluentSpacer />
+        <div class="flex mr-2">
+            <FluentButton Appearance="Appearance.Stealth" Class="font-semibold"
+                OnClick="async () => await Modal.CloseAsync(ModalResult.Cancel())" >
+                @CancelTitle
+            </FluentButton>
+        </div>
+        <div class="flex">
+            <FluentButton Color="@OkTextColor" BackgroundColor="@OkBgColor"
+                Class="font-semibold"
+                OnClick="async () => await Modal.CloseAsync(ModalResult.Ok())">
+                @OkTitle
+            </FluentButton>
+        </div>
     </div>
-    <FluentSpacer />
-    <div class="flex">
-        <FluentButton Appearance="Appearance.Accent" OnClick="async () => await Modal.CloseAsync(ModalResult.Cancel())" >
-            @CancelTitle
-        </FluentButton>
-    </div>
-    <FluentSpacer />
 </div>

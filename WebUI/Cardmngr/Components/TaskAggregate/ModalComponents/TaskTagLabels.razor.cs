@@ -3,15 +3,16 @@ using Cardmngr.Domain.Entities;
 using Cardmngr.Services;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
-using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.TaskAggregate.ModalComponents;
 
 public partial class TaskTagLabels : ComponentBase
 {
+    private bool _popoverOpen;
+    private string _popoverGuid = null!;
+    private string newTagText = "";    
+    private IList<TaskTag> searchedTags = null!;
     private readonly IEqualityComparer<TaskTag> comparer = new TaskTagNameEqualityComparer();
-    private string newTagText = "";
-    private IEnumerable<TaskTag> SelectedTags = null!;
 
     [Parameter] public List<TaskTag> TaskTags { get; set; } = null!;
     [Parameter] public OnlyofficeTask OnlyofficeTask { get; set; } = null!;
@@ -23,32 +24,17 @@ public partial class TaskTagLabels : ComponentBase
 
     protected override void OnInitialized()
     {
-        SelectedTags = TaskTags;
+        searchedTags = TagColorGetter.Tags.Except(TaskTags, comparer).ToList();
     }
 
-    private void OnSearch(OptionsSearchEventArgs<TaskTag> e)
+    private void OnSearch(string searchText)
     {
-        e.Items = TagColorGetter.Tags?
-            .Where(x => x.Name.Contains(e.Text, StringComparison.CurrentCultureIgnoreCase))
-            .OrderBy(x => x.Name);
-    }
-
-    private async Task SelectedTagsChanged(IEnumerable<TaskTag> selectedTags)
-    {
-        var deleted = TaskTags.Except(selectedTags, comparer).ToList();
-        var added = selectedTags.Except(TaskTags, comparer);
-
-        if (deleted.Count != 0)
-        {
-            var deletedTasks = deleted.Select(x => RemoveTag(x));
-            await Task.WhenAll(deletedTasks);
-        }
-
-        if (added.Any())
-        {
-            var addedTasks = added.Select(x => AddTag(x));
-            await Task.WhenAll(addedTasks);
-        }
+        searchedTags = [.. TagColorGetter.Tags
+            .Except(TaskTags, comparer)
+            .Where(x => x.Name.Contains(searchText, StringComparison.CurrentCultureIgnoreCase))
+            .OrderBy(x => x.Name)];
+        
+        newTagText = searchText;
     }
 
     private bool CanCreate => !string.IsNullOrEmpty(newTagText) && !TagColorGetter.Contains(newTagText);
@@ -60,6 +46,8 @@ public partial class TaskTagLabels : ComponentBase
             var created = await TaskClient.CreateTagAsync(OnlyofficeTask.Id, newTagText);
             TagColorGetter.GetColor(created);
             TaskTags?.Add(created);
+            _popoverOpen = false;
+
             StateHasChanged();
         }
     }
@@ -71,7 +59,10 @@ public partial class TaskTagLabels : ComponentBase
             await TaskClient.CreateTagAsync(OnlyofficeTask.Id, newTag.Name);
         }
 
-        TaskTags?.Add(newTag);
+        TaskTags.Add(newTag);
+
+        searchedTags = TagColorGetter.Tags.Except(TaskTags, comparer).ToList();
+        StateHasChanged();
     }
 
     private async Task RemoveTag(TaskTag tag)
@@ -84,6 +75,26 @@ public partial class TaskTagLabels : ComponentBase
         }
 
         TagColorGetter.RemoveTag(tag);
-        TaskTags?.Remove(tag);
+        TaskTags.Remove(tag);
+
+        searchedTags = TagColorGetter.Tags.Except(TaskTags, comparer).ToList();
+    }
+
+    private void OpenPopover()
+    {
+        if (OnlyofficeTask?.CanDelete ?? false) // TODO: 
+        {
+            _popoverOpen = true;
+        }
+    }
+
+    private void OnOpenChanged(bool open)
+    {
+        _popoverOpen = open;
+
+        if (!open)
+        {
+            newTagText = "";
+        }
     }
 }

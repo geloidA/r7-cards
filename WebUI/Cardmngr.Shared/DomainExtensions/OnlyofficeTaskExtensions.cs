@@ -6,19 +6,19 @@ namespace Cardmngr.Shared.Extensions;
 
 public static class OnlyofficeTaskExtensions
 {
-    public static bool IsClosed(this OnlyofficeTask task)
+    public static bool IsClosed(this IOnlyofficeTask task)
     {
         return task.Status == Status.Closed;
     }
 
-    public static bool IsDeadlineOut(this OnlyofficeTask task)
+    public static bool IsDeadlineOut(this IOnlyofficeTask task, DateTime? deadline = null)
     {
-        return !task.IsClosed() && DateTime.Now.Date > task.Deadline?.Date;
+        return !task.IsClosed() && DateTime.Now.Date > (deadline?.Date ?? task.Deadline?.Date);
     }
 
-    public static bool IsSevenDaysDeadlineOut(this OnlyofficeTask task)
+    public static bool IsSevenDaysDeadlineOut(this IOnlyofficeTask task, DateTime? deadline = null)
     {
-        return !task.IsClosed() && DateTime.Now.AddDays(6) > task.Deadline;
+        return !task.IsClosed() && DateTime.Now.AddDays(6) > (deadline ?? task.Deadline);
     }
 
     public static IEnumerable<OnlyofficeTask> FilterByStatus(this IEnumerable<OnlyofficeTask> tasks, OnlyofficeTaskStatus status)
@@ -26,7 +26,7 @@ public static class OnlyofficeTaskExtensions
         return tasks.Where(x => x.HasStatus(status));
     }
 
-    public static bool HasStatus(this OnlyofficeTask task, OnlyofficeTaskStatus status)
+    public static bool HasStatus(this IOnlyofficeTask task, OnlyofficeTaskStatus status)
     {
         return task.TaskStatusId is null
             ? status.IsDefault && task.Status.ToStatusType() == status.StatusType

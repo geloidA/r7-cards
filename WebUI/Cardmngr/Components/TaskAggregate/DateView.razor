@@ -1,0 +1,63 @@
+﻿<div class="@(ReadOnly ? "" : "p-1 rounded-lg hover:bg-neutral-hover cursor-pointer")" @onclick="OpenPopover">
+    @if (Date is null)
+    {
+        @if (DateRender is null)
+        {
+            <div id="@_popoverGuid" class="text-info italic">???</div>
+        }
+        else
+        {
+            <div id="@_popoverGuid">
+                @DateRender(null)
+            </div>
+        }
+    }
+    else
+    {
+        <div id="@_popoverGuid">
+            @if (NotShowYearIfCurrent)
+            {
+                var currentYear = DateTime.Now.Year;
+                if (currentYear == Date.Value.Year)
+                {
+                    @RenderDate("d MMM")
+                }
+                else
+                {
+                    @RenderDate("d MMM yyyy")
+                }
+            }
+            else
+            {
+                @RenderDate("d MMM yyyy")
+            }
+        </div>
+    }
+</div>
+
+
+<Popover @bind-AnchorId="@_popoverGuid"
+         @bind-Open="@_popoverOpen" >
+    <FluentCalendar Value="Date ?? DateTime.Now" 
+                    ValueChanged="OnDateChanged"
+                    Style="height: fit-content; margin-bottom: 4px;" />
+    <FluentButton Appearance="Appearance.Lightweight" 
+                    OnClick="() => OnDateChanged(null)"
+                    Class="self-end p-1" >
+        Очистить
+    </FluentButton>
+</Popover>
+
+@code {
+    private RenderFragment<string> RenderDate => format =>
+        @<div>
+            @if (DateRender != null)
+            {
+                @DateRender(Date)
+            }
+            else
+            {
+                @(Date.Value.ToString(format))
+            }
+        </div>;
+}

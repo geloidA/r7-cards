@@ -35,7 +35,7 @@ public partial class FeedbackCard
             { "Model", Feedback }
         };
 
-        await Modal.Show<FeedbackDetailsModal>("", parameters, DetailsModal).Result;
+        await Modal.Show<FeedbackDetailsModal>(parameters, DetailsModal).Result;
     }
 
     private async Task ToggleLike()

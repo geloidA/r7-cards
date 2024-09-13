@@ -45,7 +45,7 @@
         get
         {
             if (Milestone.IsClosed()) return "rgb(64, 165, 120)";
-            return Milestone.IsDeadlineOut() ? "var(--neutral-fill-strong-rest)" : "var(--accent-fill-rest)";
+            return Milestone.IsDeadlineOut() ? "var(--neutral-fill-strong-rest)" : CardmngrColors.Accent;
         }
     }
 
@@ -57,6 +57,6 @@
             { "State", State }
         };
 
-        await Modal.Show<MilestoneDetailsModal>("", paramerters, Options).Result;
+        await Modal.Show<MilestoneDetailsModal>(paramerters, Options).Result;
     }
 }

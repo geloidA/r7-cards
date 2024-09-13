@@ -1,0 +1,34 @@
+﻿
+<FluentPopover AnchorId="@_popoverGuid"
+               Open="Open"
+               Class="rounded-lg"
+               OpenChanged="OpenChanged" >
+    <Body>
+        @ChildContent
+    </Body>
+</FluentPopover>
+
+@code {
+
+    private readonly string _popoverGuid = Guid.NewGuid().ToString();
+
+    protected override Task OnInitializedAsync()
+    {
+        return AnchorIdChanged.InvokeAsync(_popoverGuid);
+    }
+
+    [Parameter]
+    public string AnchorId { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<string> AnchorIdChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public bool Open { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OpenChanged { get; set; }
+}

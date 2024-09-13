@@ -16,11 +16,11 @@
     </div>
     <div class="flex gap-3 justify-end">
         <FluentButton Appearance="Appearance.Lightweight" Type="ButtonType.Submit"
-            @onclick="ResetSettings" >
+            @onclick="ResetSettings" Class="font-semibold" >
             Сбросить настройки
         </FluentButton>
-        <FluentButton BackgroundColor="var(--success)" Color="white"
-            @onclick="OnApplyClick" >
+        <FluentButton BackgroundColor="@CardmngrColors.Success" Color="white"
+            @onclick="OnApplyClick" Class="font-semibold" >
             Сохранить
         </FluentButton>
     </div>
@@ -44,7 +44,7 @@
             </div>
             <div class="flex">
                 <FluentSpacer Width="30" />
-                <span class="text-sm" style="color: var(--info);">@type.Description</span>
+                <span class="text-sm" style="color: @CardmngrColors.Info;">@type.Description</span>
             </div>
         </div>;
 }

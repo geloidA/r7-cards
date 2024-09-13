@@ -1,5 +1,5 @@
 ﻿<Smooth ShowOnFirstRender Delay="TimeSpan.FromMilliseconds(500)">
-    <div class="task-card default-text @Task.CssDeadline()" @onclick="openModalAction" >
+    <div class="task-card default-text @Task.CssDeadline()" @onclick="OpenModal" >
         <div class="flex @CssMarginTitle">
             @if (Task.Priority == Priority.High)
             {
@@ -38,28 +38,71 @@
                 }
             </div>
         }
-        @if (Task.Deadline is not null)
+        @if (Task.Deadline != null || Task.StartDate != null)
         {
             <FluentSpacer />
             <div class="flex p-0 text-xs justify-end items-center">
                 @if (Task.IsDeadlineOut())
                 {
-                    <span class="deadline-msg text-error">
+                    <span class="deadline-msg text-error" title="@($"{(DateTime.Now - Task.Deadline!.Value).Days} ден. назад")">
                         @GetDeadlineString()
                     </span>
                     <FluentSpacer />
-                    <FluentIcon Value="@(new Icons.Regular.Size16.Fire())" Color="Color.Error" />
                 }
-                else if (Task.IsSevenDaysDeadlineOut())
-                {
-                    <FluentIcon Value="@(new Icons.Filled.Size16.Warning())" Color="Color.Warning" />
-                }
-                <span class="ms-2
-                    @(Task.IsDeadlineOut() ? "text-error" : Task.IsSevenDaysDeadlineOut() ? "text-warning" : "")" >
-                    Крайний срок:
-                    @Task.Deadline?.ToString("d MMM yyyy г.")
-                </span>
+                <DateRangeView ReadOnly="true"
+                               Start="Task.StartDate"
+                               End="Task.Deadline"
+                               StartDateRender="@RenderStart"
+                               EndDateRender="@RenderDeadline"/>
             </div>
         }
     </div>
 </Smooth>
+
+@code {
+
+    private static RenderFragment<DateTime?> RenderStart = date =>
+        @<div>
+            @if (!date.HasValue)
+            {
+                <span class="italic text-info" title="Не установлен">???</span>
+            }
+            else
+            {
+                <span>@date.Value.ToString(GetFormatDependOnYear(date.Value))</span>
+            }
+        </div>;
+
+    private RenderFragment<DateTime?> RenderDeadline => date =>
+        @<div>
+            @if (!date.HasValue)
+            {
+                <span class="italic text-info" title="Не установлен">???</span>
+            }
+            else
+            {
+                <span class="flex gap-1">
+                    @if (Task.IsDeadlineOut())
+                    {
+                        <FluentIcon Value="@(new Icons.Regular.Size16.Fire())" Color="Color.Error" title="Срок просрочен" />
+                        <span class="text-error" >@date.Value.ToString(GetFormatDependOnYear(date.Value))</span>
+                    }
+                    else if (Task.IsSevenDaysDeadlineOut())
+                    {
+                        <FluentIcon Value="@(new Icons.Filled.Size16.Warning())" 
+                                    Color="Color.Warning"
+                                    title="Срок скоро истечет" />
+                        <span class="text-warning">@date.Value.ToString(GetFormatDependOnYear(date.Value))</span>
+                    }
+                    else
+                    {
+                        <span>@date.Value.ToString(GetFormatDependOnYear(date.Value))</span>
+                    }
+                </span>
+            }
+        </div>;
+
+    private static string GetFormatDependOnYear(DateTime date) => date.Year == DateTime.Now.Year
+            ? "d MMM"
+            : "d MMM yyyy";
+}

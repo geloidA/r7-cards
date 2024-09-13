@@ -36,7 +36,7 @@ public sealed partial class ProjectDetailsModal : ComponentBase, IDisposable
             { "State", State }
         };
 
-        Modal.Show<MilestoneDetailsModal>("", parameters, Options);
+        Modal.Show<MilestoneDetailsModal>(parameters, Options);
     }
 
     public void Dispose() => State.RefreshService.RemoveLock(lockGuid);

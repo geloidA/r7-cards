@@ -12,31 +12,75 @@
     <CascadingValue Value="Buffer" IsFixed >
         <FluentEditForm Model="Buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown" >
             <FluentValidationValidator />
-            <OffcanvasHeader Class="py-0 flex gap-2 items-center" Style="padding-top: 20px !important;">
+            <OffcanvasHeader Class="py-0 items-center" Style="padding-top: 20px !important;">
                 <AutoGrowTextArea Name="Title" Style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
                                   @bind-Value="Buffer.Title" Class="p-0 w-full" />
-                <TaskPriorityChanger Disabled="@(!CanEdit)" />
             </OffcanvasHeader>
             <FluentValidationMessage For="() => Buffer.Title" class="ms-3" />
-            <OffcanvasBody Class="flex flex-col form-group gap-2">
-                @if (Model is not null)
-                {
-                    <i style="font-size: 13px; margin-right: 5px;" class="flex justify-end">
-                        Создатель: @Model.CreatedBy.DisplayName
-                    </i>
-                }
-                <FluentDatePicker Name="StartDate" Placeholder="Не установленa"
-                                  ReadOnly="!CanEdit" @bind-Value="Buffer.StartDate" Label="Дата начала:" />
-                <FluentDatePicker Name="Deadline" Placeholder="Не установлен"
-                                  ReadOnly="!CanEdit" @bind-Value="Buffer.Deadline" Label="Крайний срок:" />
-                <FluentValidationMessage For="() => Buffer.Deadline" />
-                <AutoGrowTextArea Name="Description" Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-full"
-                                  @bind-Value="Buffer.Description" ImmediateDelay="500" Immediate Spellcheck="true" ReadOnly="!CanEdit" />
+            <OffcanvasBody Class="flex flex-col form-group gap-5">                                
+                <div class="p-3 flex flex-col gap-5">                    
+                    <CascadingValue Value="State" IsFixed="true">
+                        <InfoItem Icon="new Icons.Filled.Size20.Status()"
+                                Title="Статус">
+                            <Content>
+                                <TaskStatusView />
+                            </Content>
+                        </InfoItem>
+                        @if (Model is not null)
+                        {
+                            <InfoItem Icon="new Icons.Filled.Size20.Person()"
+                                    Title="Владелец">
+                                <Content>
+                                    <UserAvatar User="Model.CreatedBy"
+                                                Class="text-xs"
+                                                Size="25" 
+                                                ShowName />
+                                </Content>
+                            </InfoItem>
+                        }
+                        <InfoItem Icon="new Icons.Filled.Size20.Calendar()"
+                                Title="Даты">
+                            <Content>
+                                <DateRangeView ReadOnly="!CanEdit" 
+                                            @bind-Start="Buffer.StartDate" 
+                                            @bind-End="Buffer.Deadline"
+                                            EndDateRender="DeadlineRender" />
+                            </Content>
+                        </InfoItem>
+                        <FluentValidationMessage For="() => Buffer.Deadline" />
+                        <InfoItem Title="Приоритет"
+                                Icon="new Icons.Regular.Size20.TriangleDown()" >
+                            <Content>
+                                <TaskPriorityChanger Disabled="@(!CanEdit)" />
+                            </Content>
+                        </InfoItem>
+                        <InfoItem Title="Ответственные"
+                                Icon="new Icons.Filled.Size20.People()" >
+                            <Content>
+                                <TaskResponsibles Disabled="!CanEdit" />
+                            </Content>
+                        </InfoItem>
+                        <InfoItem Title="Веха"
+                                Icon="new MyIcons.Size20.Milestone()" >
+                            <Content>
+                                <TaskMilestone Disabled="!CanEdit" />
+                            </Content>
+                        </InfoItem>
+                        <InfoItem Title="Метки"
+                                Icon="new Icons.Filled.Size20.TagMultiple()" >
+                            <Content>                            
+                                <TaskTagLabels TaskTags="TaskTags" OnlyofficeTask="Model"
+                                            Disabled="@(!CanEdit)" IsAdd="IsAdd" />
+                            </Content>
+                        </InfoItem>
+                    </CascadingValue>
+                </div>
+
                 <CascadingValue Value="State" IsFixed="true">
-                    <TaskResponsibles Disabled="!CanEdit" />
-                    <TaskMilestone Disabled="!CanEdit" />
-                    <TaskTagLabels TaskTags="TaskTags" OnlyofficeTask="Model"
-                                   Disabled="@(!CanEdit)" IsAdd="IsAdd" />
+                    <div class="rounded-lg bg-layer-1 p-3 flex flex-col gap-3">
+                        <AutoGrowTextArea Name="Description" Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-full"
+                                        @bind-Value="Buffer.Description" ImmediateDelay="500" Immediate Spellcheck="true" ReadOnly="!CanEdit" />
+                    </div>
                     @if (!IsAdd)
                     {
                         <CascadingValue Value="Model" IsFixed >
@@ -44,17 +88,18 @@
                         </CascadingValue>
                     }
                 </CascadingValue>
+
                 <div class="flex justify-end select-none">
                     <div class="flex flex-row">
-                        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Stealth"
+                        <FluentButton Type="ButtonType.Submit" Class="font-bold" Appearance="Appearance.Outline"
                                       Disabled="!CanEdit" Loading="submitting" >
                             @SubmitText
                         </FluentButton>
                         @if(!IsAdd)
                         {
-                            <FluentButton Class="ms-2" OnClick="DeleteAsync" 
-                                BackgroundColor="var(--error)"
-                                Color="var(--neutral-fill-inverse-rest)"
+                            <FluentButton Class="ms-2 font-bold" OnClick="DeleteAsync" 
+                                BackgroundColor="@CardmngrColors.Error"
+                                Color="white"
                                 Disabled="!Model!.CanDelete || State.ReadOnly" >
                                 Удалить
                             </FluentButton>
@@ -73,4 +118,33 @@
     {
         enterPressed = e.Key == "Enter";
     }
+
+    private RenderFragment<DateTime?> DeadlineRender => date =>
+        @<div>
+            @if (!date.HasValue)
+            {
+                <span class="text-info italic">???</span>
+            }
+            else
+            {
+                <span class="flex gap-1">
+                    @if (Model?.IsDeadlineOut(date) == true)
+                    {                        
+                        <FluentIcon Value="@(new Icons.Regular.Size16.Fire())" Color="Color.Error" title="Срок просрочен" />
+                        <span class="text-error" >@date.Value.ToString("d MMM yyyy")</span>
+                    }
+                    else if (Model?.IsSevenDaysDeadlineOut(date) == true)
+                    {                        
+                        <FluentIcon Value="@(new Icons.Filled.Size16.Warning())" 
+                                    Color="Color.Warning"
+                                    title="Срок скоро истечет" />
+                        <span class="text-warning">@date.Value.ToString("d MMM yyyy")</span>
+                    }
+                    else
+                    {
+                        <span>@date.Value.ToString("d MMM yyyy")</span>
+                    }
+                </span>
+            }
+        </div>;
 }

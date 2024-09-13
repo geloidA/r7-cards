@@ -111,7 +111,7 @@ public class ProjectController(IConfiguration conf) : ApiController(conf)
         var authCookie = HttpContext.Request.Cookies;
 
         var task = await CreateTaskAsync(projectId, updateData, authCookie);
-        var response = await UpdateTaskStatus(task.Id, updateData.Status, updateData.CustomTaskStatus, authCookie);
+        var response = await UpdateTaskStatus(task.Id, updateData.Status, updateData.TaskStatusId, authCookie);
         
         await response.Content.CopyToAsync(HttpContext.Response.Body);
     }

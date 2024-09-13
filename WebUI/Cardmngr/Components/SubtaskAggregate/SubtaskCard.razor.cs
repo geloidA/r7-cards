@@ -41,9 +41,6 @@ public partial class SubtaskCard : ComponentBase
 
     private async Task DeleteSubtask()
     {
-        var confirmModal = await Modal.Show<DefaultConfirmModal>("Удаление подзадачи", ModalOptions).Result;
-        if (confirmModal.Cancelled) return;
-
         await SubtaskClient.RemoveAsync(Task.Id, Subtask.Id);
         State.RemoveSubtask(Task.Id, Subtask.Id);
     }
@@ -54,10 +51,11 @@ public partial class SubtaskCard : ComponentBase
         { 
             { "Team", State.Team },
             { "Title", Subtask.Title },
+            { "IsEdit", true },
             { "ResponsibleId", Subtask.Responsible?.Id }
         };
         
-        var res = await Modal.Show<SubtaskCreationModal>("Изменение подзадачи", param, ModalOptions).Result;
+        var res = await Modal.Show<SubtaskCreationModal>(param, ModalOptions).Result;
 
         if (res.Confirmed)
         {

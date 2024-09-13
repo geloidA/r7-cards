@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Cardmngr.Domain.Entities;
+using Cardmngr.Domain.Enums;
 
 namespace Onlyoffice.Api.Models;
 
@@ -35,7 +37,7 @@ public class TaskDto : IEntityDto<int>
     public DateTime? StartDate { get; set; }
 }
 
-public class TaskUpdateData
+public sealed class TaskUpdateData : IOnlyofficeTask
 {
     public string? Description { get; set; }
     public DateTime? Deadline { get; set; }
@@ -48,7 +50,16 @@ public class TaskUpdateData
     public bool? Notify { get; set; }
     public int? Status { get; set; } = (int)Common.Status.Open;
     public int? Progress { get; set; }
-    public int? CustomTaskStatus { get; set; }
+
+    public int Id { get; set; }
+
+    public int? TaskStatusId { get; set; }
+
+    Status IOnlyofficeTask.Status => (Status)Status!;
+
+    public bool IsDeadlineOut() => Deadline.HasValue &&
+        Deadline.Value.Date < DateTime.Now.Date && 
+        Status == (int)Common.Status.Open;
 }
 
 public class SubtaskDto : IEntityDto<int>

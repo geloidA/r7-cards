@@ -3,7 +3,7 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities
 {
-    public sealed record OnlyofficeTask : AuditableEntityBase<int>
+    public sealed record OnlyofficeTask : AuditableEntityBase<int>, IOnlyofficeTask
     {
         public string Title { get; init; }
         public string Description { get; init; }
@@ -49,5 +49,16 @@ namespace Cardmngr.Domain.Entities
         {
             return $"OnlyofficeTask - {Id}\t{Title}";
         }
+    }
+
+    public interface IOnlyofficeTask 
+    {
+        int Id { get; }
+        string Title { get; }
+        DateTime? StartDate { get; }
+        DateTime? Deadline { get; }
+        int? TaskStatusId { get; }
+        Status Status { get; }
+        int? MilestoneId { get; }
     }
 }

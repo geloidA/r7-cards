@@ -20,7 +20,7 @@ public class TagColorGetter : ITagColorManager, IDisposable
         Color.FromArgb(249, 132, 74),
         Color.FromArgb(248, 150, 30),
         Color.FromArgb(243, 114, 44),
-        Color.FromArgb(249, 65, 68),
+        Color.FromArgb(235, 90, 158),
     ]);
 
     public Color GetColor(TaskTag tag)

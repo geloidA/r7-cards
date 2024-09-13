@@ -69,6 +69,6 @@
             { "State", State }
         };
 
-        await Modal.Show<TaskDetailsModal>("", parameters, Options).Result.ConfigureAwait(false);
+        await Modal.Show<TaskDetailsModal>(parameters, Options).Result.ConfigureAwait(false);
     }
 }

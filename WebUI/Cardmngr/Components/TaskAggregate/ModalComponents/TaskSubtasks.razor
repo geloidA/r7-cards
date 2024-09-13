@@ -7,22 +7,25 @@
 @inject IMapper Mapper
 @inject IJSRuntime JsRuntime
 
-<div class="flex items-center text-xl">
-    <FluentIcon Value="@(new Icons.Regular.Size24.Check())"/>
-    <span class="ms-1" style="color: var(--neutral-foreground-rest);">Подзадачи</span>
-    <Tool Icon="@(new Icons.Regular.Size16.Add())" Class="ms-1" TooltipTitle="Добавить"
-        Disabled="@(State.ReadOnly || !Task.CanEdit || Task.IsClosed())" @onclick="ShowCreationModal" />
-</div>
-@if (Task.Subtasks.Count == 0)
-{
-    <span>Список пуст</span>
-}
-
-<div class="subtasks-list">
-    @foreach (var subtask in Task.Subtasks.OrderBy(x => x.Status))
+<div class="rounded-lg bg-layer-1 p-3">
+    <div class="flex items-center text-xl mb-4">
+        <FluentIcon Value="@(new Icons.Regular.Size20.Check())"/>
+        <span class="ms-1 text-sm" style="color: var(--neutral-foreground-rest);">Подзадачи</span>
+        <FluentSpacer />
+        <Tool Icon="@(new Icons.Filled.Size24.AddSquare())" Class="ms-1" title="Создать подзадачу"
+            Disabled="@(State.ReadOnly || !Task.CanEdit || Task.IsClosed())" @onclick="ShowCreationModal" />
+    </div>
+    @if (Task.Subtasks.Count == 0)
     {
-        <SubtaskCard Subtask="subtask" />
+        <span>Список пуст</span>
     }
+
+    <div class="subtasks-list">
+        @foreach (var subtask in Task.Subtasks.OrderBy(x => x.Status))
+        {
+            <SubtaskCard Subtask="subtask" />
+        }
+    </div>
 </div>
 
 @code {
@@ -40,8 +43,7 @@
 
     async Task ShowCreationModal()
     {
-        var res = await Modal.Show<SubtaskCreationModal>("Добавление подзадачи", 
-            new ModalParameters { { "Team", State.Team } }, ModalOptions).Result.ConfigureAwait(false);
+        var res = await Modal.Show<SubtaskCreationModal>(new ModalParameters { { "Team", State.Team } }, ModalOptions).Result.ConfigureAwait(false);
 
         if (res.Confirmed)
         {

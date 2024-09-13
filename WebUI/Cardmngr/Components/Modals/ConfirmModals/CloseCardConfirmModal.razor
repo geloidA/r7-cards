@@ -1,13 +1,5 @@
 ﻿@inherits ConfirmModalBase
 
-<h6 style="text-align: center; margin-bottom: 2rem;">
-    Вы пытаетесь закрыть задачу с открытым подзадачами.
-    <br>
-    Лучше всего вернуться и закрыть подзадачи вручную,
-    <br>
-    затем снова закрыть задачу
-</h6>
-
 @{
     base.BuildRenderTree(__builder);
 }
@@ -16,5 +8,8 @@
     protected override void OnInitialized()
     {
         OkTitle = "Закрыть все подзадачи и задачу";
+        AdditionalText = "Вы пытаетесь закрыть задачу с открытым подзадачами. Лучше всего вернуться и закрыть подзадачи вручную, затем снова закрыть задачу.";
+        OkBgColor = CardmngrColors.Accent;
+        OkTextColor = CardmngrColors.ForegroundOnAccent;
     }
 }

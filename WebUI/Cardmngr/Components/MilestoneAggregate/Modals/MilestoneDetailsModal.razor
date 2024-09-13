@@ -93,14 +93,15 @@
 
                     <FluentSpacer />
 
-                    <FluentButton Disabled="!CanEdit" Type="ButtonType.Submit" >
+                    <FluentButton Disabled="!CanEdit" Type="ButtonType.Submit"
+                        Class="font-bold" Appearance="Appearance.Outline" >
                         @SubmitText
                     </FluentButton>
 
                     @if (!IsAdd)
                     {
-                        <FluentButton Class="ms-2" Disabled="!Model!.CanDelete || State.ReadOnly"
-                            OnClick="DeleteAsync" >
+                        <FluentButton Class="ms-2 font-bold" Disabled="!Model!.CanDelete || State.ReadOnly"
+                            OnClick="DeleteAsync" BackgroundColor="@CardmngrColors.Error" Color="white" >
                             Удалить
                         </FluentButton>
                     }
