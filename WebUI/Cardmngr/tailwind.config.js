@@ -3,6 +3,9 @@ module.exports = {
   content: ["./**/*.{razor,html,cshtml}"],
   theme: {
     extend: {
+      width: {
+        'details-popup': '348px',
+      },
       colors: {
         'inverse': 'var(--neutral-fill-inverse-rest)',
         'accent': 'var(--accent-fill-rest)',

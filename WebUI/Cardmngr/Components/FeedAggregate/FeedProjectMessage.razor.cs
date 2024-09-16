@@ -10,9 +10,4 @@ public partial class FeedProjectMessage : KolComponentBase
 
     [Parameter, EditorRequired]
     public Feed Feed { get; set; } = null!;
-
-    private static MarkupString RenderHtml(string htmlString)
-    {
-        return new MarkupString(htmlString);
-    }
 }

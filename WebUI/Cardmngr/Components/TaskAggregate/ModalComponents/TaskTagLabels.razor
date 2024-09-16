@@ -1,65 +1,65 @@
-﻿<div class="group flex gap-2 flex-wrap">
-    @{
-        var canEdit = OnlyofficeTask?.CanDelete ?? false;
-    }
-    @foreach (var tag in TaskTags)
-    {
-        <TaskTagLabel Editable="canEdit" 
-                      Tag="tag" 
-                      Color="TagColorGetter.GetColor(tag)"
-                      OnDismiss="RemoveTag" />
-    }
-    @if (TaskTags.Count == 0)
-    {
-        <div id="@_popoverGuid" 
-             @onclick="OpenPopover" 
-             class="text-info select-none @(Disabled ? "" : "cursor-pointer hover:underline")" >
-            Пусто
+﻿<InfoItem Title="Теги"
+          Editable="!Disabled"
+          @bind-PopoverOpen="@_popoverOpen"
+          Icon="new Icons.Filled.Size20.TagMultiple()" >
+    <Content>
+        <div class="group flex gap-2 flex-wrap">
+            @foreach (var tag in TaskTags)
+            {
+                <TaskTagLabel Editable="@tag.CanEdit" 
+                            Tag="tag" 
+                            Color="TagColorGetter.GetColor(tag)"
+                            OnDismiss="RemoveTag" />
+            }
+            @if (TaskTags.Count == 0)
+            {
+                <div class="text-info select-none @(Disabled ? "" : "hover:underline")" >
+                    Пусто
+                </div>
+            }
+            else if (!Disabled)
+            {
+                <div class="transition-opacity duration-300 opacity-0
+                        group-hover:opacity-100 underline hover:decoration-dotted
+                        tracking-widest" title="Добавить" >
+                    ...
+                </div>
+            }
         </div>
-    }
-    else if (!Disabled)
-    {
-        <div id="@_popoverGuid" @onclick="OpenPopover"
-            class="transition-opacity duration-300 opacity-0 cursor-pointer
-                group-hover:opacity-100 underline hover:decoration-dotted
-                tracking-widest" >
-            ...
-        </div>
-    }
-</div>
-
-<Popover @bind-AnchorId="@_popoverGuid"
-         Open="@_popoverOpen"
-         OpenChanged="OnOpenChanged" >
-    <div class="max-h-56 max-w-60 min-w-60 flex flex-col justify-center gap-2">
-        @if (!IsAdd)
-        {
-            <div class="flex gap-1" style="font-size: small;">
-                <FluentTextField Placeholder="Название метки" 
-                                Immediate 
-                                ImmediateDelay="50"
-                                Value="@newTagText" 
-                                ValueChanged="OnSearch" />
-                <FluentSpacer />
-                <FluentIcon Value="@(new Icons.Filled.Size24.AddSquare())"
-                            Color="@(CanCreate ? Color.Success : Color.Disabled)" 
-                            title="Создать новую метку"
-                            class="hover:brightness-110"
-                            @onclick="CreateTag" />
+    </Content>
+    <Popover>
+        <div class="max-h-56 max-w-md w-details-popup flex flex-col justify-center gap-2">
+            @if (!IsAdd)
+            {
+                <div class="flex gap-1" style="font-size: small;">
+                    <FluentTextField Placeholder="Название тега" 
+                                     Immediate 
+                                     Class="w-full"
+                                     ImmediateDelay="50"
+                                     Value="@newTagText" 
+                                     ValueChanged="OnSearch" >
+                    <FluentIcon Value="@(new Icons.Filled.Size24.AddSquare())"
+                                Color="@(CanCreate ? Color.Success : Color.Disabled)" 
+                                title="Создать новый тег"
+                                class="hover:brightness-150"
+                                Slot="end"
+                                @onclick="CreateTag" />
+                    </FluentTextField>
+                </div>
+            }
+            <div class="overflow-auto flex flex-wrap gap-1 text-xs">
+                @foreach (var tag in searchedTags)
+                {
+                    <TaskTagLabel Tag="tag"
+                                Class="cursor-pointer"
+                                Color="TagColorGetter.GetColor(tag)"
+                                OnClick="@(async () => await AddTag(tag))" />
+                }
+                @if (searchedTags.Count == 0)
+                {
+                    <div class="text-info">Ничего не найдено</div>
+                }
             </div>
-        }
-        <div class="overflow-auto flex flex-wrap gap-1 text-xs">
-            @foreach (var tag in searchedTags)
-            {
-                <TaskTagLabel Tag="tag"
-                              Class="cursor-pointer"
-                              Color="TagColorGetter.GetColor(tag)"
-                              OnClick="() => { AddTag(tag); _popoverOpen = false; }" />
-            }
-            @if (searchedTags.Count == 0)
-            {
-                <div class="text-info">Нет подходящей метки</div>
-            }
         </div>
-    </div>    
-</Popover>
+    </Popover>
+</InfoItem>

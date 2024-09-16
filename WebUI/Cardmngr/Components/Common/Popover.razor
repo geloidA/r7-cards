@@ -2,7 +2,9 @@
 <FluentPopover AnchorId="@_popoverGuid"
                Open="Open"
                Class="rounded-lg"
-               OpenChanged="OpenChanged" >
+               HorizontalPosition="HorizontalPosition"
+               OpenChanged="OpenChanged"
+               VerticalPosition="VerticalPosition" >
     <Body>
         @ChildContent
     </Body>
@@ -31,4 +33,10 @@
 
     [Parameter]
     public EventCallback<bool> OpenChanged { get; set; }
+
+    [Parameter]
+    public HorizontalPosition? HorizontalPosition { get; set; }
+
+    [Parameter]
+    public VerticalPosition? VerticalPosition { get; set; }
 }

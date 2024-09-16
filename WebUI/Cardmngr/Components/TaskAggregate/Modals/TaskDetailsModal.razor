@@ -4,7 +4,7 @@
 @inherits AddEditModalBase<OnlyofficeTask, TaskUpdateData>
 
 <Offcanvas @ref="currentModal" 
-           Width="520" 
+           Width="620" 
            Placement="MyOffcanvasPlacement.End" 
            Class="my-offcanvas my-offcanvas-right"
            OnClose="ShowCloseConfirm">
@@ -54,32 +54,18 @@
                                 <TaskPriorityChanger Disabled="@(!CanEdit)" />
                             </Content>
                         </InfoItem>
-                        <InfoItem Title="Ответственные"
-                                Icon="new Icons.Filled.Size20.People()" >
-                            <Content>
-                                <TaskResponsibles Disabled="!CanEdit" />
-                            </Content>
-                        </InfoItem>
-                        <InfoItem Title="Веха"
-                                Icon="new MyIcons.Size20.Milestone()" >
-                            <Content>
-                                <TaskMilestone Disabled="!CanEdit" />
-                            </Content>
-                        </InfoItem>
-                        <InfoItem Title="Метки"
-                                Icon="new Icons.Filled.Size20.TagMultiple()" >
-                            <Content>                            
-                                <TaskTagLabels TaskTags="TaskTags" OnlyofficeTask="Model"
-                                            Disabled="@(!CanEdit)" IsAdd="IsAdd" />
-                            </Content>
-                        </InfoItem>
+                        <TaskResponsibles Disabled="!CanEdit" />
+                        <TaskMilestone Disabled="!CanEdit" />
+                        <TaskTagLabels TaskTags="TaskTags" OnlyofficeTask="Model"
+                            Disabled="@(!CanEdit)" IsAdd="IsAdd" />
                     </CascadingValue>
                 </div>
 
                 <CascadingValue Value="State" IsFixed="true">
+                    <MarkdownDescription @bind-Text="Buffer.Description" />
                     <div class="rounded-lg bg-layer-1 p-3 flex flex-col gap-3">
                         <AutoGrowTextArea Name="Description" Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-full"
-                                        @bind-Value="Buffer.Description" ImmediateDelay="500" Immediate Spellcheck="true" ReadOnly="!CanEdit" />
+                            @bind-Value="Buffer.Description" ImmediateDelay="500" Immediate Spellcheck="true" ReadOnly="!CanEdit" />
                     </div>
                     @if (!IsAdd)
                     {

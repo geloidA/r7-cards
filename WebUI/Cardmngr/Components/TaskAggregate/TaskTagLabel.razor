@@ -9,7 +9,12 @@
     <div class="self-center" style="margin-right: 2px;">@Tag.Name</div>
     @if (Editable)
     {
-        <FluentIcon Width="15" Value="@(new Icons.Filled.Size20.Dismiss())" OnClick="() => OnDismiss.InvokeAsync(Tag)" />
+        <div @onclick:stopPropagation class="self-center">
+            <FluentIcon Width="15" 
+                        title="Удалить"
+                        Value="@(new Icons.Filled.Size12.DismissCircle())" 
+                        OnClick="() => OnDismiss.InvokeAsync(Tag)" />
+        </div>
     }
 </div>
 

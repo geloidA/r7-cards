@@ -1,68 +1,63 @@
 ﻿@using Onlyoffice.Api.Models
 
-<FluentAutocomplete @ref="responsibleList"
-    TOption="UserInfo" AutoComplete="off"
-    Disabled="Disabled" MaximumOptionsSearch="100"
-    OptionStyle="min-height: 40px;"
-    OnOptionsSearch="OnSearch"
-    SelectedOptions="selectedResponsibles"
-    SelectedOptionsChanged="SelectedChanged"
-    Placeholder="Нет" >
-
-    <SelectedOptionTemplate>
-        <FluentPersona Name="@context.DisplayName" 
-            ImageSize="22px"
-            Class="p-1"
-            Style="height: 26px; background: var(--main-responsibles-bg)"
-            Image="@($"onlyoffice/api/people{context.AvatarSmall}")"
-            OnDismissClick="@(async () => await responsibleList.RemoveSelectedItemAsync(context).ConfigureAwait(false))"/>
-    </SelectedOptionTemplate>
-
-    <OptionTemplate>
-        <FluentPersona Name="@context.DisplayName"
-            ImageSize="22px"
-            Image="@($"onlyoffice/api/people{context.AvatarSmall}")" />
-    </OptionTemplate>
-
-    <HeaderContent>
-        <FluentLabel Color="Color.Accent"
-            Style="padding: 8px; font-size: 11px; border-bottom: 1px solid var(--neutral-fill-stealth-hover);">
-            Команда проекта
-        </FluentLabel>
-    </HeaderContent>
-
-    <FooterContent>
-        @if (!context.Any())
-        {
-            <FluentLabel Style="font-size: 11px; text-align: center; width: 200px;">
-                Нет результатов
-            </FluentLabel>
-        }
-    </FooterContent>
-</FluentAutocomplete>
-
-@code {
-    FluentAutocomplete<UserInfo> responsibleList = default!;
-    IEnumerable<UserInfo> selectedResponsibles = [];
-    [CascadingParameter] IProjectState State { get; set; } = null!;
-
-    [CascadingParameter] TaskUpdateData Task { get; set; } = null!;
-    [Parameter] public bool Disabled { get; set; }
-
-    protected override void OnInitialized()
-    {
-        selectedResponsibles = State.Team.Where(x => Task.Responsibles.Any(id => id == x.Id));
-    }
-
-    void OnSearch(OptionsSearchEventArgs<UserInfo> e)
-    {
-        e.Items = State.Team
-            .Where(x => x.DisplayName.Contains(e.Text, StringComparison.OrdinalIgnoreCase))
-            .OrderBy(x => x.DisplayName);
-    }
-
-    void SelectedChanged(IEnumerable<UserInfo> users)
-    {
-        Task.Responsibles = users.Select(x => x.Id).ToList();
-    }
-}
+<InfoItem Title="Ответственные" Editable="!Disabled"
+          @bind-PopoverOpen="@_popoverOpen"
+          Icon="new Icons.Filled.Size20.People()" >
+    <Content>
+        <div class="group/items flex gap-1 flex-wrap items-center">
+            @foreach (var user in _selectedResponsibles)
+            {
+                <div class="group/item flex gap-1 text-xs py-0 px-1 items-center rounded-full hover:bg-layer-1 transition-colors">
+                    <UserAvatar User="user" Size="25" ShowName Style="padding-top: 0px !important; padding-bottom: 0px !important;" />
+                    @if (!Disabled)
+                    {
+                        <div class="group-hover/item:opacity-100 opacity-0 transition-opacity" @onclick:stopPropagation >
+                            <FluentIcon Value="@(new Icons.Filled.Size12.Dismiss())"
+                                    title="Удалить"
+                                    @onclick="() => RemoveUser(user)" />
+                        </div>
+                    }
+                </div>
+            }
+            @if (_selectedResponsibles.Count == 0)
+            {
+                <div class="text-info select-none @(Disabled ? "" : "hover:underline")" >
+                    Пусто
+                </div>
+            }
+            else if (!Disabled)
+            {
+                <div class="transition-opacity duration-300 opacity-0
+                        group-hover/items:opacity-100 underline hover:decoration-dotted
+                        tracking-widest" title="Добавить">
+                    ...
+                </div>
+            }
+        </div>
+    </Content>
+    <Popover>
+        <div class="max-w-md w-details-popup flex flex-col gap-3">
+            <FluentTextField ImmediateDelay="50"
+                             Value="@_searchText" 
+                             Immediate
+                             Placeholder="Поиск пользователя"
+                             ValueChanged="OnSearch">
+                <FluentIcon Slot="end" Value="@(new Icons.Filled.Size16.Search())" />
+            </FluentTextField>
+            <ul class="max-h-52 overflow-auto">
+                @foreach (var user in _searchResponsibles)
+                {
+                    <li class="even:bg-neutral-hover flex gap-2 first:rounded-t-lg last:rounded-b-lg
+                        items-center cursor-pointer hover:bg-neutral-hover p-1 text-xs"
+                        @onclick="() => SelectUser(user)" >
+                        <UserAvatar ShowName User="user" Size="25" />
+                    </li>
+                }
+                @if (_searchResponsibles.Count == 0)
+                {
+                    <div class="text-xs">Ничего не найдено</div>
+                }
+            </ul>
+        </div>
+    </Popover>
+</InfoItem>

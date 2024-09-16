@@ -21,7 +21,7 @@ public partial class ProjectTextFieldFilterTool : ComponentBase
 
     private readonly IList<IFilterModel> _filters = 
     [
-        new FilterModel("метка", (text) => new TagTaskFilter(text), "bug, plot, mappa"),
+        new FilterModel("тег", (text) => new TagTaskFilter(text), "bug, plot, mappa"),
         new FilterModel("ответственный", (text) => new ResponsibleTaskFilter(text), "Иван Иваныч"),
         new FilterModel("автор", (text) => new CreatedByTaskFilter(text), "Вася Пупкин")
     ];

@@ -1,83 +1,54 @@
-﻿@using Onlyoffice.Api.Models
-
-<FluentAutocomplete @ref="milestoneList"
-        TOption="Milestone"
-        Disabled="Disabled" AutoComplete="off"
-        MaximumSelectedOptions="1" MaximumOptionsSearch="100"
-        SelectedOptions="_selectedMilestone"
-        SelectedOptionsChanged="OnSelectionChanged"
-        OnOptionsSearch="OnSearch"
-        Placeholder="Нет" >
-
-    <SelectedOptionTemplate>
-        <FluentBadge Appearance="Appearance.Accent">
-            @context.Title
-        </FluentBadge>
-    </SelectedOptionTemplate>
-
-    <MaximumSelectedOptionsMessage>
-        Задача может принадлежать только одной вехе
-    </MaximumSelectedOptionsMessage>
-
-    <OptionTemplate>
-        <FluentBadge Appearance="Appearance.Accent">
-            @context.Title
-        </FluentBadge>
-    </OptionTemplate>
-
-    <HeaderContent>
-        <FluentLabel Color="Color.Accent"
-            Style="padding: 8px; font-size: 11px; border-bottom: 1px solid var(--neutral-fill-stealth-hover);">
-            Вехи проекта
-        </FluentLabel>
-    </HeaderContent>
-
-    <FooterContent>
-        @if (!context.Any())
-        {
-            <FluentLabel Style="font-size: 11px; text-align: center; width: 200px;">
-                Нет результатов
-            </FluentLabel>
-        }
-    </FooterContent>
-
-</FluentAutocomplete>
-
-@code {
-    private bool _popoverOpen;
-    private string _popoverGuid = Guid.NewGuid().ToString();
-    FluentAutocomplete<Milestone> milestoneList = default!;
-    IEnumerable<Milestone> _selectedMilestone = [];
-
-    [CascadingParameter] TaskUpdateData Task { get; set; } = null!;
-    [CascadingParameter] IProjectState State { get; set; } = null!;
-    [Parameter] public bool Disabled { get; set; }
-
-    protected override void OnInitialized()
-    {
-        var selected = State.Milestones.SingleOrDefault(x => x.Id == Task.MilestoneId);
-        if (selected is not null)
-        {
-            _selectedMilestone = [selected];
-        }
-    }
-
-    private void OpenPopover()
-    {
-        _popoverOpen = true;
-    }
-
-    void OnSelectionChanged(IEnumerable<Milestone> e)
-    {
-        var selectedMilestone = e.ToList();
-        Task.MilestoneId = selectedMilestone.Any() ? selectedMilestone.Single().Id : null;
-        this._selectedMilestone = selectedMilestone;
-    }
-
-    void OnSearch(OptionsSearchEventArgs<Milestone> e)
-    {
-        e.Items = State.Milestones
-            .Where(x => x.Title.Contains(e.Text, StringComparison.OrdinalIgnoreCase))
-            .OrderBy(m => m.Title);
-    }
-}
+﻿<InfoItem @bind-PopoverOpen="@_popoverOpen"
+          Title="Веха" Editable="!Disabled"
+          Icon="new MyIcons.Size20.Milestone()" >
+    <Content>
+        <div class="w-fit">
+            @if (_selectedMilestone is null)
+            {
+                <div class="text-info select-none @CssClass" >
+                    Пусто
+                </div>
+            }
+            else
+            {
+                <div class="group flex gap-1 items-center select-none @CssClass">
+                    @_selectedMilestone.Title
+                    @if (!Disabled)
+                    {
+                        <div class="duration-300 opacity-0 group-hover:opacity-100" @onclick:stopPropagation >
+                            <FluentIcon Value="@(new Icons.Filled.Size12.DismissCircle())"
+                                title="Сбросить"
+                                @onclick="() => SelectMilestone(null)" />
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </Content>
+    <Popover>
+        <div class="max-w-md w-details-popup flex flex-col gap-3">
+            <FluentTextField ImmediateDelay="50"
+                             Value="@_searchText" 
+                             Immediate
+                             Placeholder="Поиск вехи"
+                             ValueChanged="OnSearch">
+                <FluentIcon Slot="end" Value="@(new Icons.Filled.Size16.Search())" />
+            </FluentTextField>
+            <ul class="max-h-52 overflow-auto">
+                @foreach (var milestone in _searchedMilestones)
+                {
+                    <li class="even:bg-neutral-hover flex gap-2 first:rounded-t-lg last:rounded-b-lg
+                        items-center cursor-pointer hover:bg-neutral-hover p-1 text-xs"
+                        @onclick="() => SelectMilestone(milestone)" >
+                        <FluentIcon Value="@(new MyIcons.Size16.Milestone())"/>
+                        <span>@milestone.Title</span>
+                    </li>
+                }
+                @if (_searchedMilestones.Count == 0)
+                {
+                    <div class="text-xs">Ничего не найдено</div>
+                }
+            </ul>
+        </div>
+    </Popover>
+</InfoItem>

@@ -1,5 +1,7 @@
 ﻿
-<div class="flex items-center">
+<div id="@_popoverGuid"
+     class="flex items-center p-1 @(Editable ? "rounded hover:bg-neutral-hover cursor-pointer" : "")"
+     @onclick="OpenPopover" >
     <div class="max-w-[33.333333%] w-1/3 flex items-center @LabelCss">
         <FluentIcon class="mr-1" Value="Icon" Color="@Color.Info" />
         <div class="font-bold text-info text-xs">@Title</div>
@@ -9,17 +11,41 @@
     </div>
 </div>
 
+@if (Editable)
+{
+    <Popover @bind-AnchorId="@_popoverGuid"
+             Open="PopoverOpen"
+             OpenChanged="PopoverOpenChanged"
+             HorizontalPosition="HorizontalPosition.End" >
+        @Popover
+    </Popover>
+}
+
 @code {
+    private string? _popoverGuid;
 
-    [Parameter, EditorRequired]
-    public Icon Icon { get; set; } = null!;
 
-    [Parameter, EditorRequired]
-    public string Title { get; set; } = null!;
+    [Parameter, EditorRequired] public Icon Icon { get; set; } = null!;
 
-    [Parameter]
-    public RenderFragment? Content { get; set; }
+    [Parameter, EditorRequired] public string Title { get; set; } = null!;
 
-    [Parameter]
-    public string? LabelCss { get; set; }
+    [Parameter] public RenderFragment? Content { get; set; }
+
+    [Parameter] public RenderFragment? Popover { get; set; }
+
+    [Parameter] public string? LabelCss { get; set; }
+
+    [Parameter] public bool Editable { get; set; }
+
+    [Parameter] public bool PopoverOpen { get; set; }
+
+    [Parameter] public EventCallback<bool> PopoverOpenChanged { get; set; }
+
+    private async Task OpenPopover()
+    {
+        if (Editable)
+        {
+            await PopoverOpenChanged.InvokeAsync(true);
+        }
+    }
 }

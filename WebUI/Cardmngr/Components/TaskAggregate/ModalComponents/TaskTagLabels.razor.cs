@@ -9,8 +9,7 @@ namespace Cardmngr.Components.TaskAggregate.ModalComponents;
 public partial class TaskTagLabels : ComponentBase
 {
     private bool _popoverOpen;
-    private string _popoverGuid = null!;
-    private string newTagText = "";    
+    private string newTagText = "";
     private IList<TaskTag> searchedTags = null!;
     private readonly IEqualityComparer<TaskTag> comparer = new TaskTagNameEqualityComparer();
 
@@ -24,7 +23,8 @@ public partial class TaskTagLabels : ComponentBase
 
     protected override void OnInitialized()
     {
-        searchedTags = TagColorGetter.Tags.Except(TaskTags, comparer).ToList();
+        RefreshState();
+        OnSearch("");
     }
 
     private void OnSearch(string searchText)
@@ -47,6 +47,7 @@ public partial class TaskTagLabels : ComponentBase
             TagColorGetter.GetColor(created);
             TaskTags?.Add(created);
             _popoverOpen = false;
+            newTagText = "";
 
             StateHasChanged();
         }
@@ -61,7 +62,7 @@ public partial class TaskTagLabels : ComponentBase
 
         TaskTags.Add(newTag);
 
-        searchedTags = TagColorGetter.Tags.Except(TaskTags, comparer).ToList();
+        RefreshState();
         StateHasChanged();
     }
 
@@ -77,24 +78,11 @@ public partial class TaskTagLabels : ComponentBase
         TagColorGetter.RemoveTag(tag);
         TaskTags.Remove(tag);
 
+        RefreshState();
+    }
+
+    private void RefreshState()
+    {
         searchedTags = TagColorGetter.Tags.Except(TaskTags, comparer).ToList();
-    }
-
-    private void OpenPopover()
-    {
-        if (OnlyofficeTask?.CanDelete ?? false) // TODO: 
-        {
-            _popoverOpen = true;
-        }
-    }
-
-    private void OnOpenChanged(bool open)
-    {
-        _popoverOpen = open;
-
-        if (!open)
-        {
-            newTagText = "";
-        }
     }
 }
