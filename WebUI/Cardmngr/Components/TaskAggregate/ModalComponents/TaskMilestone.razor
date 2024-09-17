@@ -34,11 +34,11 @@
                              ValueChanged="OnSearch">
                 <FluentIcon Slot="end" Value="@(new Icons.Filled.Size16.Search())" />
             </FluentTextField>
-            <ul class="max-h-52 overflow-auto">
+            <div class="max-h-52 overflow-auto">
                 @foreach (var milestone in _searchedMilestones)
                 {
                     <li class="even:bg-neutral-hover flex gap-2 first:rounded-t-lg last:rounded-b-lg
-                        items-center cursor-pointer hover:bg-neutral-hover p-1 text-xs"
+                        items-center cursor-pointer hover:bg-neutral-fill-hover p-1 text-xs"
                         @onclick="() => SelectMilestone(milestone)" >
                         <FluentIcon Value="@(new MyIcons.Size16.Milestone())"/>
                         <span>@milestone.Title</span>
@@ -48,7 +48,7 @@
                 {
                     <div class="text-xs">Ничего не найдено</div>
                 }
-            </ul>
+            </div>
         </div>
     </Popover>
 </InfoItem>

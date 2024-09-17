@@ -4,7 +4,7 @@
 @inherits AddEditModalBase<OnlyofficeTask, TaskUpdateData>
 
 <Offcanvas @ref="currentModal" 
-           Width="620" 
+           Width="650" 
            Placement="MyOffcanvasPlacement.End" 
            Class="my-offcanvas my-offcanvas-right"
            OnClose="ShowCloseConfirm">
@@ -17,9 +17,12 @@
                                   @bind-Value="Buffer.Title" Class="p-0 w-full" />
             </OffcanvasHeader>
             <FluentValidationMessage For="() => Buffer.Title" class="ms-3" />
-            <OffcanvasBody Class="flex flex-col form-group gap-5">                                
-                <div class="p-3 flex flex-col gap-5">                    
-                    <CascadingValue Value="State" IsFixed="true">
+            <OffcanvasBody Class="flex flex-col form-group gap-5"> 
+                <CascadingValue Value="State" IsFixed="true">
+                    <div class="border-b border-disabled" >
+                        <Markdown @bind-Text="Buffer.Description" Class="mb-5" />
+                    </div>                             
+                    <div class="flex flex-col gap-5">
                         <InfoItem Icon="new Icons.Filled.Size20.Status()"
                                 Title="Статус">
                             <Content>
@@ -42,9 +45,9 @@
                                 Title="Даты">
                             <Content>
                                 <DateRangeView ReadOnly="!CanEdit" 
-                                            @bind-Start="Buffer.StartDate" 
-                                            @bind-End="Buffer.Deadline"
-                                            EndDateRender="DeadlineRender" />
+                                        @bind-Start="Buffer.StartDate" 
+                                        @bind-End="Buffer.Deadline"
+                                        EndDateRender="DeadlineRender" />
                             </Content>
                         </InfoItem>
                         <FluentValidationMessage For="() => Buffer.Deadline" />
@@ -58,21 +61,13 @@
                         <TaskMilestone Disabled="!CanEdit" />
                         <TaskTagLabels TaskTags="TaskTags" OnlyofficeTask="Model"
                             Disabled="@(!CanEdit)" IsAdd="IsAdd" />
-                    </CascadingValue>
-                </div>
-
-                <CascadingValue Value="State" IsFixed="true">
-                    <MarkdownDescription @bind-Text="Buffer.Description" />
-                    <div class="rounded-lg bg-layer-1 p-3 flex flex-col gap-3">
-                        <AutoGrowTextArea Name="Description" Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-full"
-                            @bind-Value="Buffer.Description" ImmediateDelay="500" Immediate Spellcheck="true" ReadOnly="!CanEdit" />
                     </div>
-                    @if (!IsAdd)
-                    {
-                        <CascadingValue Value="Model" IsFixed >
-                            <TaskSubtasks />
-                        </CascadingValue>
-                    }
+                @if (!IsAdd)
+                {
+                    <CascadingValue Value="Model" IsFixed >
+                        <TaskSubtasks />
+                    </CascadingValue>
+                }
                 </CascadingValue>
 
                 <div class="flex justify-end select-none">

@@ -19,14 +19,14 @@ public partial class Toolbar : KolComponentBase, IDisposable
 
     private void UpdateHref(object? sender, LocationChangedEventArgs? e)
     {
-        _r7OfficeHref = NavigationManager.Uri.Contains("/project/board/") 
+        _r7OfficeHref = NavigationManager.Uri.Contains("/project/board") 
             ? $"{onlyofficeUrl}/Products/Projects/Projects.aspx?prjID={CurrentProjectId}"
             : onlyofficeUrl;
 
         StateHasChanged();
     }
 
-    int CurrentProjectId => int.Parse(NavigationManager.Uri[(NavigationManager.Uri.LastIndexOf('/') + 1)..]);
+    int CurrentProjectId => int.Parse(NavigationManager.Uri[(NavigationManager.Uri.LastIndexOf('=') + 1)..]);
 
     public void Dispose()
     {

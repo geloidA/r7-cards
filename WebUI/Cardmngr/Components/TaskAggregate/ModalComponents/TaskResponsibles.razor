@@ -44,20 +44,20 @@
                              ValueChanged="OnSearch">
                 <FluentIcon Slot="end" Value="@(new Icons.Filled.Size16.Search())" />
             </FluentTextField>
-            <ul class="max-h-52 overflow-auto">
+            <div class="max-h-52 overflow-auto">
                 @foreach (var user in _searchResponsibles)
                 {
-                    <li class="even:bg-neutral-hover flex gap-2 first:rounded-t-lg last:rounded-b-lg
-                        items-center cursor-pointer hover:bg-neutral-hover p-1 text-xs"
+                    <div class="even:bg-neutral-hover flex gap-2 first:rounded-t-lg last:rounded-b-lg
+                        items-center cursor-pointer hover:bg-neutral-fill-hover p-1 text-xs"
                         @onclick="() => SelectUser(user)" >
                         <UserAvatar ShowName User="user" Size="25" />
-                    </li>
+                    </div>
                 }
                 @if (_searchResponsibles.Count == 0)
                 {
                     <div class="text-xs">Ничего не найдено</div>
                 }
-            </ul>
+            </div>
         </div>
     </Popover>
 </InfoItem>

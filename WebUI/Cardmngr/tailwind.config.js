@@ -9,7 +9,8 @@ module.exports = {
       colors: {
         'inverse': 'var(--neutral-fill-inverse-rest)',
         'accent': 'var(--accent-fill-rest)',
-        'neutral-hover': 'var(--neutral-fill-hover)',
+        'neutral-hover': 'var(--neutral-stroke-hover)',
+        'neutral-fill-hover': 'var(--neutral-fill-hover)',
         'success': 'var(--success)',
         'error': 'var(--error)',
         'warning': 'var(--warning)',

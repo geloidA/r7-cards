@@ -23,12 +23,10 @@
             <div>
                 @if (typeInfo.Type == "milestone" && Feed.GroupedFeeds.Count > 0)
                 {
-                    <ul>
-                        @foreach (var groupedFeed in Feed.GroupedFeeds)
-                        {
-                            <li>@groupedFeed.Value.Title</li>
-                        }
-                    </ul>
+                    @foreach (var groupedFeed in Feed.GroupedFeeds)
+                    {
+                        <div>@groupedFeed.Value.Title</div>
+                    }
                 }
                 else
                 {

@@ -1,4 +1,79 @@
 @tailwind base;
+
+@layer base {
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-bold mb-2;
+    }
+
+    h1 {
+        @apply text-4xl;
+    }
+
+    h2 {
+        @apply text-3xl;
+    }
+
+    h3 {
+        @apply text-2xl;
+    }
+
+    h4 {
+        @apply text-xl;
+    }
+
+    h5 {
+        @apply text-lg;
+    }
+
+    h6 {
+        @apply text-base;
+    }
+
+    body {
+        @apply text-sm;
+    }
+
+    ol, ul {
+        @apply pl-6 py-2;
+    }
+
+    ol {
+        @apply list-decimal;
+    }
+
+    ul {
+        @apply list-disc;
+    }
+
+    blockquote {
+        @apply border-l-4 text-info px-4;
+    }
+
+    pre {
+        @apply p-3 rounded-lg;
+    }
+
+    p {
+        @apply mb-2;
+    }
+
+    table {
+        @apply w-full my-3 rounded-lg border border-disabled border-spacing-0;
+    }
+
+    th, td {
+        @apply p-3 text-left;
+    }
+
+    tr {
+        @apply even:bg-neutral-fill-hover;
+    }
+
+    th {
+        @apply text-accent font-bold;
+    }
+}
+
 @tailwind components;
 @tailwind utilities;
 
@@ -17,6 +92,10 @@
     --color5: 116, 226, 145;
     --circle-size: 80%;
     --blending: hard-light;
+}
+
+body {
+    color: var(--neutral-foreground-rest);
 }
 
 .my-modal {
@@ -310,6 +389,85 @@ a:hover {
     background-color: initial;
 }
 
-.text-info {
-    color: var(--info) !important;
+/* markdown */
+
+.editor-toolbar {
+    border-top: 1px solid var(--neutral-stroke-control-active) !important;
+    border-left: 1px solid var(--neutral-stroke-control-active) !important;
+    border-right: 1px solid var(--neutral-stroke-control-active) !important;
+
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+
+.editor-toolbar button.active,.editor-toolbar button:hover {
+    background: var(--neutral-layer-1) !important;
+    border-color: var(--neutral-stroke-control-active) !important;
+}
+
+.EasyMDEContainer .CodeMirror {
+    border: 1px solid var(--neutral-stroke-control-active) !important;
+    border-bottom-left-radius: 10px !important;
+    border-bottom-right-radius: 10px !important;
+}
+
+.CodeMirror {
+    background: var(--neutral-layer-2) !important;
+    color: var(--neutral-foreground-rest) !important;
+}
+
+pre.snippet {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: calc(var(--stroke-width) * 1px) solid var(--neutral-stroke-rest);
+    border-radius: calc(var(--control-corner-radius) * 2px);
+    overflow-y: auto;
+}
+
+.hljs {
+    background-color: var(--neutral-layer-2);
+    tab-size: 2em;
+}
+
+.hljs-copy-button {
+    border-color: var(--neutral-fill-strong-rest);
+    color: var(--accent-fill-rest);
+    top: 0.4rem;
+}
+
+    .hljs-copy-button:hover {
+        border-color: var(--neutral-fill-strong-hover);
+    }
+
+    .hljs-copy-button:active {
+        border-color: var(--neutral-fill-strong-active);
+    }
+
+.hljs-copy {
+    cursor: pointer;
+    border-color: var(--neutral-stroke-rest);
+    border-radius: calc(var(--control-corner-radius) * 1px);
+    color: var(--accent-fill-rest);
+    background-color: var(--neutral-layer-2);
+    top: 0.4rem;
+}
+
+.hljs-copy {
+    position: absolute;
+    transform: translateX(calc(100% + 1.125em));
+    right: 1em;
+    transition: background-color 200ms ease, transform 200ms ease-out;
+}
+
+.hljs-copy-wrapper {
+    position: relative;
+    overflow: hidden
+}
+
+    .hljs-copy-wrapper:hover .hljs-copy, .hljs-copy:focus {
+        transform: translateX(0);
+    }
+
+table {
+    border-collapse: initial;
 }
