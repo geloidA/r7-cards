@@ -670,8 +670,8 @@ th {
   bottom: 0px;
 }
 
-.bottom-11 {
-  bottom: 2.75rem;
+.bottom-3 {
+  bottom: 0.75rem;
 }
 
 .left-5 {
@@ -810,6 +810,11 @@ th {
   height: 350px;
 }
 
+.h-fit {
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
 .h-full {
   height: 100%;
 }
@@ -844,6 +849,10 @@ th {
 
 .w-\[400px\] {
   width: 400px;
+}
+
+.w-\[5\%\] {
+  width: 5%;
 }
 
 .w-\[95\%\] {
@@ -1001,10 +1010,6 @@ th {
   border-width: 2px;
 }
 
-.border-b {
-  border-bottom-width: 1px;
-}
-
 .border-t {
   border-top-width: 1px;
 }
@@ -1013,17 +1018,13 @@ th {
   border-style: dashed;
 }
 
-.border-disabled {
-  border-color: var(--neutral-stroke-rest);
-}
-
 .border-gray-500 {
   --tw-border-opacity: 1;
   border-color: rgb(107 114 128 / var(--tw-border-opacity));
 }
 
-.border-info {
-  border-color: var(--info);
+.border-accent {
+  border-color: var(--accent-fill-rest);
 }
 
 .border-t-\[--neutral-stroke-divider-rest\] {
@@ -1597,6 +1598,10 @@ a:hover {
 
 /* markdown */
 
+.editor-statusbar {
+  display: none;
+}
+
 .editor-toolbar {
   border-top: 1px solid var(--neutral-stroke-control-active) !important;
   border-left: 1px solid var(--neutral-stroke-control-active) !important;
@@ -1614,6 +1619,11 @@ a:hover {
   border: 1px solid var(--neutral-stroke-control-active) !important;
   border-bottom-left-radius: 10px !important;
   border-bottom-right-radius: 10px !important;
+  padding-bottom: 45px !important;
+}
+
+.editor-toolbar.fullscreen {
+  background: var(--neutral-layer-2) !important;
 }
 
 .CodeMirror {
@@ -1656,6 +1666,8 @@ pre.snippet {
   border-radius: calc(var(--control-corner-radius) * 1px);
   color: var(--accent-fill-rest);
   background-color: var(--neutral-layer-2);
+  padding-left: 5px;
+  padding-right: 5px;
   top: 0.4rem;
   position: absolute;
   transform: translateX(calc(100% + 1.125em));

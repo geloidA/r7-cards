@@ -17,57 +17,72 @@
                                   @bind-Value="Buffer.Title" Class="p-0 w-full" />
             </OffcanvasHeader>
             <FluentValidationMessage For="() => Buffer.Title" class="ms-3" />
-            <OffcanvasBody Class="flex flex-col form-group gap-5"> 
+            <OffcanvasBody Class="flex flex-col form-group gap-3 h-fit"> 
                 <CascadingValue Value="State" IsFixed="true">
-                    <div class="border-b border-disabled" >
-                        <Markdown @bind-Text="Buffer.Description" Class="mb-5" />
-                    </div>                             
-                    <div class="flex flex-col gap-5">
-                        <InfoItem Icon="new Icons.Filled.Size20.Status()"
-                                Title="Статус">
-                            <Content>
-                                <TaskStatusView />
-                            </Content>
-                        </InfoItem>
-                        @if (Model is not null)
+                    <div class="flex flex-col gap-2">
+                        <Markdown @bind-Text="Buffer.Description" />
+                        <div class="flex gap-4">
+                            @if (!IsAdd)
+                            {
+                                @RenderSubtaskTool
+                            }
+                        </div>
+                    </div>
+                    <div class="font-bold flex gap-1 text-sm cursor-pointer"
+                         @onclick="() => _isParamsHiden = !_isParamsHiden">
+                        Параметры
+                        @if (_isParamsHiden)
                         {
-                            <InfoItem Icon="new Icons.Filled.Size20.Person()"
-                                    Title="Владелец">
+                            <FluentIcon Value="@(new Icons.Filled.Size16.ChevronDown())" Color="Color.FillInverse" />
+                        }
+                        else
+                        {
+                            <FluentIcon Value="@(new Icons.Filled.Size16.ChevronUp())" Color="Color.FillInverse" />
+                        }
+                    </div>
+                    @if (!_isParamsHiden)
+                    {
+                        <div class="flex flex-col gap-5">
+                            <InfoItem Icon="new Icons.Filled.Size20.Status()"
+                                    Title="Статус">
                                 <Content>
-                                    <UserAvatar User="Model.CreatedBy"
-                                                Class="text-xs"
-                                                Size="25" 
-                                                ShowName />
+                                    <TaskStatusView />
                                 </Content>
                             </InfoItem>
-                        }
-                        <InfoItem Icon="new Icons.Filled.Size20.Calendar()"
-                                Title="Даты">
-                            <Content>
-                                <DateRangeView ReadOnly="!CanEdit" 
-                                        @bind-Start="Buffer.StartDate" 
-                                        @bind-End="Buffer.Deadline"
-                                        EndDateRender="DeadlineRender" />
-                            </Content>
-                        </InfoItem>
-                        <FluentValidationMessage For="() => Buffer.Deadline" />
-                        <InfoItem Title="Приоритет"
-                                Icon="new Icons.Regular.Size20.TriangleDown()" >
-                            <Content>
-                                <TaskPriorityChanger Disabled="@(!CanEdit)" />
-                            </Content>
-                        </InfoItem>
-                        <TaskResponsibles Disabled="!CanEdit" />
-                        <TaskMilestone Disabled="!CanEdit" />
-                        <TaskTagLabels TaskTags="TaskTags" OnlyofficeTask="Model"
-                            Disabled="@(!CanEdit)" IsAdd="IsAdd" />
-                    </div>
-                @if (!IsAdd)
-                {
-                    <CascadingValue Value="Model" IsFixed >
-                        <TaskSubtasks />
-                    </CascadingValue>
-                }
+                            @if (Model is not null)
+                            {
+                                <InfoItem Icon="new Icons.Filled.Size20.Person()"
+                                        Title="Владелец">
+                                    <Content>
+                                        <UserAvatar User="Model.CreatedBy"
+                                                    Class="text-xs"
+                                                    Size="25" 
+                                                    ShowName />
+                                    </Content>
+                                </InfoItem>
+                            }
+                            <InfoItem Icon="new Icons.Filled.Size20.Calendar()"
+                                    Title="Даты">
+                                <Content>
+                                    <DateRangeView ReadOnly="!CanEdit" 
+                                            @bind-Start="Buffer.StartDate" 
+                                            @bind-End="Buffer.Deadline"
+                                            EndDateRender="DeadlineRender" />
+                                </Content>
+                            </InfoItem>
+                            <FluentValidationMessage For="() => Buffer.Deadline" />
+                            <InfoItem Title="Приоритет"
+                                    Icon="new Icons.Regular.Size20.TriangleDown()" >
+                                <Content>
+                                    <TaskPriorityChanger Disabled="@(!CanEdit)" />
+                                </Content>
+                            </InfoItem>
+                            <TaskResponsibles Disabled="!CanEdit" />
+                            <TaskMilestone Disabled="!CanEdit" />
+                            <TaskTagLabels TaskTags="TaskTags" OnlyofficeTask="Model"
+                                Disabled="@(!CanEdit)" IsAdd="IsAdd" />
+                        </div>
+                    }
                 </CascadingValue>
 
                 <div class="flex justify-end select-none">
@@ -126,6 +141,47 @@
                         <span>@date.Value.ToString("d MMM yyyy")</span>
                     }
                 </span>
+            }
+        </div>;
+
+    private RenderFragment RenderSubtaskTool =>
+        @<div class="w-full">
+            @if (_showSubtasks || Model?.Subtasks.Count > 0)
+            {
+                <div class="flex group items-center select-none mb-1">
+                    <div class="font-bold flex gap-1 text-sm cursor-pointer"
+                         @onclick="() => _isSubtasksHiden = !_isSubtasksHiden">
+                        Подзадачи
+                        @if (_isSubtasksHiden)
+                        {
+                            <FluentIcon Value="@(new Icons.Filled.Size16.ChevronDown())" Color="Color.FillInverse" />
+                        }
+                        else
+                        {
+                            <FluentIcon Value="@(new Icons.Filled.Size16.ChevronUp())" Color="Color.FillInverse" />
+                        }
+                    </div>
+                    <FluentSpacer />
+                    <div class="group-hover:opacity-100 opacity-0 p-1 hover:brightness-110 rounded-lg transition hover:bg-neutral-fill-hover cursor-pointer"
+                         title="Удалить все подзадачи" >
+                        <FluentIcon Value="@(new Icons.Filled.Size16.Delete())" Color="Color.Info" />
+                    </div>
+                </div>
+                <SubtaskProgressBar Task="Model" Class="mb-2" />
+                if (!_isSubtasksHiden)
+                {
+                    <CascadingValue Value="Model" IsFixed >
+                        <TaskSubtasks />
+                    </CascadingValue>
+                }
+            }
+            else
+            {
+                <div class="flex gap-1 px-2 py-1 rounded-lg text-xs select-none w-fit hover:bg-neutral-fill-hover transition-colors cursor-pointer text-info" 
+                        @onclick="StartSubtaskAdding">
+                    <FluentIcon Value="@(new Icons.Regular.Size16.CheckboxChecked())" Color="Color.Info" />
+                    <span>Добавить подзадачи</span>
+                </div>
             }
         </div>;
 }

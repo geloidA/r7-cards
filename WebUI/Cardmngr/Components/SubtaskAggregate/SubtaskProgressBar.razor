@@ -1,0 +1,29 @@
+﻿
+@inherits KolComponentBase
+@implements IDisposable
+
+<div class="flex gap-1 w-full items-center @Class" style="@Style" @onclick="HandleClick" >
+    <div class="w-[95%]">
+        <FluentProgress Value="ClosedSubtasksCount" Max="Task.Subtasks.Count" />
+    </div>
+    <div class="flex text-xs text-info w-[5%]">
+        @ClosedSubtasksCount / @Task.Subtasks.Count
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public OnlyofficeTask Task { get; set; } = null!;
+    [CascadingParameter] IProjectState State { get; set; } = null!;
+
+    private int ClosedSubtasksCount => Task.Subtasks.Count(x => x.Status == Status.Closed);
+
+    protected override void OnInitialized()
+    {
+        State.SubtasksChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        State.SubtasksChanged -= StateHasChanged;
+    }
+}

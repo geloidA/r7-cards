@@ -9,7 +9,7 @@ public partial class Markdown : KolComponentBase
     private string _text = "";
 
     [Parameter]
-    public string Text { get; set; } = "";
+    public string? Text { get; set; }
 
     [Parameter]
     public EventCallback<string> TextChanged { get; set; }

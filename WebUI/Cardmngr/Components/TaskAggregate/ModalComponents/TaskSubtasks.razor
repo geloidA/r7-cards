@@ -1,35 +1,38 @@
 ﻿@using Onlyoffice.Api.Models
 @using Cardmngr.Application.Clients.Subtask
-@using AutoMapper
 
 @implements IDisposable
 
-@inject IMapper Mapper
-@inject IJSRuntime JsRuntime
-
-<div class="rounded-lg bg-layer-1 p-3">
-    <div class="flex items-center text-xl mb-4">
-        <FluentIcon Value="@(new Icons.Regular.Size20.Check())"/>
-        <span class="ms-1 text-sm" style="color: var(--neutral-foreground-rest);">Подзадачи</span>
-        <FluentSpacer />
-        <Tool Icon="@(new Icons.Filled.Size24.AddSquare())" Class="ms-1" title="Создать подзадачу"
-            Disabled="@(State.ReadOnly || !Task.CanEdit || Task.IsClosed())" @onclick="ShowCreationModal" />
-    </div>
-    @if (Task.Subtasks.Count == 0)
+<div class="flex flex-col gap-2">
+    @foreach (var subtask in Task.Subtasks.OrderBy(x => x.Status))
     {
-        <span>Список пуст</span>
+        <SubtaskCard Subtask="subtask" OnEditModeChanged="editMode => _haveEditingSubtask = editMode" />
     }
 
-    <div class="subtasks-list">
-        @foreach (var subtask in Task.Subtasks.OrderBy(x => x.Status))
-        {
-            <SubtaskCard Subtask="subtask" />
-        }
-    </div>
+    @if (_isAddMode && !_haveEditingSubtask)
+    {
+        <SubtaskCard Subtask="new Subtask { TaskId = Task.Id }" 
+                     Class="border-accent border" />
+    }
+    else
+    {
+        <div class="rounded-lg p-2 hover:bg-neutral-fill-hover transition-colors @CanAddSubtaskCss"
+             @onclick="() => _isAddMode = true" >
+            <div class="flex gap-1 rounded-lg px-2 py-1 w-fit text-xs hover:bg-neutral-hover transition-colors">
+                <FluentIcon Value="@(new Icons.Filled.Size12.Add())" />
+                Добавить подзадачу
+            </div>
+        </div>
+    }
 </div>
 
 @code {
+    private bool _haveEditingSubtask;
+    private bool _isAddMode;
+
     [Inject] public ISubtaskClient SubtaskClient { get; set; } = null!;
+
+    private string CanAddSubtaskCss => _haveEditingSubtask ? "" : "cursor-pointer";
 
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
     [CascadingParameter] IProjectState State { get; set; } = null!;

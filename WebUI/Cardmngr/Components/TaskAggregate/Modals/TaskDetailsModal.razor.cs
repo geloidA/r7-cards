@@ -15,6 +15,10 @@ namespace Cardmngr.Components.TaskAggregate.Modals;
 public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskUpdateData>(new OnlyofficeTaskUpdateDataEqualityComparer()), 
     IDisposable
 {
+    private bool _showSubtasks;
+    private bool _isParamsHiden;
+    private bool _isSubtasksHiden = true;
+
     private readonly Guid lockGuid = Guid.NewGuid();
     private Components.Modals.MyBlazored.Offcanvas currentModal = null!;
     private bool CanEdit => !State.ReadOnly && (Model == null || Model.CanEdit);
@@ -98,6 +102,12 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
 
         SkipConfirmation = true;
         await currentModal.CloseAsync().ConfigureAwait(false);
+    }
+
+    public void StartSubtaskAdding()
+    {
+        _isSubtasksHiden = false;
+        _showSubtasks = true;
     }
 
     private async Task DeleteAsync()

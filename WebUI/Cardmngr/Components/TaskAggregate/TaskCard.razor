@@ -6,18 +6,17 @@
                 <FluentIcon Value="@(new Icons.Filled.Size20.ArrowCircleUp())" Color="Color.Accent" 
                     Title="Приоритет - Высокий" Style="margin-right: 5px; min-width: 20px;" />
             }
-            <div class="font-bold text-base max-height-100 title pre-wrap">@Task.Title</div>
+            <div class="font-bold text-base max-height-100 pre-wrap">@Task.Title</div>
         </div>
         @if (Task.Description is not null)
         {
-            <div class="font-light max-height-100 title pre-wrap" >
-                @Task.Description
-            </div>
+            <MarkdownSection Content="@Task.Description" Class="font-light max-height-100" />
         }
         @if (Task.Subtasks.Count > 0)
         {
-            <div class=" flex justify-end">
-                + @Task.Subtasks.Count подзадачи
+            <div class="flex gap-1 text-xs text-info justify-end" title="Выполненных подзадач">
+                <FluentIcon Value="@(new Icons.Regular.Size16.CheckboxChecked())" Color="Color.Info" />
+                @Task.Subtasks.Count(x => x.Status == Status.Closed) / @Task.Subtasks.Count
             </div>
         }
         @if (Task.MilestoneId is not null)

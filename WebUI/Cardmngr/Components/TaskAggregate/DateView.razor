@@ -1,4 +1,5 @@
-﻿<div class="@(ReadOnly ? "" : "p-1 rounded-lg hover:bg-neutral-hover cursor-pointer")" @onclick="OpenPopover">
+﻿<div class="@(ReadOnly ? "" : "p-1 rounded-lg hover:bg-neutral-fill-hover transition-colors cursor-pointer")" 
+    @onclick="OpenPopover" >
     @if (Date is null)
     {
         @if (DateRender is null)

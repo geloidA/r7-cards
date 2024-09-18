@@ -10,10 +10,11 @@ using Blazored.Modal;
 using Cardmngr.Components.Modals.ConfirmModals;
 using Cardmngr.Components.Modals;
 using Onlyoffice.Api.Models;
+using KolBlazor;
 
 namespace Cardmngr.Components.SubtaskAggregate;
 
-public partial class SubtaskCard : ComponentBase
+public partial class SubtaskCard : KolComponentBase
 {
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
@@ -25,6 +26,9 @@ public partial class SubtaskCard : ComponentBase
 
     [Parameter, EditorRequired]
     public Subtask Subtask { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<bool> OnEditModeChanged { get; set; }
 
     private bool Disabled => Task.IsClosed() || !Subtask.CanEdit;
 

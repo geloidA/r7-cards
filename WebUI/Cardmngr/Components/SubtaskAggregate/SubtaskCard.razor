@@ -1,6 +1,8 @@
 ﻿@using Cardmngr.Domain.Extensions
 
-<div class="subtask-card @CssCompleted" >
+@inherits KolComponentBase
+
+<div class="subtask-card @CssCompleted @Class" style="@Style" @onclick="HandleClick" >
     <span class="title">@Subtask.Title</span>
     <FluentSpacer />
     @if (Subtask.Responsible is { })
