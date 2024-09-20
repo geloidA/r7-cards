@@ -5,42 +5,83 @@ using Microsoft.AspNetCore.Components;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Application.Clients.Subtask;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Blazored.Modal.Services;
-using Blazored.Modal;
-using Cardmngr.Components.Modals.ConfirmModals;
-using Cardmngr.Components.Modals;
-using Onlyoffice.Api.Models;
 using KolBlazor;
+using Cardmngr.Components.TaskAggregate.ModalComponents;
+using Cardmngr.Utils;
+using Onlyoffice.Api.Models;
 
 namespace Cardmngr.Components.SubtaskAggregate;
 
-public partial class SubtaskCard : KolComponentBase
+public partial class SubtaskCard : KolComponentBase, IDisposable
 {
+    private SubtaskUpdateData _buffer = null!;
+    private SubtaskInteraction SubtaskInteraction => new(Subtask.Id, InteractionMode);
+
+    [CascadingParameter] TaskSubtasks Parent { get; set; } = null!;
     [CascadingParameter] IProjectState State { get; set; } = null!;
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
 
-    [Inject] public ISubtaskClient SubtaskClient { get; set; } = null!;
-
-    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
-    [CascadingParameter] IModalService Modal { get; set; } = default!;
+    [Inject] private ISubtaskClient SubtaskClient { get; set; } = null!;
 
     [Parameter, EditorRequired]
     public Subtask Subtask { get; set; } = null!;
 
     [Parameter]
-    public EventCallback<bool> OnEditModeChanged { get; set; }
+    public EventCallback<SubtaskInteraction> OnSubtaskInteractionChange { get; set; }
 
-    private bool Disabled => Task.IsClosed() || !Subtask.CanEdit;
+    [Parameter]
+    public InteractionMode InteractionMode { get; set; }
 
-    private string CssCompleted => Subtask.Status == Status.Closed ? "completed" : "";
-    private Icon StatusIcon => Subtask.Status == Status.Open 
-        ? new Icons.Regular.Size20.CheckmarkSquare() 
-        : new Icons.Filled.Size20.CheckmarkSquare();
+    private bool Disabled => Task.IsClosed() || !Subtask.CanEdit || State.ReadOnly;
 
-    private async Task ChangeSubtaskStatus(Status status)
+    private string CssDisabled => Disabled ? "" : "cursor-pointer hover:bg-neutral-fill-hover transition-colors";
+    private string CssCompleted => Subtask.Status == Status.Closed ? "text-info line-through" : "";
+
+    protected override void OnInitialized()
     {
-        var updated = await SubtaskClient.UpdateSubtaskStatusAsync(Task.Id, Subtask.Id, status);
+        _buffer = new SubtaskUpdateData
+        {
+            Title = Subtask.Title,
+            Status = (int)Subtask.Status,
+            Responsible = Subtask.Responsible?.Id
+        };
+
+        Parent.NotifySubtaskStopEditing += NotifySubtaskStopEditing;
+    }
+
+    private void NotifySubtaskStopEditing(int subtaskId)
+    {
+        if (subtaskId == Subtask.Id && InteractionMode == InteractionMode.Edit)
+        {
+            // Doesn't notify parent that subtask stopped editing, because parent is actually know that
+            InteractionMode = InteractionMode.None;
+            PreventBufferChanges();
+        }
+    }
+
+    private async Task TurnOnEditMode()
+    {
+        if (Disabled || InteractionMode == InteractionMode.Edit) return;
+        InteractionMode = InteractionMode.Edit;
+        await OnSubtaskInteractionChange.InvokeAsync(SubtaskInteraction);
+    }
+
+    private async Task EndEditMode()
+    {
+        InteractionMode = InteractionMode.None;
+        await OnSubtaskInteractionChange.InvokeAsync(SubtaskInteraction);
+    }
+
+    private async Task ChangeSubtaskStatus(bool isCompleted)
+    {
+        var updated = await SubtaskClient.UpdateSubtaskStatusAsync(Task.Id, Subtask.Id, isCompleted ? Status.Closed : Status.Open);
         State.UpdateSubtask(updated);
+
+        if (InteractionMode == InteractionMode.Edit)
+        {
+            PreventBufferChanges();
+            await EndEditMode();
+        }
     }
 
     private async Task DeleteSubtask()
@@ -49,23 +90,49 @@ public partial class SubtaskCard : KolComponentBase
         State.RemoveSubtask(Task.Id, Subtask.Id);
     }
 
-    private async Task EditSubtask()
+    private async Task ChangeSubtask()
     {
-        var param = new ModalParameters 
-        { 
-            { "Team", State.Team },
-            { "Title", Subtask.Title },
-            { "IsEdit", true },
-            { "ResponsibleId", Subtask.Responsible?.Id }
-        };
-        
-        var res = await Modal.Show<SubtaskCreationModal>(param, ModalOptions).Result;
-
-        if (res.Confirmed)
+        if (InteractionMode == InteractionMode.Edit)
         {
-            var data = (SubtaskUpdateData)res.Data!;
-            var updated = await SubtaskClient.UpdateAsync(Task.Id, Subtask.Id, data);
+            var updated = await SubtaskClient.UpdateAsync(Task.Id, Subtask.Id, _buffer);
             State.UpdateSubtask(updated);
         }
+        else if (InteractionMode == InteractionMode.Add)
+        {
+            var created = await SubtaskClient.CreateAsync(Task.Id, _buffer);
+            State.AddSubtask(Task.Id, created);
+        }
+
+        await EndEditMode();
+    }
+
+    public IEnumerable<UserInfo?> SelectedResponsible
+    {
+        get => _buffer.Responsible is not null
+            ? [State.Team.First(x => x.Id == _buffer.Responsible)] 
+            : [];
+        set => _buffer.Responsible = value.FirstOrDefault()?.Id;
+    }
+
+    private void OnSearchResponsible(OptionsSearchEventArgs<UserInfo> e)
+    {
+        e.Items = State.Team.Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private Task Cancel()
+    {        
+        PreventBufferChanges();
+        return EndEditMode();
+    }
+
+    private void PreventBufferChanges()
+    {
+        _buffer.Title = Subtask.Title;
+        _buffer.Responsible = Subtask.Responsible?.Id;
+    }
+
+    public void Dispose()
+    {
+        Parent.NotifySubtaskStopEditing -= NotifySubtaskStopEditing;
     }
 }

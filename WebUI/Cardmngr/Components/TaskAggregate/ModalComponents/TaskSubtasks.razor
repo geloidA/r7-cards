@@ -3,57 +3,76 @@
 
 @implements IDisposable
 
-<div class="flex flex-col gap-2">
-    @foreach (var subtask in Task.Subtasks.OrderBy(x => x.Status))
-    {
-        <SubtaskCard Subtask="subtask" OnEditModeChanged="editMode => _haveEditingSubtask = editMode" />
-    }
+<CascadingValue Value="this" IsFixed >
+    <div class="flex flex-col gap-2">    
+        @foreach (var subtask in Task.Subtasks.OrderBy(x => x.Status))
+        {
+            <SubtaskCard Subtask="subtask"
+                         OnSubtaskInteractionChange="OnSubtaskInteractionChange"
+                         @key="subtask" />
+        }
 
-    @if (_isAddMode && !_haveEditingSubtask)
-    {
-        <SubtaskCard Subtask="new Subtask { TaskId = Task.Id }" 
-                     Class="border-accent border" />
-    }
-    else
-    {
-        <div class="rounded-lg p-2 hover:bg-neutral-fill-hover transition-colors @CanAddSubtaskCss"
-             @onclick="() => _isAddMode = true" >
-            <div class="flex gap-1 rounded-lg px-2 py-1 w-fit text-xs hover:bg-neutral-hover transition-colors">
-                <FluentIcon Value="@(new Icons.Filled.Size12.Add())" />
-                Добавить подзадачу
+        @if (_isAddMode)
+        {
+            <SubtaskCard Subtask="new Subtask { TaskId = Task.Id }" 
+                         Class="border-accent border"
+                         InteractionMode="InteractionMode.Add"
+                         OnSubtaskInteractionChange="OnSubtaskInteractionChange" />
+        }
+        else if (!Task.IsClosed() && !State.ReadOnly)
+        {
+            <div class="rounded-lg p-2 select-none hover:bg-neutral-fill-hover transition-colors @CanAddSubtaskCss"
+                @onclick="TurnOnAddingMode" >
+                <div class="flex gap-1 rounded-lg px-2 py-1 w-fit text-xs hover:bg-neutral-hover transition-colors">
+                    <FluentIcon Value="@(new Icons.Filled.Size12.Add())" />
+                    Добавить подзадачу
+                </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+</CascadingValue>
 
 @code {
-    private bool _haveEditingSubtask;
+    private int? _editingSubtaskId;
     private bool _isAddMode;
 
-    [Inject] public ISubtaskClient SubtaskClient { get; set; } = null!;
+    internal event Action<int>? NotifySubtaskStopEditing;
 
-    private string CanAddSubtaskCss => _haveEditingSubtask ? "" : "cursor-pointer";
+    private string CanAddSubtaskCss => _editingSubtaskId.HasValue ? "" : "cursor-pointer";
 
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
     [CascadingParameter] IProjectState State { get; set; } = null!;
-    [CascadingParameter(Name = "MiddleModal")] ModalOptions ModalOptions { get; set; } = null!;
-    [CascadingParameter] IModalService Modal { get; set; } = default!;
 
     protected override void OnInitialized()
     {
         State.SubtasksChanged += StateHasChanged;
     }
 
-    async Task ShowCreationModal()
+    private void TurnOnAddingMode()
     {
-        var res = await Modal.Show<SubtaskCreationModal>(new ModalParameters { { "Team", State.Team } }, ModalOptions).Result.ConfigureAwait(false);
-
-        if (res.Confirmed)
+        if (!_editingSubtaskId.HasValue)
         {
-            var data = (SubtaskUpdateData)res.Data!;
-            var added = await SubtaskClient.CreateAsync(Task.Id, data).ConfigureAwait(false);
-            State.AddSubtask(Task.Id, added);
+            _isAddMode = true;
         }
+    }
+
+    private void OnSubtaskInteractionChange(SubtaskInteraction interaction)
+    {
+        if (interaction.Mode == InteractionMode.Edit)
+        {
+            if (_editingSubtaskId.HasValue)
+            {
+                NotifySubtaskStopEditing?.Invoke(_editingSubtaskId.Value);
+            }
+
+            _editingSubtaskId = interaction.Id;
+        }
+        else
+        {
+            _editingSubtaskId = null;
+        }
+
+        _isAddMode = false;
     }
 
     public void Dispose()

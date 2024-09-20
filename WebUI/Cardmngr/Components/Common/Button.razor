@@ -1,0 +1,9 @@
+﻿@inherits KolComponentBase
+
+<button class="transition self-center select-none @Class @CssDisabled" style="@Style" 
+        @onclick="HandleClick"
+        @onclick:preventDefault
+        @onclick:stopPropagation
+    title="@Title" >
+    @ChildContent
+</button>

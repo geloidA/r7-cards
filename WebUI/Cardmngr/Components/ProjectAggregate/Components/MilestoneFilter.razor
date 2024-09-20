@@ -9,7 +9,7 @@
                 <MilestoneLabel Milestone="item.Milestone" />
             </div>
             <div class="col flex justify-end">
-                <InputCheckbox class="clickable form-check-input" 
+                <InputCheckbox class="cursor-pointer form-check-input" 
                     @bind-Value="item.Selected" 
                     @onclick="@(() => ToggleMilestone(item.Milestone))" />
             </div>

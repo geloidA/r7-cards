@@ -25,14 +25,14 @@
         </MarkdownEditor>
 
         <div class="absolute bottom-3 right-3 flex gap-2">
-            <div class="rounded-lg px-3 py-1 duration-300 transition-colors hover:bg-neutral-hover text-xs cursor-pointer"
-                 @onclick="() => _isEdit = false">
+            <Button Class="rounded-lg px-3 py-1 duration-300 transition-colors hover:bg-neutral-hover text-xs"
+                    @onclick="() => _isEdit = false" >
                 Отменить
-            </div>
-            <div class="rounded-lg px-3 py-1 text-white cursor-pointer transition hover:brightness-110 bg-accent text-xs"
-                 @onclick="SubmitEditAsync" >
+            </Button>
+            <Button Class="rounded-lg px-3 py-1 text-white bg-accent text-xs"
+                    @onclick="SubmitEditAsync" >
                 Сохранить
-            </div>
+            </Button>
         </div>
     </div>    
 }
@@ -41,20 +41,30 @@ else
     <div class="group flex w-full @Class" style="@Style" @onclick="HandleClick" >
         @if (string.IsNullOrEmpty(Text))
         {
-            <span @onclick="() => _isEdit = true"
-                  class="text-info cursor-pointer">
-                Добавьте описание, чтобы ответственным было понятно, что нужно сделать в этой задаче
-            </span>
+            if (Disabled)
+            {
+                <span class="text-info" >
+                    @DisabledPlaceholder
+                </span>                
+            }
+            else
+            {
+                <span @onclick="() => _isEdit = true"
+                    class="text-info cursor-pointer">
+                    @Placeholder
+                </span>
+            }
         }
         else
         {
             <MarkdownSection Content="@Text" Class="w-[95%]" />
         }
         <FluentSpacer />
-        <div class="rounded-lg p-1 cursor-pointer opacity-0 group-hover:opacity-100 
-             transition hover:brightness-110 hover:bg-neutral-fill-hover self-baseline"
-             @onclick="() => _isEdit = true" title="Редактировать">
+        <Button Class="rounded-lg p-1 self-baseline opacity-0 group-hover:opacity-100"
+                Disabled="Disabled"
+                @onclick="() => _isEdit = true" 
+                Title="Редактировать" >
             <FluentIcon Value="@(new Icons.Regular.Size16.Edit())" Color="Color.Info" />
-        </div>
+        </Button>
     </div>
 }

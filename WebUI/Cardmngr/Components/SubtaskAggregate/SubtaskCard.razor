@@ -2,37 +2,102 @@
 
 @inherits KolComponentBase
 
-<div class="subtask-card @CssCompleted @Class" style="@Style" @onclick="HandleClick" >
-    <span class="title">@Subtask.Title</span>
-    <FluentSpacer />
-    @if (Subtask.Responsible is { })
+<div class="group w-full rounded-lg p-2 @CssDisabled @Class" style="@Style" @onclick="TurnOnEditMode" >
+    @{
+        var isCompleted = Subtask.Status == Status.Closed;
+    }
+    @if (InteractionMode == InteractionMode.None)
     {
-        <div class="image">
-            <UserAvatar User="Subtask.Responsible" ShowTooltip />
+        <div class="flex gap-2 items-center" >
+            <FluentCheckbox Disabled="Disabled"
+                            Value="isCompleted" 
+                            @onclick:stopPropagation
+                            ValueChanged="ChangeSubtaskStatus" />
+            <div class="w-[75%] break-words @CssCompleted">@Subtask.Title</div>
+            @if (!Disabled)
+            {
+                <Button Class="p-1 rounded-lg self-baseline group-hover:opacity-100 opacity-0 hover:bg-neutral-fill-hover" 
+                        Title="Редактировать" @onclick="TurnOnEditMode" >
+                    <FluentIcon Value="@(new Icons.Regular.Size16.Edit())" Color="Color.Info" />
+                </Button>
+            }
+            <FluentSpacer />
+            @if (Subtask.Responsible != null)
+            {
+                <UserAvatar User="Subtask.Responsible" Size="28" ShowTooltip />
+            }
+            @if (Subtask.CanEdit && !State.ReadOnly)
+            {
+                <Button Class="p-1 rounded-lg group-hover:opacity-100 opacity-0 hover:bg-neutral-fill-hover" 
+                        Title="Удалить"
+                        @onclick="DeleteSubtask" >
+                    <FluentIcon Value="@(new Icons.Regular.Size16.Delete())" Color="Color.Info" />
+                </Button>
+            }
         </div>
     }
-    @if (!State.ReadOnly)
+    else
     {
-        <div class="tools">
-            <Tool 
-                Disabled="Disabled"
-                Icon="@(new Icons.Regular.Size20.Pen())"
-                @onclick="EditSubtask"
-                title="Редактировать" />
+        <div class="flex gap-2" >
+            <FluentCheckbox Disabled="Disabled || InteractionMode == InteractionMode.Add"
+                            Value="isCompleted" 
+                            @onclick:stopPropagation
+                            ValueChanged="ChangeSubtaskStatus" />
+            <div class="w-[95%] flex flex-col gap-3">
+                <FluentTextField Placeholder="Введите описание" 
+                                 Autofocus 
+                                 Maxlength="255"
+                                 @bind-Value="_buffer.Title" 
+                                 Immediate />
+                <div class="flex gap-3" >
+                    <FluentAutocomplete TOption="UserInfo" MaximumSelectedOptions="1"
+                                    MaximumOptionsSearch="100"
+                                    @bind-SelectedOptions="SelectedResponsible" Context="user" AutoComplete="off"
+                                    OnOptionsSearch="OnSearchResponsible" Placeholder="Исполнитель"
+                                    Width="280px">
 
-            <Tool 
-                Disabled="Disabled"
-                Icon="@(new Icons.Regular.Size20.Delete())" 
-                @onclick="DeleteSubtask"
-                Color="Color.Error" 
-                title="Удалить" />
-        </div>
-        <div class="status-change">
-            <Tool 
-                Disabled="Disabled"
-                Icon="@StatusIcon"
-                Color="Color.Success"
-                @onclick="async () => await ChangeSubtaskStatus(Subtask.Status.Invert())" />
+                            <SelectedOptionTemplate>
+                                <FluentPersona Name="@user.DisplayName"
+                                    ImageSize="22px"
+                                    Class="p-1"
+                                    Style="height: 26px; background: var(--main-responsibles-bg)"
+                                    Image="@($"onlyoffice/api/people{user.AvatarSmall}")" />
+                            </SelectedOptionTemplate>
+
+                            <OptionTemplate>
+                                <FluentPersona Name="@user.DisplayName"
+                                    ImageSize="22px"
+                                    Image="@($"onlyoffice/api/people{user.AvatarSmall}")" />
+                            </OptionTemplate>
+
+                            <HeaderContent>
+                                <FluentLabel Color="Color.Accent"
+                                    Style="padding: 8px; font-size: 11px; border-bottom: 1px solid var(--neutral-fill-stealth-hover);">
+                                    Команда проекта
+                                </FluentLabel>
+                            </HeaderContent>
+
+                            <FooterContent>
+                                @if (!user.Any())
+                                {
+                                    <FluentLabel Style="font-size: 11px; text-align: center; width: 200px;">
+                                        Нет результатов
+                                    </FluentLabel>
+                                }
+                            </FooterContent>
+                    </FluentAutocomplete>
+                    <FluentSpacer />
+                    <Button Class="rounded-lg px-3 py-1 duration-300 transition-colors hover:bg-neutral-hover text-xs"
+                            @onclick="Cancel" >
+                        Отменить
+                    </Button>
+                    <Button Class="rounded-lg px-3 py-1 text-white bg-accent text-xs"
+                            Disabled="string.IsNullOrEmpty(_buffer.Title)"
+                            @onclick="ChangeSubtask" >
+                        Сохранить
+                    </Button>
+                </div>
+            </div>
         </div>
     }
 </div>

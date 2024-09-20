@@ -1,0 +1,27 @@
+﻿@inherits KolComponentBase
+
+<div @ref="@_elementRef" class="relative" >
+    <MarkdownSection Content="@Description"
+                    Class="@Class"
+                    Style="@CssStyleResult" />
+    @if (_hasMoreText)
+    {
+        <div class="absolute flex justify-center group bottom-0 h-6 w-full" 
+             style=" background-image: linear-gradient(to bottom, transparent, var(--main-card-bg));" >
+
+             <div class="group-hover:opacity-100 p-1 opacity-0 transition-opacity rounded-full w-5 h-5 bg-layer-2"
+                  @onclick:stopPropagation
+                  title="@(_showMore ? "Скрыть" : "Показать все")"
+                  @onclick="ToggleShowMore" >
+                @if (_showMore)
+                {
+                    <FluentIcon Value="@(new Icons.Regular.Size12.ChevronUp())" />
+                }
+                else
+                {
+                    <FluentIcon Value="@(new Icons.Regular.Size12.ChevronDown())" />
+                }
+             </div>
+        </div>
+    }
+</div>

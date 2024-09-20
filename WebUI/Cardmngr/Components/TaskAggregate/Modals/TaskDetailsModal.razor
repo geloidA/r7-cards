@@ -12,15 +12,22 @@
     <CascadingValue Value="Buffer" IsFixed >
         <FluentEditForm Model="Buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown" >
             <FluentValidationValidator />
-            <OffcanvasHeader Class="py-0 items-center" Style="padding-top: 20px !important;">
-                <AutoGrowTextArea Name="Title" Style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
-                                  @bind-Value="Buffer.Title" Class="p-0 w-full" />
+            <OffcanvasHeader Class="flex flex-col gap-1">
+                <StatusBar Created="Model?.Created" 
+                           Updated="Model?.Updated"/>
+                <FluentTextField Name="Title" 
+                                 ReadOnly="!CanEdit"
+                                 @bind-Value="Buffer.Title" 
+                                 Class="p-0 w-full font-bold text-xl" />
             </OffcanvasHeader>
             <FluentValidationMessage For="() => Buffer.Title" class="ms-3" />
             <OffcanvasBody Class="flex flex-col form-group gap-3 h-fit"> 
                 <CascadingValue Value="State" IsFixed="true">
                     <div class="flex flex-col gap-2">
-                        <Markdown @bind-Text="Buffer.Description" />
+                        <Markdown @bind-Text="Buffer.Description" 
+                                  Disabled="!CanEdit" 
+                                  DisabledPlaceholder="У этой задачи нет описания"
+                                  Placeholder="Добавьте описание, чтобы ответственным было понятно, что нужно сделать в этой задаче" />
                         <div class="flex gap-4">
                             @if (!IsAdd)
                             {
@@ -28,7 +35,7 @@
                             }
                         </div>
                     </div>
-                    <div class="font-bold flex gap-1 text-sm cursor-pointer"
+                    <div class="font-bold flex gap-1 text-sm cursor-pointer w-fit"
                          @onclick="() => _isParamsHiden = !_isParamsHiden">
                         Параметры
                         @if (_isParamsHiden)
@@ -65,9 +72,9 @@
                                     Title="Даты">
                                 <Content>
                                     <DateRangeView ReadOnly="!CanEdit" 
-                                            @bind-Start="Buffer.StartDate" 
-                                            @bind-End="Buffer.Deadline"
-                                            EndDateRender="DeadlineRender" />
+                                                   @bind-Start="Buffer.StartDate" 
+                                                   @bind-End="Buffer.Deadline" 
+                                                   EndDateRender="DeadlineRender" />
                                 </Content>
                             </InfoItem>
                             <FluentValidationMessage For="() => Buffer.Deadline" />
@@ -79,8 +86,10 @@
                             </InfoItem>
                             <TaskResponsibles Disabled="!CanEdit" />
                             <TaskMilestone Disabled="!CanEdit" />
-                            <TaskTagLabels TaskTags="TaskTags" OnlyofficeTask="Model"
-                                Disabled="@(!CanEdit)" IsAdd="IsAdd" />
+                            <TaskTagLabels TaskTags="TaskTags" 
+                                           OnlyofficeTask="Model" 
+                                           Disabled="@(!CanEdit)" 
+                                           IsAdd="IsAdd" />
                         </div>
                     }
                 </CascadingValue>
@@ -162,10 +171,14 @@
                         }
                     </div>
                     <FluentSpacer />
-                    <div class="group-hover:opacity-100 opacity-0 p-1 hover:brightness-110 rounded-lg transition hover:bg-neutral-fill-hover cursor-pointer"
-                         title="Удалить все подзадачи" >
-                        <FluentIcon Value="@(new Icons.Filled.Size16.Delete())" Color="Color.Info" />
-                    </div>
+                    @if (Model?.Subtasks.Count > 0 && CanEdit)
+                    {
+                        <Button Title="Удалить все подзадачи"
+                                @onclick="DeleteAllSubtasksAsync"
+                                class="group-hover:opacity-100 opacity-0 p-1 rounded-lg hover:bg-neutral-fill-hover" >
+                            <FluentIcon Value="@(new Icons.Filled.Size16.Delete())" Color="Color.Info" />
+                        </Button>
+                    }
                 </div>
                 <SubtaskProgressBar Task="Model" Class="mb-2" />
                 if (!_isSubtasksHiden)
@@ -175,7 +188,7 @@
                     </CascadingValue>
                 }
             }
-            else
+            else if (Model?.IsClosed() == false && !State.ReadOnly)
             {
                 <div class="flex gap-1 px-2 py-1 rounded-lg text-xs select-none w-fit hover:bg-neutral-fill-hover transition-colors cursor-pointer text-info" 
                         @onclick="StartSubtaskAdding">

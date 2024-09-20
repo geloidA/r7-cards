@@ -14,6 +14,15 @@ public partial class Markdown : KolComponentBase
     [Parameter]
     public EventCallback<string> TextChanged { get; set; }
 
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public string? DisabledPlaceholder { get; set; }
+
     private Task SubmitEditAsync()
     {
         _isEdit = false;

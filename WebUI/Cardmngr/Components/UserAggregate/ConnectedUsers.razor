@@ -1,7 +1,7 @@
 ﻿@if (userInfos.Any())
 {    
     <div class="flex items-center">
-        <FluentIcon class="clickable" title="Сейчас на странице" Value="@(isCollapsed ? closed : opened)"
+        <FluentIcon class="cursor-pointer" title="Сейчас на странице" Value="@(isCollapsed ? closed : opened)"
             OnClick="@(() => isCollapsed = !isCollapsed)" />
         <div class="connected-users py-0 px-1 collapsable-items" style="@MaxWidth @StyleScroll">
             @foreach (var user in userInfos)

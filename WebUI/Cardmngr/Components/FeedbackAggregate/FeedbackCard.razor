@@ -5,10 +5,10 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <Smooth ShowOnFirstRender >
-    <div class="feedback-card clickable" style="font-size: 13px;" @onclick="openModalFunc" >
+    <div class="feedback-card cursor-pointer" style="font-size: 13px;" @onclick="openModalFunc" >
         <div class="py-1 px-2 h-full" >
-            <span class="font-bold title max-height-100 pre-wrap" >@Feedback.Title</span>
-            <div class="mt-1 max-height-100 font-light pre-wrap" style="min-height: 20px;">
+            <span class="font-bold title max-height-100 whitespace-pre-wrap" >@Feedback.Title</span>
+            <div class="mt-1 max-height-100 font-light whitespace-pre-wrap" style="min-height: 20px;">
                 @Feedback.Description
             </div>
             <UserAvatar User="@Feedback.Creator" Size="25" ShowName="true" />

@@ -3,7 +3,7 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<div class="short-task w-full h-full clickable" @onclick="ShowTaskDetails" >
+<div class="short-task w-full h-full cursor-pointer" @onclick="ShowTaskDetails" >
     <div class="info-container">
         <div class="flex w-full h-full">
             @if(Task.Responsibles.Any())

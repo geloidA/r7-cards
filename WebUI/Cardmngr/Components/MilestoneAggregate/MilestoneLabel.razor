@@ -14,22 +14,24 @@ else
 }
 
 @code {
+    [Parameter] public IOnlyofficeTask? Task { get; set; }
     [Parameter] public Milestone Milestone { get; set; } = null!;
 
     RenderFragment FluentBadge =>
         @<div>
             @if (Milestone is { })
             {
-                (string title, Color color) data = Milestone.IsDeadlineOut() 
-                    ? ("Просрочена", Color.Info)
-                    : ("Веха", Color.Accent);
+                var IsDeadlineOut = Task?.IsDeadlineOut(Milestone) == true || Milestone.IsDeadlineOut();
+                (string title, Color color) data = IsDeadlineOut ? ("Просрочена", Color.Error) : ("Веха", Color.Accent);
+                var title = Task?.IsDeadlineOut(Milestone) == true ? $"Задача просрочила веху: {Milestone.Deadline.ToShortDateString()}" : null;
 
-                <div @onclick="HandleClick" title="@data.title" class=@($"flex {(OnClick.HasDelegate ? "clickable" : "")}") >
-                    <FluentIcon Value="@(new MyIcons.Size16.Milestone())" Color="data.color" class="me-1 self-center" />
-                    <span style="font-size: 12px; font-weight: 500; color: @data.color.GetDesc();" 
-                        class="select-none">
-                        @Milestone.Title
-                    </span>
+                <div @onclick="HandleClick" 
+                     title="@(title ?? data.title)" 
+                     style="color: @data.color.GetDesc();"
+                     class=@($"select-none text-xs flex items-center gap-1 {(OnClick.HasDelegate ? "cursor-pointer" : "")}") >
+
+                    <FluentIcon Value="@(new MyIcons.Size16.Milestone())" class="min-w-4" Color="data.color" />
+                    <span>@Milestone.Title</span>                    
                 </div>
             }
         </div>;

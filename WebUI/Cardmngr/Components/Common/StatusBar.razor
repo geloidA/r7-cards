@@ -1,0 +1,18 @@
+﻿@using Microsoft.FluentUI.AspNetCore.Components.Extensions
+
+<div class="text-info text-xs flex gap-1">
+    Создано @Created?.ToString("d MMM yyyy, HH:mm");
+    Обновлено @((DateTime.Now - Updated)?.ToTimeAgo(TimeAgoOpt));
+</div>
+
+@code {
+
+    [CascadingParameter] private TimeAgoOptions TimeAgoOpt { get; set; } = null!;
+
+    [Parameter]
+    public DateTime? Updated { get; set; }
+
+    [Parameter]
+    public DateTime? Created { get; set; }
+
+}

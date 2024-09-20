@@ -1,6 +1,6 @@
 ﻿@inherits KolComponentBase
 
-<div class="flex flex-col @(OnClick.HasDelegate ? "clickable" : "") @Class" style="@Style" @onclick="HandleClick" >    
+<div class="flex flex-col @(OnClick.HasDelegate ? "cursor-pointer" : "") @Class" style="@Style" @onclick="HandleClick" >    
     <FluentBadge class="@(User is { } ? "py-0" : "")" Circular="true" BackgroundColor="@BadgeColor" >
         @if (User is { })
         {

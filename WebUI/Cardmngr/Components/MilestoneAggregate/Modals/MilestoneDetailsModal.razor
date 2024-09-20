@@ -7,6 +7,7 @@
 {
     <Offcanvas @ref="currentModal"
                Placement="MyOffcanvasPlacement.End" 
+               Width="550"
                Class="my-offcanvas my-offcanvas-right"
                OnClose="ShowCloseConfirm" >
                
@@ -14,12 +15,18 @@
                   OnValidSubmit="SubmitAsync" 
                   @onkeydown="HandleKeyDown" >
             <FluentValidationValidator />
-            <OffcanvasHeader Class="py-0" Style="padding-top: 20px !important;">
+            <OffcanvasHeader Class="flex flex-col gap-1">
+                <StatusBar Created="Model?.Created" 
+                           Updated="Model?.Updated"/>
                 <AutoGrowTextArea style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
                     @bind-Value="Buffer.Title" class="p-0 w-full" />
             </OffcanvasHeader>
             <FluentValidationMessage For="() => Buffer.Title" class="ms-3" />
-            <OffcanvasBody Class="flex flex-col gap-2">     
+            <OffcanvasBody Class="flex flex-col gap-2">    
+                <Markdown @bind-Text="Buffer.Description"
+                          Placeholder="Добавьте описание"
+                          DisabledPlaceholder="У этой вехи нет описания"
+                          Disabled="!CanEdit" /> 
                 <TimeRangeView Start="Start" End="Buffer.Deadline" />
                 <FluentDatePicker Placeholder="Не установлен"
                     ReadOnly="!CanEdit" @bind-Value="Buffer.Deadline" Label="Крайний срок:" />
@@ -65,9 +72,6 @@
                     </FooterContent>
                 </FluentAutocomplete>
                 <FluentValidationMessage For="() => Buffer.Responsible" />
-
-                <AutoGrowTextArea Resize="TextAreaResize.Vertical" Placeholder="Описание" Class="w-full mb-2"
-                    @bind-Value="Buffer.Description" Spellcheck="true" ReadOnly="!CanEdit" />
 
                 @if (!IsAdd)
                 {

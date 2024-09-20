@@ -25,3 +25,6 @@ function scrollToBottom(element, duration, dotNetObjectRef) {
 function reloadPage() {
     window.location.reload();
 }
+function measureHeight(element) {
+    return element?.offsetHeight ?? 0;
+}

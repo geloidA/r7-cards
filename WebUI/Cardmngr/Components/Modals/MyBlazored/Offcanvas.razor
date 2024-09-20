@@ -8,7 +8,7 @@
     @onkeyup="HandleKeyUp" >
     @if (ShowCloseBtn) 
     {
-        <div class="absolute clickable w-full" style="@CloseBtnRadiusStyle" 
+        <div class="absolute cursor-pointer w-full" style="@CloseBtnRadiusStyle" 
             @onclick="async () => await CloseAsync()" >
             @if (Placement == MyOffcanvasPlacement.Start)
             {

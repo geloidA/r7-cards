@@ -16,6 +16,14 @@ public static class OnlyofficeTaskExtensions
         return !task.IsClosed() && DateTime.Now.Date > (deadline?.Date ?? task.Deadline?.Date);
     }
 
+    public static bool IsDeadlineOut(this IOnlyofficeTask task, Milestone milestone)
+    {
+        if (task.MilestoneId != milestone.Id)
+            throw new ArgumentException("Task and milestone must be in the same milestone");
+
+        return task.IsDeadlineOut(milestone.Deadline);
+    }
+
     public static bool IsSevenDaysDeadlineOut(this IOnlyofficeTask task, DateTime? deadline = null)
     {
         return !task.IsClosed() && DateTime.Now.AddDays(6) > (deadline ?? task.Deadline);

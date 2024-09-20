@@ -9,6 +9,7 @@ using Cardmngr.Notification;
 using Cardmngr.Services;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Cardmngr.Shared.Utils.Comparer;
+using Cardmngr.Application.Clients.Subtask;
 
 namespace Cardmngr.Components.TaskAggregate.Modals;
 
@@ -17,7 +18,7 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
 {
     private bool _showSubtasks;
     private bool _isParamsHiden;
-    private bool _isSubtasksHiden = true;
+    private bool _isSubtasksHiden;
 
     private readonly Guid lockGuid = Guid.NewGuid();
     private Components.Modals.MyBlazored.Offcanvas currentModal = null!;
@@ -27,6 +28,7 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
     [Inject] private ITagColorManager TagColorGetter { get; set; } = null!;
     [Inject] private IToastService ToastService { get; set; } = null!;
     [Inject] private NotificationHubConnection NotificationHubConnection { get; set; } = null!;
+    [Inject] private ISubtaskClient SubtaskClient { get; set; } = null!;
 
     [Parameter] public IProjectState State { get; set; } = null!;
     [Parameter] public int TaskStatusId { get; set; }
@@ -113,7 +115,7 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
     private async Task DeleteAsync()
     {
         var answer = await ShowDeleteConfirm("Удалить задачу?").ConfigureAwait(false);
-
+        
         if (answer.Confirmed)
         {
             foreach (var tag in TaskTags)
@@ -124,6 +126,24 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
 
             SkipConfirmation = true;
             await currentModal.CloseAsync().ConfigureAwait(false);
+        }
+    }
+
+    private async Task DeleteAllSubtasksAsync()
+    {        
+        var answer = await ShowDeleteConfirm("Удалить все подзадачи?").ConfigureAwait(false);
+
+        if (answer.Confirmed)
+        {
+            var deleteTasks = Model!.Subtasks
+                .ToList()
+                .Select(x => 
+                {
+                    State.RemoveSubtask(Model.Id, x.Id);
+                    return SubtaskClient.RemoveAsync(Model.Id, x.Id);
+                });
+
+            await Task.WhenAll(deleteTasks).ConfigureAwait(false);
         }
     }
 

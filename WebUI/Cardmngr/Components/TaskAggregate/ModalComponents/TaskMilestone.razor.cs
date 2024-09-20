@@ -1,5 +1,6 @@
 using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Extensions;
 using Microsoft.AspNetCore.Components;
 using Onlyoffice.Api.Models;
 
@@ -20,6 +21,7 @@ public partial class TaskMilestone : ComponentBase
 
     protected override void OnInitialized()
     {
+        _selectedMilestone = State.GetMilestone(Task.MilestoneId);
         RefreshState();
         OnSearch("");
     }

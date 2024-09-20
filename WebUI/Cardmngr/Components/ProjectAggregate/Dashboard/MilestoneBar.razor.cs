@@ -38,7 +38,8 @@ public partial class MilestoneBar : KolComponentBase
         StateHasChanged();
     }
 
-    private string CssBackgroundColor => Milestone.IsDeadlineOut() ? "background: var(--neutral-fill-strong-rest);" : "background: #6dc07b;";
+    private string CssBackgroundColor => Milestone.IsDeadlineOut() 
+        ? "background: var(--neutral-fill-strong-rest);" : "background: #6dc07b;";
 
     private string CompleteProgress
     {
