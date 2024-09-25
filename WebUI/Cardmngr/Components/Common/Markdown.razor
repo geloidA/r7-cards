@@ -26,7 +26,7 @@
 
         <div class="absolute bottom-3 right-3 flex gap-2">
             <Button Class="rounded-lg px-3 py-1 duration-300 transition-colors hover:bg-neutral-hover text-xs"
-                    @onclick="() => _isEdit = false" >
+                    @onclick="async () => await ChangeEditAsync(false)" >
                 Отменить
             </Button>
             <Button Class="rounded-lg px-3 py-1 text-white bg-accent text-xs"
@@ -49,7 +49,7 @@ else
             }
             else
             {
-                <span @onclick="() => _isEdit = true"
+                <span @onclick="async () => await ChangeEditAsync(true)"
                     class="text-info cursor-pointer">
                     @Placeholder
                 </span>
@@ -62,7 +62,7 @@ else
         <FluentSpacer />
         <Button Class="rounded-lg p-1 self-baseline opacity-0 group-hover:opacity-100"
                 Disabled="Disabled"
-                @onclick="() => _isEdit = true" 
+                @onclick="async () => await ChangeEditAsync(true)" 
                 Title="Редактировать" >
             <FluentIcon Value="@(new Icons.Regular.Size16.Edit())" Color="Color.Info" />
         </Button>

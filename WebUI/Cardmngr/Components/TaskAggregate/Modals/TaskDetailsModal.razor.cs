@@ -16,9 +16,9 @@ namespace Cardmngr.Components.TaskAggregate.Modals;
 public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskUpdateData>(new OnlyofficeTaskUpdateDataEqualityComparer()), 
     IDisposable
 {
+    private bool _isDescriptionEditting;
     private bool _showSubtasks;
-    private bool _isParamsHiden;
-    private bool _isSubtasksHiden;
+    private bool _isSubtasksOpen;
 
     private readonly Guid lockGuid = Guid.NewGuid();
     private Components.Modals.MyBlazored.Offcanvas currentModal = null!;
@@ -34,6 +34,8 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
     [Parameter] public int TaskStatusId { get; set; }
     [Parameter] public List<TaskTag> TaskTags { get; set; } = [];
 
+    protected override bool CanBeSaved => !_isDescriptionEditting;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -48,11 +50,6 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
             Buffer.Title = "Новая задача";
             Buffer.TaskStatusId = TaskStatusId;
         }
-        else
-        {
-            Buffer.Status = null; // need because onlyoffice api update by this value on default task's status
-        }
-        
     }
 
     private void NotifyThatTaskWasChanged(OnlyofficeTask upd)
@@ -108,7 +105,7 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
 
     public void StartSubtaskAdding()
     {
-        _isSubtasksHiden = false;
+        _isSubtasksOpen = true;
         _showSubtasks = true;
     }
 

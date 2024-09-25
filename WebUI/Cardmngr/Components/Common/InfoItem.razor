@@ -24,7 +24,6 @@
 @code {
     private string? _popoverGuid;
 
-
     [Parameter, EditorRequired] public Icon Icon { get; set; } = null!;
 
     [Parameter, EditorRequired] public string Title { get; set; } = null!;
@@ -46,6 +45,7 @@
         if (Editable)
         {
             await PopoverOpenChanged.InvokeAsync(true);
+            PopoverOpen = true;
         }
     }
 }

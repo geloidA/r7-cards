@@ -30,7 +30,7 @@
     }
 
     body {
-        @apply text-sm;
+        @apply text-sm bg-layer-4;
     }
 
     ol, ul {
@@ -223,8 +223,7 @@ article {
     overflow: hidden;
     -webkit-line-clamp: 5;
     line-clamp: 5;
- }
-
+}
 
 .max-desc-h {
     max-height: 100px;

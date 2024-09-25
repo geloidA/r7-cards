@@ -16,7 +16,7 @@
     ];
 
     private RenderFragment<SidebarOption> optionRenderer = opt =>
-        @<a href="@opt.Href" class="flex flex-col gap-2 p-1 rounded hover:bg-neutral-hover" style="text-decoration-line: none !important;">
+        @<a href="@opt.Href" class="flex flex-col gap-2 p-1 rounded hover:bg-neutral-fill-hover" style="text-decoration-line: none !important;">
             <span class="flex gap-2 items-center text-sm text-accent">
                 <FluentIcon Value="opt.Icon" />
                 @opt.Title

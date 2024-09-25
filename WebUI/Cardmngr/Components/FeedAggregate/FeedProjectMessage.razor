@@ -2,15 +2,10 @@
 
 @RenderMessage
 
-@code {
-
-    private RenderFragment RenderMessage => RenderMessageWithInfo(_msgTypes[Feed.Value.Item]);
-
-    [CascadingParameter] Dictionary<string, UserInfo> FeedUsers { get; set; } = null!;
-
+@code { // TODO: separate rendering
     private RenderFragment RenderMessageWithInfo(FeedMsgType typeInfo) =>
         @<div @key="Feed.Value.Id" class="flex flex-col gap-2 w-full">
-            <div class="flex gap-3 overflow-hidden">
+            <div class="flex gap-3 items-center overflow-hidden">
                 <FluentIcon Value="typeInfo.Icon" Color="typeInfo.Color" style="min-width: 20px;" />
                 <div>
                     <span class="font-bolder">@typeInfo.Header. </span>
@@ -19,6 +14,16 @@
                         @Feed.Value.Title
                     }
                 </div>
+                @if (typeInfo.Type == "task" && _taskResponsibles?.Count > 0)
+                {
+                    <FluentSpacer />
+                    <div class="flex gap-1 flex-wrap">
+                        @foreach (var user in _taskResponsibles)
+                        {
+                            <UserAvatar ShowTooltip User="user" Size="25" />
+                        }
+                    </div>
+                }
             </div>
             <div>
                 @if (typeInfo.Type == "milestone" && Feed.GroupedFeeds.Count > 0)

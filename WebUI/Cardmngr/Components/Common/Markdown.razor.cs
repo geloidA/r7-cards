@@ -23,9 +23,21 @@ public partial class Markdown : KolComponentBase
     [Parameter]
     public string? DisabledPlaceholder { get; set; }
 
-    private Task SubmitEditAsync()
+    [Parameter]
+    public bool IsEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsEditChanged { get; set; }
+
+    private async Task SubmitEditAsync()
     {
-        _isEdit = false;
-        return TextChanged.InvokeAsync(string.IsNullOrWhiteSpace(_text) ? "" : _text);
+        await ChangeEditAsync(false);
+        await TextChanged.InvokeAsync(string.IsNullOrWhiteSpace(_text) ? "" : _text);
+    }
+
+    private Task ChangeEditAsync(bool isEdit)
+    {
+        _isEdit = isEdit;
+        return IsEditChanged.InvokeAsync(isEdit);
     }
 }

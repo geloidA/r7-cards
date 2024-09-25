@@ -37,17 +37,16 @@ public static class ProjectStateExtensions
         return projectState.Tasks.Max(x => x.Deadline);
     }
 
-    public static DateTime GetMilestoneStart(this IProjectState projectState, Milestone milestone)
+    public static DateTime GetMilestoneStart(this IProjectState projectState, Milestone milestone, DateTime? deadline = null)
     {
         var minStart = projectState.Tasks
             .Where(x => x.MilestoneId == milestone.Id)
             .Min(x => x.StartDate);
         
-        var defaultStart = milestone.Deadline.AddDays(-7);
+        var defaultStart = deadline?.AddDays(-7) ?? milestone.Deadline.AddDays(-7);
         
         return minStart == null || defaultStart < minStart 
-            ? defaultStart 
-            : minStart.Value;
+            ? defaultStart : minStart.Value;
     }
 
     public static Milestone? GetMilestone(this IProjectState projectState, int? milestoneId)
@@ -69,5 +68,10 @@ public static class ProjectStateExtensions
     public static int CountClosedTasks(this IFilterableProjectState projectState)
     {
         return projectState.FilteredTasks().Count(x => x.Status == Domain.Enums.Status.Closed);
+    }
+
+    public static UserInfo? GetUserById(this IProjectState projectState, string userId)
+    {
+        return projectState.Team.FirstOrDefault(x => x.Id == userId);
     }
 }

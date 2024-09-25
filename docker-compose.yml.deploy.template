@@ -9,6 +9,10 @@ services:
     image: "cardmngr-feedbackservice:${VERSION}"
     ports:
       - "8081:8080"
+    volumes:
+      - type: bind
+        source: ${HOST_FEEDBACK_DIR}
+        target: /data/feedback
   
   cardmngr-server:
     image: "cardmngr-server:${VERSION}"

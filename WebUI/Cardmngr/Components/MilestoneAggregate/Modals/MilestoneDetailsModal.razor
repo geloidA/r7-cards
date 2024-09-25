@@ -3,82 +3,59 @@
 
 @inherits AddEditModalBase<Milestone, MilestoneUpdateData>
 
-@if (Buffer is { })
-{
+<CascadingValue Value="State" IsFixed >
+<CascadingValue Value="Buffer" IsFixed >
+
     <Offcanvas @ref="currentModal"
                Placement="MyOffcanvasPlacement.End" 
                Width="550"
                Class="my-offcanvas my-offcanvas-right"
                OnClose="ShowCloseConfirm" >
-               
+                    
         <EditForm Model="Buffer" 
                   OnValidSubmit="SubmitAsync" 
                   @onkeydown="HandleKeyDown" >
             <FluentValidationValidator />
             <OffcanvasHeader Class="flex flex-col gap-1">
-                <StatusBar Created="Model?.Created" 
-                           Updated="Model?.Updated"/>
+                @if (!IsAdd)
+                {
+                    <StatusBar Created="Model?.Created" 
+                                Updated="Model?.Updated"/>
+                }
                 <AutoGrowTextArea style="font-size: 20px; font-weight: 500;" ReadOnly="!CanEdit"
-                    @bind-Value="Buffer.Title" class="p-0 w-full" />
+                    @bind-Value="Buffer.Title" class="p-0 w-full" Autofocus="IsAdd" />
             </OffcanvasHeader>
             <FluentValidationMessage For="() => Buffer.Title" class="ms-3" />
             <OffcanvasBody Class="flex flex-col gap-2">    
                 <Markdown @bind-Text="Buffer.Description"
                           Placeholder="Добавьте описание"
                           DisabledPlaceholder="У этой вехи нет описания"
-                          Disabled="!CanEdit" /> 
-                <TimeRangeView Start="Start" End="Buffer.Deadline" />
-                <FluentDatePicker Placeholder="Не установлен"
-                    ReadOnly="!CanEdit" @bind-Value="Buffer.Deadline" Label="Крайний срок:" />
-                <FluentValidationMessage For="() => Buffer.Deadline" />
-
-                <FluentAutocomplete TOption="UserInfo" MaximumSelectedOptions="1" Disabled="!CanEdit"
-                    @bind-SelectedOptions="SelectedResponsible" Context="user" AutoComplete="off"
-                    OnOptionsSearch="OnSearchResponsible" Placeholder="Не установлен">
-
-                    <LabelTemplate>
-                        Ответственный
-                        <FluentIcon Value="@(new Icons.Regular.Size20.Person())" Style="margin: 0 4px;" />
-                    </LabelTemplate>
-
-                    <SelectedOptionTemplate>
-                        <FluentPersona Name="@user.DisplayName" 
-                                       ImageSize="22px"
-                                       Class="p-1"
-                                       Style="height: 26px; background: var(--main-responsibles-bg)"
-                                       Image="@($"onlyoffice/api/people{user.AvatarSmall}")" />
-                    </SelectedOptionTemplate>
-
-                    <OptionTemplate>
-                        <FluentPersona Name="@user.DisplayName"
-                                       ImageSize="22px"
-                                       Image="@($"onlyoffice/api/people{user.AvatarSmall}")" />
-                    </OptionTemplate>
-
-                    <HeaderContent>
-                        <FluentLabel Color="Color.Accent"
-                            Style="padding: 8px; font-size: 11px; border-bottom: 1px solid var(--neutral-fill-stealth-hover);">
-                            Команда проекта
-                        </FluentLabel>
-                    </HeaderContent>
-
-                    <FooterContent>
-                        @if (!user.Any())
-                        {
-                            <FluentLabel Style="font-size: 11px; text-align: center; width: 200px;">
-                                Ничего не найдено
-                            </FluentLabel>
-                        }
-                    </FooterContent>
-                </FluentAutocomplete>
-                <FluentValidationMessage For="() => Buffer.Responsible" />
-
+                          Disabled="!CanEdit"
+                          Class="mb-2" />
                 @if (!IsAdd)
                 {
-                    <CascadingValue Value="State" IsFixed="true">
-                        <MelistoneShortTasks MilestoneTasks="@milestoneTasks" />
-                    </CascadingValue>
+                    <MelistoneShortTasks MilestoneTasks="@milestoneTasks" />
                 }
+                <DetailsCategory Header="Параметры" Open="true" >
+                    <Content>
+                        <div class="flex flex-col gap-5">
+                            <InfoItem Title="Крайний срок"
+                                        Icon="new Icons.Filled.Size20.Calendar()">
+                                <Content>
+                                    <DateRangeView StartReadOnly 
+                                                    EndReadOnly="!CanEdit"
+                                                    Start="Start" 
+                                                    @bind-End="Buffer.Deadline" />
+                                    <FluentValidationMessage For="() => Buffer.Deadline" />  
+                                </Content>
+                            </InfoItem>
+                            <div>
+                                <MilestoneResponsible Disabled="!CanEdit" />
+                                <FluentValidationMessage For="() => Buffer.Responsible" />
+                            </div>
+                        </div>
+                    </Content>
+                </DetailsCategory>
 
                 <div class="flex flex-row mt-2">
 
@@ -113,7 +90,9 @@
             </OffcanvasBody>
         </EditForm>
     </Offcanvas>
-}
+
+</CascadingValue>
+</CascadingValue>
 
 @code{
     bool enterPressed;

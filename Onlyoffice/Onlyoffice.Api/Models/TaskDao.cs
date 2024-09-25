@@ -55,11 +55,13 @@ public sealed class TaskUpdateData : IOnlyofficeTask
 
     public int? TaskStatusId { get; set; }
 
-    Status IOnlyofficeTask.Status => (Status)Status!;
-
-    public bool IsDeadlineOut() => Deadline.HasValue &&
-        Deadline.Value.Date < DateTime.Now.Date && 
-        Status == (int)Common.Status.Open;
+    Status IOnlyofficeTask.Status
+    {
+        get 
+        {
+            return Status.HasValue ? (Status)Status.Value : Cardmngr.Domain.Enums.Status.Open;            
+        }
+    }
 }
 
 public class SubtaskDto : IEntityDto<int>

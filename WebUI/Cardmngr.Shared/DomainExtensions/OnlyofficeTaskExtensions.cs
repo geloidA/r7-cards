@@ -36,7 +36,7 @@ public static class OnlyofficeTaskExtensions
 
     public static bool HasStatus(this IOnlyofficeTask task, OnlyofficeTaskStatus status)
     {
-        return task.TaskStatusId is null
+        return !task.TaskStatusId.HasValue
             ? status.IsDefault && task.Status.ToStatusType() == status.StatusType
             : task.TaskStatusId == status.Id;
     }

@@ -7,7 +7,6 @@ namespace Cardmngr.Components.TaskAggregate.ModalComponents;
 
 public partial class TaskResponsibles : ComponentBase
 {
-    private bool _popoverOpen;
     private string _searchText = "";
     private IList<UserInfo> _selectedResponsibles = [];
     private IList<UserInfo> _searchResponsibles = [];

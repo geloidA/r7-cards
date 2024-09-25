@@ -7,6 +7,30 @@ YELLOW='\033[0;33м'
 BLUE='\033[0;34м'
 NC='\033[0м' # No Color
 
+HOST_FEEDBACK_DIR=''
+
+# Получение аргументов командной строки
+
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+        --host-feedback-dir)
+            HOST_FEEDBACK_DIR="$2"
+            shift # past argument
+            shift # past value
+            ;;
+        *)
+            echo -e "${RED}Неизвестный параметр: $key${NC}"
+            exit 1
+        ;;
+    esac
+done
+
+if [ -z "$HOST_FEEDBACK_DIR" ]; then
+    echo -e "${RED}Не указан путь к папке с отзывами${NC}"
+    exit 2
+fi
+
 # Путь к файлу с версией
 VERSION_FILE="WebUI/Cardmngr.Server/appversion"
 
@@ -25,13 +49,17 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
+# Создание css стилей
+npx --prefix WebUI/Cardmngr/node_modules tailwindcss -i WebUI/Cardmngr/wwwroot/css/site.css -o WebUI/Cardmngr/wwwroot/css/site.min.css --minify
+
 # Создание папки для релиза
 RELEASE_DIR="release-$VERSION"
 mkdir -p "$RELEASE_DIR"
 echo -e "${GREEN}Создана папка для релиза: $RELEASE_DIR${NC}"
 
-# Экспортирование переменной VERSION
+# Экспортирование переменных
 export VERSION
+export HOST_FEEDBACK_DIR
 
 # Копирование шаблона docker-compose.yml и замена переменной версии
 envsubst < docker-compose.yml.build.template > docker-compose-build.yml

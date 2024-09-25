@@ -18,10 +18,7 @@
                     }
                     <div class="self-center">
                         @ViewModel.ProjectInfo.Title
-                    </div>
-                    <FluentBadge Class="self-center">
-                        @ViewModel.Tasks.Count
-                    </FluentBadge>
+                    </div>                    
                 </div>
                 <FluentSpacer/>
                 <FluentSpacer Width="12" />
@@ -29,6 +26,7 @@
                     <i class="tip-hide" style="font-size: small;">
                         Двойной клик для рыскрытия/закрытия
                     </i>
+                    <FluentBadge title="Всего задач">@ViewModel.Tasks.Count</FluentBadge>
                     <a class="self-center" href=@($"/project/board?ProjectId={ViewModel.ProjectInfo.Id}")>
                         <FluentIcon Width="23" Value="@(new Icons.Regular.Size20.ArrowCircleUpRight())" />
                     </a>

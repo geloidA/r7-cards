@@ -4,11 +4,11 @@
 {
     foreach (var item in filterItems)
     {
-        <div class="row mb-1">
-            <div class="col">
+        <div class="mb-1">
+            <div class="">
                 <MilestoneLabel Milestone="item.Milestone" />
             </div>
-            <div class="col flex justify-end">
+            <div class="flex justify-end">
                 <InputCheckbox class="cursor-pointer form-check-input" 
                     @bind-Value="item.Selected" 
                     @onclick="@(() => ToggleMilestone(item.Milestone))" />

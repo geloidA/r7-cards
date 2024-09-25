@@ -22,7 +22,6 @@ public partial class TaskMilestone : ComponentBase
     protected override void OnInitialized()
     {
         _selectedMilestone = State.GetMilestone(Task.MilestoneId);
-        RefreshState();
         OnSearch("");
     }
 

@@ -1,0 +1,48 @@
+﻿<InfoItem @bind-PopoverOpen="@_popoverOpen"
+          Title="Ответственный" Editable="!Disabled"
+          Icon="new Icons.Filled.Size20.Person()" >
+    <Content>
+        <div class="w-fit">
+            @if (_selectedResponsible is null)
+            {
+                <div class="text-info select-none @(Disabled ? "" : "hover:underline")" >
+                    Пусто
+                </div>
+            }
+            else
+            {
+                <div class="flex gap-1 text-xs py-0 px-1 items-center rounded-full hover:bg-layer-1 transition-colors">
+                    <UserAvatar Style="padding-top: 0px !important; padding-bottom: 0px !important;" 
+                                User="@_selectedResponsible" 
+                                Size="25" 
+                                ShowName />
+                </div>
+            }
+        </div>
+    </Content>
+    <Popover>
+        <div class="max-w-md w-details-popup flex flex-col gap-3">
+            <FluentTextField ImmediateDelay="50"
+                             Value="@_searchText" 
+                             Immediate
+                             Placeholder="Поиск вехи"
+                             ValueChanged="OnSearch">
+                <FluentIcon Slot="end" Value="@(new Icons.Filled.Size16.Search())" />
+            </FluentTextField>
+            <div class="max-h-52 overflow-auto">
+                @foreach (var user in _searchedResponsibles)
+                {
+                    <div class="even:bg-neutral-hover flex gap-2 first:rounded-t-lg last:rounded-b-lg
+                        items-center cursor-pointer hover:bg-neutral-fill-hover p-1 text-xs"
+                        @onclick="() => SelectUser(user)" >
+                        <UserAvatar ShowName User="user" Size="25" />
+                    </div>
+                }
+                @if (_searchedResponsibles.Count == 0)
+                {
+                    <div class="text-xs">Ничего не найдено</div>
+                }
+            </div>
+        </div>
+    </Popover>
+</InfoItem>

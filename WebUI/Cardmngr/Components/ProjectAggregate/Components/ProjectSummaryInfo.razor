@@ -4,14 +4,14 @@
     @if (_deadlineoutSoonTasks.Count > 0 || _deadlineoutTasks.Count > 0)
     {
         <div class="h-full">
-            <div class="row items-center justify-center h-full">
-                <div @ref="_deadlineoutTasksRef" class=@(_deadlineoutTasks.Any() ? "task-column col scrollbar-none" : "") style="overflow-x: hidden;" >
+            <div class="items-center justify-center h-full">
+                <div @ref="_deadlineoutTasksRef" class=@(_deadlineoutTasks.Any() ? "task-column scrollbar-none" : "") style="overflow-x: hidden;" >
                     @foreach (var task in _deadlineoutTasks)
                     {
                         <DashboardTaskCard Task="task" />
                     }
                 </div>
-                <div @ref="_deadlineoutSoonTasksRef" class=@(_deadlineoutSoonTasks.Any() ? "task-column col scrollbar-none" : "") style="overflow-x: hidden;" >
+                <div @ref="_deadlineoutSoonTasksRef" class=@(_deadlineoutSoonTasks.Any() ? "task-column scrollbar-none" : "") style="overflow-x: hidden;" >
                     @foreach (var task in _deadlineoutSoonTasks)
                     {
                         <DashboardTaskCard Task="task" />
@@ -21,13 +21,13 @@
             <div class="row absolute w-full" style="bottom: 60px; left: 0;">
                 @if (_deadlineoutTasks.Count > 0)
                 {
-                    <div class="col flex justify-center text-error">
+                    <div class="flex justify-center text-error">
                         @renderInscription("ПРОСРОЧЕНО")
                     </div>
                 }
                 @if (_deadlineoutSoonTasks.Count > 0)
                 {
-                    <div style="color: @CardmngrColors.Warning;" class="col flex justify-center">
+                    <div style="color: @CardmngrColors.Warning;" class="flex justify-center">
                         @renderInscription("СРОК СКОРО ИСТЕЧЕТ")
                     </div>
                 }

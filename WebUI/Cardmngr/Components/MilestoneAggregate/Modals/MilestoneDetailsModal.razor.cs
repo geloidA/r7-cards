@@ -23,7 +23,7 @@ public sealed partial class MilestoneDetailsModal() :
 
     private bool CanEdit => !State.ReadOnly && (Model == null || Model.CanEdit);
 
-    private DateTime? Start => Model == null ? Buffer.Deadline?.AddDays(-7) : State.GetMilestoneStart(Model);
+    private DateTime? Start => Model == null ? Buffer.Deadline?.AddDays(-7) : State.GetMilestoneStart(Model, Buffer.Deadline);
 
     private int TotalTasks => Model == null ? 0 : milestoneTasks.Count();
     private int ActiveTasks => Model == null ? 0 : milestoneTasks.Count(x => !x.IsClosed());
@@ -102,6 +102,12 @@ public sealed partial class MilestoneDetailsModal() :
             SkipConfirmation = true;
             await currentModal.CloseAsync();
         }
+    }
+
+    private void OnDeadlineChanged(DateTime? newValue)
+    {
+        Buffer.Deadline = newValue;
+        StateHasChanged();
     }
 
     private IEnumerable<UserInfo> SelectedResponsible

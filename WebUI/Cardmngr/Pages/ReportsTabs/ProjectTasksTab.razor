@@ -9,8 +9,8 @@
 @inject IServiceProvider ServiceProvider
 @inject IToastService ToastService
 
-<div class="flex row flex-wrap">
-    <div class="col">
+<div class="flex flex-wrap">
+    <div class="w-1/2">
         <h4>Задачи проектов</h4>
         <p>Отчет <i>'Задачи проекта'</i> отобразит список задач, сгруппированных по проекту и вехе, с которыми они связаны.</p>
         <p>Чтобы посмотреть список всех задач во всех ваших проектах, сразу нажмите <i>'Сгенерировать отчет'.</i></p>
@@ -18,7 +18,7 @@
         <p>Пример отчета:</p>
         <img src="images/project-tasks-report-example.png" class="mb-2" width="800" style="border-radius: 10px; opacity: 0.8; box-shadow: 0 0 10px 0 rgba(0,0,0,0.5);" alt=""/>
     </div>
-    <div class="col">
+    <div class="w-1/2">
         <FluentCard AreaRestricted="false"
             style="background-color: var(--neutral-layer-3); box-shadow: none; border: none;">
             <FluentEditForm Model="reportRequest" >
@@ -53,7 +53,7 @@
                             OptionText="@(u => u.DisplayName)" style="max-width: 500px;"
                             OnOptionsSearch="OnUserSearch" />
                     </div>
-                    <div class="col flex flex-col mt-3 gap-3">
+                    <div class="flex flex-col mt-3 gap-3">
                         <IntervalPicker Label="Интервал по началу задачи:"
                             @bind-Start="reportRequest.StartDateRange.Start" 
                             @bind-End="reportRequest.StartDateRange.End" />

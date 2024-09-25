@@ -37,6 +37,8 @@ public abstract class AddEditModalBase<TModel, TUpdateData>(IEqualityComparer<TM
     /// </summary>
     protected bool SkipConfirmation { get; set; }
 
+    protected virtual bool CanBeSaved { get; } = true;
+
     protected Task<ModalResult> ShowCloseConfirm()
     {
         if (SkipConfirmation)
@@ -44,7 +46,7 @@ public abstract class AddEditModalBase<TModel, TUpdateData>(IEqualityComparer<TM
             return Task.FromResult(ModalResult.Ok());
         }
 
-        if (!comparer.Equals(Model, Buffer))
+        if (!comparer.Equals(Model, Buffer) || !CanBeSaved)
         {
             return Modal.Show<DefaultConfirmModal>( 
                 new ModalParameters 

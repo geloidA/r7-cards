@@ -1,0 +1,28 @@
+﻿@inherits KolComponentBase
+
+<div class="@Class" style="@Style" @onclick="HandleClick" >
+    @if (HeaderTemplate != null)
+    {
+        <div @onclick:stopPropagation @onclick="ToggleOpen" >
+            @HeaderTemplate(Open)
+        </div>
+    }
+    else
+    {
+        <div class="font-bold flex gap-1 mb-2 cursor-pointer w-fit" @onclick:stopPropagation @onclick="ToggleOpen">
+            @Header
+            @if (Open)
+            {
+                <FluentIcon Value="@(new Icons.Filled.Size16.ChevronDown())" Color="Color.FillInverse" />
+            }
+            else
+            {
+                <FluentIcon Value="@(new Icons.Filled.Size16.ChevronUp())" Color="Color.FillInverse" />
+            }
+        </div>
+    }
+    @if (Open)
+    {
+        @Content
+    }
+</div>

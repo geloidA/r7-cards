@@ -3,10 +3,10 @@
         <div class="flex @CssMarginTitle">
             @if (Task.Priority == Priority.High)
             {
-                <FluentIcon Value="@(new Icons.Filled.Size20.ArrowCircleUp())" Color="Color.Accent" 
+                <FluentIcon Value="@(new Icons.Filled.Size20.Flag())" Color="Color.Accent" 
                     Title="Приоритет - Высокий" Style="margin-right: 5px; min-width: 20px;" />
             }
-            <div class="font-bold text-base max-height-100 whitespace-pre-wrap">@Task.Title</div>
+            <div class="font-bold text-base max-height-100 title">@Task.Title</div>
         </div>
         @if (Task.Description is not null)
         {
@@ -50,7 +50,7 @@
                     </span>
                     <FluentSpacer />
                 }
-                <DateRangeView ReadOnly="true"
+                <DateRangeView StartReadOnly EndReadOnly
                                Start="Task.StartDate"
                                End="Task.Deadline"
                                StartDateRender="@RenderStart"

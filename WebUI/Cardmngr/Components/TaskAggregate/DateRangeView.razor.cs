@@ -20,7 +20,10 @@ public partial class DateRangeView : ComponentBase
     public bool NotShowYearIfCurrent { get; set; }
 
     [Parameter]
-    public bool ReadOnly { get; set; }
+    public bool StartReadOnly { get; set; }
+
+    [Parameter]
+    public bool EndReadOnly { get; set; }
 
     [Parameter]
     public RenderFragment<DateTime?>? StartDateRender { get; set; }

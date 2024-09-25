@@ -11,6 +11,11 @@
     min-height: 150px;
 }
 
+.task-card .title {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
 .board-column .task-card.dragged {
     opacity: 0.5;
 }
