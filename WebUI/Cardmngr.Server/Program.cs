@@ -25,7 +25,10 @@ builder.Services.AddCardmngrServices();
 
 builder.Services.AddHttpForwarderWithServiceDiscovery();
 
-// builder.WebHost.UseKestrel(ConfigureServer);
+if (builder.Environment.IsProduction())
+{
+    builder.WebHost.UseKestrel(ConfigureServer);
+}
 
 builder.Services.AddAuthentication();
 
@@ -57,15 +60,25 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.MapFallbackToFile("index.html");
 
-app.MapForwarder("/api/feedback/{**catch-all}", "https+http://feedback", "/api/feedback/{**catch-all}");
-app.MapForwarder("/onlyoffice/{**catch-all}", "https+http://onlyoffice", "/{**catch-all}");
-
-// app.MapForwarder("/api/feedback/{**catch-all}", builder.Configuration.CheckKey("FEEDBACK_SERVICE_URL"), "/api/feedback/{**catch-all}");
-// app.MapForwarder("/onlyoffice/{**catch-all}", builder.Configuration.CheckKey("PROXY_SERVER_URL"), "/{**catch-all}");
+if (app.Environment.IsDevelopment())
+{
+    // перенаправление запросов на соответствующие сервисы созданные aspire-ом.
+    app.MapForwarder("/api/feedback/{**catch-all}", "https+http://feedback", "/api/feedback/{**catch-all}");
+    app.MapForwarder("/onlyoffice/{**catch-all}", "https+http://onlyoffice", "/{**catch-all}");
+}
+else
+{
+    // перенаправление запросов на сервисы в docker-контейнерах. Значения задаются в переменных окружения в файле docker-compose.yml.
+    app.MapForwarder("/api/feedback/{**catch-all}", builder.Configuration.CheckKey("FEEDBACK_SERVICE_URL"), "/api/feedback/{**catch-all}");
+    app.MapForwarder("/onlyoffice/{**catch-all}", builder.Configuration.CheckKey("PROXY_SERVER_URL"), "/{**catch-all}");
+}
 
 app.Run();
 return;
 
+// Метод, главная задача которого является установка протокола HTTPS и настройка адресов подключения. Указываются в docker-compose.yml.
+// Адреса будут работать только внутри контейнера, поэтому проброс портов также настраивается внутри docker-compose.yml, который генерируется 
+// при запуске скрипта release.sh
 static void ConfigureServer(KestrelServerOptions opt)
 {
     var config = opt.ApplicationServices.GetRequiredService<IConfiguration>();

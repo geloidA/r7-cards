@@ -10,7 +10,8 @@
         </div>
         @if (Task.Description is not null)
         {
-            <TaskDescription Description="@Task.Description"
+            <TaskDescription @ref="_taskDescription"
+                             Description="@Task.Description"
                              Class="max-desc-h" />
         }
         @if (Task.Subtasks.Count > 0)

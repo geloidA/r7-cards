@@ -1,5 +1,5 @@
-using Cardmngr.Application.Clients;
 using Cardmngr.Application.Clients.People;
+using Cardmngr.Application.Clients.Project;
 using Cardmngr.Domain.Entities;
 using Microsoft.AspNetCore.Components;
 using Onlyoffice.Api.Models;

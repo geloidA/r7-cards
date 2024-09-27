@@ -4,6 +4,9 @@ using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Application.Clients.Feed;
 
+/// <summary>
+/// Клиент для работы с лентой.
+/// </summary>
 public class FeedClient(IFeedRepository feedRepository, IMapper mapper) : IFeedClient
 {
     public IAsyncEnumerable<Domain.Entities.Feed> GetFiltredAsync(FilterBuilder filterBuilder)

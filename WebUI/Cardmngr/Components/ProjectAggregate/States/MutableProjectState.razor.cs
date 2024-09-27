@@ -1,4 +1,4 @@
-﻿using Cardmngr.Application.Clients;
+﻿using Cardmngr.Application.Clients.Project;
 using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Domain.Entities;

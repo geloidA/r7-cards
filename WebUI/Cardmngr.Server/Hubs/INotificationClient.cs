@@ -1,6 +1,6 @@
 ﻿using Cardmngr.Domain.Entities;
 
-namespace Cardmngr.Server;
+namespace Cardmngr.Server.Hubs;
 
 public interface INotificationReceiver
 {

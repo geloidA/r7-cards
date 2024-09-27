@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using Onlyoffice.Api.Logics.Group;
 using Onlyoffice.Api.Logics.Repository;
 
-namespace Cardmngr.Application.Group;
+namespace Cardmngr.Application.Clients.Group;
 
 public class GroupClient(IGroupRepository groupApi, IMapper mapper) : IGroupClient
 {

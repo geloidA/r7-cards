@@ -1,7 +1,6 @@
-﻿namespace Cardmngr.Domain.Entities.Base
+﻿namespace Cardmngr.Domain.Entities.Base;
+
+public abstract record class EntityBase<TId>
 {
-    public abstract record class EntityBase<TId>
-    {
-        public TId Id { get; init; }
-    }
+    public TId Id { get; init; }
 }

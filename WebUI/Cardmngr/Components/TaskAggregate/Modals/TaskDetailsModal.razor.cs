@@ -10,6 +10,7 @@ using Cardmngr.Services;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Cardmngr.Shared.Utils.Comparer;
 using Cardmngr.Application.Clients.Subtask;
+using Blazored.Modal.Services;
 
 namespace Cardmngr.Components.TaskAggregate.Modals;
 
@@ -95,12 +96,13 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
         }
         else
         {
+            Buffer.Status = null; // Когда сохраняется задача, с ненулевым статусом, онлиофис устанавливает статус по умолчанию для данного типа статуса.
             var updated = await TaskClient.UpdateAsync(Model!.Id, Buffer).ConfigureAwait(false);
             State.UpdateTask(updated);
         }
 
         SkipConfirmation = true;
-        await currentModal.CloseAsync().ConfigureAwait(false);
+        await currentModal.CloseAsync(ModalResult.Ok()).ConfigureAwait(false);
     }
 
     public void StartSubtaskAdding()

@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using Blazored.LocalStorage;
-using Cardmngr.Application.Clients;
+using Cardmngr.Application.Clients.Project;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Notification;
 using Cardmngr.Services;

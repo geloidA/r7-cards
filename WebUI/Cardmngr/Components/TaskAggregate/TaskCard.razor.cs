@@ -8,11 +8,14 @@ using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Services;
 using Microsoft.FluentUI.AspNetCore.Components.Extensions;
 using Microsoft.FluentUI.AspNetCore.Components;
+using Cardmngr.Components.TaskAggregate.ModalComponents;
 
 namespace Cardmngr.Components.TaskAggregate;
 
 public sealed partial class TaskCard : ComponentBase, IDisposable
 {
+    private TaskDescription? _taskDescription;
+
     [Inject] private ITagColorManager TagColorGetter { get; set; } = null!;
 
     [CascadingParameter] private TimeAgoOptions TimeAgoOpt { get; set; } = null!;
@@ -41,7 +44,12 @@ public sealed partial class TaskCard : ComponentBase, IDisposable
             { "TaskTags", Task.Tags }
         };
 
-        await Modal.Show<TaskDetailsModal>(parameters, DetailsModal).Result;
+        var res = await Modal.Show<TaskDetailsModal>(parameters, DetailsModal).Result;
+
+        if (res.Confirmed && _taskDescription != null)
+        {
+            await _taskDescription.TriggerHeightMeasure();
+        }
     }
 
     private void OnMilestoneChanged(EntityChangedEventArgs<Milestone>? args)

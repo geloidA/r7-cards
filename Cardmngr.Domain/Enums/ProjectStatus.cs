@@ -1,9 +1,8 @@
-﻿namespace Cardmngr.Domain.Enums
+﻿namespace Cardmngr.Domain.Enums;
+
+public enum ProjectStatus
 {
-    public enum ProjectStatus
-    {
-        Open,
-        Closed,
-        Paused
-    }
+    Open,
+    Closed,
+    Paused
 }

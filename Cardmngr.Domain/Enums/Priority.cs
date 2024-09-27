@@ -1,8 +1,7 @@
-﻿namespace Cardmngr.Domain.Enums
+﻿namespace Cardmngr.Domain.Enums;
+
+public enum Priority
 {
-    public enum Priority
-    {
-        Regular,
-        High
-    }
+    Regular,
+    High
 }

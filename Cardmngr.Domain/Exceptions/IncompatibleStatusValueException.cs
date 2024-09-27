@@ -1,7 +1,7 @@
 ﻿using Cardmngr.Domain.Enums;
 
-namespace Cardmngr.Domain.Exception;
+namespace Cardmngr.Domain.Exceptions;
 
-public class IncompatibleStatusValueException(Status status) : System.Exception($"Incompatible status value: {status} with StatusType")
+public class IncompatibleStatusValueException(Status status) : Exception($"Incompatible status value: {status} with StatusType")
 {
 }

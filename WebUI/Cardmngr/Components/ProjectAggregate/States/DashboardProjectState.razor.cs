@@ -1,4 +1,4 @@
-﻿using Cardmngr.Application.Clients;
+﻿using Cardmngr.Application.Clients.Project;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared;
 using Cardmngr.Shared.Utils.Filter;

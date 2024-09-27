@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
-using Cardmngr.Reports.Base;
 using ClosedXML.Excel;
 using ClosedXML.Graphics;
 
-namespace Cardmngr.Reports;
+namespace Cardmngr.Reports.Base;
 
 public abstract class ReportGeneratorBase : IReportGenerator
 {
@@ -31,7 +30,7 @@ public abstract class ReportGeneratorBase : IReportGenerator
 
     protected static void ConfigureWorksheet(IXLWorksheet ws)
     {
-        ws.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);        
+        ws.Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
         ws.PageSetup.SetPaperSize(XLPaperSize.A4Paper);
         ws.SetShowGridLines(false);
     }
@@ -55,7 +54,7 @@ public abstract class ReportGeneratorBase : IReportGenerator
             .Font.SetFontSize(24)
             .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
         ws.Cell("A1").Value = title;
-        
+
         ws.Cell(1, lastCellColumn).Style.Font.Bold = true;
         ws.Cell(1, lastCellColumn + 1).Value = "Отчет создан:";
         ws.Cell(1, lastCellColumn + 2).Value = DateTime.Now.ToShortDateString();

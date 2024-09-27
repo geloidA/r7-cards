@@ -347,6 +347,10 @@ a:hover {
     color: var(--neutral-foreground-rest) !important;
 }
 
+.CodeMirror-cursor {
+    border-left: 1px solid var(--neutral-foreground-rest) !important;
+}
+
 .cm-s-easymde .cm-header-1 {
     @apply !text-3xl;
 }

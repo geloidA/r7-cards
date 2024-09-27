@@ -1,5 +1,5 @@
 ﻿using Cardmngr.Domain.Enums;
-using Cardmngr.Domain.Exception;
+using Cardmngr.Domain.Exceptions;
 
 namespace Cardmngr.Domain.Extensions;
 

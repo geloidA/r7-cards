@@ -23,17 +23,19 @@ public partial class TaskDescription : KolComponentBase
         if (firstRender)
         {
             await Task.Delay(100); // wait for render
-            var elementHeight = await JSRuntime.InvokeAsync<int>("measureHeight", _elementRef);
-            if (elementHeight == 100)
-            {
-                _hasMoreText = true;
-                StateHasChanged();
-            }
+            await TriggerHeightMeasure();
         }
     }
 
     private void ToggleShowMore()
     {
         _showMore = !_showMore;
+    }
+
+    internal async Task TriggerHeightMeasure()
+    {
+        var elementHeight = await JSRuntime.InvokeAsync<int>("measureHeight", _elementRef);
+        _hasMoreText = elementHeight == 100;        
+        StateHasChanged();
     }
 }

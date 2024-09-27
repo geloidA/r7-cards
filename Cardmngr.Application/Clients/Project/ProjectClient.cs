@@ -6,12 +6,11 @@ using Onlyoffice.Api.Logics.Repository;
 using Onlyoffice.Api.Models;
 using Onlyoffice.Api.Models.Common;
 
-namespace Cardmngr.Application.Clients;
+namespace Cardmngr.Application.Clients.Project;
 
 // TODO: Separate logics
-public class ProjectClient(
-    IProjectRepository projectRepository, 
-    ITaskRepository taskRepository, 
+public class ProjectClient(    IProjectRepository projectRepository,
+    ITaskRepository taskRepository,
     ITaskStatusRepository taskStatusRepository,
     IMilestoneRepository milestoneRepository,
     IMapper mapper) : IProjectClient
@@ -42,16 +41,16 @@ public class ProjectClient(
         return new ProjectStateDto
         {
             Statuses = await statuses,
-            Project = mapper.Map<Project>(await project),
+            Project = mapper.Map<Domain.Entities.Project>(await project),
             Milestones = await milestones,
             Team = await team,
             Tasks = await tasks
         };
     }
 
-    public IAsyncEnumerable<Project> GetProjectsAsync()
+    public IAsyncEnumerable<Domain.Entities.Project> GetProjectsAsync()
     {
-        return projectRepository.GetAllAsync().Select(mapper.Map<Project>);
+        return projectRepository.GetAllAsync().Select(mapper.Map<Domain.Entities.Project>);
     }
 
     public async IAsyncEnumerable<ProjectStateDto> GetProjectsWithSelfTasksAsync()
@@ -74,7 +73,7 @@ public class ProjectClient(
             yield return new ProjectStateDto
             {
                 Statuses = await statuses,
-                Project = mapper.Map<Project>(await project),
+                Project = mapper.Map<Domain.Entities.Project>(await project),
                 Milestones = await milestones,
                 Team = await team,
                 Tasks = await tasksByProject.ToListAsync()
@@ -102,7 +101,7 @@ public class ProjectClient(
 
             yield return new ProjectStateDto
             {
-                Project = mapper.Map<Project>(await project),
+                Project = mapper.Map<Domain.Entities.Project>(await project),
                 Team = await team,
                 Tasks = await projectTasks.ToListAsync(mapper.Map<OnlyofficeTask>),
                 Milestones = await milestones,
@@ -116,19 +115,19 @@ public class ProjectClient(
         return taskRepository.GetFilteredAsync(filter)
             .GroupBy(x => x.ProjectOwner)
             .Select(project => new KeyValuePair<ProjectInfo, ICollection<OnlyofficeTask>>(
-            mapper.Map<ProjectInfo>(project.Key), 
+            mapper.Map<ProjectInfo>(project.Key),
             mapper.Map<List<OnlyofficeTask>>(project)));
     }
 
-    public async Task<Project> DeleteProjectAsync(int projectId)
+    public async Task<Domain.Entities.Project> DeleteProjectAsync(int projectId)
     {
         var project = await projectRepository.DeleteAsync(projectId);
-        return mapper.Map<Project>(project);
+        return mapper.Map<Domain.Entities.Project>(project);
     }
 
-    public IAsyncEnumerable<Project> GetSelfProjectsAsync()
+    public IAsyncEnumerable<Domain.Entities.Project> GetSelfProjectsAsync()
     {
-        return projectRepository.GetUserProjectsAsync().Select(mapper.Map<Project>);
+        return projectRepository.GetUserProjectsAsync().Select(mapper.Map<Domain.Entities.Project>);
     }
 
     public async Task<ProjectStateDto> CollectProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks)
@@ -137,7 +136,7 @@ public class ProjectClient(
         {
             throw new ArgumentException("Tasks collection cannot be empty");
         }
-        
+
         var projectId = tasks.First().ProjectOwner.Id;
 
         if (tasks.Any(x => x.ProjectOwner.Id != projectId))
@@ -157,33 +156,33 @@ public class ProjectClient(
         var milestones = milestoneRepository
             .GetAllByProjectIdAsync(projectId)
             .ToListAsync(mapper.Map<Domain.Entities.Milestone>);
-        
+
         return new ProjectStateDto
         {
             Tasks = [.. tasks],
             Statuses = await statuses,
-            Project = mapper.Map<Project>(await project),
+            Project = mapper.Map<Domain.Entities.Project>(await project),
             Milestones = await milestones,
             Team = await team
         };
     }
 
-    public async Task<Project> CreateProjectAsync(ProjectCreateDto project)
+    public async Task<Domain.Entities.Project> CreateProjectAsync(ProjectCreateDto project)
     {
         var created = await projectRepository.CreateAsync(project);
-        return mapper.Map<Project>(created);
+        return mapper.Map<Domain.Entities.Project>(created);
     }
 
-    public async Task<Project> FollowProjectAsync(int projectId)
+    public async Task<Domain.Entities.Project> FollowProjectAsync(int projectId)
     {
-        return mapper.Map<Project>(await projectRepository.FollowAsync(projectId));
+        return mapper.Map<Domain.Entities.Project>(await projectRepository.FollowAsync(projectId));
     }
 
-    public IAsyncEnumerable<Project> GetFollowedProjectsAsync()
+    public IAsyncEnumerable<Domain.Entities.Project> GetFollowedProjectsAsync()
     {
         return projectRepository
             .GetAllFollowAsync()
-            .Select(mapper.Map<Project>);
+            .Select(mapper.Map<Domain.Entities.Project>);
     }
 
     private IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync(FilterBuilder filter)
@@ -195,8 +194,8 @@ public class ProjectClient(
 
     public IAsyncEnumerable<OnlyofficeTask> GetFilteredTasksAsync() => GetFilteredTasksAsync(FilterBuilder.Empty);
 
-    public async Task<Project> GetProjectAsync(int projectId)
+    public async Task<Domain.Entities.Project> GetProjectAsync(int projectId)
     {
-        return mapper.Map<Project>(await projectRepository.GetByIdAsync(projectId));
+        return mapper.Map<Domain.Entities.Project>(await projectRepository.GetByIdAsync(projectId));
     }
 }

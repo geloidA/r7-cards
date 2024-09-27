@@ -8,6 +8,9 @@ namespace Cardmngr.Application.Mappers;
 
 public class EntityMappingProfile : Profile
 {
+    /// <summary>
+    /// Профиль сопоставления сущностей из Onlyoffice API.
+    /// </summary>
     public EntityMappingProfile()
     {
         CreateMap<ProjectDto, Project>();

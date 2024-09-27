@@ -49,7 +49,7 @@ public partial class Offcanvas : OffcanvasBase
         }
 
         await ToggleDelayShowAsync().ConfigureAwait(false);
-        await CurrentModel.CloseAsync(result ?? ModalResult.Ok()).ConfigureAwait(false);
+        await CurrentModel.CloseAsync(result ?? ModalResult.Cancel()).ConfigureAwait(false);
     }
 
     protected override async Task OnInitializedAsync()

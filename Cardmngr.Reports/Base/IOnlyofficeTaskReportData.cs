@@ -1,4 +1,4 @@
-﻿namespace Cardmngr.Reports;
+﻿namespace Cardmngr.Reports.Base;
 
 public interface IOnlyofficeTaskReportData
 {

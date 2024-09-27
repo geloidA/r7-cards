@@ -1,4 +1,4 @@
-﻿using Cardmngr.Application.Clients;
+﻿using Cardmngr.Application.Clients.Project;
 using Cardmngr.Application.Extensions;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Services;
@@ -10,9 +10,8 @@ using Onlyoffice.Api.Models.Common;
 namespace Cardmngr.Pages;
 
 [Authorize]
-public partial class AllProjectsPage : IDisposable
+public partial class AllProjectsPage : ComponentBase, IDisposable
 {
-    private bool initialized;
     private List<StaticProjectVm> allProjects = [];
     private string userId = string.Empty;
 
@@ -27,15 +26,8 @@ public partial class AllProjectsPage : IDisposable
         userId = (await AuthenticationState.ConfigureAwait(false)).User.GetNameIdentifier();
         
         SummaryService.FilterManager.FilterChanged += OnFilterChangedAsync;
-        if (SummaryService.FilterManager.Responsible == null)
-        {
-            SummaryService.FilterManager.Responsible = userId;
-        }
-        else
-        {
-            OnFilterChangedAsync(SummaryService.FilterManager.GenerateFilter());
-        }
-        initialized = true;
+        
+        OnFilterChangedAsync(SummaryService.FilterManager.GenerateFilter());
     }
 
     private void OnFilterChangedAsync(TaskFilterBuilder builder)

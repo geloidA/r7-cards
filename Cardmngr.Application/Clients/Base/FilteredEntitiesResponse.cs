@@ -1,4 +1,4 @@
-﻿namespace Cardmngr.Application;
+﻿namespace Cardmngr.Application.Clients.Base;
 
 public record FilteredEntitiesResponse<TEntity>
 {

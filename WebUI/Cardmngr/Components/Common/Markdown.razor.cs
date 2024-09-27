@@ -32,6 +32,7 @@ public partial class Markdown : KolComponentBase
     private async Task SubmitEditAsync()
     {
         await ChangeEditAsync(false);
+        _text = _text.TrimEnd();
         await TextChanged.InvokeAsync(string.IsNullOrWhiteSpace(_text) ? "" : _text);
     }
 

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace Cardmngr.Components.TaskAggregate;
+namespace Cardmngr.Components.Common;
 
 public partial class DateView : ComponentBase
 {

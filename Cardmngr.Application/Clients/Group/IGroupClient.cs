@@ -1,7 +1,13 @@
-﻿namespace Cardmngr.Application.Group;
-using Cardmngr.Domain.Entities;
+﻿namespace Cardmngr.Application.Clients.Group;
 
+/// <summary>
+/// Клиент для работы с группами.
+/// </summary>
 public interface IGroupClient
 {
-    IAsyncEnumerable<Group> GetGroupsAsync();
+    /// <summary>
+    /// Получает список групп.
+    /// </summary>
+    /// <returns>список групп.</returns>
+    IAsyncEnumerable<Domain.Entities.Group> GetGroupsAsync();
 }

@@ -1,11 +1,11 @@
-﻿using Cardmngr.Application;
-using Cardmngr.Components.ProjectAggregate.States;
+﻿using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Domain.Enums;
 using Cardmngr.Extensions;
 using KolBlazor;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Shared.Extensions;
+using Cardmngr.Application.Clients.TaskStatusClient;
 
 namespace Cardmngr.Components.ProjectAggregate.Dashboard;
 

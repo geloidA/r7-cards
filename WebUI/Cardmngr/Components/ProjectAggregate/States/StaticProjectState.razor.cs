@@ -1,4 +1,4 @@
-﻿using Cardmngr.Application.Clients;
+﻿using Cardmngr.Application.Clients.Project;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Services;
 using Microsoft.AspNetCore.Components;
