@@ -4,25 +4,25 @@
 
 # Структура проекта
 
-- [Cardmngr.AppHost](/Cardmngr.AppHost/Cardmngr.AppHost.csproj) (.NET Aspire оркестратор см. [.NET Aspire docs](https://learn.microsoft.com/en-us/dotnet/aspire/));
-- [Cardmngr.Application](/Cardmngr.Application/Cardmngr.Application.csproj) (классы-обертки над классами из `Onlyoffice.Api`);
-- [Cardmngr.Domain](/Cardmngr.Domain/Cardmngr.Domain.csproj) (классы предметной области приложения);
-- [Cardmngr.FeedbackService](/Cardmngr.FeedbackService/Cardmngr.FeedbackService.csproj) (webapi для функциональности обратной связи в приложении);
-- [Cardmngr.Reports](/Cardmngr.Reports/Cardmngr.Reports.csproj) (классы использующиеся для создания отчетов в приложении);
-- [Cardmngr.ServiceDefaults](/Cardmngr.ServiceDefaults/Cardmngr.ServiceDefaults.csproj) (необходим для `Cardmngr.AppHost`);
+- [Cardmngr.AppHost](/Cardmngr.AppHost) (.NET Aspire оркестратор см. [.NET Aspire docs](https://learn.microsoft.com/en-us/dotnet/aspire/));
+- [Cardmngr.Application](/Cardmngr.Application) (классы-обертки над классами из `Onlyoffice.Api`);
+- [Cardmngr.Domain](/Cardmngr.Domain) (классы предметной области приложения);
+- [Cardmngr.FeedbackService](/Cardmngr.FeedbackService) (webapi для функциональности обратной связи в приложении);
+- [Cardmngr.Reports](/Cardmngr.Reports) (классы использующиеся для создания отчетов в приложении);
+- [Cardmngr.ServiceDefaults](/Cardmngr.ServiceDefaults) (необходим для `Cardmngr.AppHost`);
 - Onlyoffice
-  - [Onlyoffice.Api](/Onlyoffice/Onlyoffice.Api/Onlyoffice.Api.csproj) (классы для работы с onlyofficeapi);
-  - [Onlyoffice.ProxyServer](/Onlyoffice/Onlyoffice.ProxyServer/Onlyoffice.ProxyServer.csproj) (приложение перенаправляющее запросы от blazorwasm → onlyofficeapi);
+  - [Onlyoffice.Api](/Onlyoffice/Onlyoffice.Api) (классы для работы с onlyofficeapi);
+  - [Onlyoffice.ProxyServer](/Onlyoffice/Onlyoffice.ProxyServer) (приложение перенаправляющее запросы от blazorwasm → onlyofficeapi);
 - WebUI
-  - [Cardmngr](/WebUI/Cardmngr/Cardmngr.csproj) (blazorwasm приложение);
-  - [Cardmngr.Server](/WebUI/Cardmngr.Server/Cardmngr.Server.csproj) (kernel сервер приложения);
-  - [Cardmngr.Shared](/WebUI/Cardmngr.Shared/Cardmngr.Shared.csproj) (общий для сервера и приложения код).
+  - [Cardmngr](/WebUI/Cardmngr) (blazorwasm приложение);
+  - [Cardmngr.Server](/WebUI/Cardmngr.Server) (kernel сервер приложения);
+  - [Cardmngr.Shared](/WebUI/Cardmngr.Shared) (общий для сервера и приложения код).
 
 # Общий принцип работы
 
 ![interaction scheme](/doc-images/interaction-scheme.png)
 
-Как видно из диаграммы, [Cardmngr.Server](/WebUI/Cardmngr.Server/Cardmngr.Server.csproj) является фасадом к другим частям системы для клиента. (возможно лучше сделать, чтобы клиент делал запросы напрямую) Вдобавок к этому, сервер содержит [код](/WebUI/Cardmngr.Server/Hubs/) SignalR взаимодействия.
+Как видно из диаграммы, [Cardmngr.Server](/WebUI/Cardmngr.Server) является фасадом к другим частям системы для клиента. (возможно лучше сделать, чтобы клиент делал запросы напрямую) Вдобавок к этому, сервер содержит [код](/WebUI/Cardmngr.Server/Hubs/) SignalR взаимодействия.
 
 Все преобразования данных из R7-структур в собственные структуры-данных, происходит на стороне клиента. Т.о. клиент отправляет запрос серверу, который перенаправляет его в proxy-сервер, который перенаправляет его на R7-сервер. Ответ, пройдя обратный путь, достигает клиента, где преобразуется в "удобоваримые" структуры-данных, которые затем отображаются в UI.
 
@@ -35,7 +35,7 @@ opt.Listen(host, address.Port, listenOptions =>
 });
 ```
 
-[Сервис отзывов](Cardmngr.FeedbackService/Cardmngr.FeedbackService.csproj) сохраняет свое состояние напрямую в json-файле на host-машине.
+[Сервис отзывов](Cardmngr.FeedbackService) сохраняет свое состояние напрямую в json-файле на host-машине.
 
 # Клиентское приложение
 
@@ -59,7 +59,7 @@ npx tailwindcss -i wwwroot/css/site.css -o wwwroot/css/site.min.css -w
 Чтобы запустить проект для отладки нужно:
 
 1. Удостоверится в работающем Onlyoffice/R7-Сервере и правильности адресов, указанных в файлах-конфигурациях;
-2. Запустить команду `dotnet watch` в проекте [Cardmngr.AppHost](/Cardmngr.AppHost/Cardmngr.AppHost.csproj);
+2. Запустить команду `dotnet watch` в проекте [Cardmngr.AppHost](/Cardmngr.AppHost);
 3. Запустить css-движок из директории `WebUI/Cardmngr/`.
 
 Процесс разработки оставляет желать лучшего, но как настроить его лучше я не знаю...
@@ -81,4 +81,4 @@ npx tailwindcss -i wwwroot/css/site.css -o wwwroot/css/site.min.css -w
 
 Скрипт также проверяет наличие обязательных файлов и переменных, и выводит сообщения об ошибках, если что-то идет не так.
 
-Поэтому для развертывания необходимо перенести созданную папку в deploy-окружение и выполнить скрипт deploy.sh.
+Поэтому для развертывания необходимо перенести созданную папку в deploy-окружение, где установлен docker, и выполнить скрипт deploy.sh.
