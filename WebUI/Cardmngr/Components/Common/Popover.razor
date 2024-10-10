@@ -1,9 +1,13 @@
-﻿
-<FluentPopover AnchorId="@_popoverGuid"
+﻿@inherits KolComponentBase
+
+<FluentPopover AnchorId="@AnchorId"
                Open="Open"
-               Class="rounded-lg"
+               Style="@Style"
+               Class=@($"rounded-lg {Class}")
                HorizontalPosition="HorizontalPosition"
+               HorizontalThreshold="HorizontalThreshold"
                OpenChanged="OpenChanged"
+               VerticalThreshold="VerticalThreshold"
                VerticalPosition="VerticalPosition" >
     <Body>
         @ChildContent
@@ -14,9 +18,12 @@
 
     private readonly string _popoverGuid = Guid.NewGuid().ToString();
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        return AnchorIdChanged.InvokeAsync(_popoverGuid);
+        if (AnchorId is null)
+        {
+            await AnchorIdChanged.InvokeAsync(_popoverGuid);
+        }
     }
 
     [Parameter]
@@ -38,5 +45,11 @@
     public HorizontalPosition? HorizontalPosition { get; set; }
 
     [Parameter]
+    public int HorizontalThreshold { get; set; }
+
+    [Parameter]
     public VerticalPosition? VerticalPosition { get; set; }
+
+    [Parameter]
+    public int VerticalThreshold { get; set; }
 }

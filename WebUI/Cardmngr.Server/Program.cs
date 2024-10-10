@@ -28,6 +28,7 @@ builder.Services.AddHttpForwarderWithServiceDiscovery();
 if (builder.Environment.IsProduction())
 {
     builder.WebHost.UseKestrel(ConfigureServer);
+    builder.Services.AddWebOptimizer();
 }
 
 builder.Services.AddAuthentication();
@@ -39,6 +40,7 @@ if (app.Environment.IsProduction())
     app.UseResponseCompression();
     app.UseExceptionHandler("/Error");
     app.UseHsts();
+    app.UseWebOptimizer();
 }
 else
 {

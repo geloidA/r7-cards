@@ -1,0 +1,13 @@
+﻿
+<div id="project-options" 
+    @onclick=@(() => _popoverOpen = !_popoverOpen)
+    class="p-1 hover:bg-neutral-fill-hover rounded-md transition-colors cursor-pointer flex items-center">
+    <FluentIcon Value="@(new Icons.Filled.Size20.Options())" />
+</div>
+
+<Popover AnchorId="project-options"
+    @bind-Open="@_popoverOpen"
+    Style="margin-top: 5px;" >
+
+    bobby
+</Popover>

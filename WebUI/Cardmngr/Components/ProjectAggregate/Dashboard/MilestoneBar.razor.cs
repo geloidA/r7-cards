@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.Dashboard;
 
-public partial class MilestoneBar : KolComponentBase
+public partial class MilestoneBar : KolComponentBase, IDisposable
 {
     [CascadingParameter] IFilterableProjectState State { get; set; } = null!;
 

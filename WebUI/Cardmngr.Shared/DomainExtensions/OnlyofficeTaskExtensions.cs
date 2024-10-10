@@ -36,9 +36,9 @@ public static class OnlyofficeTaskExtensions
 
     public static bool HasStatus(this IOnlyofficeTask task, OnlyofficeTaskStatus status)
     {
-        return !task.TaskStatusId.HasValue
-            ? status.IsDefault && task.Status.ToStatusType() == status.StatusType
-            : task.TaskStatusId == status.Id;
+        return task.TaskStatusId.HasValue
+            ? task.TaskStatusId == status.Id
+            : status.IsDefault && task.Status.ToStatusType() == status.StatusType;
     }
 
     public static bool HasUnclosedSubtask(this OnlyofficeTask task)

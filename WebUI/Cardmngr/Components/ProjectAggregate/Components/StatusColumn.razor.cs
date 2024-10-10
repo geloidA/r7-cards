@@ -1,4 +1,4 @@
-﻿using Blazored.Modal;
+using Blazored.Modal;
 using Blazored.Modal.Services;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Domain.Entities;
@@ -68,19 +68,19 @@ public partial class StatusColumn : ComponentBase, IDisposable
             .OrderByTaskCriteria()];
     }
 
-    private async Task OnChangeTaskStatus(OnlyofficeTask task, OnlyofficeTaskStatus status)
+    private async Task OnTaskDropped(OnlyofficeTask task)
     {
-        if (status.StatusType == StatusType.Close && task.HasUnclosedSubtask())
+        if (Status.StatusType == StatusType.Close && task.HasUnclosedSubtask())
         {
             var confirmModal = await Modal.Show<CloseCardConfirmModal>(ModalOptions).Result;
             if (confirmModal.Cancelled) return;
         }
 
-        if (!task.HasStatus(status))
+        if (!task.HasStatus(Status))
         {
             try 
             {
-                var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, status);
+                var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, Status);
                 State.ChangeTaskStatus(updated);
             }
             catch (HttpRequestException e)

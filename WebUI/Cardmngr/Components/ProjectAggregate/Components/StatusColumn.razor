@@ -13,7 +13,7 @@
         Items="_tasks" 
         ShowDropPlaceholder
         DropPlaceholderDelay="TimeSpan.FromMilliseconds(250)"
-        OnDropItem="@(async task => await OnChangeTaskStatus(task, Status))" >
+        OnDropItem="@(async task => await OnTaskDropped(task))" >
         
         <HeaderTemplate Context="isCollapsed">
             <TaskStatusHeader TaskStatus="@Status" />
