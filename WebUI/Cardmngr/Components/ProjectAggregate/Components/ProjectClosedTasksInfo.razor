@@ -1,3 +1,4 @@
+@using Cardmngr.Components.ProjectAggregate.Models
 @implements IDisposable
 
 <FluentBadge class="self-center flex select-none" 
@@ -11,6 +12,16 @@
 
     protected override void OnInitialized()
     {
-        State.TasksChanged += _ => StateHasChanged();
+        State.TasksChanged += Refresh;
+    }
+
+    private void Refresh(EntityChangedEventArgs<OnlyofficeTask>? _)
+    {
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        State.TasksChanged -= Refresh;
     }
 }

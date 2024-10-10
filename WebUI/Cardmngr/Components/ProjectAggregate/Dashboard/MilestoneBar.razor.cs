@@ -1,4 +1,5 @@
 using System.Globalization;
+using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
@@ -17,8 +18,13 @@ public partial class MilestoneBar : KolComponentBase, IDisposable
 
     protected override void OnInitialized()
     {
-        State.TasksChanged += _ => StateHasChanged();
+        State.TasksChanged += Refresh;
         State.TaskFilter.FilterChanged += OnFilterChanged;
+    }
+
+    private void Refresh(EntityChangedEventArgs<OnlyofficeTask>? _)
+    {
+        StateHasChanged();
     }
 
     private string _selectedCss = "";
@@ -36,6 +42,12 @@ public partial class MilestoneBar : KolComponentBase, IDisposable
         }
 
         StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        State.TasksChanged -= Refresh;
+        State.TaskFilter.FilterChanged -= OnFilterChanged;
     }
 
     private string CssBackgroundColor => Milestone.IsDeadlineOut() 
