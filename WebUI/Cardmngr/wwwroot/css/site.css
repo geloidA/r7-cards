@@ -92,6 +92,9 @@
     --color5: 116, 226, 145;
     --circle-size: 80%;
     --blending: hard-light;
+    --gantt-weekday-bg: var(--neutral-layer-4) !important;
+    --gantt-weekend-bg: var(--neutral-layer-3) !important;
+    --today-bg: var(--accent-fill-rest) !important;
 }
 
 body {

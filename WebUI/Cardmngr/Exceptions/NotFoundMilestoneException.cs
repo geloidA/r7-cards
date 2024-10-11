@@ -1,6 +1,6 @@
 ﻿namespace Cardmngr.Exceptions;
 
-public class NotFoundMilestoneException : Exception
+public class NotFoundMilestoneException(int id) : Exception($"Can't find milestone by id - {id}")
 {
 
 }

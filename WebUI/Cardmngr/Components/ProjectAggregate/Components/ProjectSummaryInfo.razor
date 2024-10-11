@@ -18,7 +18,8 @@
                     }
                 </div>
             </div>
-            <div class="row absolute w-full" style="bottom: 60px; left: 0;">
+            @* TODO *@
+            <div class="flex absolute w-full" style="bottom: 60px; left: 0;">
                 @if (_deadlineoutTasks.Count > 0)
                 {
                     <div class="flex justify-center text-error">
@@ -36,7 +37,7 @@
     }
     else
     {
-        <div class="fs-1 font-bold" style="color: var(--neutral-layer-2);" >НЕТ ЗАДАЧ</div>
+        <div class="text-xl font-bold" style="color: var(--neutral-layer-2);" >НЕТ ЗАДАЧ</div>
     }
 </div>
 

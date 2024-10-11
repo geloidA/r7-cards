@@ -3,12 +3,8 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities
 {
-    public sealed record Milestone : AuditableEntityBase<int>
+    public sealed record Milestone : WorkEntityBase
     {
-        public bool CanEdit { get; init; }
-        public bool CanDelete { get; init; }
-        public string Title { get; init; }
-        public string Description { get; init; }
         public Project Project { get; init; }
         public DateTime Deadline { get; init; }
         public bool IsKey { get; init; }
@@ -31,5 +27,10 @@ namespace Cardmngr.Domain.Entities
         }
         
         public override int GetHashCode() => Id;
+
+        public override IEnumerable<UserInfo> GetResponsibles()
+        {
+            return [Responsible];
+        }
     }
 }

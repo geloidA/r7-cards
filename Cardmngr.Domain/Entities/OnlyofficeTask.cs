@@ -3,15 +3,11 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities;
 
-public sealed record OnlyofficeTask : AuditableEntityBase<int>, IOnlyofficeTask
+public sealed record OnlyofficeTask : WorkEntityBase, IOnlyofficeTask
 {
-    public string Title { get; init; }
-    public string Description { get; init; }
     public Priority Priority { get; init; }
-    public bool CanEdit { get; init; } 
     public bool CanCreateSubtask { get; init; }
     public bool CanCreateTimeSpend { get; init; }
-    public bool CanDelete { get; init; }
     public bool CanReadFiles { get; init; }
     public int? MilestoneId { get; init; }
     public List<Subtask> Subtasks { get; init; } = [];
@@ -44,6 +40,11 @@ public sealed record OnlyofficeTask : AuditableEntityBase<int>, IOnlyofficeTask
     }
     
     public override int GetHashCode() => Id;
+
+    public override IEnumerable<UserInfo> GetResponsibles()
+    {
+        return Responsibles;
+    }
 
     public override string ToString()
     {

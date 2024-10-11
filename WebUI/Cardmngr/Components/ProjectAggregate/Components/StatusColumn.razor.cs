@@ -48,6 +48,12 @@ public partial class StatusColumn : ComponentBase, IDisposable
         }
     }
 
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        Console.WriteLine("OnParametersSet");
+    }
+
     private void RefreshColumn(EntityChangedEventArgs<OnlyofficeTask>? args)
     {
         _tasks = GetTasksForStatus(State, Status);
