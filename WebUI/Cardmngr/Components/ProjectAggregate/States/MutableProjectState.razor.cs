@@ -23,6 +23,8 @@ public sealed partial class MutableProjectState :
 
     [Parameter] public int Id { get; set; }
 
+    [Parameter] public bool AutoRefresh { get; set; } = true;
+
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     [Inject] private ITaskClient TaskClient { get; set; } = null!;
@@ -37,7 +39,11 @@ public sealed partial class MutableProjectState :
     protected override void OnInitialized()
     {
         RefreshService.Refreshed += OnRefreshModelAsync;
-        RefreshService.Start(TimeSpan.FromSeconds(7));
+
+        if (AutoRefresh)
+        {
+            RefreshService.Start(TimeSpan.FromSeconds(7));
+        }
     }
 
     public async Task ToggleFollowAsync()

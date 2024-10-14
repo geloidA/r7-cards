@@ -1,27 +1,28 @@
-﻿@inject NavigationManager NavigationManager
+﻿@using BlazorComponentBus
+@using Cardmngr.Components.ProjectAggregate.Contracts
+
+@inject NavigationManager NavigationManager
 @inject IProjectClient ProjectClient
+@inject IComponentBus Bus
 
 @inherits KolComponentBase
 @implements IDisposable
 
-@if (ProjectInfo.SelectedProject is not null)
+@if (_projState is not null)
 {
-    <PageTitle>@ProjectInfo.SelectedProject.Title</PageTitle>
+    <PageTitle>@_projState.Project.Title</PageTitle>
     <div class="flex gap-1">
-        @if (ProjectInfo.OpenProjectInfoFunc is not null)
-        {
-            <FluentIcon class="self-center" 
-                        @onmouseenter="() => isInfoIconHovered = true"
-                        @onmouseleave="() => isInfoIconHovered = false"
-                        Value="@InfoIcon" 
-                        OnClick="ProjectInfo.OpenProjectInfoFunc" 
-                        Title="О проекте" />
-        }
+        <FluentIcon class="self-center" 
+            @onmouseenter="() => isInfoIconHovered = true"
+            @onmouseleave="() => isInfoIconHovered = false"
+            Value="@InfoIcon" 
+            OnClick="ShowProjectMenu" 
+            Title="О проекте" />
         <div id="btn-pj-nav" 
              class="cursor-pointer"
              style="color: @CardmngrColors.Inverse;"
              @onclick="() => openPopover = !openPopover" >
-            @ProjectInfo.SelectedProject.Title
+            @_projState.Project.Title
         </div>
     </div>
 
@@ -39,8 +40,10 @@
     bool isInfoIconHovered;
     bool openPopover;
     Dictionary<int, Project> projectsByIds = [];
+    private IProjectState? _projState;
 
-    [CascadingParameter] HeaderInteractionService ProjectInfo { get; set; } = null!;
+    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
+    [CascadingParameter] IModalService Modal { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,11 +51,26 @@
             .GetSelfProjectsAsync()
             .ToListAsync().ConfigureAwait(false))
             .ToDictionary(x => x.Id, x => x);
-
-        ProjectInfo.SelectedProjectChanged += StateHasChanged;
+        
+        Bus.SubscribeTo<ProjectStateChanged>(OnProjectStateChanged);
 
         UpdateStateByLocation(null, new LocationChangedEventArgs(NavigationManager.Uri, true));
         NavigationManager.LocationChanged += UpdateStateByLocation;
+    }
+
+    private void OnProjectStateChanged(ProjectStateChanged e)
+    {
+        _projState = e.State;
+        StateHasChanged();
+    }
+    
+    private async Task ShowProjectMenu()
+    {
+        var parameters = new ModalParameters 
+        { 
+            { "State", _projState }
+        };
+        await Modal.Show<ProjectDetailsModal>(parameters, Options).Result;
     }
     
     private Icon InfoIcon => isInfoIconHovered ? new Icons.Filled.Size16.Info() : new Icons.Regular.Size16.Info();
@@ -61,7 +79,7 @@
     {
         if (!IsProjectUri(args.Location))
         {
-            ProjectInfo.CleanSelectedProject();
+            _projState = null;
         }
 
         StateHasChanged();
@@ -72,6 +90,6 @@
     public void Dispose()
     {
         NavigationManager.LocationChanged -= UpdateStateByLocation;
-        ProjectInfo.SelectedProjectChanged -= StateHasChanged;
+        Bus.UnSubscribeFrom<ProjectStateChanged>(OnProjectStateChanged);
     }
 }

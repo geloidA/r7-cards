@@ -11,6 +11,7 @@ namespace Cardmngr.Components.ProjectAggregate;
 public partial class ProjectGantt : ComponentBase
 {
     private GanttChart _chart = null!;
+    private GanttDetalizationLevel _detalizationLevel = GanttDetalizationLevel.Week;
     private IList<GanttChartItem> _chartItems = [];
 
     [CascadingParameter] private IProjectState State { get; set; } = null!;
@@ -22,6 +23,23 @@ public partial class ProjectGantt : ComponentBase
             _chartItems = GetChartItems();
             _chart.RefreshItems();
             StateHasChanged();
+        };
+    }
+
+    private void OnDetalizationLevelChanged(GanttDetalizationLevel level)
+    {
+        _detalizationLevel = level;
+        _chart.RefreshItems();
+    }
+
+    private static string GetDetalizationLevelText(GanttDetalizationLevel level)
+    {
+        return level switch
+        {
+            GanttDetalizationLevel.Week => "Неделя",
+            GanttDetalizationLevel.Month => "Месяц",
+            GanttDetalizationLevel.Quarter => "Квартал",
+            _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)
         };
     }
 
@@ -60,15 +78,14 @@ public partial class ProjectGantt : ComponentBase
                     Data = milestone,
                     Start = State.GetMilestoneStart(milestone),
                     End = milestone.Deadline,
-                    Children = State
+                    Children = [.. State
                         .GetMilestoneTasks(milestone)
                         .Select(x => new GanttChartItem
                         {
                             Data = x,
                             Start = x.StartDate,
                             End = x.Deadline
-                        })
-                        .ToList()
+                        })]
                 };
             });
 
@@ -81,8 +98,8 @@ public partial class ProjectGantt : ComponentBase
                 End = x.Deadline
             });
 
-        return milestoneTasks
+        return [.. milestoneTasks
             .Concat(tasks)
-            .ToList();
+            .OrderBy(x => x.Start ?? DateTime.MaxValue)];
     }
 }

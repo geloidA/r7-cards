@@ -3,48 +3,61 @@
 @using KolBlazor.Components.Charts.Gantt
 @using KolBlazor.Components.TreeGrid.Columns
 
-<GanttChart @ref="@_chart" 
-    Items="@_chartItems" 
-    DetalizationLevel="GanttDetalizationLevel.Month"
-    TreeGridStyle="min-width: 550px;"
-    KeySelector="@GetItemKey" >
-    <Columns>
-        <GridColumn TGridItem="GanttChartItem" Width="250px" >
-            <HeaderTemplate>
-                Название
-            </HeaderTemplate>
-            <CellContent Context="item" >
-                @{
-                    var work = item.Data as WorkEntityBase ?? throw new ArgumentNullException(nameof(item.Data));
-                }
-                @work.Title
-            </CellContent>
-        </GridColumn>
-        <GridColumn TGridItem="GanttChartItem" Width="150px" >
-            <HeaderTemplate>
-                Начало
-            </HeaderTemplate>
-            <CellContent Context="item" >
-                @item.Start?.ToString("dd.MM.yyyy")
-            </CellContent>
-        </GridColumn>
-        <GridColumn TGridItem="GanttChartItem" Width="150px" >
-            <HeaderTemplate>
-                Крайний срок
-            </HeaderTemplate>
-            <CellContent Context="item" >
-                @item.End?.ToString("dd.MM.yyyy")
-            </CellContent>
-        </GridColumn>
-    </Columns>
-    @* <ItemTemplate Context="item" >
-        @if (item.Data is Milestone milestone)
-        {
-            <div>Веха: @milestone.Title</div>
-        } 
-        else if (item.Data is OnlyofficeTask task)
-        {
-            <div>Задача: @task.Title</div>
-        }
-    </ItemTemplate> *@
-</GanttChart>
+<div style="position: relative; height: 100%;">
+    <GanttChart @ref="@_chart" 
+        Items="@_chartItems" 
+        DetalizationLevel="@_detalizationLevel"
+        TreeGridStyle="min-width: 550px;"
+        KeySelector="@GetItemKey" >
+        <Columns>
+            <GridColumn TGridItem="GanttChartItem" Width="400px" >
+                <HeaderTemplate>
+                    Название
+                </HeaderTemplate>
+                <CellContent Context="item" >
+                    @{
+                        var work = item.Data as WorkEntityBase ?? throw new ArgumentNullException(nameof(item.Data));
+                    }
+                    @work.Title
+                </CellContent>
+            </GridColumn>
+            <GridColumn TGridItem="GanttChartItem" Width="75px" >
+                <HeaderTemplate>
+                    Начало
+                </HeaderTemplate>
+                <CellContent Context="item" >
+                    @item.Start?.ToString("dd.MM.yyyy")
+                </CellContent>
+            </GridColumn>
+            <GridColumn TGridItem="GanttChartItem" Width="100px" >
+                <HeaderTemplate>
+                    Крайний срок
+                </HeaderTemplate>
+                <CellContent Context="item" >
+                    @item.End?.ToString("dd.MM.yyyy")
+                </CellContent>
+            </GridColumn>
+        </Columns>
+        @* <ItemTemplate Context="item" >
+            @if (item.Data is Milestone milestone)
+            {
+                <div>Веха: @milestone.Title</div>
+            } 
+            else if (item.Data is OnlyofficeTask task)
+            {
+                <div>Задача: @task.Title</div>
+            }
+        </ItemTemplate> *@
+    </GanttChart>
+    <div class="detalization-toggle">
+        <FluentSelect Multiple="false"
+                      TOption="GanttDetalizationLevel"
+                      Width="100px;"
+                      OptionText="GetDetalizationLevelText"
+                      Items="Enum.GetValues<GanttDetalizationLevel>()"
+                      SelectedOption="_detalizationLevel"
+                      SelectedOptionChanged="OnDetalizationLevelChanged" >
+
+        </FluentSelect>
+    </div>
+</div>

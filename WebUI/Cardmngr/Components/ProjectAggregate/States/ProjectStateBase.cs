@@ -1,4 +1,6 @@
-﻿using Cardmngr.Application.Clients.TaskClient;
+﻿using BlazorComponentBus;
+using Cardmngr.Application.Clients.TaskClient;
+using Cardmngr.Components.ProjectAggregate.Contracts;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
@@ -15,9 +17,12 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     private List<OnlyofficeTaskStatus> _statuses = [];
     private List<OnlyofficeTask> _tasks = [];
     private readonly Dictionary<int, List<TaskTag>> _tagsByTaskId = [];
-    
+
     protected readonly Dictionary<int, int> CommonHeightByKey = [];
     private CancellationTokenSource? _cts;
+    private bool _isCtsDisposed;
+
+    [Inject] protected IComponentBus Bus { get; set; } = null!;
 
     protected async Task SetModelAsync(ProjectStateDto model, bool firstRender = false)
     {
@@ -34,6 +39,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
             Initialized = true;
             StateHasChanged();
 
+            if (_isCtsDisposed) return;
             _cts?.Cancel();
             _cts = new CancellationTokenSource();
             var token = _cts.Token;
@@ -65,7 +71,6 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
         OnMilestonesChanged();
         OnTasksChanged();
     }
-
 
     public Project Project { get; private set; } = null!;
 
@@ -210,5 +215,6 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     public virtual void Dispose()
     {
         _cts?.Dispose();
+        _isCtsDisposed = true;
     }
 }

@@ -11,25 +11,5 @@ namespace Cardmngr.Components.ProjectAggregate;
 public partial class ProjectBoardHeader : ComponentBase
 {
     private bool collapsed;
-
     [CascadingParameter] IProjectState State { get; set; } = null!;
-
-    [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
-    [CascadingParameter] IModalService Modal { get; set; } = null!;
-    [CascadingParameter] HeaderInteractionService ProjectInfo { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        ProjectInfo.OpenProjectInfoFunc = ShowProjectMenu;
-        ProjectInfo.SelectedProject = State.Project;
-    }
-
-    private async Task ShowProjectMenu()
-    {
-        var parameters = new ModalParameters 
-        { 
-            { "State", State }
-        };
-        await Modal.Show<ProjectDetailsModal>(parameters, Options).Result;
-    }
 }

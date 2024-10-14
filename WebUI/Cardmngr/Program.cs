@@ -10,6 +10,7 @@ using Cardmngr.Application.Extensions;
 using KolBlazor.Extensions;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Cardmngr.Extensions;
+using BlazorComponentBus;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -20,6 +21,7 @@ builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.H
 builder.Services
     .AddScoped<AuthenticationStateProvider, CookieStateProvider>()
     .AddScoped<CookieHandler>()
+    .AddSingleton<IComponentBus, ComponentBus>()
     .AddCommonServices()
     .AddApiClients()
     .AddFeedbackServices()

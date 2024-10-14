@@ -24,9 +24,9 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
     protected override async Task OnInitializedAsync()
     {
         userId = (await AuthenticationState.ConfigureAwait(false)).User.GetNameIdentifier();
-        
+
         SummaryService.FilterManager.FilterChanged += OnFilterChangedAsync;
-        
+
         OnFilterChangedAsync(SummaryService.FilterManager.GenerateFilter());
     }
 
@@ -40,7 +40,7 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
                 .ToListAsync().ConfigureAwait(false);
 
             SummaryService.SetTasks(allProjects.SelectMany(x => x.Tasks).ToList());
-            
+
             StateHasChanged();
         });
     }

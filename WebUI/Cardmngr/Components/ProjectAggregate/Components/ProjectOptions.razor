@@ -5,19 +5,17 @@
     <FluentIcon Value="@(new Icons.Filled.Size20.Options())" />
 </div>
 
-<FluentMenu @bind-Open="@_popoverOpen" 
-    Anchor="project-options"
-    Class="mt-1" >
-    <FluentMenuItem>
-        <span slot="start" class="rounded-md border border-warning p-1">
-            <FluentIcon Value="@(new Icons.Regular.Size16.GridKanban())" />
-        </span>
-        <span class="text-xs">Доска задач</span>
-    </FluentMenuItem>
-    <FluentMenuItem>
-        <span slot="start" class="rounded-md border border-warning p-1">
-            <FluentIcon Value="@(new Icons.Regular.Size16.GanttChart())" />
-        </span>
-        <span class="text-xs">Таймлайн</span>
-    </FluentMenuItem>
-</FluentMenu>
+<Popover @bind-Open="@_popoverOpen" 
+    AnchorId="project-options"
+    Class="mt-1 p-0 w-52" >
+    <FluentNavMenu>
+        <FluentNavLink Icon="@(new Icons.Regular.Size16.GridKanban())" 
+            Href=@($"project/board?ProjectId={State.Project.Id}") class="text-xs">
+            Доска задач
+        </FluentNavLink>
+        <FluentNavLink Icon="@(new Icons.Regular.Size16.GanttChart())" 
+            Href=@($"project/gantt?ProjectId={State.Project.Id}") class="text-xs">
+            Таймлайн
+        </FluentNavLink>
+    </FluentNavMenu>
+</Popover>

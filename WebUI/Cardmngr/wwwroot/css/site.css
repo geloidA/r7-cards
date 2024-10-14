@@ -95,6 +95,7 @@
     --gantt-weekday-bg: var(--neutral-layer-4) !important;
     --gantt-weekend-bg: var(--neutral-layer-3) !important;
     --today-bg: var(--accent-fill-rest) !important;
+    --separator-color: var(--neutral-layer-2) !important;
 }
 
 body {
