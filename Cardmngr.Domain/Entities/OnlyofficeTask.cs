@@ -52,10 +52,9 @@ public sealed record OnlyofficeTask : WorkEntityBase, IOnlyofficeTask
     }
 }
 
-public interface IOnlyofficeTask 
+public interface IOnlyofficeTask : ITitled
 {
     int Id { get; }
-    string Title { get; }
     DateTime? StartDate { get; }
     DateTime? Deadline { get; }
     int? TaskStatusId { get; }

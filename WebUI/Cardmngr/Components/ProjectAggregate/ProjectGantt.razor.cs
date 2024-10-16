@@ -1,7 +1,5 @@
 using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
-using Cardmngr.Exceptions;
-using Cardmngr.Extensions;
 using KolBlazor.Components.Charts.Data;
 using KolBlazor.Components.Charts.Gantt;
 using Microsoft.AspNetCore.Components;
@@ -11,25 +9,36 @@ namespace Cardmngr.Components.ProjectAggregate;
 public partial class ProjectGantt : ComponentBase
 {
     private GanttChart _chart = null!;
-    private GanttDetalizationLevel _detalizationLevel = GanttDetalizationLevel.Week;
-    private IList<GanttChartItem> _chartItems = [];
+    private GanttDetalizationLevel _detalizationLevel = GanttDetalizationLevel.Quarter;
 
     [CascadingParameter] private IProjectState State { get; set; } = null!;
 
+    [Parameter] public Func<IEnumerable<GanttChartItem>> GetItems { get; set; } = () => [];
+
     protected override void OnInitialized()
     {
-        State.TasksChanged += _ => 
+        if (State is not null)
         {
-            _chartItems = GetChartItems();
-            _chart.RefreshItems();
-            StateHasChanged();
-        };
+            State.TasksChanged += _ => Refresh();
+
+            if (State is IFilterableProjectState filterableState)
+            {
+                filterableState.TaskFilter.FilterChanged += Refresh;
+            }
+        }
+    }
+
+    public void Refresh()
+    {
+        _chart.RefreshItems();
+        _chart.Refresh();
+        InvokeAsync(StateHasChanged);
     }
 
     private void OnDetalizationLevelChanged(GanttDetalizationLevel level)
     {
         _detalizationLevel = level;
-        _chart.RefreshItems();
+        _chart.Refresh();
     }
 
     private static string GetDetalizationLevelText(GanttDetalizationLevel level)
@@ -45,61 +54,14 @@ public partial class ProjectGantt : ComponentBase
 
     private static string GetItemKey(GanttChartItem item)
     {
-        if (item.Data is OnlyofficeTask task)
+        return item.Data switch
         {
-            return $"task-{task.Id}";
-        }
-        else if (item.Data is Milestone milestone)
-        {
-            return $"milestone-{milestone.Id}";
-        }
-        else if (item.Data is Project project)
-        {
-            return $"project-{project.Id}";
-        }
-
-        throw new NotSupportedException();
-    }
-
-    private List<GanttChartItem> GetChartItems()
-    {
-        var allTasks = State is IFilterableProjectState filterableState
-            ? filterableState.FilteredTasks()
-            : State.Tasks;
-
-        var milestoneTasks = allTasks
-            .Where(t => t.MilestoneId.HasValue)
-            .GroupBy(t => t.MilestoneId)
-            .Select(g => 
-            {
-                var milestone = State.GetMilestone(g.Key) ?? throw new NotFoundMilestoneException(g.Key!.Value);
-                return new GanttChartItem
-                {
-                    Data = milestone,
-                    Start = State.GetMilestoneStart(milestone),
-                    End = milestone.Deadline,
-                    Children = [.. State
-                        .GetMilestoneTasks(milestone)
-                        .Select(x => new GanttChartItem
-                        {
-                            Data = x,
-                            Start = x.StartDate,
-                            End = x.Deadline
-                        })]
-                };
-            });
-
-        var tasks = allTasks
-            .Where(t => !t.MilestoneId.HasValue)
-            .Select(x => new GanttChartItem
-            {
-                Data = x,
-                Start = x.StartDate,
-                End = x.Deadline
-            });
-
-        return [.. milestoneTasks
-            .Concat(tasks)
-            .OrderBy(x => x.Start ?? DateTime.MaxValue)];
+            OnlyofficeTask task => $"task-{task.Id}",
+            Milestone milestone => $"milestone-{milestone.Id}",
+            Project project => $"project-{project.Id}",
+            ProjectInfo projectInfo => $"projectInfo-{projectInfo.Id}",
+            MilestoneInfo milestoneInfo => $"milestoneInfo-{milestoneInfo.Id}",
+            _ => throw new NotSupportedException()
+        };
     }
 }

@@ -1,0 +1,28 @@
+﻿@using Cardmngr.Shared.Utils.Filter
+
+@inherits KolComponentBase
+
+<div class="@Class" style="@Style">
+    <FluentCheckbox Label="Только открытые задачи"
+        ValueChanged="OnValueChanged" />
+</div>
+
+
+@code {
+
+    private readonly IFilter<OnlyofficeTask> _filter = new OpenedTaskFilter();
+
+    [CascadingParameter] IFilterableProjectState State { get; set; } = null!;
+
+    private void OnValueChanged(bool isChecked)
+    {
+        if (isChecked)
+        {
+            State.TaskFilter.AddFilter(_filter);
+        }
+        else
+        {
+            State.TaskFilter.RemoveFilter(_filter);
+        }
+    }
+}

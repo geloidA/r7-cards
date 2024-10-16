@@ -1,7 +1,10 @@
 ﻿using Cardmngr.Application.Clients.Project;
 using Cardmngr.Application.Extensions;
+using Cardmngr.Components.ProjectAggregate;
 using Cardmngr.Components.ProjectAggregate.Models;
+using Cardmngr.Extensions;
 using Cardmngr.Services;
+using KolBlazor.Components.Charts.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -12,6 +15,8 @@ namespace Cardmngr.Pages;
 [Authorize]
 public partial class AllProjectsPage : ComponentBase, IDisposable
 {
+    private ProjectGantt projectGantt = null!;
+    
     private List<StaticProjectVm> allProjects = [];
     private string userId = string.Empty;
 
@@ -40,9 +45,63 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
                 .ToListAsync().ConfigureAwait(false);
 
             SummaryService.SetTasks(allProjects.SelectMany(x => x.Tasks).ToList());
+            projectGantt?.Refresh();
 
             StateHasChanged();
         });
+    }
+
+    private IEnumerable<GanttChartItem> GetGanttChartItems()
+    {
+        return allProjects
+            .Select(p => 
+            {
+                return new GanttChartItem
+                {
+                    Data = p.ProjectInfo,
+                    Start = p.Tasks.Min(x => x.StartDate),
+                    End = p.Tasks.Max(x => x.Deadline),
+                    Children = GetGanttProjectMilestones(p),
+                };
+            })
+            .OrderBy(x => x.Start ?? DateTime.MaxValue);
+    }
+
+    private static IEnumerable<GanttChartItem> GetGanttProjectMilestones(StaticProjectVm project)
+    {
+        var milestones = project.Tasks
+            .Where(t => t.MilestoneId.HasValue)
+            .GroupBy(t => t.MilestoneId)
+            .Select(g => 
+            {
+                var milestone = g.First().Milestone;
+                return new GanttChartItem
+                {
+                    Data = g.First().Milestone,
+                    End = milestone.Deadline,
+                    Start = ProjectStateExtensions.GetMilestoneStart(g, milestone.Id, milestone.Deadline),
+                    Children = g.Select(x => new GanttChartItem
+                    {
+                        Data = x,
+                        Start = x.StartDate,
+                        End = x.Deadline
+                    })
+                    .ToList()
+                };
+            });
+
+        var tasks = project.Tasks
+            .Where(t => !t.MilestoneId.HasValue)
+            .Select(x => new GanttChartItem
+            {
+                Data = x,
+                Start = x.StartDate,
+                End = x.Deadline
+            });
+
+        return milestones
+            .Concat(tasks)
+            .OrderBy(x => x.Start ?? DateTime.MaxValue);
     }
 
     public void Dispose()

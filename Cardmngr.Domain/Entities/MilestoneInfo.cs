@@ -2,4 +2,4 @@
 
 namespace Cardmngr.Domain.Entities;
 
-public record MilestoneInfo(string Title, DateTime Deadline) : EntityBase<int> { }
+public record MilestoneInfo(string Title, DateTime Deadline) : EntityBase<int>, ITitled { }

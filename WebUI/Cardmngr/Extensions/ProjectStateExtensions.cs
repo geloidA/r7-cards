@@ -37,13 +37,18 @@ public static class ProjectStateExtensions
         return projectState.Tasks.Max(x => x.Deadline);
     }
 
-    public static DateTime GetMilestoneStart(this IProjectState projectState, Milestone milestone, DateTime? deadline = null)
+    public static DateTime GetMilestoneStart(this IProjectState projectState, Milestone milestone, DateTime? newDeadline = null)
     {
-        var minStart = projectState.Tasks
-            .Where(x => x.MilestoneId == milestone.Id)
+        return GetMilestoneStart(projectState.Tasks, milestone.Id, milestone.Deadline, newDeadline);
+    }
+
+    public static DateTime GetMilestoneStart(IEnumerable<OnlyofficeTask> tasks, int milestoneId, DateTime milestoneDeadline, DateTime? newDeadline = null)
+    {
+        var minStart = tasks
+            .Where(x => x.MilestoneId == milestoneId)
             .Min(x => x.StartDate);
         
-        var defaultStart = deadline?.AddDays(-7) ?? milestone.Deadline.AddDays(-7);
+        var defaultStart = newDeadline?.AddDays(-7) ?? milestoneDeadline.AddDays(-7);
         
         return minStart == null || defaultStart < minStart 
             ? defaultStart : minStart.Value;

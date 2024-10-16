@@ -3,7 +3,7 @@ using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Domain.Entities;
 
-public record ProjectInfo : EntityBase<int>
+public record ProjectInfo : EntityBase<int>, ITitled
 {
     public string Title { get; init; }
     public ProjectStatus Status { get; init; }

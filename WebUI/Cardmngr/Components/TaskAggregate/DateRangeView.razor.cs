@@ -11,6 +11,9 @@ public partial class DateRangeView : ComponentBase
     public DateTime? End { get; set; }
 
     [Parameter]
+    public bool Spacing { get; set; }
+
+    [Parameter]
     public EventCallback<DateTime?> StartChanged { get; set; }
 
     [Parameter]

@@ -5,9 +5,15 @@
               ReadOnly="StartReadOnly"
               NotShowYearIfCurrent="NotShowYearIfCurrent"
               DateRender="StartDateRender" />
-
+    @if (Spacing)
+    {
+        <FluentSpacer />
+    }
     <FluentIcon Value="@(new Icons.Regular.Size12.ArrowRight())" Color="Color.FillInverse" />
-
+    @if (Spacing)
+    {
+        <FluentSpacer />
+    }
     <DateView Date="End" 
               DateChanged="EndChanged" 
               ReadOnly="EndReadOnly"

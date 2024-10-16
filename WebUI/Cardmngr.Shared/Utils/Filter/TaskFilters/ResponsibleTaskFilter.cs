@@ -1,18 +1,17 @@
 ﻿using Cardmngr.Domain.Entities;
-using Cardmngr.Shared.Utils.Filter.TaskFilters;
 
-namespace Cardmngr.Shared.Utils.Filter;
+namespace Cardmngr.Shared.Utils.Filter.TaskFilters;
 
 public class ResponsibleTaskFilter : UserTaskFilterBase
 {
     public ResponsibleTaskFilter(UserInfo user) : base(user)
     {
-        
+
     }
 
     public ResponsibleTaskFilter(string userName) : base(userName)
     {
-        
+
     }
 
     public override bool Filter(OnlyofficeTask item)

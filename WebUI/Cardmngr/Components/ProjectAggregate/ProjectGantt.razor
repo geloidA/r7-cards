@@ -5,36 +5,52 @@
 
 <div style="position: relative; height: 100%;">
     <GanttChart @ref="@_chart" 
-        Items="@_chartItems" 
+        GetItems="@GetItems" 
+        DayOffset="31"
         DetalizationLevel="@_detalizationLevel"
-        TreeGridStyle="min-width: 550px;"
         KeySelector="@GetItemKey" >
         <Columns>
-            <GridColumn TGridItem="GanttChartItem" Width="400px" >
+            <GridColumn TGridItem="GanttChartItem" Width="300px" >
                 <HeaderTemplate>
                     Название
                 </HeaderTemplate>
                 <CellContent Context="item" >
                     @{
-                        var work = item.Data as WorkEntityBase ?? throw new ArgumentNullException(nameof(item.Data));
+                        var entity = item.Data as ITitled ?? throw new ArgumentNullException(nameof(item.Data));
                     }
-                    @work.Title
-                </CellContent>
-            </GridColumn>
-            <GridColumn TGridItem="GanttChartItem" Width="75px" >
-                <HeaderTemplate>
-                    Начало
-                </HeaderTemplate>
-                <CellContent Context="item" >
-                    @item.Start?.ToString("dd.MM.yyyy")
+                    <span title="@entity.Title">@entity.Title</span>
                 </CellContent>
             </GridColumn>
             <GridColumn TGridItem="GanttChartItem" Width="100px" >
                 <HeaderTemplate>
-                    Крайний срок
+                    Статус
                 </HeaderTemplate>
                 <CellContent Context="item" >
-                    @item.End?.ToString("dd.MM.yyyy")
+                    @if (item.Data is OnlyofficeTask task)
+                    {
+                        @* <CascadingValue IsFixed Value="task">
+                            <TaskStatusView />
+                        </CascadingValue> *@
+                    }
+                </CellContent>
+            </GridColumn>            
+            <GridColumn TGridItem="GanttChartItem" Width="200px" >
+                <HeaderTemplate>
+                    Период
+                </HeaderTemplate>
+                <CellContent Context="item" >
+                    @if (item.Start != null || item.End != null)
+                    {
+                        <DateRangeView StartReadOnly EndReadOnly
+                            Start="item.Start"
+                            StartDateRender="RenderStart"
+                            EndDateRender="date => RenderEnd((date, item.Data))"
+                            End="item.End" />
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
                 </CellContent>
             </GridColumn>
         </Columns>
@@ -61,3 +77,51 @@
         </FluentSelect>
     </div>
 </div>
+
+@code {
+    private static RenderFragment<DateTime?> RenderStart = date =>
+        @<div>
+            @if (!date.HasValue)
+            {
+                <span class="italic text-info" title="Не установлен">???</span>
+            }
+            else
+            {
+                <span>@date.Value.ToShortYearString()</span>
+            }
+        </div>;
+
+    private static RenderFragment<(DateTime? dt, object? data)> RenderEnd = (tuple) =>
+        @<div>
+            @{
+                var dt = tuple.dt;
+                var data = tuple.data;
+            }
+            @if (!dt.HasValue)
+            {
+                <span class="italic text-info" title="Не установлен">???</span>
+            }
+            else
+            {
+                var task = data as IOnlyofficeTask;   
+                <span class="flex gap-1">
+                    @if (task?.IsDeadlineOut() == true)
+                    {
+                        <FluentIcon Value="@(new Icons.Regular.Size16.Fire())" Color="Color.Error" title="Срок просрочен" />
+                        <span class="text-error" >@dt.Value.ToShortYearString()</span>
+                    }
+                    else if (task?.IsSevenDaysDeadlineOut() == true)
+                    {
+                        <FluentIcon Value="@(new Icons.Filled.Size16.Warning())" 
+                                    Color="Color.Warning"
+                                    title="Срок скоро истечет" />
+                        <span class="text-warning">@dt.Value.ToShortYearString()</span>
+                    }
+                    else
+                    {
+                        <span>@dt.Value.ToShortYearString()</span>
+                    }
+                </span>
+            }
+        </div>;
+}

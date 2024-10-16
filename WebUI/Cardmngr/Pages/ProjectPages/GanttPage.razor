@@ -2,6 +2,8 @@
 
 @using Cardmngr.Components.ProjectAggregate.Components
 @using Cardmngr.Components.ProjectAggregate.Filter
+@using Cardmngr.Exceptions
+@using KolBlazor.Components.Charts.Data
 
 @inherits ProjectPage
 
@@ -9,19 +11,67 @@
 
 @if (ProjectId is not null)
 {
-    <MutableProjectState Id="ProjectId.Value" AutoRefresh="false" >
+    <MutableProjectState @ref="@_projectState" Id="ProjectId.Value" AutoRefresh="false" >
         <ProjectStateNotifier />
         <div class="flex flex-col h-full p-3">
             <div class="mb-2">
-                <div class="flex gap-2">
+                <div class="flex gap-2 items-center">
+                    <OpenTaskStatusSwitcher />
                     <FluentSpacer />
                     <ProjectTextFieldFilterTool />
                     <ProjectOptions />
                 </div>
             </div>
             <Smooth ShowOnFirstRender Style="height: calc(100% - 32px);" >
-                <ProjectGantt />
+                <ProjectGantt GetItems="GetItems" />
             </Smooth>
         </div>
     </MutableProjectState>
+}
+
+@code {
+
+    private IFilterableProjectState _projectState = null!;
+
+    private IEnumerable<GanttChartItem> GetItems()
+    {
+        var allTasks = _projectState.FilteredTasks();
+        Console.WriteLine(allTasks.Count());
+
+        var milestoneTasks = allTasks
+            .Where(t => t.MilestoneId.HasValue)
+            .GroupBy(t => t.MilestoneId)
+            .Select(g => 
+            {
+                var milestone = _projectState.GetMilestone(g.Key) ?? throw new NotFoundMilestoneException(g.Key!.Value);
+                return new GanttChartItem
+                {
+                    Data = milestone,
+                    Start = _projectState.GetMilestoneStart(milestone),
+                    End = milestone.Deadline,
+                    Children = _projectState
+                        .GetMilestoneTasks(milestone)
+                        .Select(x => new GanttChartItem
+                        {
+                            Data = x,
+                            Start = x.StartDate,
+                            End = x.Deadline
+                        })
+                        .ToList()
+                };
+            });
+
+        var tasks = allTasks
+            .Where(t => !t.MilestoneId.HasValue)
+            .Select(x => new GanttChartItem
+            {
+                Data = x,
+                Start = x.StartDate,
+                End = x.Deadline
+            });
+
+        return milestoneTasks
+            .Concat(tasks)
+            .OrderBy(x => x.Start ?? DateTime.MaxValue);
+    }
 }

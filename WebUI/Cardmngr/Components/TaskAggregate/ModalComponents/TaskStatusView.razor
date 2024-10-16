@@ -6,7 +6,7 @@
 
 @code {
 
-    [CascadingParameter] TaskUpdateData Task { get; set; } = null!;
+    [CascadingParameter] IOnlyofficeTask Task { get; set; } = null!;
     [CascadingParameter] IProjectState State { get; set; } = null!;
 
     private string StatusTitle => State.Statuses.Single(Task.HasStatus).Title;

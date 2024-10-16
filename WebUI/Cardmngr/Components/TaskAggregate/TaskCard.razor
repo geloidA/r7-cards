@@ -71,7 +71,7 @@
             }
             else
             {
-                <span>@date.Value.ToString(GetFormatDependOnYear(date.Value))</span>
+                <span>@date.Value.ToShortYearString()</span>
             }
         </div>;
 
@@ -87,24 +87,20 @@
                     @if (Task.IsDeadlineOut())
                     {
                         <FluentIcon Value="@(new Icons.Regular.Size16.Fire())" Color="Color.Error" title="Срок просрочен" />
-                        <span class="text-error" >@date.Value.ToString(GetFormatDependOnYear(date.Value))</span>
+                        <span class="text-error" >@date.Value.ToShortYearString()</span>
                     }
                     else if (Task.IsSevenDaysDeadlineOut())
                     {
                         <FluentIcon Value="@(new Icons.Filled.Size16.Warning())" 
                                     Color="Color.Warning"
                                     title="Срок скоро истечет" />
-                        <span class="text-warning">@date.Value.ToString(GetFormatDependOnYear(date.Value))</span>
+                        <span class="text-warning">@date.Value.ToShortYearString()</span>
                     }
                     else
                     {
-                        <span>@date.Value.ToString(GetFormatDependOnYear(date.Value))</span>
+                        <span>@date.Value.ToShortYearString()</span>
                     }
                 </span>
             }
         </div>;
-
-    private static string GetFormatDependOnYear(DateTime date) => date.Year == DateTime.Now.Year
-            ? "d MMM"
-            : "d MMM yyyy";
 }
