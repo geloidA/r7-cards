@@ -67,7 +67,7 @@ public interface IProjectClient
     /// </summary>
     /// <param name="tasks">задачи, которые нужно добавить к проекту.</param>
     /// <returns>проект, к которому были добавлены задачи.</returns>
-    Task<ProjectStateDto> CollectProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks);
+    Task<ProjectStateDto> CollectProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks, List<OnlyofficeTaskStatus>? statuses = null);
 
     /// <summary>
     /// Cоздает проект.

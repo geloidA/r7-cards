@@ -6,8 +6,8 @@
 
 @code {
 
-    [CascadingParameter] IOnlyofficeTask Task { get; set; } = null!;
-    [CascadingParameter] IProjectState State { get; set; } = null!;
+    [Parameter] public IOnlyofficeTask Task { get; set; } = null!;
+    [Parameter] public IEnumerable<OnlyofficeTaskStatus> Statuses { get; set; } = null!;
 
-    private string StatusTitle => State.Statuses.Single(Task.HasStatus).Title;
+    private string StatusTitle => Statuses.Single(Task.HasStatus).Title;
 }

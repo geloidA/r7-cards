@@ -3,6 +3,7 @@
 @using Cardmngr.Components.ProjectAggregate.Components
 @using Cardmngr.Components.ProjectAggregate.Filter
 @using Cardmngr.Exceptions
+@using Cardmngr.Shared.Utils.Filter
 @using KolBlazor.Components.Charts.Data
 
 @inherits ProjectPage
@@ -23,7 +24,7 @@
                 </div>
             </div>
             <Smooth ShowOnFirstRender Style="height: calc(100% - 32px);" >
-                <ProjectGantt GetItems="GetItems" />
+                <ProjectGantt GetItems="GetItems" Statuses="_projectState.Statuses" />
             </Smooth>
         </div>
     </MutableProjectState>
@@ -36,14 +37,10 @@
     private IEnumerable<GanttChartItem> GetItems()
     {
         var allTasks = _projectState.FilteredTasks();
-        Console.WriteLine(allTasks.Count());
 
-        var milestoneTasks = allTasks
-            .Where(t => t.MilestoneId.HasValue)
-            .GroupBy(t => t.MilestoneId)
-            .Select(g => 
+        var milestoneTasks = _projectState.Milestones
+            .Select(milestone => 
             {
-                var milestone = _projectState.GetMilestone(g.Key) ?? throw new NotFoundMilestoneException(g.Key!.Value);
                 return new GanttChartItem
                 {
                     Data = milestone,
@@ -51,27 +48,28 @@
                     End = milestone.Deadline,
                     Children = _projectState
                         .GetMilestoneTasks(milestone)
-                        .Select(x => new GanttChartItem
-                        {
-                            Data = x,
-                            Start = x.StartDate,
-                            End = x.Deadline
-                        })
+                        .Filter(_projectState.TaskFilter)
+                        .Select(GetTaskGanttItem)
                         .ToList()
                 };
             });
 
         var tasks = allTasks
             .Where(t => !t.MilestoneId.HasValue)
-            .Select(x => new GanttChartItem
-            {
-                Data = x,
-                Start = x.StartDate,
-                End = x.Deadline
-            });
+            .Select(GetTaskGanttItem);
 
         return milestoneTasks
             .Concat(tasks)
-            .OrderBy(x => x.Start ?? DateTime.MaxValue);
+            .OrderBy(x => x.Start);
+    }
+
+    private static GanttChartItem GetTaskGanttItem(OnlyofficeTask task)
+    {
+        return new GanttChartItem
+        {
+            Data = task,
+            Start = task.StartDate ?? task.Created,
+            End = task.GetSmartDeadline()
+        };
     }
 }

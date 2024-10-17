@@ -41,6 +41,15 @@
         <DetailsCategory Open="true" Header="Параметры" >
             <Content>
                 <div class="flex flex-col gap-5">
+                    <InfoItem Title="Период"
+                              Icon="new Icons.Filled.Size20.Calendar()">
+                        <Content>
+                            <DateRangeView 
+                                Start="State.Start()"
+                                End="State.Deadline()"
+                                EndReadOnly StartReadOnly />
+                        </Content>
+                    </InfoItem>
                     <InfoItem Title="Менеджер"
                               Icon="new Icons.Filled.Size20.Person()">
                         <Content>

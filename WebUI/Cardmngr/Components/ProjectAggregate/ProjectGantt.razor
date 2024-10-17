@@ -28,9 +28,7 @@
                 <CellContent Context="item" >
                     @if (item.Data is OnlyofficeTask task)
                     {
-                        @* <CascadingValue IsFixed Value="task">
-                            <TaskStatusView />
-                        </CascadingValue> *@
+                        <TaskStatusView Statuses="Statuses" Task="task" />
                     }
                 </CellContent>
             </GridColumn>            

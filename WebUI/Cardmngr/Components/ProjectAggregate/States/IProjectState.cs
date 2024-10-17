@@ -1,11 +1,12 @@
 ﻿using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Domain.Entities.Base;
 using Cardmngr.Shared.Utils.Filter;
 using Cardmngr.Utils;
 
 namespace Cardmngr.Components.ProjectAggregate.States;
 
-public interface IProjectState
+public interface IProjectState : IProjectStateViewer
 {
     event Action<EntityChangedEventArgs<Milestone>?>? MilestonesChanged;
     event Action<EntityChangedEventArgs<OnlyofficeTask>?>? TasksChanged;
@@ -13,17 +14,10 @@ public interface IProjectState
 
     bool ReadOnly { get; }
 
-    Project Project { get; }
-    IReadOnlyList<OnlyofficeTaskStatus> Statuses { get; }
-    IReadOnlyList<UserProfile> Team { get; }
-    IReadOnlyList<OnlyofficeTask> Tasks { get; }
-
     void AddTask(OnlyofficeTask created);
     void UpdateTask(OnlyofficeTask task);
     void ChangeTaskStatus(OnlyofficeTask task);
     void RemoveTask(OnlyofficeTask taskId);
-
-    IReadOnlyList<Milestone> Milestones { get; }
 
     void AddMilestone(Milestone milestone);
     void UpdateMilestone(Milestone milestone);

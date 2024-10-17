@@ -7,7 +7,7 @@
                 <div class="flex font-bold gap-1">
                     <FluentIcon style="min-width: 16px;" class="self-center" OnClick="() => ToggleFollowAsync()"
                                 Value="IconFollow" Title="@(isFollow ? "Перестать отслеживать" : "Отслеживать")" />
-                    @if (ViewModel.ProjectInfo.IsPrivate)
+                    @if (ViewModel.ProjectState.Project.IsPrivate)
                     {
                         <div class="self-center">
                             <FluentIcon
@@ -17,7 +17,7 @@
                         </div>
                     }
                     <div class="self-center">
-                        @ViewModel.ProjectInfo.Title
+                        @ViewModel.ProjectState.Project.Title
                     </div>
                 </div>
                 <FluentSpacer/>
@@ -26,8 +26,8 @@
                     <i class="tip-hide" style="font-size: small;">
                         Двойной клик для рыскрытия/закрытия
                     </i>
-                    <FluentBadge title="Всего задач">@ViewModel.Tasks.Count</FluentBadge>
-                    <a class="self-center" href=@($"/project/board?ProjectId={ViewModel.ProjectInfo.Id}")>
+                    <FluentBadge title="Всего задач">@ViewModel.ProjectState.Tasks.Count</FluentBadge>
+                    <a class="self-center" href=@($"/project/board?ProjectId={ViewModel.ProjectState.Project.Id}")>
                         <FluentIcon Width="23" Value="@(new Icons.Regular.Size20.ArrowCircleUpRight())" />
                     </a>
                     <FluentIcon style="min-width: 20px;" OnClick="@toggleCollapsedFunc"

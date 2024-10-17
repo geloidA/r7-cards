@@ -5,25 +5,25 @@
 
 <PageTitle>Проекты</PageTitle>
 
-<div class="flex flex-col p-2 h-full" style="overflow-y: auto; overflow-x: hidden;">
-    @* <CascadingValue Value="userId" Name="UserId" IsFixed >
+<div class="flex flex-col p-2" style="overflow-y: auto; overflow-x: hidden;">
+    <CascadingValue Value="userId" Name="UserId" IsFixed >
         <div class="flex flex-col h-full overflow-x-hidden overflow-y-auto gap-2" >
             @if (allProjects.Count != 0)
             {
                 foreach (var project in allProjects)
                 {                    
-                    <StaticProjectState @key="project.ProjectInfo.Id" ViewModel="project" />
+                    <StaticProjectState @key="project" ViewModel="project" />
                 }
             }
             else
             {
-                <div class="flex justify-center">
-                    <i class="w-full mx-5">Список пуст</i>
+                <div class="flex justify-center items-center h-full">
+                    <Loading Width="50" />
                 </div>
             }
         </div>
-    </CascadingValue> *@
-    <ProjectGantt @ref="projectGantt" GetItems="GetGanttChartItems" />
+    </CascadingValue>
+    @* <ProjectGantt @ref="projectGantt" Statuses="_cache.Statuses" GetItems="GetGanttChartItems" /> *@
 </div>
 @* <div class="absolute bottom-0" style="right: 0; margin-bottom: 60px !important; margin-right: 5px;">
     <DashboardWatchManager Projects="allProjects.Select(x => x.ProjectInfo)" />

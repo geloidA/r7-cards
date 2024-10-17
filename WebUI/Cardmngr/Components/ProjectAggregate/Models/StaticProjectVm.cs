@@ -1,10 +1,9 @@
-﻿using Cardmngr.Domain.Entities;
+﻿using Cardmngr.Shared.Project;
 
 namespace Cardmngr.Components.ProjectAggregate.Models;
 
-public class StaticProjectVm(ProjectInfo projectInfo, ICollection<OnlyofficeTask> tasks)
+public class StaticProjectVm(ProjectStateDto projectState)
 {
     public bool IsCollapsed { get; set; } = true;
-    public ProjectInfo ProjectInfo { get; init; } = projectInfo;
-    public ICollection<OnlyofficeTask> Tasks { get; init; } = tasks;
+    public ProjectStateDto ProjectState { get; init; } = projectState;
 }

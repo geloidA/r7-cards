@@ -130,7 +130,7 @@ public class ProjectClient(    IProjectRepository projectRepository,
         return projectRepository.GetUserProjectsAsync().Select(mapper.Map<Domain.Entities.Project>);
     }
 
-    public async Task<ProjectStateDto> CollectProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks)
+    public async Task<ProjectStateDto> CollectProjectWithTasksAsync(ICollection<OnlyofficeTask> tasks, List<OnlyofficeTaskStatus>? statuses = null)
     {
         if (tasks.Count == 0)
         {
@@ -144,9 +144,9 @@ public class ProjectClient(    IProjectRepository projectRepository,
             throw new ArgumentException("All tasks must be in the same project");
         }
 
-        var statuses = taskStatusRepository
-            .GetAllAsync()
-            .ToListAsync(mapper.Map<OnlyofficeTaskStatus>);
+        var resultStatuses = statuses ?? await taskStatusRepository
+                .GetAllAsync()
+                .ToListAsync(mapper.Map<OnlyofficeTaskStatus>);
 
         var team = projectRepository
             .GetTeamAsync(projectId)
@@ -160,7 +160,7 @@ public class ProjectClient(    IProjectRepository projectRepository,
         return new ProjectStateDto
         {
             Tasks = [.. tasks],
-            Statuses = await statuses,
+            Statuses = resultStatuses,
             Project = mapper.Map<Domain.Entities.Project>(await project),
             Milestones = await milestones,
             Team = await team

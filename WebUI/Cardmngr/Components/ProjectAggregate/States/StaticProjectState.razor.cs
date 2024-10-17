@@ -26,10 +26,10 @@ public sealed partial class StaticProjectState : ProjectStateBase
         toggleCollapsedFunc = ToggleCollapsed;
         if (ViewModel is { IsCollapsed: false })
         {
-            await SetModelAsync(await ProjectClient.CollectProjectWithTasksAsync(ViewModel.Tasks));
+            await SetModelAsync(ViewModel.ProjectState);
         }
 
-        isFollow = ProjectSummaryService.IsFollow(ViewModel?.ProjectInfo.Id ?? -1);
+        isFollow = ProjectSummaryService.IsFollow(ViewModel?.ProjectState.Project.Id ?? -1);
 
         SummaryService.OnProjectsChanged += ToggleIfSelected;
     }
@@ -39,7 +39,7 @@ public sealed partial class StaticProjectState : ProjectStateBase
         _ = InvokeAsync(async () => 
         {
             await Task.Delay(5); // wait for correct toggling
-            if (SummaryService.FilterManager.ProjectId == ViewModel.ProjectInfo.Id)
+            if (SummaryService.FilterManager.ProjectId == ViewModel.ProjectState.Project.Id)
             {
                 await ToggleCollapsed();
                 StateHasChanged();
@@ -58,8 +58,7 @@ public sealed partial class StaticProjectState : ProjectStateBase
         if (!ViewModel.IsCollapsed)
         {
             Initialized = false;
-            var model = await ProjectClient.CollectProjectWithTasksAsync(ViewModel.Tasks);
-            await SetModelAsync(model, !isTagsInitialized);
+            await SetModelAsync(ViewModel.ProjectState, !isTagsInitialized);
             Initialized = true;
 
             isTagsInitialized = true;
@@ -72,15 +71,15 @@ public sealed partial class StaticProjectState : ProjectStateBase
 
     public async Task ToggleFollowAsync()
     {
-        await ProjectClient.FollowProjectAsync(ViewModel.ProjectInfo.Id);
+        await ProjectClient.FollowProjectAsync(ViewModel.ProjectState.Project.Id);
             
         if (isFollow = !isFollow)
         {
-            ProjectSummaryService.Follow(ViewModel.ProjectInfo.Id);
+            ProjectSummaryService.Follow(ViewModel.ProjectState.Project.Id);
         }
         else
         {
-            ProjectSummaryService.Unfollow(ViewModel.ProjectInfo.Id);
+            ProjectSummaryService.Unfollow(ViewModel.ProjectState.Project.Id);
         }
     }
 

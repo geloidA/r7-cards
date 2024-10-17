@@ -14,6 +14,7 @@ public partial class ProjectGantt : ComponentBase
     [CascadingParameter] private IProjectState State { get; set; } = null!;
 
     [Parameter] public Func<IEnumerable<GanttChartItem>> GetItems { get; set; } = () => [];
+    [Parameter] public IEnumerable<OnlyofficeTaskStatus> Statuses { get; set; } = null!;
 
     protected override void OnInitialized()
     {
@@ -59,8 +60,6 @@ public partial class ProjectGantt : ComponentBase
             OnlyofficeTask task => $"task-{task.Id}",
             Milestone milestone => $"milestone-{milestone.Id}",
             Project project => $"project-{project.Id}",
-            ProjectInfo projectInfo => $"projectInfo-{projectInfo.Id}",
-            MilestoneInfo milestoneInfo => $"milestoneInfo-{milestoneInfo.Id}",
             _ => throw new NotSupportedException()
         };
     }
