@@ -1,8 +1,9 @@
+using KolBlazor;
 using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.TaskAggregate;
 
-public partial class DateRangeView : ComponentBase
+public partial class DateRangeView : KolComponentBase
 {
     [Parameter]
     public DateTime? Start { get; set; }

@@ -70,6 +70,11 @@
                           Height="136px"
                           OptionText="@(s => s.GetDesc())"
                           @bind-SelectedOption="SummaryService.FilterManager.TaskSelectorType" />
-        </div>        
+
+            <FluentIcon Value="@(new Icons.Regular.Size20.GanttChart())" 
+                Color="GanttModeColor" Width="28px" title="Режим Ганта"
+                @onclick="SummaryService.ToggleGanttMode"
+                class="ml-2" />
+        </div>
     </div>
 }

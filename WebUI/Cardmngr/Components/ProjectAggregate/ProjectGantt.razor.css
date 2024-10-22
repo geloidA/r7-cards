@@ -1,6 +1,109 @@
-.detalization-toggle {
+.project-gantt {
+    position: relative; 
+    height: 100%;
+    --base-task-color: color-mix(in srgb, var(--accent-fill-rest), transparent 15%);
+}
+
+.gantt-toolbar {
     position: absolute;
     bottom: 20px;
     right: 20px;
     cursor: pointer;
+    display: flex;
+    gap: 10px;
+}
+
+.work-item {
+    height: 100%;
+    width: 100%;
+    cursor: auto;
+    overflow: hidden;
+    display: flex;
+    padding: 1px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.work-item.project {
+    height: 1px;
+    background-color: var(--accent-fill-rest);
+    align-self: self-end;
+}
+
+.work-item.project::before,
+.work-item.project::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background-color: var(--accent-fill-rest);
+    width: 5px;
+    height: 5px;
+    transform: translateY(-50%);
+}
+
+.work-item.project::before {
+    left: 0;
+}
+
+.work-item.project::after {
+    right: 0;
+}
+
+.work-item.task {
+    background-color: var(--base-task-color);
+    border-radius: 4px;
+}
+
+.work-item.task.done {
+    background-color: color-mix(in srgb, var(--success), transparent 25%);
+}
+
+.work-item.task.deadline {
+    background-color: color-mix(in srgb, var(--error), transparent 25%);
+}
+
+.work-item.task.warning {
+    background-color: color-mix(in srgb, var(--warning), transparent 25%);
+}
+
+.work-item.task.unknown {
+    background: linear-gradient(to right, var(--base-task-color), transparent);
+}
+
+.work-item.milestone {
+    height: 4px;
+    align-self: center;
+    background-color: var(--accent-fill-rest);
+}
+
+.milestone-right-part,
+.item-right-part {
+    position: absolute;
+    left: calc(100% + 15px);
+    font-size: .75rem;
+    line-height: 1rem;
+    width: max-content;
+}
+
+.milestone-right-part {
+    display: flex;
+    gap: 10px;
+}
+
+.work-item.work-item.milestone::before,
+.work-item.work-item.milestone::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 10px;
+    background-color: var(--accent-fill-rest);
+    transform: translateY(-38%);
+}
+
+.work-item.work-item.milestone::before {
+    left: 0;
+}
+
+.work-item.work-item.milestone::after {
+    right: 0;
 }

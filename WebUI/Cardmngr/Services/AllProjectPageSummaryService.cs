@@ -1,8 +1,10 @@
-﻿using Cardmngr.Domain.Entities;
+﻿using BlazorComponentBus;
+using Cardmngr.Domain.Entities;
+using Cardmngr.Pages.Contracts;
 
 namespace Cardmngr.Services;
 
-public class AllProjectsPageSummaryService
+public class AllProjectsPageSummaryService(ComponentBus bus)
 {
     private List<OnlyofficeTask>? _tasks = [];
 
@@ -18,6 +20,14 @@ public class AllProjectsPageSummaryService
         {
             OnProjectsChanged?.Invoke();
         }
+    }
+
+    public bool GanttModeEnabled { get; private set; }
+
+    public void ToggleGanttMode()
+    {
+        GanttModeEnabled = !GanttModeEnabled;
+        bus.Publish(new GanttModeToggled());
     }
 
     public IEnumerable<UserInfo> GetResponsibles() => _tasks?

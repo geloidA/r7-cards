@@ -3,10 +3,12 @@
 @using KolBlazor.Components.Charts.Gantt
 @using KolBlazor.Components.TreeGrid.Columns
 
-<div style="position: relative; height: 100%;">
+<div class="project-gantt">
     <GanttChart @ref="@_chart" 
         GetItems="@GetItems" 
-        DayOffset="31"
+        HighlightRoot="HighlightRoot"
+        DayOffset="93"
+        GetCustomClass="GetItemClass"
         DetalizationLevel="@_detalizationLevel"
         KeySelector="@GetItemKey" >
         <Columns>
@@ -15,26 +17,22 @@
                     Название
                 </HeaderTemplate>
                 <CellContent Context="item" >
-                    @{
-                        var entity = item.Data as ITitled ?? throw new ArgumentNullException(nameof(item.Data));
+                    @if (item.Data is Project project)
+                    {
+                        <a href="@($"/project/board?ProjectId={project.Id}")" title="@project.Title">@project.Title</a>
                     }
-                    <span title="@entity.Title">@entity.Title</span>
+                    else if (item.Data is ITitled titled)
+                    {
+                        <span title="@titled.Title">@titled.Title</span>
+                    }
                 </CellContent>
             </GridColumn>
-            <GridColumn TGridItem="GanttChartItem" Width="100px" >
-                <HeaderTemplate>
-                    Статус
-                </HeaderTemplate>
-                <CellContent Context="item" >
-                    @if (item.Data is OnlyofficeTask task)
-                    {
-                        <TaskStatusView Statuses="Statuses" Task="task" />
-                    }
-                </CellContent>
-            </GridColumn>            
             <GridColumn TGridItem="GanttChartItem" Width="200px" >
                 <HeaderTemplate>
-                    Период
+                    <div class="flex gap-1 items-center">
+                        <FluentIcon Value="@(new Icons.Regular.Size16.Calendar())" Color="Color.Info" />
+                        Период
+                    </div>
                 </HeaderTemplate>
                 <CellContent Context="item" >
                     @if (item.Start != null || item.End != null)
@@ -47,23 +45,69 @@
                     }
                     else
                     {
-                        <span>-</span>
+                        <span>–</span>
+                    }
+                </CellContent>
+            </GridColumn>
+            <GridColumn TGridItem="GanttChartItem" Width="100px" >
+                <HeaderTemplate>
+                    <div class="flex gap-1 items-center">
+                        <FluentIcon Value="@(new Icons.Regular.Size16.Status())" Color="Color.Info" />
+                        Статус
+                    </div>
+                </HeaderTemplate>
+                <CellContent Context="item" >
+                    @if (item.Data is OnlyofficeTask task)
+                    {
+                        <TaskStatusView Statuses="Statuses" Task="task" />
                     }
                 </CellContent>
             </GridColumn>
         </Columns>
-        @* <ItemTemplate Context="item" >
-            @if (item.Data is Milestone milestone)
+        <ItemTemplate Context="item" >
+            @switch (item.Data)
             {
-                <div>Веха: @milestone.Title</div>
-            } 
-            else if (item.Data is OnlyofficeTask task)
-            {
-                <div>Задача: @task.Title</div>
+                case OnlyofficeTask task:
+                    @RenderTask(task)
+                    break;
+                case Milestone milestone:
+                    @RenderMilestone(milestone)
+                    break;
+                case Project project:
+                    @RenderProject(project)
+                    break;
             }
-        </ItemTemplate> *@
+        </ItemTemplate>
+        <RightItemTemplate Context="item">
+            @switch (item.Data)
+            {
+                case OnlyofficeTask task:
+                    @RenderTaskRightPart(task)
+                    break;
+                case Milestone milestone:
+                    @RenderMilestoneRightPart(new(milestone, item.Start, item.End))
+                    break;
+                case Project project:
+                    @RenderProjectRightPart(new(project, item.Start, item.End))
+                    break;
+            }
+        </RightItemTemplate>
+        <LeftItemTemplate Context="item">
+            @switch (item.Data)
+            {
+                case Milestone milestone:
+                    @RenderMilestoneLeftPart((milestone, item.Children
+                        .Select(x => x.Data)
+                        .Cast<OnlyofficeTask>()))
+                    break;
+                case OnlyofficeTask task:
+                    @RenderTaskLeftPart(task)
+                    break;
+            }
+        </LeftItemTemplate>
     </GanttChart>
-    <div class="detalization-toggle">
+    <div class="gantt-toolbar">
+        <Button Class="rounded-lg font-bold text-forground-on-accent duration-400 py-1 px-2 bg-accent" @onclick="ScrollToToday" >Сегодня</Button>
         <FluentSelect Multiple="false"
                       TOption="GanttDetalizationLevel"
                       Width="100px;"
@@ -77,49 +121,171 @@
 </div>
 
 @code {
-    private static RenderFragment<DateTime?> RenderStart = date =>
-        @<div>
-            @if (!date.HasValue)
+
+    private string GetItemClass(GanttChartItem item)
+    {
+        if (item.Data is OnlyofficeTask task)
+        {
+            if (task.IsClosed())
             {
-                <span class="italic text-info" title="Не установлен">???</span>
+                return "gantt-task-custom-done";
             }
-            else
+            else if (task.IsDeadlineOut())
             {
-                <span>@date.Value.ToShortYearString()</span>
+                return "gantt-task-custom-deadline";
             }
+            else if (task.IsSevenDaysDeadlineOut())
+            {
+                return "gantt-task-custom-warning";
+            }
+        }
+
+        return "";
+    }
+
+    private RenderFragment<Project> RenderProject = item => @<div class="h-full w-full overflow-hidden text-ellipsis" title="@item.Title">
+            <span class="font-bold whitespace-nowrap ml-2">@item.Title</span>
+            <div class="work-item project"></div>
         </div>;
 
-    private static RenderFragment<(DateTime? dt, object? data)> RenderEnd = (tuple) =>
-        @<div>
-            @{
-                var dt = tuple.dt;
-                var data = tuple.data;
-            }
-            @if (!dt.HasValue)
+    private RenderFragment<GanttItem<Project>> RenderProjectRightPart = item => @<div class="item-right-part mt-1">
+        <DateRangeView StartReadOnly EndReadOnly
+            Start="item.Start"
+            Class="text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            StartDateRender="RenderStart"
+            EndDateRender="date => RenderEnd((date, item.Data))"
+            End="item.End" />
+    </div>;
+
+    @* Task renders *@
+
+    private RenderFragment RenderTask(OnlyofficeTask task)
+    {
+        var bgColor = task.IsClosed() 
+            ? "done" 
+            : task.IsDeadlineOut() 
+                ? "deadline" 
+                : task.IsSevenDaysDeadlineOut() 
+                    ? "warning" 
+                    : task.GetSmartDeadline() is null 
+                        ? "unknown" : "";
+
+        return @<div class="work-item task @bgColor">
+            @if (task.Priority == Priority.High)
             {
-                <span class="italic text-info" title="Не установлен">???</span>
-            }
-            else
-            {
-                var task = data as IOnlyofficeTask;   
-                <span class="flex gap-1">
-                    @if (task?.IsDeadlineOut() == true)
-                    {
-                        <FluentIcon Value="@(new Icons.Regular.Size16.Fire())" Color="Color.Error" title="Срок просрочен" />
-                        <span class="text-error" >@dt.Value.ToShortYearString()</span>
-                    }
-                    else if (task?.IsSevenDaysDeadlineOut() == true)
-                    {
-                        <FluentIcon Value="@(new Icons.Filled.Size16.Warning())" 
-                                    Color="Color.Warning"
-                                    title="Срок скоро истечет" />
-                        <span class="text-warning">@dt.Value.ToShortYearString()</span>
-                    }
-                    else
-                    {
-                        <span>@dt.Value.ToShortYearString()</span>
-                    }
-                </span>
+                <FluentIcon Value="@(new Icons.Filled.Size16.Flag())" title="Высокий приоритет" Color="Color.Accent" />
             }
         </div>;
+    }
+
+    private RenderFragment<OnlyofficeTask> RenderTaskRightPart = task => @<div
+        class="item-right-part flex gap-3 text-info items-center">
+        @{ var topOffset = "mt-[5px]"; }
+        @if (task.Responsibles.Count > 0)
+        {
+            var max = 2;
+            <div class="gap-1 flex">
+                @foreach (var user in task.Responsibles)
+                {
+                    if (max-- == 0) break;
+                    <UserAvatar User="user" Size="20" ShowTooltip />
+                }
+                @if (max < 0)
+                {
+                    <span class="@topOffset">+@(task.Responsibles.Count - 2)</span>
+                }
+            </div>
+            <span>|</span>
+            topOffset = "";
+        }
+        <div class="hover:max-w-max max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap @topOffset">@task.Title</div>        
+    </div>;
+
+    private RenderFragment<OnlyofficeTask> RenderTaskLeftPart = task => @<div
+        class="absolute w-max mt-[5px]"
+        style="right: calc(100% + 5px);">
+        @if (task.IsClosed())
+        {
+            <FluentIcon Value="@(new Icons.Regular.Size20.CheckmarkCircle())" Width="16px" Color="Color.Success" />
+        }
+        else if (task.IsDeadlineOut())
+        {
+            <FluentIcon Value="@(new Icons.Regular.Size20.Fire())" 
+                Width="16px" Color="Color.Error" title="Срок истек" />
+        }
+        else if (task.IsSevenDaysDeadlineOut())
+        {
+            <FluentIcon Value="@(new Icons.Regular.Size20.Warning())" 
+                Width="16px" Color="Color.Warning" title="Срок скоро истечет" />
+        }
+    </div>;
+
+    @* Milestone render *@
+    private RenderFragment<Milestone> RenderMilestone = item => @<div class="work-item milestone" title="@item.Title"></div>;
+
+    private RenderFragment<(Milestone milestone, IEnumerable<OnlyofficeTask> tasks)> RenderMilestoneLeftPart = item => @<div 
+        class="w-max text-xs gap-[2px] flex absolute mt-1"
+        style="right: calc(100% + 5px);">
+        @if (item.tasks.Any())
+        {
+            <FluentIcon Value="@(new Icons.Regular.Size20.CircleHintHalfVertical())" Width="12px" Color="Color.Info" />
+            @($"{item.tasks.Count(x => x.Status == Status.Closed)} / {item.tasks.Count()}")
+        }
+    </div>;
+
+    private RenderFragment<GanttItem<Milestone>> RenderMilestoneRightPart = item => @<div class="milestone-right-part mt-[5px]">
+        <span class="text-info">@item.Data.Title</span>
+        <DateRangeView StartReadOnly EndReadOnly
+            Start="item.Start"
+            Class="text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            StartDateRender="RenderStart"
+            EndDateRender="date => RenderEnd((date, item.Data))"
+            End="item.End" />            
+    </div>;
+
+    private static RenderFragment<DateTime?> RenderStart = date => @<div>
+        @if (!date.HasValue)
+        {
+            <span class="italic text-info" title="Не установлен">???</span>
+        }
+        else
+        {
+            <span>@date.Value.ToShortYearString()</span>
+        }
+    </div>;
+
+    private static RenderFragment<(DateTime? dt, object? data)> RenderEnd = (tuple) => @<div>
+        @{
+            var dt = tuple.dt;
+            var data = tuple.data;
+        }
+        @if (!dt.HasValue)
+        {
+            <span class="italic text-info" title="Не установлен">???</span>
+        }
+        else
+        {
+            var task = data as IOnlyofficeTask;   
+            <span class="flex gap-1">
+                @if (task?.IsDeadlineOut() == true)
+                {
+                    <FluentIcon Value="@(new Icons.Regular.Size16.Fire())" Color="Color.Error" title="Срок просрочен" />
+                    <span class="text-error" >@dt.Value.ToShortYearString()</span>
+                }
+                else if (task?.IsSevenDaysDeadlineOut() == true)
+                {
+                    <FluentIcon Value="@(new Icons.Filled.Size16.Warning())" 
+                                Color="Color.Warning"
+                                title="Срок скоро истечет" />
+                    <span class="text-warning">@dt.Value.ToShortYearString()</span>
+                }
+                else
+                {
+                    <span>@dt.Value.ToShortYearString()</span>
+                }
+            </span>
+        }
+    </div>;
+
+    private record GanttItem<T>(T Data, DateTime? Start, DateTime? End);
 }

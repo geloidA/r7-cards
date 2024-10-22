@@ -36,7 +36,7 @@ else
         {
             <NotificationCenter />     
 
-            <FluentProfileMenu Image="@($"onlyoffice/api/people{currentUser.Avatar}")"
+            <FluentProfileMenu Image="@($"onlyoffice/api/people{currentUser.Avatar}")" Class="select-none"
                             HeaderLabel="УПКБ Деталь" HeaderButton="Выйти" OnHeaderButtonClick="LogoutAsync"
                             Initials="@($"{currentUser.LastName[0]}{currentUser.FirstName[0]}")" 
                             FullName="@currentUser.DisplayName"

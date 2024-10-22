@@ -12,7 +12,7 @@ public partial class UserAvatar : KolComponentBase
     [Parameter] public UserInfo? User { get; set; }
     [Parameter] public bool ShowTooltip { get; set; }
     [Parameter] public bool ShowName { get; set; }
-    [Parameter] public int Size { get; set; } = 32;
+    [Parameter] public int Size { get; set; } = 27;
     [Parameter] public string? UserId { get; set; }
 
     protected override async Task OnInitializedAsync()

@@ -69,12 +69,13 @@ public static class ProjectStateExtensions
     {
         var minStart = tasks
             .Where(x => x.MilestoneId == milestoneId)
-            .Min(x => x.StartDate);
+            .Select(x => x.StartDate ?? x.Created)
+            .DefaultIfEmpty(DateTime.MaxValue)
+            .Min();
         
         var defaultStart = newDeadline?.AddDays(-7) ?? milestoneDeadline.AddDays(-7);
         
-        return minStart == null || defaultStart < minStart 
-            ? defaultStart : minStart.Value;
+        return minStart == DateTime.MaxValue || defaultStart < minStart ? defaultStart : minStart;
     }
 
     public static Milestone? GetMilestone(this IProjectStateViewer projectState, int? milestoneId)

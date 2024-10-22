@@ -14,7 +14,7 @@
                 <div class="flex gap-1 text-xs py-0 px-1 items-center rounded-full hover:bg-layer-1 transition-colors">
                     <UserAvatar Style="padding-top: 0px !important; padding-bottom: 0px !important;" 
                                 User="@_selectedResponsible" 
-                                Size="25" 
+                                Size="20" 
                                 ShowName />
                 </div>
             }
@@ -35,7 +35,7 @@
                     <div class="even:bg-neutral-hover flex gap-2 first:rounded-t-lg last:rounded-b-lg
                         items-center cursor-pointer hover:bg-neutral-fill-hover p-1 text-xs"
                         @onclick="() => SelectUser(user)" >
-                        <UserAvatar ShowName User="user" Size="25" />
+                        <UserAvatar ShowName User="user" Size="20" />
                     </div>
                 }
                 @if (_searchedResponsibles.Count == 0)

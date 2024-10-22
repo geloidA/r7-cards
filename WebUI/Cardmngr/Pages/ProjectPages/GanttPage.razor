@@ -54,6 +54,11 @@
                 };
             });
 
+        if (_projectState.TaskFilter.Filters.Any())
+        {
+            milestoneTasks = milestoneTasks.Where(x => x.Children.Any());
+        }
+
         var tasks = allTasks
             .Where(t => !t.MilestoneId.HasValue)
             .Select(GetTaskGanttItem);

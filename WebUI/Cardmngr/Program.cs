@@ -22,6 +22,7 @@ builder.Services
     .AddScoped<AuthenticationStateProvider, CookieStateProvider>()
     .AddScoped<CookieHandler>()
     .AddSingleton<IComponentBus, ComponentBus>()
+    .AddSingleton<ComponentBus>()
     .AddCommonServices()
     .AddApiClients()
     .AddFeedbackServices()

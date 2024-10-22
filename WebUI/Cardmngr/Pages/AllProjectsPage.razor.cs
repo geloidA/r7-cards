@@ -1,11 +1,12 @@
-﻿using Cardmngr.Application.Clients.Project;
+﻿using BlazorComponentBus;
+using Cardmngr.Application.Clients.Project;
 using Cardmngr.Application.Clients.TaskStatusClient;
 using Cardmngr.Application.Extensions;
 using Cardmngr.Components.ProjectAggregate;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Domain.Entities;
-using Cardmngr.Exceptions;
 using Cardmngr.Extensions;
+using Cardmngr.Pages.Contracts;
 using Cardmngr.Services;
 using KolBlazor.Components.Charts.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -27,6 +28,7 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
     [Inject] private IProjectClient ProjectClient { get; set; } = null!;
     [Inject] private ITaskStatusClient TaskStatusClient { get; set; } = null!;
     [Inject] private IProjectFollowChecker ProjectFollowChecker { get; set; } = null!;
+    [Inject] private ComponentBus Bus { get; set; } = null!;
     [Inject] private AllProjectsPageSummaryService SummaryService { get; set; } = null!;
 
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
@@ -34,10 +36,18 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
     protected override async Task OnInitializedAsync()
     {
         userId = (await AuthenticationState.ConfigureAwait(false)).User.GetNameIdentifier();
-
         SummaryService.FilterManager.FilterChanged += OnFilterChangedAsync;
-
         OnFilterChangedAsync(SummaryService.FilterManager.GenerateFilter());
+        Bus.Subscribe<GanttModeToggled>(OnGanttModeToggled);
+    }
+
+    private void OnGanttModeToggled(MessageArgs _)
+    {
+        StateHasChanged();
+        if (SummaryService.GanttModeEnabled)
+        {
+            projectGantt?.Refresh();
+        }
     }
 
     private void OnFilterChangedAsync(TaskFilterBuilder builder)
@@ -73,7 +83,7 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
                 Tasks = [.. tasks]
             });
         }
-        
+
         var state = await ProjectClient
             .CollectProjectWithTasksAsync(tasks, _cache.Statuses)
             .ConfigureAwait(false);
@@ -109,8 +119,8 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
                     .Select(x => new GanttChartItem
                     {
                         Data = x,
-                        Start = x.StartDate,
-                        End = x.Deadline
+                        Start = x.StartDate ?? x.Created,
+                        End = x.GetSmartDeadline()
                     })
                     .ToList()
             });
@@ -120,8 +130,8 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
             .Select(x => new GanttChartItem
             {
                 Data = x,
-                Start = x.StartDate,
-                End = x.Deadline
+                Start = x.StartDate ?? x.Created,
+                End = x.GetSmartDeadline()
             });
 
         return milestones
@@ -133,6 +143,7 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
     {
         SummaryService.LeftPage();
         SummaryService.FilterManager.FilterChanged -= OnFilterChangedAsync;
+        Bus.UnSubscribe<GanttModeToggled>(OnGanttModeToggled);
     }
 
     private record PageCache

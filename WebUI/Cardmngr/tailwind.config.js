@@ -21,6 +21,12 @@ module.exports = {
         'layer-2': 'var(--neutral-layer-2)',
         'layer-3': 'var(--neutral-layer-3)',
         'layer-4': 'var(--neutral-layer-4)'
+      },
+      transitionProperty: {
+        'width': 'width',
+        'height': 'height',
+        'max-width': 'max-width',
+        'max-height': 'max-height'
       }
     },
   },

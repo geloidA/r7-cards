@@ -1,3 +1,4 @@
+using Blazored.Modal.Services;
 using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
 using KolBlazor.Components.Charts.Data;
@@ -12,9 +13,11 @@ public partial class ProjectGantt : ComponentBase
     private GanttDetalizationLevel _detalizationLevel = GanttDetalizationLevel.Quarter;
 
     [CascadingParameter] private IProjectState State { get; set; } = null!;
+    [CascadingParameter] private IModalService Modal { get; set; } = default!;
 
     [Parameter] public Func<IEnumerable<GanttChartItem>> GetItems { get; set; } = () => [];
     [Parameter] public IEnumerable<OnlyofficeTaskStatus> Statuses { get; set; } = null!;
+    [Parameter] public bool HighlightRoot { get; set; }
 
     protected override void OnInitialized()
     {
@@ -34,6 +37,12 @@ public partial class ProjectGantt : ComponentBase
         _chart.RefreshItems();
         _chart.Refresh();
         InvokeAsync(StateHasChanged);
+    }
+
+    private void ScrollToToday()
+    {
+        Console.WriteLine("ScrollToToday");
+        _chart.ScrollTo(DateTime.Today);
     }
 
     private void OnDetalizationLevelChanged(GanttDetalizationLevel level)
