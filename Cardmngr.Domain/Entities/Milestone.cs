@@ -5,7 +5,7 @@ namespace Cardmngr.Domain.Entities
 {
     public sealed record Milestone : WorkEntityBase
     {
-        public Project Project { get; init; }
+        public ProjectInfo ProjectOwner { get; init; }
         public DateTime Deadline { get; init; }
         public bool IsKey { get; init; }
         public bool IsNotify { get; init; }
@@ -19,7 +19,7 @@ namespace Cardmngr.Domain.Entities
             return Id == other.Id && 
                 Title == other.Title &&
                 Description == other.Description &&
-                Project == other.Project &&
+                ProjectOwner == other.ProjectOwner &&
                 Status == other.Status &&
                 Deadline == other.Deadline &&
                 IsKey == other.IsKey &&

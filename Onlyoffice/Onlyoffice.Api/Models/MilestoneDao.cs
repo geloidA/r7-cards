@@ -11,7 +11,7 @@ public class MilestoneDto : IEntityDto<int>
     public int Id { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
-    public ProjectDto? Project { get; set; }
+    public ProjectInfoDto? ProjectOwner { get; set; }
     public DateTime? Deadline { get; set; }
     public bool IsKey { get; set; }
     public bool IsNotify { get; set; }

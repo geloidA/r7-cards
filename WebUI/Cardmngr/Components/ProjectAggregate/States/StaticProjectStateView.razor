@@ -1,0 +1,56 @@
+﻿@inherits ComponentBase
+
+<CascadingValue Value="ViewModel" IsFixed="true" >
+    <div class="proj-state scrollbar-none" style="@CssHeight">
+        <div class="cursor-pointer" @ondblclick="@toggleCollapsedFunc">
+            <div class="flex select-none">
+                <div class="flex font-bold gap-1">
+                    <FluentIcon style="min-width: 16px;" class="self-center" OnClick="() => ToggleFollowAsync()"
+                                Value="IconFollow" Title="@(isFollow ? "Перестать отслеживать" : "Отслеживать")" />
+                    @if (ViewModel.Project.IsPrivate)
+                    {
+                        <div class="self-center">
+                            <FluentIcon
+                                Value="@(new Icons.Filled.Size16.LockClosed())"
+                                title="Приватный проект"
+                                Color="Color.Warning" />
+                        </div>
+                    }
+                    <div class="self-center">
+                        @ViewModel.Project.Title
+                    </div>
+                </div>
+                <FluentSpacer/>
+                <FluentSpacer Width="12" />
+                <div class="self-center flex gap-1 justify-end">
+                    <i class="tip-hide" style="font-size: small;">
+                        Двойной клик для рыскрытия/закрытия
+                    </i>
+                    <FluentBadge title="Всего задач">@ViewModel.Tasks.Count</FluentBadge>
+                    <a class="self-center" href=@($"/project/board?ProjectId={ViewModel.Project.Id}")>
+                        <FluentIcon Width="23" Value="@(new Icons.Regular.Size20.ArrowCircleUpRight())" />
+                    </a>
+                    <FluentIcon style="min-width: 20px;" OnClick="@toggleCollapsedFunc"
+                        Value="CollapsedIcon" />
+                </div>
+            </div>
+        </div>
+        @if (!(ViewModel?.IsCollapsed ?? true))
+        {
+            Console.WriteLine($"Render IsCollapsed: {ViewModel.IsCollapsed} Initialized: {ViewModel.Initialized}");
+            if (ViewModel.Initialized)
+            {
+                Console.WriteLine("Initialized");
+                <div class="flex flex-col relative mt-1" style="flex: auto !important;">
+                    <div class="flex flex-col ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
+                        <ProjectBoard></ProjectBoard>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <Loading />
+            }
+        }
+    </div>
+</CascadingValue>

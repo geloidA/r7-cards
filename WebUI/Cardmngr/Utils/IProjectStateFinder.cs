@@ -10,4 +10,6 @@ public interface IProjectStateFinder
     IProjectState Find(Project project);
 
     IProjectState Find(OnlyofficeTask task);
+
+    event Action StateChanged;
 }

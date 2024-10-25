@@ -3,7 +3,6 @@ using Cardmngr.Domain.Entities;
 using Cardmngr.Shared;
 using Cardmngr.Shared.Utils.Filter;
 using Cardmngr.Utils;
-using KolBlazor.Extensions;
 using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.States;
@@ -11,7 +10,8 @@ namespace Cardmngr.Components.ProjectAggregate.States;
 public partial class DashboardProjectState : 
     ProjectStateComponentBase, 
     IFilterableProjectState,
-    IRefreshableProjectState
+    IRefreshableProjectState,
+    IDisposable
 {
     public DashboardProjectState() : base(isReadOnly: true)
     {
@@ -39,29 +39,30 @@ public partial class DashboardProjectState :
 
     private int _previousId = -1;
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
-        Initialized = false;
+        throw new NotImplementedException();
 
-        if (_previousId != Id)
-        {
-            RefreshService.Lock(_refreshLocker);
+        // Initialized = false;
 
-            await CleanPreviousProjectStateAsync();
+        // if (_previousId != Id)
+        // {
+        //     RefreshService.Lock(_refreshLocker);
 
-            try
-            {
-                await SetModelAsync(await ProjectClient.GetProjectStateAsync(Id), true);
-            }            
-            catch (OperationCanceledException) 
-            {
-                RefreshService.RemoveLock(_refreshLocker);
-                return;
-            }
+        //     await CleanPreviousProjectStateAsync();
 
-            _previousId = Id;
-            RefreshService.RemoveLock(_refreshLocker);
-        }
+        //     try
+        //     {
+        //         SetModel(await ProjectClient.GetProjectStateAsync(Id));
+        //     }            
+        //     catch (OperationCanceledException) 
+        //     {
+                
+        //     }
+
+        //     _previousId = Id;
+        //     RefreshService.RemoveLock(_refreshLocker);
+        // }
     }
 
     protected override Task CleanPreviousProjectStateAsync()
@@ -74,13 +75,12 @@ public partial class DashboardProjectState :
     {
         _ = InvokeAsync(async () =>
         {
-            SetModelAsync(await ProjectClient.GetProjectStateAsync(Id)).Forget();
+            SetModel(await ProjectClient.GetProjectStateAsync(Id));
         });
     }
 
-    public override void Dispose()
+    public void Dispose()
     {
         RefreshService.Dispose();
-        base.Dispose();
     }
 }

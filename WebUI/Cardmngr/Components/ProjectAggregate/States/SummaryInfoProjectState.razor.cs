@@ -1,4 +1,5 @@
 ﻿using Cardmngr.Application.Clients.Project;
+using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
 using Cardmngr.Shared.Extensions;
@@ -9,7 +10,7 @@ using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Components.ProjectAggregate.States;
 
-public sealed partial class SummaryInfoProjectState : ProjectStateComponentBase, IRefreshableProjectState
+public sealed partial class SummaryInfoProjectState : ProjectStateComponentBase, IRefreshableProjectState, IDisposable
 {
     private int _previousId;
 
@@ -20,12 +21,15 @@ public sealed partial class SummaryInfoProjectState : ProjectStateComponentBase,
 
     [Inject] public RefreshService RefreshService { get; set; } = null!;
 
+    [Inject] private ITaskClient TaskClient { get; set; } = null!;
+
     [Inject] private IProjectClient ProjectClient { get; set; } = null!;
 
     public event Action<SummaryInfoProjectState>? OnAfterIdChanged;
 
     protected override void OnInitialized()
     {
+        throw new NotImplementedException();
         base.OnInitialized();
         RefreshService.Refreshed += () => OnRefreshModelAsync().Forget();
     }
@@ -36,11 +40,11 @@ public sealed partial class SummaryInfoProjectState : ProjectStateComponentBase,
                 
         if (tasks.Count == 0)
         {
-            await SetModelAsync(new ProjectStateDto { Project = await ProjectClient.GetProjectAsync(Id).ConfigureAwait(false) }).ConfigureAwait(false);
+            SetModel(new ProjectStateDto { Project = await ProjectClient.GetProjectAsync(Id).ConfigureAwait(false) });
         }
         else
         {
-            await SetModelAsync(await ProjectClient.CollectProjectWithTasksAsync(tasks).ConfigureAwait(false)).ConfigureAwait(false);
+            SetModel(await ProjectClient.CollectProjectWithTasksAsync(tasks).ConfigureAwait(false));
         }
     }
 
@@ -74,9 +78,8 @@ public sealed partial class SummaryInfoProjectState : ProjectStateComponentBase,
             .DeadlineOutside(7));
     }
 
-    public override void Dispose()
+    public void Dispose()
     {
         RefreshService.Dispose();
-        base.Dispose();
     }
 }

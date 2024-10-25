@@ -1,4 +1,5 @@
 ﻿using BlazorComponentBus;
+using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Domain.Entities.Base;
@@ -31,7 +32,8 @@ public interface IProjectState : IProjectStateViewer
     void RemoveSubtask(int taskId, int subtaskId);
 
     bool Initialized { get; set; }
-    Task SetModelAsync(ProjectStateDto model, bool firstRender = false);
+    void SetModel(ProjectStateDto model);
+    Task InitializeTaskTagsAsync(ITaskClient taskClient, bool silent = false, CancellationToken cancellationToken = default);
 }
 
 public interface IFilterableProjectState : IProjectState

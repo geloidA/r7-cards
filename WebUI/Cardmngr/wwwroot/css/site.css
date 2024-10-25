@@ -453,7 +453,7 @@ ul.contains-task-list {
     @apply transition-colors duration-300 hover:!bg-layer-2;
 }
 
-.gantt-task-custom-done {
+.gantt-task-custom-done .group {
     @apply !transition-opacity !duration-150 opacity-50 hover:opacity-100;
 }
 

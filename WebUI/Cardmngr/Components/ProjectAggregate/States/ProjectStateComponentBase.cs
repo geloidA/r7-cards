@@ -1,6 +1,5 @@
 using BlazorComponentBus;
 using Cardmngr.Application.Clients.TaskClient;
-using Cardmngr.Components.ProjectAggregate.Contracts;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Project;
@@ -8,21 +7,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.States;
 
-public abstract class ProjectStateComponentBase(bool isReadOnly = false) : ComponentBase, IProjectState, IDisposable
+public abstract class ProjectStateComponentBase(bool isReadOnly = false) : ComponentBase, IProjectState
 {
-    private ProjectStateBase _state = null!;
-
-    [Inject] protected ITaskClient TaskClient { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        _state = new ProjectStateBase(TaskClient, isReadOnly);
-        _state.EventBus.SubscribeTo<ProjectInitialized>((_, _) => 
-        {
-            Console.WriteLine("ProjectInitialized");
-            return InvokeAsync(StateHasChanged);
-        });
-    }
+    private readonly ProjectStateBase _state = new(isReadOnly);
 
     public bool ReadOnly => _state.ReadOnly;
 
@@ -118,13 +105,13 @@ public abstract class ProjectStateComponentBase(bool isReadOnly = false) : Compo
         return Task.CompletedTask;
     }
 
-    public virtual void Dispose()
+    public void SetModel(ProjectStateDto model)
     {
-        _state.Dispose();
+        _state.SetModel(model);
     }
 
-    public Task SetModelAsync(ProjectStateDto model, bool firstRender = false)
+    public Task InitializeTaskTagsAsync(ITaskClient taskClient, bool silent = false, CancellationToken cancellationToken = default)
     {
-        return _state.SetModelAsync(model, firstRender);
+        return _state.InitializeTaskTagsAsync(taskClient, silent, cancellationToken);
     }
 }

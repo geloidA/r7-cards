@@ -1,6 +1,7 @@
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using Cardmngr.Components.MilestoneAggregate.Modals;
+using Cardmngr.Components.ProjectAggregate.Contracts;
 using Cardmngr.Components.ProjectAggregate.Modals;
 using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Components.TaskAggregate.Modals;
@@ -39,6 +40,8 @@ public partial class ProjectGantt : ComponentBase
             {
                 throw new InvalidOperationException("StateFinder is not set");
             }
+
+            StateFinder.StateChanged += Refresh;
         }
         else
         {
@@ -47,8 +50,7 @@ public partial class ProjectGantt : ComponentBase
                 throw new InvalidOperationException("State is not set");
             }
 
-            State.TasksChanged += _ => Refresh();
-            State.MilestonesChanged += _ => Refresh();
+            State.EventBus.Subscribe<StateChanged>(_ => Refresh());
 
             if (State is IFilterableProjectState filterableState)
             {
@@ -57,8 +59,17 @@ public partial class ProjectGantt : ComponentBase
         }
     }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Refresh();
+        }
+    }
+
     public void Refresh()
     {
+        Console.WriteLine("Refresh");
         _chart.RefreshItems();
         _chart.Refresh();
         InvokeAsync(StateHasChanged);

@@ -1,5 +1,6 @@
 ﻿using BlazorComponentBus;
 using Cardmngr.Application.Clients.Project;
+using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Application.Clients.TaskStatusClient;
 using Cardmngr.Application.Extensions;
 using Cardmngr.Components.ProjectAggregate;
@@ -19,14 +20,18 @@ namespace Cardmngr.Pages;
 [Authorize]
 public partial class AllProjectsPage : ComponentBase, IDisposable
 {
+    private bool _loading;
+
     private readonly PageCache _cache = new();
     private ProjectGantt projectGantt = null!;
+    private readonly GanttProjectsFinder projectsFinder = new();
     
     private List<StaticProjectVm> allProjects = [];
     private string userId = string.Empty;
 
     [Inject] private IProjectClient ProjectClient { get; set; } = null!;
     [Inject] private ITaskStatusClient TaskStatusClient { get; set; } = null!;
+    [Inject] private ITaskClient TaskClient { get; set; } = null!;
     [Inject] private IProjectFollowChecker ProjectFollowChecker { get; set; } = null!;
     [Inject] private ComponentBus Bus { get; set; } = null!;
     [Inject] private AllProjectsPageSummaryService SummaryService { get; set; } = null!;
@@ -46,21 +51,38 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
         StateHasChanged();
         if (SummaryService.GanttModeEnabled)
         {
+            projectsFinder.States = allProjects;
             projectGantt?.Refresh();
+        }
+        else
+        {
+            projectsFinder.States = [];
         }
     }
 
     private void OnFilterChangedAsync(TaskFilterBuilder builder)
     {
-        _ = InvokeAsync(async () =>
+        InvokeAsync(async () =>
         {
+            _loading = true;
             allProjects = await ProjectClient.GetGroupedFilteredTasksAsync(builder.SortBy("updated").SortOrder(FilterSortOrders.Desc))
                 .SelectAwait(async x => await CollectProjectStateAsync(x.Key, x.Value))
-                .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.ProjectState.Project.Id))
+                .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.Project.Id))
                 .ToListAsync().ConfigureAwait(false);
+            _loading = false;
 
-            SummaryService.SetTasks(allProjects.SelectMany(x => x.ProjectState.Tasks).ToList());
-            projectGantt?.Refresh();
+            if (allProjects.Count == 1)
+            {
+                allProjects[0].ToggleCollapsed(TaskClient, SummaryService.GanttModeEnabled);
+            }
+
+            SummaryService.SetTasks(allProjects.SelectMany(x => x.Tasks).ToList());
+
+            if (SummaryService.GanttModeEnabled)
+            {
+                projectsFinder.States = allProjects;
+                projectGantt?.Refresh();
+            }
 
             StateHasChanged();
         });
@@ -98,23 +120,24 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
         return allProjects
             .Select(p => new GanttChartItem
             {
-                Data = p.ProjectState.Project,
-                Start = p.ProjectState.Start(),
-                End = p.ProjectState.Deadline(),
+                Data = p,
+                Start = p.Start(),
+                End = p.Deadline(),
                 Children = GetGanttProjectMilestones(p).ToList(),
+                IsExpanded = !p.IsCollapsed
             })
             .OrderBy(x => x.Start ?? DateTime.MaxValue);
     }
 
-    private static IEnumerable<GanttChartItem> GetGanttProjectMilestones(StaticProjectVm project)
+    private static IEnumerable<GanttChartItem> GetGanttProjectMilestones(StaticProjectVm state)
     {
-        var milestones = project.ProjectState.Milestones
+        var milestones = state.Milestones
             .Select(milestone => new GanttChartItem
             {
                 Data = milestone,
                 End = milestone.Deadline,
-                Start = project.ProjectState.GetMilestoneStart(milestone),
-                Children = project.ProjectState
+                Start = state.GetMilestoneStart(milestone),
+                Children = state
                     .GetMilestoneTasks(milestone)
                     .Select(x => new GanttChartItem
                     {
@@ -125,7 +148,7 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
                     .ToList()
             });
 
-        var tasks = project.ProjectState.Tasks
+        var tasks = state.Tasks
             .Where(t => !t.MilestoneId.HasValue)
             .Select(x => new GanttChartItem
             {

@@ -1,8 +1,7 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
-using Cardmngr.Application.Clients.SignalRHubClients;
+using Cardmngr.Application.Clients.Project;
 using Cardmngr.Components.MilestoneAggregate.Modals;
-using Cardmngr.Components.Modals.MyBlazored;
 using Cardmngr.Components.ProjectAggregate.States;
 using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
@@ -12,8 +11,10 @@ namespace Cardmngr.Components.ProjectAggregate.Modals;
 public sealed partial class ProjectDetailsModal : ComponentBase, IDisposable
 {
     private readonly Guid lockGuid = Guid.NewGuid();
+
+    [Inject] private IProjectClient ProjectClient { get; set; } = null!;
     
-    [Parameter] public MutableProjectState State { get; set; } = null!;
+    [Parameter] public IProjectState State { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")]
     private ModalOptions Options { get; set; } = null!;
@@ -25,7 +26,16 @@ public sealed partial class ProjectDetailsModal : ComponentBase, IDisposable
 
     protected override void OnInitialized()
     {
-        State.RefreshService.Lock(lockGuid);
+        if (State is IRefreshableProjectState refreshableProjectState)
+        {
+            refreshableProjectState.RefreshService.Lock(lockGuid);
+        }
+    }
+
+    public async Task ToggleFollowAsync()
+    {
+        await ProjectClient.FollowProjectAsync(State.Project.Id).ConfigureAwait(false);
+        State.Project.IsFollow = !State.Project.IsFollow;
     }
 
     private void ShowMilestoneCreation()
@@ -39,5 +49,11 @@ public sealed partial class ProjectDetailsModal : ComponentBase, IDisposable
         Modal.Show<MilestoneDetailsModal>(parameters, Options);
     }
 
-    public void Dispose() => State.RefreshService.RemoveLock(lockGuid);
+    public void Dispose()
+    {
+        if (State is IRefreshableProjectState refreshableProjectState)
+        {
+            refreshableProjectState.RefreshService.RemoveLock(lockGuid);
+        }
+    }
 }

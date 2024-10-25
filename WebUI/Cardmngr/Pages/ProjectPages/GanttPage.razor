@@ -10,7 +10,10 @@
 
 <PageTitle>Проект</PageTitle>
 
-<MutableProjectState @ref="@_projectState" Id="@ProjectId.GetValueOrDefault(-1)" AutoRefresh="false" >
+<MutableProjectState @ref="@_projectState" 
+                     Id="@ProjectId.GetValueOrDefault(-1)" 
+                     AutoRefresh="false"
+                     SilentTagInitialized="true" >
     <ProjectStateNotifier />
     <div class="flex flex-col h-full p-3">
         <div class="mb-2">
@@ -21,11 +24,11 @@
                 <ProjectOptions />
             </div>
         </div>
-        <Smooth ShowOnFirstRender Style="height: calc(100% - 32px);" >
-            <ProjectGantt GetItems="GetItems" 
-                            ItemExpandToggled="OnItemExpandToggled" 
-                            Statuses="_projectState.Statuses" />
-        </Smooth>
+        <div style="height: calc(100% - 32px);">
+            <ProjectGantt GetItems="GetItems"     
+                        ItemExpandToggled="OnItemExpandToggled"
+                        Statuses="_projectState.Statuses" />
+        </div>
     </div>
 </MutableProjectState>
 
@@ -50,7 +53,6 @@
         var milestoneTasks = _projectState.Milestones
             .Select(milestone => 
             {
-                Console.WriteLine(milestone);
                 return new GanttChartItem
                 {
                     Data = milestone,
@@ -94,10 +96,8 @@
     {
         InvokeAsync(() =>
         {
-            Console.WriteLine("Item expand toggled");
             if (item.Data is Milestone milestone)
             {
-                Console.WriteLine($"Milestone {milestone} expanded: {item.IsExpanded}");
                 _milestoneExpanded[milestone] = item.IsExpanded;
             }
         });

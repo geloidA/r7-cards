@@ -10,6 +10,26 @@
         </CascadingValue>
     </CascadingValue>
 }
+else if (_notFound)
+{
+    <div class="w-full h-full flex justify-center items-center">
+        <div class="w-1/2 flex justify-center">
+            <div class="transition-transform hover:scale-125 duration-300">
+                <FluentEmoji Width="350px" Value="@(new Emojis.SmileysEmotion.Flat.Default.ConfusedFace())" />
+            </div>
+        </div>
+        <FluentSpacer Width="50" />
+        <div class="w-1/2">
+            <div class="font-bold text-6xl flex gap-2 items-center">
+                Проект не найден.
+            </div>
+            <p class="text-xl mt-2">
+                @($"Проект с Id - {Id} не найден.")
+            </p>
+        </div>
+    </div>
+
+}
 else
 {
     <div style="height: 90%;" class="flex justify-center items-center">

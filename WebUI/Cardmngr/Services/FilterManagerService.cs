@@ -32,6 +32,8 @@ public class FilterManagerService
         get => withResponsible;
         set
         {
+            if (value == withResponsible) return;
+            
             withResponsible = value;
             OnFilterChanged();
         }
@@ -43,6 +45,8 @@ public class FilterManagerService
         get => withCreatedBy;
         set
         {
+            if (value == withCreatedBy) return;
+
             withCreatedBy = value;
             OnFilterChanged();
         }
@@ -54,6 +58,8 @@ public class FilterManagerService
         get => projectId;
         set
         {
+            if (value == projectId) return;
+
             projectId = value;
             OnFilterChanged();
         }
@@ -65,6 +71,8 @@ public class FilterManagerService
         get => taskSelectorType;
         set
         {
+            if (value == taskSelectorType) return;
+
             taskSelectorType = value;
             OnFilterChanged();
         }

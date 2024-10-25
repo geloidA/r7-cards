@@ -1,6 +1,6 @@
 namespace Cardmngr.Components.ProjectAggregate.Contracts;
 
-public class ProjectInitialized
+public class StateChanged
 {
     
 }
