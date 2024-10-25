@@ -62,6 +62,11 @@ public sealed class TaskUpdateData : IOnlyofficeTask
             return Status.HasValue ? (Status)Status.Value : Cardmngr.Domain.Enums.Status.Open;            
         }
     }
+
+    public override string ToString()
+    {
+        return $"{nameof(Id)}: {Id}, {nameof(Title)}: {Title}, {nameof(Status)}: {Status}, {nameof(Description)}: {Description}, {nameof(Deadline)}: {Deadline}, {nameof(StartDate)}: {StartDate}, {nameof(Priority)}: {Priority}, {nameof(MilestoneId)}: {MilestoneId}, {nameof(Responsibles)}: {string.Join(", ", Responsibles)}, {nameof(ProjectId)}: {ProjectId}, {nameof(Notify)}: {Notify}, {nameof(TaskStatusId)}: {TaskStatusId}";
+    }
 }
 
 public class SubtaskDto : IEntityDto<int>

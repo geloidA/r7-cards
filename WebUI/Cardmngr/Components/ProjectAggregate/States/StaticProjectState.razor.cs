@@ -6,7 +6,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.States;
 
-public sealed partial class StaticProjectState : ProjectStateBase
+public sealed partial class StaticProjectState : ProjectStateComponentBase
 {
     private string CssHeight => ViewModel.IsCollapsed
         ? "height: auto;"

@@ -5,10 +5,12 @@
 
 <div class="project-gantt">
     <GanttChart @ref="@_chart" 
-        GetItems="@GetItems" 
+        GetItems="@GetItems"
         HighlightRoot="HighlightRoot"
         DayOffset="93"
+        OnItemClick="OnItemClicked"
         GetCustomClass="GetItemClass"
+        OnItemExpandToggled="ItemExpandToggled"
         DetalizationLevel="@_detalizationLevel"
         KeySelector="@GetItemKey" >
         <Columns>
@@ -17,9 +19,9 @@
                     Название
                 </HeaderTemplate>
                 <CellContent Context="item" >
-                    @if (item.Data is Project project)
+                    @if (item.Data is IProjectState state)
                     {
-                        <a href="@($"/project/board?ProjectId={project.Id}")" title="@project.Title">@project.Title</a>
+                        <a href="@($"/project/board?ProjectId={state.Project.Id}")" title="@state.Project.Title">@state.Project.Title</a>
                     }
                     else if (item.Data is ITitled titled)
                     {
@@ -73,7 +75,7 @@
                 case Milestone milestone:
                     @RenderMilestone(milestone)
                     break;
-                case Project project:
+                case IProjectState project:
                     @RenderProject(project)
                     break;
             }
@@ -87,7 +89,7 @@
                 case Milestone milestone:
                     @RenderMilestoneRightPart(new(milestone, item.Start, item.End))
                     break;
-                case Project project:
+                case IProjectState project:
                     @RenderProjectRightPart(new(project, item.Start, item.End))
                     break;
             }
@@ -114,9 +116,7 @@
                       OptionText="GetDetalizationLevelText"
                       Items="Enum.GetValues<GanttDetalizationLevel>()"
                       SelectedOption="_detalizationLevel"
-                      SelectedOptionChanged="OnDetalizationLevelChanged" >
-
-        </FluentSelect>
+                      SelectedOptionChanged="OnDetalizationLevelChanged" />
     </div>
 </div>
 
@@ -143,12 +143,12 @@
         return "";
     }
 
-    private RenderFragment<Project> RenderProject = item => @<div class="h-full w-full overflow-hidden text-ellipsis" title="@item.Title">
-            <span class="font-bold whitespace-nowrap ml-2">@item.Title</span>
-            <div class="work-item project"></div>
-        </div>;
+    private RenderFragment<IProjectState> RenderProject = item => @<div class="h-full w-full overflow-hidden text-ellipsis" title="@item.Project.Title">
+        <span class="font-bold whitespace-nowrap ml-2">@item.Project.Title</span>
+        <div class="work-item project"></div>
+    </div>;
 
-    private RenderFragment<GanttItem<Project>> RenderProjectRightPart = item => @<div class="item-right-part mt-1">
+    private RenderFragment<GanttItem<IProjectState>> RenderProjectRightPart = item => @<div class="item-right-part mt-1">
         <DateRangeView StartReadOnly EndReadOnly
             Start="item.Start"
             Class="text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -234,7 +234,7 @@
     </div>;
 
     private RenderFragment<GanttItem<Milestone>> RenderMilestoneRightPart = item => @<div class="milestone-right-part mt-[5px]">
-        <span class="text-info">@item.Data.Title</span>
+        <span class="hover:max-w-max max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap text-info">@item.Data.Title</span>
         <DateRangeView StartReadOnly EndReadOnly
             Start="item.Start"
             Class="text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300"

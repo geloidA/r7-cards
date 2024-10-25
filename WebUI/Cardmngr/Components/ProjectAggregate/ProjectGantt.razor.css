@@ -16,7 +16,6 @@
 .work-item {
     height: 100%;
     width: 100%;
-    cursor: auto;
     overflow: hidden;
     display: flex;
     padding: 1px;
@@ -90,8 +89,8 @@
     gap: 10px;
 }
 
-.work-item.work-item.milestone::before,
-.work-item.work-item.milestone::after {
+.work-item.milestone::before,
+.work-item.milestone::after {
     content: '';
     position: absolute;
     width: 2px;
@@ -100,10 +99,10 @@
     transform: translateY(-38%);
 }
 
-.work-item.work-item.milestone::before {
+.work-item.milestone::before {
     left: 0;
 }
 
-.work-item.work-item.milestone::after {
+.work-item.milestone::after {
     right: 0;
 }

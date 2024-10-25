@@ -41,6 +41,8 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
     {
         base.OnInitialized();
 
+        Console.WriteLine("Model:" + Model + "\n Buffer:" + Buffer);
+
         if (State is IRefreshableProjectState refreshableProjectState)
         {
             refreshableProjectState.RefreshService.Lock(lockGuid);

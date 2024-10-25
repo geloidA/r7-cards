@@ -1,11 +1,11 @@
 ﻿@attribute [Authorize]
 
-@inherits ProjectStateBase
+@inherits ProjectStateComponentBase
 
 @if (Initialized)
 {
     <CascadingValue Value="this" IsFixed="true" >
-        <CascadingValue Value="CommonHeightByKey" IsFixed="true" >
+        <CascadingValue Value="_commonHeightByKey" IsFixed="true" >
             @ChildContent
         </CascadingValue>
     </CascadingValue>

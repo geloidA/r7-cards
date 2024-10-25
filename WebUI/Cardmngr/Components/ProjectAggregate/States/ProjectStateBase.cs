@@ -6,11 +6,10 @@ using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Shared.Project;
-using Microsoft.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate.States;
 
-public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase, IProjectState, IDisposable
+public class ProjectStateBase(ITaskClient taskClient, bool isReadOnly = false) : IProjectState, IDisposable
 {
     private List<UserProfile> _team = [];
     private List<Milestone> _milestones = [];
@@ -18,16 +17,11 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     private List<OnlyofficeTask> _tasks = [];
     private readonly Dictionary<int, List<TaskTag>> _tagsByTaskId = [];
 
-    protected readonly Dictionary<int, int> CommonHeightByKey = [];
     private CancellationTokenSource? _cts;
     private bool _isCtsDisposed;
 
-    [Inject] protected IComponentBus Bus { get; set; } = null!;
-
-    protected async Task SetModelAsync(ProjectStateDto model, bool firstRender = false)
+    public async Task SetModelAsync(ProjectStateDto model, bool firstRender = false)
     {
-        Initialized = false;
-        
         _team = model.Team;
         Project = model.Project;
         _statuses = model.Statuses;
@@ -36,8 +30,8 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
         if (firstRender)
         {
             _tasks = [];
-            Initialized = true;
-            StateHasChanged();
+            Initialized = true; // For render tasks one by one
+            EventBus.Publish(new ProjectInitialized()).Forget();
 
             if (_isCtsDisposed) return;
             _cts?.Cancel();
@@ -67,10 +61,11 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
 
         _tasks = model.Tasks;
 
-        Initialized = true;
         OnMilestonesChanged();
         OnTasksChanged();
     }
+
+    public IComponentBus EventBus { get; } = new ComponentBus();
 
     public Project Project { get; private set; } = null!;
 
@@ -79,7 +74,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     public IReadOnlyList<Milestone> Milestones => _milestones;
     public IReadOnlyList<OnlyofficeTaskStatus> Statuses => _statuses;
 
-    public bool Initialized { get; protected set; }
+    public bool Initialized { get; set; }
 
     public event Action<EntityChangedEventArgs<Milestone>?>? MilestonesChanged;
     private void OnMilestonesChanged(EntityChangedEventArgs<Milestone>? args = null) => MilestonesChanged?.Invoke(args);
@@ -102,7 +97,6 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
         _tasks.RemoveSingle(x => x.Id == task.Id);
         task.Tags = _tagsByTaskId.TryGetValue(task.Id, out var tags) ? tags : [];
         _tasks.Add(task);
-
         OnTasksChanged(actionType, task);
     }
 
@@ -114,7 +108,6 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
         {
             _tagsByTaskId.Add(created.Id, created.Tags);
         }
-
         OnTasksChanged(EntityActionType.Add, created);
     }
 
@@ -124,7 +117,6 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     {
         _tasks.RemoveSingle(x => x.Id == taskId);
         _tagsByTaskId.Remove(taskId);
-
         OnTasksChanged(EntityActionType.Remove, task ?? new OnlyofficeTask { Id = taskId });
     }
 
@@ -134,11 +126,10 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
         OnMilestonesChanged();
     }
 
-    public virtual void RemoveMilestone(Milestone milestone)
+    public void RemoveMilestone(Milestone milestone)
     {
         RemoveTaskMilestoneIds(this.GetMilestoneTasks(milestone.Id).ToList());
         _milestones.RemoveSingle(x => x.Id == milestone.Id);
-
         OnMilestonesChanged();
     }
 
@@ -158,14 +149,12 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
     public void AddSubtask(int taskId, Subtask subtask)
     {
         _tasks.Single(x => x.Id == taskId).Subtasks.Add(subtask);
-
         OnSubtasksChanged();
     }
 
     public void RemoveSubtask(int taskId, int subtaskId)
     {
         _tasks.Single(x => x.Id == taskId).Subtasks.RemoveSingle(x => x.Id == subtaskId);
-
         OnSubtasksChanged();
     }
 
@@ -174,11 +163,8 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
         var task = _tasks.Single(x => x.Id == subtask.TaskId);
         task.Subtasks.RemoveSingle(x => x.Id == subtask.Id);
         task.Subtasks.Add(subtask);
-
         OnSubtasksChanged();
     }
-
-    [Inject] private ITaskClient TaskClient { get; set; } = null!;
 
     public bool ReadOnly => isReadOnly;
 
@@ -188,7 +174,7 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
         {
             if (!_tagsByTaskId.TryGetValue(task.Id, out var tags))
             {
-                tags = await TaskClient.GetTaskTagsAsync(task.Id).ToListAsync(cancellationToken).ConfigureAwait(false);
+                tags = await taskClient.GetTaskTagsAsync(task.Id).ToListAsync(cancellationToken).ConfigureAwait(false);
                 _tagsByTaskId[task.Id] = tags;
             }
 
@@ -200,19 +186,16 @@ public abstract class ProjectStateBase(bool isReadOnly = false) : ComponentBase,
         }
     }
 
-    protected virtual Task CleanPreviousProjectStateAsync()
+    public void Clean()
     {
         _tagsByTaskId.Clear();
-        CommonHeightByKey.Clear();
 
         TasksChanged = null;
         MilestonesChanged = null;
         SubtasksChanged = null;
-
-        return Task.CompletedTask;
     }
 
-    public virtual void Dispose()
+    public void Dispose()
     {
         _cts?.Dispose();
         _isCtsDisposed = true;

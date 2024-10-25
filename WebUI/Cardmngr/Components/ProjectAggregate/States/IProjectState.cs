@@ -1,6 +1,8 @@
-﻿using Cardmngr.Components.ProjectAggregate.Models;
+﻿using BlazorComponentBus;
+using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Domain.Entities.Base;
+using Cardmngr.Shared.Project;
 using Cardmngr.Shared.Utils.Filter;
 using Cardmngr.Utils;
 
@@ -8,6 +10,7 @@ namespace Cardmngr.Components.ProjectAggregate.States;
 
 public interface IProjectState : IProjectStateViewer
 {
+    IComponentBus EventBus { get; }
     event Action<EntityChangedEventArgs<Milestone>?>? MilestonesChanged;
     event Action<EntityChangedEventArgs<OnlyofficeTask>?>? TasksChanged;
     event Action? SubtasksChanged;
@@ -26,6 +29,9 @@ public interface IProjectState : IProjectStateViewer
     void AddSubtask(int taskId, Subtask subtask);
     void UpdateSubtask(Subtask subtask);
     void RemoveSubtask(int taskId, int subtaskId);
+
+    bool Initialized { get; set; }
+    Task SetModelAsync(ProjectStateDto model, bool firstRender = false);
 }
 
 public interface IFilterableProjectState : IProjectState

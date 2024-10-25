@@ -45,11 +45,6 @@ public sealed record OnlyofficeTask : WorkEntityBase, IOnlyofficeTask
     {
         return Responsibles;
     }
-
-    public override string ToString()
-    {
-        return $"OnlyofficeTask - {Id}\t{Title}";
-    }
 }
 
 public interface IOnlyofficeTask : ITitled

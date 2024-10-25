@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 namespace Cardmngr.Components.ProjectAggregate.States;
 
 public partial class DashboardProjectState : 
-    ProjectStateBase, 
+    ProjectStateComponentBase, 
     IFilterableProjectState,
     IRefreshableProjectState
 {
@@ -32,6 +32,7 @@ public partial class DashboardProjectState :
 
     protected override void OnInitialized()
     {
+        base.OnInitialized();
         RefreshService.Refreshed += OnRefreshModelAsync;
         RefreshService.Start(TimeSpan.FromMinutes(1));
     }

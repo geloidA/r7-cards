@@ -1,5 +1,4 @@
 ﻿using Cardmngr.Application.Clients.Project;
-using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
 using Cardmngr.Shared.Extensions;
@@ -10,7 +9,7 @@ using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Components.ProjectAggregate.States;
 
-public sealed partial class SummaryInfoProjectState : ProjectStateBase, IRefreshableProjectState
+public sealed partial class SummaryInfoProjectState : ProjectStateComponentBase, IRefreshableProjectState
 {
     private int _previousId;
 
@@ -22,12 +21,12 @@ public sealed partial class SummaryInfoProjectState : ProjectStateBase, IRefresh
     [Inject] public RefreshService RefreshService { get; set; } = null!;
 
     [Inject] private IProjectClient ProjectClient { get; set; } = null!;
-    [Inject] private ITaskClient TaskClient { get; set; } = null!;
 
     public event Action<SummaryInfoProjectState>? OnAfterIdChanged;
 
     protected override void OnInitialized()
     {
+        base.OnInitialized();
         RefreshService.Refreshed += () => OnRefreshModelAsync().Forget();
     }
 

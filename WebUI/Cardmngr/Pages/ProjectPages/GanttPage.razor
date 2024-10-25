@@ -10,37 +10,47 @@
 
 <PageTitle>Проект</PageTitle>
 
-@if (ProjectId is not null)
-{
-    <MutableProjectState @ref="@_projectState" Id="ProjectId.Value" AutoRefresh="false" >
-        <ProjectStateNotifier />
-        <div class="flex flex-col h-full p-3">
-            <div class="mb-2">
-                <div class="flex gap-2 items-center">
-                    <OpenTaskStatusSwitcher />
-                    <FluentSpacer />
-                    <ProjectTextFieldFilterTool />
-                    <ProjectOptions />
-                </div>
+<MutableProjectState @ref="@_projectState" Id="@ProjectId.GetValueOrDefault(-1)" AutoRefresh="false" >
+    <ProjectStateNotifier />
+    <div class="flex flex-col h-full p-3">
+        <div class="mb-2">
+            <div class="flex gap-2 items-center">
+                <OpenTaskStatusSwitcher />
+                <FluentSpacer />
+                <ProjectTextFieldFilterTool />
+                <ProjectOptions />
             </div>
-            <Smooth ShowOnFirstRender Style="height: calc(100% - 32px);" >
-                <ProjectGantt GetItems="GetItems" Statuses="_projectState.Statuses" />
-            </Smooth>
         </div>
-    </MutableProjectState>
-}
+        <Smooth ShowOnFirstRender Style="height: calc(100% - 32px);" >
+            <ProjectGantt GetItems="GetItems" 
+                            ItemExpandToggled="OnItemExpandToggled" 
+                            Statuses="_projectState.Statuses" />
+        </Smooth>
+    </div>
+</MutableProjectState>
 
 @code {
-
+    private readonly Dictionary<Milestone, bool> _milestoneExpanded = [];
     private IFilterableProjectState _projectState = null!;
 
     private IEnumerable<GanttChartItem> GetItems()
     {
-        var allTasks = _projectState.FilteredTasks();
+        return [new GanttChartItem
+        {
+            Data = _projectState,
+            Start = _projectState.Start(),
+            End = _projectState.Deadline(),
+            Children = GetChildren().ToList(),
+            IsExpanded = true
+        }];
+    }
 
+    private IEnumerable<GanttChartItem> GetChildren()
+    {
         var milestoneTasks = _projectState.Milestones
             .Select(milestone => 
             {
+                Console.WriteLine(milestone);
                 return new GanttChartItem
                 {
                     Data = milestone,
@@ -50,7 +60,9 @@
                         .GetMilestoneTasks(milestone)
                         .Filter(_projectState.TaskFilter)
                         .Select(GetTaskGanttItem)
-                        .ToList()
+                        .OrderBy(x => x.Start)
+                        .ToList(),
+                    IsExpanded = _milestoneExpanded.TryGetValue(milestone, out var value) && value
                 };
             });
 
@@ -59,7 +71,7 @@
             milestoneTasks = milestoneTasks.Where(x => x.Children.Any());
         }
 
-        var tasks = allTasks
+        var tasks = _projectState.FilteredTasks()
             .Where(t => !t.MilestoneId.HasValue)
             .Select(GetTaskGanttItem);
 
@@ -76,5 +88,18 @@
             Start = task.StartDate ?? task.Created,
             End = task.GetSmartDeadline()
         };
+    }
+
+    private void OnItemExpandToggled(GanttChartItem item)
+    {
+        InvokeAsync(() =>
+        {
+            Console.WriteLine("Item expand toggled");
+            if (item.Data is Milestone milestone)
+            {
+                Console.WriteLine($"Milestone {milestone} expanded: {item.IsExpanded}");
+                _milestoneExpanded[milestone] = item.IsExpanded;
+            }
+        });
     }
 }

@@ -454,13 +454,23 @@ ul.contains-task-list {
 }
 
 .gantt-task-custom-done {
-    opacity: 0.5;
+    @apply !transition-opacity !duration-150 opacity-50 hover:opacity-100;
 }
 
 .gantt-task-custom-deadline {
     background-color: color-mix(in srgb, var(--error), transparent 80%);
+    transition: background-color 0.15s ease-in-out !important;
+}
+
+.gantt-task-custom-deadline:hover {
+    background-color: color-mix(in srgb, var(--error), transparent 60%);
 }
 
 .gantt-task-custom-warning {
     background-color: color-mix(in srgb, var(--warning), transparent 80%);
+    transition: background-color 0.15s ease-in-out !important;
+}
+
+.gantt-task-custom-warning:hover {
+    background-color: color-mix(in srgb, var(--warning), transparent 60%);
 }

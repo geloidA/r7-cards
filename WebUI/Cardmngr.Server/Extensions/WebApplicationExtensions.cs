@@ -37,6 +37,8 @@ public static class WebApplicationExtensions
         {
             var version = await File.ReadAllTextAsync("appversion");
 
+            version = version[..^1]; // убираем \n
+
             if (current != version)
             {
                 context.Response.Headers.Append("Clear-Site-Data", "\"cache\"");

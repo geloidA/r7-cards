@@ -24,7 +24,7 @@ public class OnlyofficeTaskUpdateDataEqualityComparer : IEqualityComparer<Onlyof
                x.Description == y.Description &&
                x.Deadline == y.Deadline &&
                (int)x.Priority == y.Priority &&
-               x.Milestone?.Id == y.MilestoneId &&
+               x.MilestoneId == y.MilestoneId &&
                x.StartDate == y.StartDate &&
                x.Responsibles.Select(r => r.Id).SequenceEqual(y.Responsibles);
     }
