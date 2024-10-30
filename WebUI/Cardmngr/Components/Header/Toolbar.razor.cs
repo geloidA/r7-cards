@@ -19,7 +19,7 @@ public partial class Toolbar : KolComponentBase, IDisposable
 
     private void UpdateHref(object? sender, LocationChangedEventArgs? e)
     {
-        _r7OfficeHref = NavigationManager.Uri.Contains("/project/board") 
+        _r7OfficeHref = NavigationManager.Uri.Contains("/project/board") || NavigationManager.Uri.Contains("/project/gantt")
             ? $"{onlyofficeUrl}/Products/Projects/Projects.aspx?prjID={CurrentProjectId}"
             : onlyofficeUrl;
 

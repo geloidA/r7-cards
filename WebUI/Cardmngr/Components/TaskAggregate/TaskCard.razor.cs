@@ -54,7 +54,7 @@ public sealed partial class TaskCard : ComponentBase, IDisposable
 
     private void OnMilestoneChanged(EntityChangedEventArgs<Milestone>? args)
     {
-        if (args is { ActionType: EntityActionType.Update, Entity.Id: var id } && id == Task.MilestoneId)
+        if (args is { ActionType: not EntityActionType.Add or not EntityActionType.None, Entity.Id: var id } && id == Task.MilestoneId)
         {
             StateHasChanged();
         }

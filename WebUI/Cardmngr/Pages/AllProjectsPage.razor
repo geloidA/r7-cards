@@ -11,9 +11,9 @@
         @if (allProjects.Count != 0)
         {
             <CascadingValue Value="projectsFinder" IsFixed >
-                <ProjectGantt @ref="projectGantt" 
-                    Statuses="_cache.Statuses" 
-                    GetItems="GetGanttChartItems"
+                <ProjectGantt @ref="projectGantt"
+                    ItemExpandToggled="OnGanttItemToggled"
+                    ItemsCreator="_ganttItemsCreator"
                     Multiple
                     HighlightRoot />
             </CascadingValue>
@@ -59,9 +59,11 @@ else
 @code {
     private RenderFragment RenderNotFound()
     {
-        return @<div class="font-bold text-3xl self-center flex gap-2 mt-3 items-center">
-                <FluentEmoji Width="75px" Value="@(new Emojis.SmileysEmotion.Flat.Default.ThinkingFace())" />
-                Похоже, по вашему запросу ничего не найдено.
+        return @<div class="justify-center flex">
+                <div class="font-bold text-3xl self-center flex gap-2 mt-3 items-center">
+                    <FluentEmoji Width="75px" Value="@(new Emojis.SmileysEmotion.Flat.Default.ThinkingFace())" />
+                    Похоже, по вашему запросу ничего не найдено.
+                </div>
             </div>;
     }
 }

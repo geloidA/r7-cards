@@ -6,10 +6,10 @@ using Cardmngr.Components.Modals.Base;
 using Cardmngr.Shared.Extensions;
 using Onlyoffice.Api.Models;
 using Cardmngr.Application.Clients.Milestone;
-using Cardmngr.Application.Clients.SignalRHubClients;
 using Cardmngr.Extensions;
-using Microsoft.FluentUI.AspNetCore.Components;
 using Cardmngr.Shared.Utils.Comparer;
+using Blazored.Modal.Services;
+using Cardmngr.Utils;
 
 namespace Cardmngr.Components.MilestoneAggregate.Modals;
 
@@ -24,9 +24,6 @@ public sealed partial class MilestoneDetailsModal() :
     private bool CanEdit => !State.ReadOnly && (Model == null || Model.CanEdit);
 
     private DateTime? Start => Model == null ? Buffer.Deadline?.AddDays(-7) : State.GetMilestoneStart(Model, Buffer.Deadline);
-
-    private int TotalTasks => Model == null ? 0 : milestoneTasks.Count();
-    private int ActiveTasks => Model == null ? 0 : milestoneTasks.Count(x => !x.IsClosed());
 
     [Inject] private IMilestoneClient MilestoneClient { get; set; } = null!;
     [Parameter] public IProjectState State { get; set; } = null!;
@@ -87,7 +84,7 @@ public sealed partial class MilestoneDetailsModal() :
         }
 
         SkipConfirmation = true;
-        await currentModal.CloseAsync();
+        await currentModal.CloseAsync(ModalResult.Ok(IsAdd ? ModalResultType.Added : ModalResultType.Edited));
     }
 
     private async Task DeleteAsync()
@@ -100,26 +97,7 @@ public sealed partial class MilestoneDetailsModal() :
             State.RemoveMilestone(Model);
             
             SkipConfirmation = true;
-            await currentModal.CloseAsync();
+            await currentModal.CloseAsync(ModalResult.Ok(ModalResultType.Deleted));
         }
-    }
-
-    private void OnDeadlineChanged(DateTime? newValue)
-    {
-        Buffer.Deadline = newValue;
-        StateHasChanged();
-    }
-
-    private IEnumerable<UserInfo> SelectedResponsible
-    {
-        get => State.Team.FirstOrDefault(x => x.Id == Buffer.Responsible) is { } 
-            ? [State.Team.Single(x => x.Id == Buffer.Responsible)] 
-            : [];
-        set => Buffer.Responsible = value.FirstOrDefault()?.Id;
-    }
-
-    private void OnSearchResponsible(OptionsSearchEventArgs<UserInfo> e)
-    {
-        e.Items = State.Team.Where(x => x.DisplayName.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase));
     }
 }

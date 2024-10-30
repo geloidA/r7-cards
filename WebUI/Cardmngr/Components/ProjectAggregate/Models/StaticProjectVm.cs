@@ -21,8 +21,6 @@ public class StaticProjectVm : ProjectStateBase
     {
         IsCollapsed = !IsCollapsed;
 
-        Console.WriteLine($"IsCollapsed: {IsCollapsed}");
-
         if (!IsCollapsed && !isTagsInitialized)
         {
             InitializeTaskTagsAsync(taskClient, silent).Forget();

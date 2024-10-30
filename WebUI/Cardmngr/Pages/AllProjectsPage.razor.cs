@@ -5,6 +5,7 @@ using Cardmngr.Application.Clients.TaskStatusClient;
 using Cardmngr.Application.Extensions;
 using Cardmngr.Components.ProjectAggregate;
 using Cardmngr.Components.ProjectAggregate.Models;
+using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
 using Cardmngr.Pages.Contracts;
@@ -20,6 +21,7 @@ namespace Cardmngr.Pages;
 [Authorize]
 public partial class AllProjectsPage : ComponentBase, IDisposable
 {
+    private readonly GanttItemsCreator _ganttItemsCreator = new([]);
     private bool _loading;
 
     private readonly PageCache _cache = new();
@@ -115,51 +117,16 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
         return new StaticProjectVm(state);
     }
 
-    private IEnumerable<GanttChartItem> GetGanttChartItems()
+    private void OnGanttItemToggled(GanttChartItem item)
     {
-        return allProjects
-            .Select(p => new GanttChartItem
-            {
-                Data = p,
-                Start = p.Start(),
-                End = p.Deadline(),
-                Children = GetGanttProjectMilestones(p).ToList(),
-                IsExpanded = !p.IsCollapsed
-            })
-            .OrderBy(x => x.Start ?? DateTime.MaxValue);
-    }
-
-    private static IEnumerable<GanttChartItem> GetGanttProjectMilestones(StaticProjectVm state)
-    {
-        var milestones = state.Milestones
-            .Select(milestone => new GanttChartItem
-            {
-                Data = milestone,
-                End = milestone.Deadline,
-                Start = state.GetMilestoneStart(milestone),
-                Children = state
-                    .GetMilestoneTasks(milestone)
-                    .Select(x => new GanttChartItem
-                    {
-                        Data = x,
-                        Start = x.StartDate ?? x.Created,
-                        End = x.GetSmartDeadline()
-                    })
-                    .ToList()
-            });
-
-        var tasks = state.Tasks
-            .Where(t => !t.MilestoneId.HasValue)
-            .Select(x => new GanttChartItem
-            {
-                Data = x,
-                Start = x.StartDate ?? x.Created,
-                End = x.GetSmartDeadline()
-            });
-
-        return milestones
-            .Concat(tasks)
-            .OrderBy(x => x.Start ?? DateTime.MaxValue);
+        if (item.Data is StaticProjectVm project)
+        {
+            project.ToggleCollapsed(TaskClient, true);
+        }
+        else if (item.Data is Milestone milestone)
+        {
+            _ganttItemsCreator.MilestoneExpanded[milestone.Id] = item.IsExpanded;
+        }
     }
 
     public void Dispose()

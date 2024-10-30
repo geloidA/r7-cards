@@ -62,7 +62,7 @@ public partial class StatusColumn : ComponentBase, IDisposable
         {
             tasks = filterableState.FilteredTasks();
         }
-        
+
         return [.. tasks
             .FilterByStatus(status)
             .OrderByTaskCriteria()];
@@ -78,7 +78,7 @@ public partial class StatusColumn : ComponentBase, IDisposable
 
         if (!task.HasStatus(Status))
         {
-            try 
+            try
             {
                 var updated = await TaskClient.UpdateTaskStatusAsync(task.Id, Status);
                 State.ChangeTaskStatus(updated);

@@ -1,13 +1,94 @@
-﻿@using Onlyoffice.Api.Models
+﻿@using Cardmngr.Application.Clients.TaskClient
+@using Onlyoffice.Api.Models
+@using Cardmngr.Domain.Extensions
 
-<div class="text-xs font-bold px-2 py-1 rounded-lg bg-inverse text-forground-on-accent w-fit">
-    @StatusTitle
+@inject ITaskClient TaskClient
+@inject IToastService ToastService
+
+<div id="@_popoverGuid"
+     @onclick:stopPropagation
+     @onclick="OpenPopover" 
+     class="text-xs font-bold px-2 py-1 rounded-lg bg-inverse text-forground-on-accent w-fit select-none 
+        @(Disabled ? "cursor-auto" : "cursor-pointer hover:bg-accent transition-colors")">
+    @Status.Title
 </div>
+
+@if (!Disabled)
+{
+    <Popover @bind-AnchorId="@_popoverGuid"
+             @bind-Open="_popoverOpen" >
+        <div class="flex flex-col gap-3" @onclick:stopPropagation >
+            @foreach (var status in State.Statuses.InLogicalOrder())
+            {
+                <div class="text-xs font-bold px-2 py-1 text-center w-full transition-colors hover:bg-accent rounded-lg bg-inverse text-forground-on-accent select-none cursor-pointer"
+                    @onclick="async () => await ChangeStatusAsync(status)">
+                    @status.Title
+                </div>
+            }
+        </div>
+    </Popover>
+}
 
 @code {
 
-    [Parameter] public IOnlyofficeTask Task { get; set; } = null!;
-    [Parameter] public IEnumerable<OnlyofficeTaskStatus> Statuses { get; set; } = null!;
+    private bool _popoverOpen;
+    private string? _popoverGuid;
 
-    private string StatusTitle => Statuses.Single(Task.HasStatus).Title;
+    [Parameter] public int? TaskStatusId { get; set; }
+    [Parameter] public Status TaskStatus { get; set; }
+    [Parameter] public EventCallback<int?> TaskStatusIdChanged { get; set; }
+    [Parameter] public IProjectState State { get; set; } = null!;
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public OnlyofficeTask? Task { get; set; }
+    [Parameter] public EventCallback StatusChanged { get; set; }
+
+    [CascadingParameter] private IModalService Modal { get; set; } = default!;
+
+    [CascadingParameter(Name = "MiddleModal")]
+    private ModalOptions ModalOptions { get; set; } = null!;
+
+    private OnlyofficeTaskStatus Status
+    {
+        get
+        {
+            var status = State.Statuses.SingleOrDefault(x => x.Id == (Task?.TaskStatusId ?? TaskStatusId));
+            return status ?? State.Statuses
+                .Single(x => x.IsDefault && x.StatusType == (Task?.Status ?? TaskStatus).ToStatusType());
+        }
+    }
+
+    private void OpenPopover()
+    {
+        _popoverOpen = true;
+    }
+
+    private async Task ChangeStatusAsync(OnlyofficeTaskStatus newStatus)
+    {
+        if (Disabled || (Task?.TaskStatusId ?? TaskStatusId) == newStatus.Id) return;
+        _popoverOpen = false;
+
+        if (Task != null)
+        {
+            if (newStatus.StatusType == StatusType.Close && Task.HasUnclosedSubtask())
+            {
+                var confirmModal = await Modal.Show<CloseCardConfirmModal>(ModalOptions).Result;
+                if (confirmModal.Cancelled) return;
+            }
+
+            try
+            {
+                var updated = await TaskClient.UpdateTaskStatusAsync(Task.Id, newStatus);
+                State.ChangeTaskStatus(updated);
+                await StatusChanged.InvokeAsync();
+            }
+            catch (HttpRequestException e)
+            {
+                ToastService.ShowError(e.HttpRequestError.ToString());
+            }
+        }
+        else
+        {
+            await TaskStatusIdChanged.InvokeAsync(newStatus.Id);
+        }
+    }
 }

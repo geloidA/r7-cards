@@ -9,7 +9,11 @@ public static class ProjectStateExtensions
 {
     public static IEnumerable<OnlyofficeTask> GetMilestoneTasks(this IProjectStateViewer projectState, Milestone milestone)
     {
-        return projectState.Tasks.Where(x => x.MilestoneId == milestone.Id);
+        var tasks = projectState is IFilterableProjectState filterableState
+            ? filterableState.FilteredTasks()
+            : projectState.Tasks;
+
+        return tasks.Where(x => x.MilestoneId == milestone.Id);
     }
 
     public static IEnumerable<OnlyofficeTask> GetMilestoneTasks(this IProjectStateViewer projectState, int milestoneId)

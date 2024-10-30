@@ -5,14 +5,14 @@
 
 <div class="project-gantt">
     <GanttChart @ref="@_chart" 
-        GetItems="@GetItems"
+        GetItems="GetItems"
+        GetItem="GetItem"
         HighlightRoot="HighlightRoot"
         DayOffset="93"
         OnItemClick="OnItemClicked"
         GetCustomClass="GetItemClass"
         OnItemExpandToggled="ItemExpandToggled"
-        DetalizationLevel="@_detalizationLevel"
-        KeySelector="@GetItemKey" >
+        DetalizationLevel="@_detalizationLevel" >
         <Columns>
             <GridColumn TGridItem="GanttChartItem" Width="300px" >
                 <HeaderTemplate>
@@ -29,7 +29,7 @@
                     }
                 </CellContent>
             </GridColumn>
-            <GridColumn TGridItem="GanttChartItem" Width="200px" >
+            <GridColumn TGridItem="GanttChartItem" Width="150px" >
                 <HeaderTemplate>
                     <div class="flex gap-1 items-center">
                         <FluentIcon Value="@(new Icons.Regular.Size16.Calendar())" Color="Color.Info" />
@@ -61,7 +61,11 @@
                 <CellContent Context="item" >
                     @if (item.Data is OnlyofficeTask task)
                     {
-                        <TaskStatusView Statuses="Statuses" Task="task" />
+                        var state = Multiple ? StateFinder!.Find(task) : State!;
+                        <TaskStatusView
+                            Task="task"
+                            State="state"
+                            Disabled="@(!task.CanEdit)" />
                     }
                 </CellContent>
             </GridColumn>
@@ -122,27 +126,6 @@
 
 @code {
 
-    private string GetItemClass(GanttChartItem item)
-    {
-        if (item.Data is OnlyofficeTask task)
-        {
-            if (task.IsClosed())
-            {
-                return "gantt-task-custom-done";
-            }
-            else if (task.IsDeadlineOut())
-            {
-                return "gantt-task-custom-deadline";
-            }
-            else if (task.IsSevenDaysDeadlineOut())
-            {
-                return "gantt-task-custom-warning";
-            }
-        }
-
-        return "";
-    }
-
     private RenderFragment<IProjectState> RenderProject = item => @<div class="h-full w-full overflow-hidden text-ellipsis" title="@item.Project.Title">
         <span class="font-bold whitespace-nowrap ml-2">@item.Project.Title</span>
         <div class="work-item project"></div>
@@ -173,7 +156,11 @@
         return @<div class="work-item task @bgColor">
             @if (task.Priority == Priority.High)
             {
-                <FluentIcon Value="@(new Icons.Filled.Size16.Flag())" title="Высокий приоритет" Color="Color.Accent" />
+                <FluentIcon Value="@(new Icons.Filled.Size16.Flag())" 
+                    Style="min-width: 16px;"
+                    title="Высокий приоритет" 
+                    CustomColor="rgb(253, 186, 116)"
+                    Color="Color.Custom" />
             }
         </div>;
     }

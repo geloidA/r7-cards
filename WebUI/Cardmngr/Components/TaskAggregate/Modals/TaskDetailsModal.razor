@@ -10,7 +10,7 @@
            Width="650" 
            Placement="MyOffcanvasPlacement.End" 
            Class="my-offcanvas my-offcanvas-right"
-           OnClose="ShowCloseConfirm">
+           OnClose="ShowCloseConfirm" >
 
     <FluentEditForm Model="Buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown" >
         <FluentValidationValidator />
@@ -47,7 +47,10 @@
                         <InfoItem Icon="new Icons.Filled.Size20.Status()"
                                 Title="Статус">
                             <Content>
-                                <TaskStatusView Statuses="State.Statuses" Task="Buffer" />
+                                <TaskStatusView State="State" 
+                                    TaskStatus="((IOnlyofficeTask)Buffer).Status"
+                                    @bind-TaskStatusId="Buffer.TaskStatusId"
+                                    Disabled="@(!CanEdit || IsAdd)" />
                             </Content>
                         </InfoItem>
                         @if (Model is not null)

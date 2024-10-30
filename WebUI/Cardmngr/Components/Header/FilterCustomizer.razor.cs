@@ -15,7 +15,7 @@ public partial class FilterCustomizer : ComponentBase, IDisposable
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
     [Inject] IProjectFollowChecker ProjectFollowChecker { get; set; } = null!;
 
-    private Color GanttModeColor => SummaryService.GanttModeEnabled ? Color.Accent : Color.Disabled;
+    private Color GanttModeColor => SummaryService.GanttModeEnabled ? Color.Accent : Color.Info;
 
     protected override void OnInitialized()
     {        

@@ -1,3 +1,4 @@
+using Cardmngr.Components.ProjectAggregate.Contracts;
 using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
 
@@ -11,5 +12,7 @@ public interface IProjectStateFinder
 
     IProjectState Find(OnlyofficeTask task);
 
-    event Action StateChanged;
+    IReadOnlyList<IProjectState> States { get; }
+
+    event Action<StateChanged> StateChanged;
 }

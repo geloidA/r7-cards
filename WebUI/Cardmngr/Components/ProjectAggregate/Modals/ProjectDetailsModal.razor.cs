@@ -3,6 +3,8 @@ using Blazored.Modal.Services;
 using Cardmngr.Application.Clients.Project;
 using Cardmngr.Components.MilestoneAggregate.Modals;
 using Cardmngr.Components.ProjectAggregate.States;
+using Cardmngr.Components.TaskAggregate.Modals;
+using Cardmngr.Domain.Enums;
 using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
 
@@ -47,6 +49,20 @@ public sealed partial class ProjectDetailsModal : ComponentBase, IDisposable
         };
 
         Modal.Show<MilestoneDetailsModal>(parameters, Options);
+    }
+
+    private async Task ShowCreateTaskModal()
+    {
+        var defaultOpen = State.Statuses.First(x => x.IsDefault && x.StatusType == StatusType.Open);
+
+        var parameters = new ModalParameters
+        {
+            { "State", State },
+            { "IsAdd", true },
+            { "TaskStatusId", defaultOpen.Id }
+        };
+
+        await Modal.Show<TaskDetailsModal>(parameters, Options).Result;
     }
 
     public void Dispose()

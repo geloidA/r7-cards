@@ -1,4 +1,3 @@
-using BlazorComponentBus;
 using Cardmngr.Components.ProjectAggregate.Contracts;
 using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
@@ -16,27 +15,26 @@ public class GanttProjectsFinder : IProjectStateFinder
         {
             foreach (var state in states)
             {
-                state.EventBus.UnSubscribe<StateChanged>(OnStateChanged);
+                state.EventBus.UnSubscribeFrom<StateChanged>(OnStateChanged);
             }
 
             states = [.. value];
 
             foreach (var state in states)
             {
-                state.EventBus.Subscribe<StateChanged>(OnStateChanged);
+                state.EventBus.SubscribeTo<StateChanged>(OnStateChanged);
             }
-
-            Console.WriteLine(states.Count);
         }
     }
 
-    public event Action? StateChanged;
+    IReadOnlyList<IProjectState> IProjectStateFinder.States => states;
 
-    private void OnStateChanged(MessageArgs _) => StateChanged?.Invoke();
+    public event Action<StateChanged>? StateChanged;
+
+    private void OnStateChanged(StateChanged msg) => StateChanged?.Invoke(msg);
 
     public IProjectState Find(Milestone milestone)
     {
-        Console.WriteLine(milestone);
         return states.First(s => s.Project.Id == milestone.ProjectOwner.Id);
     }
 
@@ -47,7 +45,6 @@ public class GanttProjectsFinder : IProjectStateFinder
 
     public IProjectState Find(OnlyofficeTask task)
     {
-        Console.WriteLine(states.Count);
         return states.First(s => s.Project.Id == task.ProjectOwner.Id);
     }
 }

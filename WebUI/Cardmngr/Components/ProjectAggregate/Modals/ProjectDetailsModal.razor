@@ -23,8 +23,11 @@
         <div class="w-full header"></div>
     </OffcanvasHeader>
     <OffcanvasBody Class="flex flex-col gap-2">
-        <span>@State.Project.Description</span>
-        <FluentCard >
+        @if (!string.IsNullOrEmpty(State.Project.Description))
+        {
+            <span>@State.Project.Description</span>
+        }        
+        <FluentCard style="padding: 7px !important;" >
             <div class="flex items-center">
                 <FluentIcon Value="@(new Icons.Filled.Size20.Sparkle())" />
                 Вехи
@@ -69,7 +72,7 @@
                             <div class="flex gap-1 flex-wrap items-center">
                                 @foreach (var user in State.Team)
                                 {
-                                    <div class="flex gap-1 text-xs py-0 px-1 items-center rounded-full hover:bg-layer-1 transition-colors">
+                                    <div class="flex gap-1 text-xs py-1 px-1 items-center rounded-full hover:bg-layer-1 transition-colors">
                                         <UserAvatar User="user" Size="20" ShowName Style="padding-top: 0px !important; padding-bottom: 0px !important;" />
                                     </div>
                                 }
@@ -79,5 +82,12 @@
                 </div>
             </Content>
         </DetailsCategory>
+        <Button class="py-1 px-2 rounded-lg !self-end text-inverse bg-neutral-fill-hover mt-3 hover:bg-neutral-hover transition-colors duration-200"
+            @onclick="ShowCreateTaskModal" >
+            <div class="flex gap-1">
+                <FluentIcon Value="@(new Icons.Filled.Size16.Add())" Color="Color.Custom" CustomColor="@CardmngrColors.Inverse" />
+                Добавить задачу
+            </div>
+        </Button>
     </OffcanvasBody>
 </Offcanvas>

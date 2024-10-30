@@ -33,5 +33,4 @@ public partial class TaskStatusHeader
 
         await Modal.Show<TaskDetailsModal>(parameters, DetailsOptions).Result;
     }
-
 }

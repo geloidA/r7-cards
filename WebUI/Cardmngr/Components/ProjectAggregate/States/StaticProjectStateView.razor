@@ -37,10 +37,8 @@
         </div>
         @if (!(ViewModel?.IsCollapsed ?? true))
         {
-            Console.WriteLine($"Render IsCollapsed: {ViewModel.IsCollapsed} Initialized: {ViewModel.Initialized}");
             if (ViewModel.Initialized)
             {
-                Console.WriteLine("Initialized");
                 <div class="flex flex-col relative mt-1" style="flex: auto !important;">
                     <div class="flex flex-col ms-3" style="flex: auto !important; white-space: nowrap !important; overflow-x: auto;">
                         <ProjectBoard></ProjectBoard>

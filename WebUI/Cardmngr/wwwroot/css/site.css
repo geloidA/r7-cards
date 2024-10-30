@@ -99,7 +99,7 @@
     --gantt-odd-item-bg: color-mix(in srgb, var(--neutral-fill-inverse-rest), transparent 95%) !important;
     --gantt-border-color: color-mix(in srgb, var(--neutral-fill-inverse-rest), transparent 90%) !important;
     --gantt-arrow-color: var(--accent-fill-rest) !important;
-    --separator-color: var(--neutral-layer-4) !important;
+    --separator-color: var(--neutral-layer-3) !important;
 }
 
 body {

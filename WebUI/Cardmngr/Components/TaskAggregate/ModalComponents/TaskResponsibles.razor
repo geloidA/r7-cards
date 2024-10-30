@@ -6,7 +6,7 @@
         <div class="group/items flex gap-1 flex-wrap items-center">
             @foreach (var user in _selectedResponsibles)
             {
-                <div class="group/item flex gap-1 text-xs py-0 px-1 items-center rounded-full hover:bg-layer-1 transition-colors">
+                <div class="group/item flex gap-1 text-xs py-1 px-1 items-center rounded-full hover:bg-layer-1 transition-colors">
                     <UserAvatar User="user" Size="20" ShowName Style="padding-top: 0px !important; padding-bottom: 0px !important;" />
                     @if (!Disabled)
                     {

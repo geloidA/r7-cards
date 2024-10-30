@@ -11,10 +11,13 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using Cardmngr.Shared.Utils.Comparer;
 using Cardmngr.Application.Clients.Subtask;
 using Blazored.Modal.Services;
+using Cardmngr.Components.Modals.ConfirmModals;
+using Cardmngr.Utils;
 
 namespace Cardmngr.Components.TaskAggregate.Modals;
 
-public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask, TaskUpdateData>(new OnlyofficeTaskUpdateDataEqualityComparer()), 
+public sealed partial class TaskDetailsModal() : 
+    AddEditModalBase<OnlyofficeTask, TaskUpdateData>(new OnlyofficeTaskUpdateDataEqualityComparer()), 
     IDisposable
 {
     private bool _isDescriptionEditting;
@@ -27,7 +30,6 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
 
     [Inject] private ITaskClient TaskClient { get; set; } = null!;
     [Inject] private ITagColorManager TagColorGetter { get; set; } = null!;
-    [Inject] private IToastService ToastService { get; set; } = null!;
     [Inject] private NotificationHubConnection NotificationHubConnection { get; set; } = null!;
     [Inject] private ISubtaskClient SubtaskClient { get; set; } = null!;
 
@@ -41,8 +43,6 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
     {
         base.OnInitialized();
 
-        Console.WriteLine("Model:" + Model + "\n Buffer:" + Buffer);
-
         if (State is IRefreshableProjectState refreshableProjectState)
         {
             refreshableProjectState.RefreshService.Lock(lockGuid);
@@ -53,24 +53,6 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
             Buffer.Title = "Новая задача";
             Buffer.TaskStatusId = TaskStatusId;
         }
-    }
-
-    private void NotifyThatTaskWasChanged(OnlyofficeTask upd)
-    {
-        if (upd.Id != Model!.Id) return;
-        ToastService.ShowInfo("Задача была изменена кем-то другим");
-
-        SkipConfirmation = true;
-        currentModal.CloseAsync().Forget();
-    }
-
-    private void NotifyThatTaskWasDeleted(int taskId)
-    {
-        if (taskId != Model?.Id) return;
-        ToastService.ShowInfo("Задача была удалена кем-то другим");
-
-        SkipConfirmation = true;
-        currentModal.CloseAsync().Forget();
     }
 
     private bool submitting;
@@ -86,25 +68,56 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
         submitting = true;
         if (IsAdd)
         {
-            var created = await TaskClient.CreateAsync(State.Project.Id, Buffer).ConfigureAwait(false);
-            
-            var tagsTasks = TaskTags.Select(x => TaskClient.CreateTagAsync(created.Id, x.Name));
-            var tags = await Task.WhenAll(tagsTasks).ConfigureAwait(false);
-
-            created.Tags = [.. tags];
-
-            State.AddTask(created);
-            NotificationHubConnection.NotifyAboutCreatedTaskAsync(created).Forget();
+            await AddTaskAsync();
         }
         else
         {
-            Buffer.Status = null; // Когда сохраняется задача, с ненулевым статусом, онлиофис устанавливает статус по умолчанию для данного типа статуса.
-            var updated = await TaskClient.UpdateAsync(Model!.Id, Buffer).ConfigureAwait(false);
-            State.UpdateTask(updated);
+            var canceled = await EditTaskAsync();
+            if (canceled)
+            {
+                submitting = false;
+                return;
+            } 
         }
 
         SkipConfirmation = true;
-        await currentModal.CloseAsync(ModalResult.Ok()).ConfigureAwait(false);
+        await currentModal.CloseAsync(ModalResult.Ok(IsAdd ? ModalResultType.Added : ModalResultType.Edited)).ConfigureAwait(false);
+    }
+
+    private async Task AddTaskAsync()
+    {
+        var created = await TaskClient.CreateAsync(State.Project.Id, Buffer).ConfigureAwait(false);
+            
+        var tagsTasks = TaskTags.Select(x => TaskClient.CreateTagAsync(created.Id, x.Name));
+        var tags = await Task.WhenAll(tagsTasks).ConfigureAwait(false);
+
+        created.Tags = [.. tags];
+
+        State.AddTask(created);
+        NotificationHubConnection.NotifyAboutCreatedTaskAsync(created).Forget();
+    }
+
+    private async Task<bool> EditTaskAsync()
+    {
+        var selectedStatus = State.Statuses.Single(x => x.Id == Buffer.TaskStatusId);
+
+        if (selectedStatus.StatusType == Domain.Enums.StatusType.Close && Model!.HasUnclosedSubtask())
+        {
+            var confirmModal = await Modal.Show<CloseCardConfirmModal>(MiddleModal).Result;
+            if (confirmModal.Cancelled) return true;
+        }
+
+        Buffer.Status = null; // Когда сохраняется задача, с ненулевым статусом, онлиофис устанавливает статус по умолчанию для данного типа статуса.
+
+        if (Model!.TaskStatusId != Buffer.TaskStatusId)
+        {
+            await TaskClient.UpdateTaskStatusAsync(Buffer.Id, selectedStatus).ConfigureAwait(false);
+        }
+        
+        var updated = await TaskClient.UpdateAsync(Model.Id, Buffer).ConfigureAwait(false);
+        State.UpdateTask(updated);
+
+        return false;
     }
 
     public void StartSubtaskAdding()
@@ -126,7 +139,7 @@ public sealed partial class TaskDetailsModal() : AddEditModalBase<OnlyofficeTask
             State.RemoveTask(Model);
 
             SkipConfirmation = true;
-            await currentModal.CloseAsync().ConfigureAwait(false);
+            await currentModal.CloseAsync(ModalResult.Ok(ModalResultType.Deleted)).ConfigureAwait(false);
         }
     }
 

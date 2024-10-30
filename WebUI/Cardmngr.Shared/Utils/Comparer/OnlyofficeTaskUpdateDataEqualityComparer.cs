@@ -22,6 +22,7 @@ public class OnlyofficeTaskUpdateDataEqualityComparer : IEqualityComparer<Onlyof
 
         return x.Title == y.Title &&
                x.Description == y.Description &&
+               x.TaskStatusId == y.TaskStatusId &&
                x.Deadline == y.Deadline &&
                (int)x.Priority == y.Priority &&
                x.MilestoneId == y.MilestoneId &&

@@ -2,6 +2,7 @@
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Components.ProjectAggregate.Contracts;
 using Cardmngr.Components.ProjectAggregate.Models;
+using Cardmngr.Components.TaskAggregate.Contracts;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
 using Cardmngr.Shared.Extensions;
@@ -51,7 +52,7 @@ public class ProjectStateBase(bool isReadOnly = false) : IProjectState
 
     private void OnStateChanged()
     {
-        EventBus.Publish(new StateChanged());
+        EventBus.Publish(new StateChanged { State = this });
     }
 
     public event Action<EntityChangedEventArgs<Milestone>?>? MilestonesChanged;
@@ -68,7 +69,11 @@ public class ProjectStateBase(bool isReadOnly = false) : IProjectState
 
     public void UpdateTask(OnlyofficeTask task) => UpdateTask(task, EntityActionType.Update);
     
-    public void ChangeTaskStatus(OnlyofficeTask task) => UpdateTask(task, EntityActionType.ChangeStatus);
+    public void ChangeTaskStatus(OnlyofficeTask task)
+    {
+        UpdateTask(task, EntityActionType.ChangeStatus);
+        EventBus.Publish(new TaskStatusChanged { Task = task });
+    }
 
     private void UpdateTask(OnlyofficeTask task, EntityActionType actionType)
     {
@@ -112,7 +117,7 @@ public class ProjectStateBase(bool isReadOnly = false) : IProjectState
     {
         RemoveTaskMilestoneIds(this.GetMilestoneTasks(milestone.Id).ToList());
         _milestones.RemoveSingle(x => x.Id == milestone.Id);
-        OnMilestonesChanged();
+        OnMilestonesChanged(new EntityChangedEventArgs<Milestone>(EntityActionType.Remove, milestone));
         OnStateChanged();
     }
 
@@ -157,7 +162,7 @@ public class ProjectStateBase(bool isReadOnly = false) : IProjectState
 
     public async Task InitializeTaskTagsAsync(ITaskClient taskClient, bool silent = false, CancellationToken cancellationToken = default)
     {
-        foreach (var task in _tasks)
+        foreach (var task in _tasks.ToList())
         {
             if (!_tagsByTaskId.TryGetValue(task.Id, out var tags))
             {

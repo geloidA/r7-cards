@@ -25,81 +25,21 @@
             </div>
         </div>
         <div style="height: calc(100% - 32px);">
-            <ProjectGantt GetItems="GetItems"     
-                        ItemExpandToggled="OnItemExpandToggled"
-                        Statuses="_projectState.Statuses" />
+            <ProjectGantt ItemsCreator="_ganttItemsCreator"     
+                          ItemExpandToggled="OnItemExpandToggled" />
         </div>
     </div>
 </MutableProjectState>
 
 @code {
-    private readonly Dictionary<Milestone, bool> _milestoneExpanded = [];
+    private readonly GanttItemsCreator _ganttItemsCreator = new([]);
     private IFilterableProjectState _projectState = null!;
-
-    private IEnumerable<GanttChartItem> GetItems()
-    {
-        return [new GanttChartItem
-        {
-            Data = _projectState,
-            Start = _projectState.Start(),
-            End = _projectState.Deadline(),
-            Children = GetChildren().ToList(),
-            IsExpanded = true
-        }];
-    }
-
-    private IEnumerable<GanttChartItem> GetChildren()
-    {
-        var milestoneTasks = _projectState.Milestones
-            .Select(milestone => 
-            {
-                return new GanttChartItem
-                {
-                    Data = milestone,
-                    Start = _projectState.GetMilestoneStart(milestone),
-                    End = milestone.Deadline,
-                    Children = _projectState
-                        .GetMilestoneTasks(milestone)
-                        .Filter(_projectState.TaskFilter)
-                        .Select(GetTaskGanttItem)
-                        .OrderBy(x => x.Start)
-                        .ToList(),
-                    IsExpanded = _milestoneExpanded.TryGetValue(milestone, out var value) && value
-                };
-            });
-
-        if (_projectState.TaskFilter.Filters.Any())
-        {
-            milestoneTasks = milestoneTasks.Where(x => x.Children.Any());
-        }
-
-        var tasks = _projectState.FilteredTasks()
-            .Where(t => !t.MilestoneId.HasValue)
-            .Select(GetTaskGanttItem);
-
-        return milestoneTasks
-            .Concat(tasks)
-            .OrderBy(x => x.Start);
-    }
-
-    private static GanttChartItem GetTaskGanttItem(OnlyofficeTask task)
-    {
-        return new GanttChartItem
-        {
-            Data = task,
-            Start = task.StartDate ?? task.Created,
-            End = task.GetSmartDeadline()
-        };
-    }
 
     private void OnItemExpandToggled(GanttChartItem item)
     {
-        InvokeAsync(() =>
+        if (item.Data is Milestone milestone)
         {
-            if (item.Data is Milestone milestone)
-            {
-                _milestoneExpanded[milestone] = item.IsExpanded;
-            }
-        });
+            _ganttItemsCreator.MilestoneExpanded[milestone.Id] = item.IsExpanded;
+        }
     }
 }

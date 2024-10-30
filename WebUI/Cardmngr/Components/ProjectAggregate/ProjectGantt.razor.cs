@@ -6,14 +6,17 @@ using Cardmngr.Components.ProjectAggregate.Modals;
 using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Components.TaskAggregate.Modals;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Services;
 using Cardmngr.Utils;
+using Cardmngr.Shared.Extensions;
 using KolBlazor.Components.Charts.Data;
 using KolBlazor.Components.Charts.Gantt;
 using Microsoft.AspNetCore.Components;
+using Cardmngr.Domain.Enums;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
-public partial class ProjectGantt : ComponentBase
+public sealed partial class ProjectGantt : ComponentBase, IDisposable
 {
     private GanttChart _chart = null!;
     private GanttDetalizationLevel _detalizationLevel = GanttDetalizationLevel.Quarter;
@@ -26,11 +29,10 @@ public partial class ProjectGantt : ComponentBase
 
     [CascadingParameter] private IModalService Modal { get; set; } = null!;
 
-    [Parameter] public Func<IEnumerable<GanttChartItem>> GetItems { get; set; } = () => [];
     [Parameter] public bool Multiple { get; set; }
-    [Parameter] public IEnumerable<OnlyofficeTaskStatus> Statuses { get; set; } = null!;
     [Parameter] public bool HighlightRoot { get; set; }
     [Parameter] public EventCallback<GanttChartItem> ItemExpandToggled { get; set; }
+    [Parameter] public GanttItemsCreator ItemsCreator { get; set; } = null!;
 
     protected override void OnInitialized()
     {
@@ -41,7 +43,7 @@ public partial class ProjectGantt : ComponentBase
                 throw new InvalidOperationException("StateFinder is not set");
             }
 
-            StateFinder.StateChanged += Refresh;
+            StateFinder.StateChanged += RefreshState;
         }
         else
         {
@@ -50,13 +52,46 @@ public partial class ProjectGantt : ComponentBase
                 throw new InvalidOperationException("State is not set");
             }
 
-            State.EventBus.Subscribe<StateChanged>(_ => Refresh());
+            State.EventBus.SubscribeTo<StateChanged>(RefreshState);
 
             if (State is IFilterableProjectState filterableState)
             {
-                filterableState.TaskFilter.FilterChanged += Refresh;
+                filterableState.TaskFilter.FilterChanged += () => RefreshState(new StateChanged { State = State });
             }
         }
+    }
+
+    private string GetItemClass(GanttChartItem item)
+    {
+        if (item.Data is OnlyofficeTask task)
+        {
+            if (task.IsClosed())
+            {
+                var state = GetState(task);
+                var defaultClose = state.Statuses.First(x => x.IsDefault && x.StatusType == StatusType.Close);
+                return task.HasStatus(defaultClose) ? "gantt-task-custom-done" : "";
+            }
+            else if (task.IsDeadlineOut())
+            {
+                return "gantt-task-custom-deadline";
+            }
+            else if (task.IsSevenDaysDeadlineOut())
+            {
+                return "gantt-task-custom-warning";
+            }
+        }
+
+        return "";
+    }
+
+    private IProjectState GetState(OnlyofficeTask task)
+    {
+        return Multiple ? StateFinder!.Find(task) : State!;
+    }
+
+    private IProjectState GetState(Milestone milestone)
+    {
+        return Multiple ? StateFinder!.Find(milestone) : State!;
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -67,12 +102,37 @@ public partial class ProjectGantt : ComponentBase
         }
     }
 
+    private IEnumerable<GanttChartItem> GetItems()
+    {
+        var states = Multiple
+            ? StateFinder!.States
+            : [State!];
+
+        return states.Select(ItemsCreator.Create);
+    }
+
+    private GanttChartItem GetItem(string key)
+    {
+        var (type, id) = GanttItemsCreator.GetItemIdByKey(key);
+        
+        if (type == typeof(IProjectState))
+        {
+            return Multiple 
+                ? ItemsCreator.Create(StateFinder!.States.First(x => x.Project.Id == id))
+                : ItemsCreator.Create(State!);
+        }
+
+        throw new NotImplementedException();
+    }
+
+    private void RefreshState(StateChanged args)
+    {
+        _chart.RefreshItem(GanttItemsCreator.GetItemKey(args.State));
+    }
+
     public void Refresh()
     {
-        Console.WriteLine("Refresh");
         _chart.RefreshItems();
-        _chart.Refresh();
-        InvokeAsync(StateHasChanged);
     }
 
     private void ScrollToToday()
@@ -83,7 +143,6 @@ public partial class ProjectGantt : ComponentBase
     private void OnDetalizationLevelChanged(GanttDetalizationLevel level)
     {
         _detalizationLevel = level;
-        _chart.Refresh();
     }
 
     private static string GetDetalizationLevelText(GanttDetalizationLevel level)
@@ -94,17 +153,6 @@ public partial class ProjectGantt : ComponentBase
             GanttDetalizationLevel.Month => "Месяц",
             GanttDetalizationLevel.Quarter => "Квартал",
             _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)
-        };
-    }
-
-    private static string GetItemKey(GanttChartItem item)
-    {
-        return item.Data switch
-        {
-            OnlyofficeTask task => $"task-{task.Id}",
-            Milestone milestone => $"milestone-{milestone.Id}",
-            IProjectState state => $"project-{state.Project.Id}",
-            _ => throw new NotSupportedException()
         };
     }
 
@@ -125,11 +173,10 @@ public partial class ProjectGantt : ComponentBase
             new ModalParameters
             {
                 { "Model", task },
-                { "State", Multiple ? StateFinder!.Find(task) : State },
+                { "State",  GetState(task) },
                 { "TaskTags", task.Tags }
             },
-            DetailsModal)
-        .Result;
+            DetailsModal).Result;
     }
 
     private async Task OpenDetailsMilestoneModal(Milestone milestone)
@@ -138,19 +185,27 @@ public partial class ProjectGantt : ComponentBase
             new ModalParameters
             {
                 { "Model", milestone },
-                { "State", Multiple ? StateFinder!.Find(milestone) : State }
+                { "State", GetState(milestone) }
             }, 
-            DetailsModal)
-        .Result;
+            DetailsModal).Result;
     }
 
-    private Task<ModalResult> OpenDetailsProjectModal(IProjectState state)
+    private async Task OpenDetailsProjectModal(IProjectState state)
     {
-        return Modal.Show<ProjectDetailsModal>(
+        await Modal.Show<ProjectDetailsModal>(
             new ModalParameters { { "State", state } },
-            DetailsModal)
-        .Result;
+            DetailsModal).Result;
     }
 
-
+    public void Dispose()
+    {
+        if (Multiple)
+        {
+            StateFinder!.StateChanged -= RefreshState;
+        }
+        else
+        {
+            State!.EventBus.UnSubscribeFrom<StateChanged>(RefreshState);
+        }
+    }
 }
