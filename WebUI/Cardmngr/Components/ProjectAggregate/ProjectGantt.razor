@@ -153,16 +153,18 @@
                     : task.GetSmartDeadline() is null 
                         ? "unknown" : "";
 
-        return @<div class="work-item task @bgColor">
-            @if (task.Priority == Priority.High)
-            {
-                <FluentIcon Value="@(new Icons.Filled.Size16.Flag())" 
-                    Style="min-width: 16px;"
-                    title="Высокий приоритет" 
-                    CustomColor="rgb(253, 186, 116)"
-                    Color="Color.Custom" />
-            }
-        </div>;
+        return @<Smooth class="w-full h-full" ShowOnFirstRender Delay="TimeSpan.FromMilliseconds(500)">
+            <div class="work-item task @bgColor">
+                @if (task.Priority == Priority.High)
+                {
+                    <FluentIcon Value="@(new Icons.Filled.Size16.Flag())" 
+                        Style="min-width: 16px;"
+                        title="Высокий приоритет" 
+                        CustomColor="rgb(253, 186, 116)"
+                        Color="Color.Custom" />
+                }
+            </div>
+        </Smooth>;        
     }
 
     private RenderFragment<OnlyofficeTask> RenderTaskRightPart = task => @<div

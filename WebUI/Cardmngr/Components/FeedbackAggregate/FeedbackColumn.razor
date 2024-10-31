@@ -1,7 +1,8 @@
 ﻿<div class="feedback-col">
     <KolBoardColumn TValue="Feedback" 
         ItemSpacing="10" Width="Width"
-        EstimateHeight="113" Virtualized
+        CommonHeightByKey="State.CommonHeightByKey"
+        EstimateHeight="190" Virtualized
         Overscan="4" CanItemDrag="x => x.CanChangeStatus"
         OnDropItem="DropFeedback" Items="Items" KeySelector="f => f.Id">
         <HeaderTemplate>

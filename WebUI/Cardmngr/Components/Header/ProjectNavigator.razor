@@ -8,9 +8,9 @@
 @inherits KolComponentBase
 @implements IDisposable
 
-@if (_projState is not null)
+@if (_currentProject is not null)
 {
-    <PageTitle>@_projState.Project.Title</PageTitle>
+    <PageTitle>@_currentProject.Title</PageTitle>
     <div class="flex gap-1">
         <FluentIcon class="self-center" 
             @onmouseenter="() => isInfoIconHovered = true"
@@ -22,7 +22,7 @@
              class="cursor-pointer"
              style="color: @CardmngrColors.Inverse;"
              @onclick="() => openPopover = !openPopover" >
-            @_projState.Project.Title
+            @_currentProject.Title
         </div>
     </div>
 
@@ -40,7 +40,8 @@
     bool isInfoIconHovered;
     bool openPopover;
     Dictionary<int, Project> projectsByIds = [];
-    private IProjectState? _projState;
+    private Project? _currentProject;
+    private static IProjectState? _projState;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
@@ -79,13 +80,19 @@
     {
         if (!IsProjectUri(args.Location))
         {
+            _currentProject = null;
             _projState = null;
+        }
+        else
+        {
+            _currentProject = projectsByIds[GetProjectIdFromUri(args.Location)];
         }
 
         StateHasChanged();
     }
 
     private static bool IsProjectUri(string uri) => uri.Contains("/project/");
+    private static int GetProjectIdFromUri(string uri) => int.Parse(uri[(uri.IndexOf('=') + 1)..]);
 
     public void Dispose()
     {

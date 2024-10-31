@@ -20,6 +20,8 @@ public partial class FeedbacksState : ComponentBase
     [Inject] IToastService ToastService { get; set; } = default!;
 
     [Inject] IFeedbackClient FeedbackClient { get; set; } = default!;
+    
+    internal readonly Dictionary<int, int> CommonHeightByKey = [];
 
     public FeedbacksVm? Model { get; set; }
     public bool Initialized { get; private set; }
