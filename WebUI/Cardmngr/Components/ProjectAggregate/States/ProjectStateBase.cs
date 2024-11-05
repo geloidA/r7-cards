@@ -4,6 +4,7 @@ using Cardmngr.Components.ProjectAggregate.Contracts;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Components.TaskAggregate.Contracts;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Domain.Enums;
 using Cardmngr.Extensions;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Shared.Project;
@@ -189,5 +190,15 @@ public class ProjectStateBase(bool isReadOnly = false) : IProjectState
         TasksChanged = null;
         MilestonesChanged = null;
         SubtasksChanged = null;
+    }
+
+    public OnlyofficeTaskStatus DefaultStatus(Status status)
+    {
+        return status switch
+        {
+            Status.Closed => _statuses.Single(x => x.StatusType == StatusType.Close && x.IsDefault),
+            Status.Open => _statuses.Single(x => x.StatusType == StatusType.Open && x.IsDefault),
+            _ => throw new InvalidOperationException("Unknown status")
+        };
     }
 }

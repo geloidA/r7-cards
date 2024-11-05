@@ -107,17 +107,18 @@
     {
         busy = true;
 
-        var status = await AuthApiLogic.LoginAsync(new LoginModel(loginData.UserName, loginData.Password))
-            .ConfigureAwait(false);
-
-        if (status == AuthenticationResponseType.Error)
+        try
         {
-            ToastService.ShowError("Ошибка авторизации");
-        }
-        else
-        {
-            await LocalStorage.SetItemAsStringAsync("isauthenticated", "true").ConfigureAwait(false);
+            var response = await AuthApiLogic.LoginAsync(new LoginModel(loginData.UserName, loginData.Password));
+            
+            response.EnsureSuccessStatusCode();
+            
+            await LocalStorage.SetItemAsStringAsync("isauthenticated", "true");
             NavigationManager.NavigateTo(ReturnUrl ?? "/", true);
+        }
+        catch (HttpRequestException e)
+        {
+            ToastService.ShowError(e.Message);
         }
 
         busy = false;

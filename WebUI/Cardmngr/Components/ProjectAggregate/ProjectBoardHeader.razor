@@ -3,19 +3,19 @@
 
 <div class="flex flex-col">
     <div class="select-none flex" style="font-size: small;" >
-        <div class="flex gap-1 items-center">
+        @* <div class="flex gap-1 items-center">
             <FluentIcon Value="@(new Icons.Filled.Size20.GanttChart())" Color="Color.Accent"/>
             Вехи
             @if (State.Milestones.Count > 1)
             {
                 <FluentSwitch @bind-Value="collapsed" title="Развернуть / Свернуть"/>
             }
-        </div>
+        </div> *@
         <FluentSpacer />
         <div class="flex gap-2">
             <ProjectTextFieldFilterTool />
             <ProjectOptions />
         </div>
     </div>
-    <MilestoneTimeline Class="mt-2" Collapsed="collapsed" ></MilestoneTimeline>
+    @* <MilestoneTimeline Class="mt-2" Collapsed="collapsed" ></MilestoneTimeline> *@
 </div>

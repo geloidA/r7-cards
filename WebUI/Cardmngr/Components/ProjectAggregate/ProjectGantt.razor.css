@@ -75,6 +75,16 @@
     background-color: var(--accent-fill-rest);
 }
 
+.work-item.milestone .milestone-bg {
+    position: absolute;
+    top: 23px; /* because item has 46px height */
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px dashed color-mix(in srgb, var(--accent-fill-rest) 65%, transparent 50%);
+}
+
 .milestone-right-part,
 .item-right-part {
     position: absolute;

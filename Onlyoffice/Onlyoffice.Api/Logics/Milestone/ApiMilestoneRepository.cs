@@ -9,6 +9,7 @@ public class ApiMilestoneRepository(IHttpClientFactory httpClientFactory) : ApiL
     public async Task<MilestoneDto> CreateAsync(int projectId, MilestoneUpdateData state)
     {
         var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync($"{ApiPaths.Project}/{projectId}/milestone", state));
+        response.EnsureSuccessStatusCode();
         var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
         return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not created " + response.ReasonPhrase);
     }
@@ -35,6 +36,7 @@ public class ApiMilestoneRepository(IHttpClientFactory httpClientFactory) : ApiL
     public async Task<MilestoneDto> UpdateAsync(int id, MilestoneUpdateData state)
     {
         var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"{ApiPaths.Milestone}/{id}", state));
+        response.EnsureSuccessStatusCode();
         var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
         return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not updated " + response.ReasonPhrase);
     }
@@ -42,6 +44,7 @@ public class ApiMilestoneRepository(IHttpClientFactory httpClientFactory) : ApiL
     public async Task<MilestoneDto> UpdateStatusAsync(int id, int status)
     {
         var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync($"{ApiPaths.Milestone}/{id}/status", new { status }));
+        response.EnsureSuccessStatusCode();
         var milestoneDao = await response.Content.ReadFromJsonAsync<SingleMilestoneDao>();
         return milestoneDao?.Response ?? throw new NullReferenceException("MilestoneDto was not updated " + response.ReasonPhrase);
     }

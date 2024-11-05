@@ -26,24 +26,12 @@ public class AuthApiLogic(IHttpClientFactory httpClientFactory) : ApiLogicBase(h
         return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<UserProfileDao>() : null;
     }
 
-    public async Task<AuthenticationResponseType> LoginAsync(LoginModel login)
+    public async Task<HttpResponseMessage> LoginAsync(LoginModel login)
     {
         using var client = HttpClientFactory.CreateClient("onlyoffice");
         string payload = JsonSerializer.Serialize(login);
         var content = new StringContent(payload, Encoding.UTF8, "application/json");
-        
-        HttpResponseMessage response;
 
-        try
-        {
-            response = await client.PostAsync("api/authentication", content);
-        }
-        catch (HttpRequestException)
-        {
-            return AuthenticationResponseType.Error;
-        }
-
-        
-        return response.IsSuccessStatusCode ? AuthenticationResponseType.Success : AuthenticationResponseType.Error;
+        return await client.PostAsync("api/authentication", content);
     }
 }

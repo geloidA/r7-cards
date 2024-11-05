@@ -1,14 +1,9 @@
-﻿<Offcanvas Class="my-offcanvas my-offcanvas-left">
+﻿<Offcanvas Class="my-offcanvas my-offcanvas-left" Width="550">
     <OffcanvasHeader Class="py-1 flex flex-col" >
         <StatusBar Created="State.Project.Created"
                    Updated="State.Project.Updated" />
         <div class="flex flex-row self-start mb-2 w-full">
             <span class="self-center w-75">@State.Project.Title</span>
-            <FluentBadge title="Всего задач" 
-                         class="p-1 ms-1 select-none self-center" 
-                         Appearance="Appearance.Accent" >
-                @State.Tasks.Count
-            </FluentBadge>
             @if (State.Project.IsPrivate)
             {
                 <div class="ms-1 self-center">
@@ -26,21 +21,12 @@
         @if (!string.IsNullOrEmpty(State.Project.Description))
         {
             <span>@State.Project.Description</span>
-        }        
-        <FluentCard style="padding: 7px !important;" >
-            <div class="flex items-center">
-                <FluentIcon Value="@(new Icons.Filled.Size20.Sparkle())" />
-                Вехи
-                <FluentBadge class="p-1" >@State.Milestones.Count</FluentBadge>
-                <FluentSpacer />
-                <Tool Disabled="@(State.ReadOnly || !State.Project.CanEdit)"
-                    Icon="@(new Icons.Regular.Size16.Add())" Color="Color.Success"
-                    OnClick="ShowMilestoneCreation" TooltipTitle="Добавить веху" />
-            </div>
-            <div class="m-0 select-none" style="max-height: 190px; overflow: auto;">
+        }
+        <DetailsCategory Open="true" Header="Вехи" >
+            <Content>
                 <MilestoneList State="State" />
-            </div>
-        </FluentCard>
+            </Content>
+        </DetailsCategory>
         <DetailsCategory Open="true" Header="Параметры" >
             <Content>
                 <div class="flex flex-col gap-5">

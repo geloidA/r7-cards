@@ -1,5 +1,5 @@
 #splitter {
-    border-top: 1px solid var(--boarder-color);
+    border-top: 1px solid var(--border-color);
     align-self: center;
     width: 50%;
 }

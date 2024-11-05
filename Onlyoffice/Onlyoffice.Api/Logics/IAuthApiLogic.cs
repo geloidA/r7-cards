@@ -11,7 +11,7 @@ public interface IAuthApiLogic
     /// <param name="username"></param>
     /// <param name="password"></param>
     /// <returns>Token that expires in 5 hours</returns>
-    Task<AuthenticationResponseType> LoginAsync(LoginModel login);
+    Task<HttpResponseMessage> LoginAsync(LoginModel login);
 
     /// <summary>
     /// Get self profile info

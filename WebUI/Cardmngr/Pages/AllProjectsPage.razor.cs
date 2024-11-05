@@ -10,10 +10,12 @@ using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
 using Cardmngr.Pages.Contracts;
 using Cardmngr.Services;
+using Cardmngr.Shared.Utils;
 using KolBlazor.Components.Charts.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.FluentUI.AspNetCore.Components;
 using Onlyoffice.Api.Models.Common;
 
 namespace Cardmngr.Pages;
@@ -34,6 +36,7 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
     [Inject] private IProjectClient ProjectClient { get; set; } = null!;
     [Inject] private ITaskStatusClient TaskStatusClient { get; set; } = null!;
     [Inject] private ITaskClient TaskClient { get; set; } = null!;
+    [Inject] private IToastService ToastService { get; set; } = null!;
     [Inject] private IProjectFollowChecker ProjectFollowChecker { get; set; } = null!;
     [Inject] private ComponentBus Bus { get; set; } = null!;
     [Inject] private AllProjectsPageSummaryService SummaryService { get; set; } = null!;
@@ -67,10 +70,16 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
         InvokeAsync(async () =>
         {
             _loading = true;
-            allProjects = await ProjectClient.GetGroupedFilteredTasksAsync(builder.SortBy("updated").SortOrder(FilterSortOrders.Desc))
-                .SelectAwait(async x => await CollectProjectStateAsync(x.Key, x.Value))
-                .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.Project.Id))
-                .ToListAsync().ConfigureAwait(false);
+
+            await Catcher.CatchAsync<HttpRequestException>(async () => 
+            {
+                allProjects = await ProjectClient.GetGroupedFilteredTasksAsync(builder.SortBy("updated").SortOrder(FilterSortOrders.Desc))
+                    .SelectAwait(async x => await CollectProjectStateAsync(x.Key, x.Value))
+                    .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.Project.Id))
+                    .ToListAsync().ConfigureAwait(false);
+            }, 
+            ex => ToastService.ShowError(ex.Message));
+
             _loading = false;
 
             if (allProjects.Count == 1)
@@ -91,7 +100,7 @@ public partial class AllProjectsPage : ComponentBase, IDisposable
     }
 
     private async Task<StaticProjectVm> CollectProjectStateAsync(ProjectInfo project, ICollection<OnlyofficeTask> tasks)
-    {
+    {        
         _cache.Statuses ??= await TaskStatusClient
             .GetAllAsync()
             .ToListAsync();

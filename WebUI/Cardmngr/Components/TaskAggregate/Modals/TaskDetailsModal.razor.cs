@@ -99,7 +99,8 @@ public sealed partial class TaskDetailsModal() :
 
     private async Task<bool> EditTaskAsync()
     {
-        var selectedStatus = State.Statuses.Single(x => x.Id == Buffer.TaskStatusId);
+        var bufferTask = (IOnlyofficeTask)Buffer;
+        var selectedStatus = State.Statuses.SingleOrDefault(x => x.Id == bufferTask.TaskStatusId) ?? State.DefaultStatus(bufferTask.Status);
 
         if (selectedStatus.StatusType == Domain.Enums.StatusType.Close && Model!.HasUnclosedSubtask())
         {

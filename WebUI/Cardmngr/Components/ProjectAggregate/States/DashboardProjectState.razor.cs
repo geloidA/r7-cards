@@ -37,8 +37,6 @@ public partial class DashboardProjectState :
         RefreshService.Start(TimeSpan.FromMinutes(1));
     }
 
-    private int _previousId = -1;
-
     protected override void OnParametersSet()
     {
         throw new NotImplementedException();

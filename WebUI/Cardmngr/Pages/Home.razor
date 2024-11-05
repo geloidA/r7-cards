@@ -8,6 +8,7 @@
 @inject IProjectFollowChecker ProjectFollowChecker
 @inject IFeedFilterService FeedFilterService
 @inject ILocalStorageService LocalStorage
+@inject IToastService ToastService
 
 <PageTitle>Р7 Карточки</PageTitle>
 
@@ -126,11 +127,19 @@
 
     protected override async Task OnInitializedAsync()
     {
-        userProjects = await ProjectClient
-            .GetSelfProjectsAsync()
-            .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.Id))
-            .ToListAsync().ConfigureAwait(false);
-
+        try
+        {
+            userProjects = await ProjectClient
+                .GetSelfProjectsAsync()
+                .OrderByDescending(x => ProjectFollowChecker.IsFollow(x.Id))
+                .ToListAsync().ConfigureAwait(false);
+        }
+        catch (HttpRequestException e)
+        {
+            ToastService.ShowError(e.Message);
+            userProjects = [];
+        }
+        
         await FeedFilterService.ConfigureAsync().ConfigureAwait(false);
 
         _feedFilterService = (FeedFilterService)FeedFilterService;

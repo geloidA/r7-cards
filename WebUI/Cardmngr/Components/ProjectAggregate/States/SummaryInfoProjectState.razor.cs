@@ -30,8 +30,8 @@ public sealed partial class SummaryInfoProjectState : ProjectStateComponentBase,
     protected override void OnInitialized()
     {
         throw new NotImplementedException();
-        base.OnInitialized();
-        RefreshService.Refreshed += () => OnRefreshModelAsync().Forget();
+        // base.OnInitialized();
+        // RefreshService.Refreshed += () => OnRefreshModelAsync().Forget();
     }
 
     private async Task OnRefreshModelAsync()

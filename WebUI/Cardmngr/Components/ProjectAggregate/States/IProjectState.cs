@@ -3,6 +3,7 @@ using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Domain.Entities.Base;
+using Cardmngr.Domain.Enums;
 using Cardmngr.Shared.Project;
 using Cardmngr.Shared.Utils.Filter;
 using Cardmngr.Utils;
@@ -30,6 +31,8 @@ public interface IProjectState : IProjectStateViewer
     void AddSubtask(int taskId, Subtask subtask);
     void UpdateSubtask(Subtask subtask);
     void RemoveSubtask(int taskId, int subtaskId);
+
+    OnlyofficeTaskStatus DefaultStatus(Status status);
 
     bool Initialized { get; set; }
     void SetModel(ProjectStateDto model);

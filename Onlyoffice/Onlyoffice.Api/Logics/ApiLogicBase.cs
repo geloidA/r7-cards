@@ -1,4 +1,4 @@
-﻿namespace Onlyoffice.Api;
+﻿namespace Onlyoffice.Api.Logics;
 
 public class ApiLogicBase(IHttpClientFactory httpClientFactory)
 {

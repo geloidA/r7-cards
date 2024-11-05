@@ -7,7 +7,7 @@
 
 <div @onmouseenter="@(() => isHover = true)" @onmouseleave="@(() => isHover = false)"
     @onclick:preventDefault @onclick:stopPropagation @ondblclick:stopPropagation >
-    <div class="w-full flex overflow-hidden cursor-pointer timeline-badge @CssSelected" 
+    <div class="w-full flex overflow-hidden cursor-pointer timeline-badge opacity-50 hover:opacity-100 transition-opacity @CssSelected" 
         style="background-color: @BadgeColor;"
         @onclick="() => ToggleMilestone(Milestone)" >
         <div class="relative hided-opt ms-1 @CssShowOptions" >

@@ -9,20 +9,25 @@ public class ApiProjectRepository(IHttpClientFactory httpClientFactory) : ApiLog
     public async Task<ProjectDto> FollowAsync(int id)
     {
         var response = await InvokeHttpClientAsync(c => c.PutAsJsonAsync<object>($"{ApiPaths.Project}/{id}/follow", null!));
+
+        response.EnsureSuccessStatusCode();
+
         var projectDao = await response.Content.ReadFromJsonAsync<SingleProjectDao>();
         return projectDao?.Response ?? throw new NullReferenceException("Project was not followed");
     }
 
     public async Task<ProjectDto> DeleteAsync(int id)
     {
-        var response = await InvokeHttpClientAsync(c => c.DeleteAsync($"{ApiPaths.Project}/{id}"));
-        var projectDao = await response.Content.ReadFromJsonAsync<SingleProjectDao>();
+        var projectDao = await InvokeHttpClientAsync(c => c.DeleteFromJsonAsync<SingleProjectDao>($"{ApiPaths.Project}/{id}"));
         return projectDao?.Response ?? throw new NullReferenceException("Project was not deleted");
     }
 
     public async Task<ProjectDto> CreateAsync(ProjectCreateDto project)
     {
         var response = await InvokeHttpClientAsync(c => c.PostAsJsonAsync(ApiPaths.Project, project));
+
+        response.EnsureSuccessStatusCode();
+
         var projectDao = await response.Content.ReadFromJsonAsync<SingleProjectDao>();
         return projectDao?.Response ?? throw new NullReferenceException("Project was not created");
     }
@@ -36,7 +41,7 @@ public class ApiProjectRepository(IHttpClientFactory httpClientFactory) : ApiLog
 
     public async Task<ProjectDto> GetByIdAsync(int projectId)
     {
-        var project = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<SingleProjectDao>($"{ApiPaths.Project}/{projectId}"));
+        var project = await InvokeHttpClientAsync(c => c.GetFromJsonAsync<SingleProjectDao>($"{ApiPaths.Project}/{projectId}"));        
         return project?.Response ?? throw new NullReferenceException("Project was not found");
     }
 

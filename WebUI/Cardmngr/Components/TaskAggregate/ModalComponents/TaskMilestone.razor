@@ -37,8 +37,8 @@
             <div class="max-h-52 overflow-auto">
                 @foreach (var milestone in _searchedMilestones)
                 {
-                    <li class="even:bg-neutral-hover flex gap-2 first:rounded-t-lg last:rounded-b-lg
-                        items-center cursor-pointer hover:bg-neutral-fill-hover p-1 text-xs"
+                    <li class="even:bg-neutral-fill-hover flex gap-2 first:rounded-t-lg last:rounded-b-lg
+                        items-center cursor-pointer p-1 text-xs"
                         @onclick="() => SelectMilestone(milestone)" >
                         <FluentIcon Value="@(new MyIcons.Size16.Milestone())"/>
                         <span>@milestone.Title</span>

@@ -2,6 +2,7 @@
 using Cardmngr.Application.Extensions;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Project;
+using Cardmngr.Shared.Utils;
 using Onlyoffice.Api.Logics.Repository;
 using Onlyoffice.Api.Models;
 using Onlyoffice.Api.Models.Common;
@@ -9,7 +10,7 @@ using Onlyoffice.Api.Models.Common;
 namespace Cardmngr.Application.Clients.Project;
 
 // TODO: Separate logics
-public class ProjectClient(    IProjectRepository projectRepository,
+public class ProjectClient(IProjectRepository projectRepository,
     ITaskRepository taskRepository,
     ITaskStatusRepository taskStatusRepository,
     IMilestoneRepository milestoneRepository,
@@ -144,26 +145,25 @@ public class ProjectClient(    IProjectRepository projectRepository,
             throw new ArgumentException("All tasks must be in the same project");
         }
 
-        var resultStatuses = statuses ?? await taskStatusRepository
-                .GetAllAsync()
-                .ToListAsync(mapper.Map<OnlyofficeTaskStatus>);
+        var resultStatuses = await Catcher.CatchAsync<HttpRequestException, List<OnlyofficeTaskStatus>>(
+            () => statuses is null ? taskStatusRepository.GetAllAsync().ToListAsync(mapper.Map<OnlyofficeTaskStatus>) : ValueTask.FromResult(statuses), []);        
 
-        var team = projectRepository
-            .GetTeamAsync(projectId)
-            .ToListAsync(mapper.Map<UserProfile>);
+        var team = await Catcher.CatchAsync<HttpRequestException, List<UserProfile>>(
+            () => projectRepository.GetTeamAsync(projectId).ToListAsync(mapper.Map<UserProfile>), []);
 
         var project = projectRepository.GetByIdAsync(projectId);
-        var milestones = milestoneRepository
-            .GetAllByProjectIdAsync(projectId)
-            .ToListAsync(mapper.Map<Domain.Entities.Milestone>);
+        
+        var milestones = await Catcher.CatchAsync<HttpRequestException, List<Domain.Entities.Milestone>>(
+            () => milestoneRepository.GetAllByProjectIdAsync(projectId).ToListAsync(mapper.Map<Domain.Entities.Milestone>),
+            []);
 
         return new ProjectStateDto
         {
             Tasks = [.. tasks],
             Statuses = resultStatuses,
             Project = mapper.Map<Domain.Entities.Project>(await project),
-            Milestones = await milestones,
-            Team = await team
+            Milestones = milestones,
+            Team = team
         };
     }
 

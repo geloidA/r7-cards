@@ -6,9 +6,9 @@
     <KolTimeline Collapsed="!Collapsed" UncollapsedHeight="@(State.Milestones.Count * 40)" 
         ShowTodayLine="true" Class="scrollbar-none py-0" >
         <CascadingValue Value="milestoneTaskFilter" IsFixed="true">
-            @foreach (var milestone in State.Milestones.OrderBy(x => x.Deadline))
+            @foreach (var (milestone, start) in TimelineMilestones)
             {
-                <KolTimelineItem @key="milestone.Id" End="milestone.Deadline" Start="State.GetMilestoneStart(milestone)">
+                <KolTimelineItem @key="milestone.Id" End="milestone.Deadline" Start="start">
                     <TimelineMilestone Milestone="milestone" />
                 </KolTimelineItem>
             }

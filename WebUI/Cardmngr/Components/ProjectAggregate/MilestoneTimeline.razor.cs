@@ -1,4 +1,6 @@
 ﻿using Cardmngr.Components.ProjectAggregate.States;
+using Cardmngr.Domain.Entities;
+using Cardmngr.Extensions;
 using Cardmngr.Shared.Utils.Filter.TaskFilters;
 using KolBlazor;
 using KolBlazor.JSInterop;
@@ -49,6 +51,20 @@ public sealed partial class MilestoneTimeline : KolComponentBase, IAsyncDisposab
         if (milestoneTaskFilter.Count <= 0) return;
         var deletedMilestones = milestoneTaskFilter.Except(State.Milestones);
         milestoneTaskFilter.RemoveRange(deletedMilestones);
+    }
+
+    private IEnumerable<(Milestone milestone, DateTime start)> TimelineMilestones
+    {
+        get
+        {
+            var beginOfYear = new DateTime(DateTime.Now.Year, 1, 1);
+            var endOfYear = new DateTime(DateTime.Now.Year, 12, 31);
+
+            return State.Milestones
+                .Select(x => (Milestone: x, Start: State.GetMilestoneStart(x)))
+                .Where(d => beginOfYear <= d.Start && d.Start <= endOfYear)
+                .OrderBy(x => x.Start);
+        }
     }
 
     /// <summary>

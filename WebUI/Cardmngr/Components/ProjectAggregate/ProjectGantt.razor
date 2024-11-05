@@ -2,6 +2,7 @@
 @using KolBlazor.Components.Charts.Data
 @using KolBlazor.Components.Charts.Gantt
 @using KolBlazor.Components.TreeGrid.Columns
+@using Microsoft.AspNetCore.Components.Rendering
 
 <div class="project-gantt">
     <GanttChart @ref="@_chart" 
@@ -9,6 +10,7 @@
         GetItem="GetItem"
         HighlightRoot="HighlightRoot"
         DayOffset="93"
+        TreeGridNestMargin="10"
         OnItemClick="OnItemClicked"
         GetCustomClass="GetItemClass"
         OnItemExpandToggled="ItemExpandToggled"
@@ -21,15 +23,22 @@
                 <CellContent Context="item" >
                     @if (item.Data is IProjectState state)
                     {
-                        <a href="@($"/project/board?ProjectId={state.Project.Id}")" title="@state.Project.Title">@state.Project.Title</a>
+                        <a class="font-semibold" href="@($"/project/board?ProjectId={state.Project.Id}")" 
+                           title="@state.Project.Title">
+                           @state.Project.Title
+                        </a>
                     }
-                    else if (item.Data is ITitled titled)
+                    else if (item.Data is Milestone milestone)
                     {
-                        <span title="@titled.Title">@titled.Title</span>
+                        <span class="font-semibold" title="@milestone.Title">@milestone.Title</span>
+                    }
+                    else if (item.Data is OnlyofficeTask task)
+                    {
+                        <span title="@task.Title">@task.Title</span>
                     }
                 </CellContent>
             </GridColumn>
-            <GridColumn TGridItem="GanttChartItem" Width="150px" >
+            <GridColumn TGridItem="GanttChartItem" Width="180px" >
                 <HeaderTemplate>
                     <div class="flex gap-1 items-center">
                         <FluentIcon Value="@(new Icons.Regular.Size16.Calendar())" Color="Color.Info" />
@@ -77,7 +86,7 @@
                     @RenderTask(task)
                     break;
                 case Milestone milestone:
-                    @RenderMilestone(milestone)
+                    @RenderMilestone((milestone, item))
                     break;
                 case IProjectState project:
                     @RenderProject(project)
@@ -210,14 +219,31 @@
     </div>;
 
     @* Milestone render *@
-    private RenderFragment<Milestone> RenderMilestone = item => @<div class="work-item milestone" title="@item.Title"></div>;
+    private RenderFragment<(Milestone milestone, GanttChartItem item)> RenderMilestone = data => 
+        @<div class="work-item milestone" title="@data.milestone.Title">
+            @if (data.item.IsExpanded)
+            {
+                <div class="milestone-bg cursor-auto" @onclick:stopPropagation style="height: @(data.item.Children.Count * 46 + 23)px;"></div> 
+            } 
+        </div>;
 
     private RenderFragment<(Milestone milestone, IEnumerable<OnlyofficeTask> tasks)> RenderMilestoneLeftPart = item => @<div 
         class="w-max text-xs gap-[2px] flex absolute mt-1"
         style="right: calc(100% + 5px);">
         @if (item.tasks.Any())
         {
-            <FluentIcon Value="@(new Icons.Regular.Size20.CircleHintHalfVertical())" Width="12px" Color="Color.Info" />
+            if (item.milestone.IsDeadlineOut())
+            {
+                <FluentIcon Value="@(new Icons.Regular.Size20.Fire())" Width="12px" Color="Color.Error" title="Срок истек" />
+            }
+            else if (item.milestone.IsClosed())
+            {
+                <FluentIcon Value="@(new Icons.Regular.Size20.CheckmarkCircle())" Width="12px" Color="Color.Success" title="Закрыта" />
+            }
+            else
+            {
+                <FluentIcon Value="@(new Icons.Regular.Size20.PlayCircleHint())" Width="12px" Color="Color.Accent" title="В работе" />
+            }
             @($"{item.tasks.Count(x => x.Status == Status.Closed)} / {item.tasks.Count()}")
         }
     </div>;

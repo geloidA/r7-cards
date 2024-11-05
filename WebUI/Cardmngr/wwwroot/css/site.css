@@ -63,7 +63,7 @@
 
     th, td {
         @apply p-3 text-left;
-    }
+    }.status-column
 
     tr {
         @apply even:bg-neutral-fill-hover;
@@ -80,7 +80,7 @@
 :root {
     --main-board-bg: var(--neutral-layer-4);
     --col-title-color: var(--neutral-foreground-rest);
-    --boarder-color: var(--fill-color);
+    --border-color: color-mix(in srgb, var(--neutral-fill-inverse-rest), transparent 90%);
     --main-col-bg: var(--neutral-layer-2);
     --main-card-bg: var(--neutral-layer-1);
     --main-responsibles-bg: var(--neutral-layer-2);
@@ -97,7 +97,7 @@
     --today-bg: color-mix(in srgb, var(--accent-fill-rest), transparent 15%) !important;
     --gantt-hover-bg: #71717160 !important;
     --gantt-odd-item-bg: color-mix(in srgb, var(--neutral-fill-inverse-rest), transparent 95%) !important;
-    --gantt-border-color: color-mix(in srgb, var(--neutral-fill-inverse-rest), transparent 90%) !important;
+    --gantt-border-color: var(--border-color) !important;
     --gantt-arrow-color: var(--accent-fill-rest) !important;
     --separator-color: var(--neutral-layer-3) !important;
 }
@@ -154,7 +154,7 @@ article {
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: var(--boarder-color);
+    background-color: var(--border-color);
     border-radius: 20px;
 }
 

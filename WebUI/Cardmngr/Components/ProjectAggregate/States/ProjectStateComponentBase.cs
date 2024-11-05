@@ -2,6 +2,7 @@ using BlazorComponentBus;
 using Cardmngr.Application.Clients.TaskClient;
 using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Domain.Entities;
+using Cardmngr.Domain.Enums;
 using Cardmngr.Shared.Project;
 using Microsoft.AspNetCore.Components;
 
@@ -113,5 +114,10 @@ public abstract class ProjectStateComponentBase(bool isReadOnly = false) : Compo
     public Task InitializeTaskTagsAsync(ITaskClient taskClient, bool silent = false, CancellationToken cancellationToken = default)
     {
         return _state.InitializeTaskTagsAsync(taskClient, silent, cancellationToken);
+    }
+
+    public OnlyofficeTaskStatus DefaultStatus(Status status)
+    {
+        return _state.DefaultStatus(status);
     }
 }

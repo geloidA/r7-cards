@@ -12,6 +12,8 @@ namespace Cardmngr.Components.ProjectAggregate.Modals;
 
 public sealed partial class ProjectDetailsModal : ComponentBase, IDisposable
 {
+    private bool _canShowCreateTaskModal = true;
+    private bool _canShowMilestoneModal = true;
     private readonly Guid lockGuid = Guid.NewGuid();
 
     [Inject] private IProjectClient ProjectClient { get; set; } = null!;
@@ -40,19 +42,28 @@ public sealed partial class ProjectDetailsModal : ComponentBase, IDisposable
         State.Project.IsFollow = !State.Project.IsFollow;
     }
 
-    private void ShowMilestoneCreation()
+    private async Task ShowMilestoneCreation()
     {
+        if (!_canShowMilestoneModal) return;
+
+        _canShowMilestoneModal = false;
+
         var parameters = new ModalParameters
         {
             { "IsAdd", true },
             { "State", State }
         };
 
-        Modal.Show<MilestoneDetailsModal>(parameters, Options);
+        await Modal.Show<MilestoneDetailsModal>(parameters, Options).Result;
+
+        _canShowMilestoneModal = true;
     }
 
     private async Task ShowCreateTaskModal()
     {
+        if (!_canShowCreateTaskModal) return;
+
+        _canShowCreateTaskModal = false;
         var defaultOpen = State.Statuses.First(x => x.IsDefault && x.StatusType == StatusType.Open);
 
         var parameters = new ModalParameters
@@ -63,6 +74,8 @@ public sealed partial class ProjectDetailsModal : ComponentBase, IDisposable
         };
 
         await Modal.Show<TaskDetailsModal>(parameters, Options).Result;
+
+        _canShowCreateTaskModal = true;
     }
 
     public void Dispose()

@@ -1,31 +1,39 @@
-﻿@using Cardmngr.Application.Clients.SignalRHubClients
-
-@inject AuthenticationStateProvider AuthenticationStateProvider
-
-@if (State.Milestones.Count > 0)
+﻿@if (State.Milestones.Count > 0)
 {
-    @foreach (var milestone in State.Milestones.OrderByMilestoneCriteria())
-    {
-        <div @key="milestone.Id" class="mt-2">
-            <div class="flex items-center">
-                <MilestoneLabel OnClick="() => ShowModal(milestone)" Milestone="milestone" />
+    <div class="flex gap-2 flex-col">
+        @foreach (var milestone in State.Milestones.OrderByMilestoneCriteria())
+        {
+            <div @key="milestone.Id" style="border-color: var(--gantt-border-color);" @onclick="() => ShowModal(milestone)"
+                 class="flex flex-row gap-2 items-center border rounded-md p-2 hover:bg-neutral-fill-hover transition-colors cursor-pointer select-none @GetStatusCss(milestone)" 
+                 >
+                <FluentIcon Value="@(new MyIcons.Size16.Milestone())" Color="Color.Info" class="min-w-4" />
+                <div title="@milestone.Title" class="max-w-52 min-w-52 overflow-hidden text-nowrap text-ellipsis 
+                    @(milestone.IsClosed() ? " line-through" : "")">@milestone.Title</div>
+                <FluentSpacer Width="10" />
+                <UserAvatar User="@milestone.Responsible" Size="25" ShowTooltip />
                 <FluentSpacer />
-                <i class="flex flex-row" style="font-size: 11px;">
-                    <span>@State.GetMilestoneStart(milestone).ToShortDateString()</span>
-                    <span class="ms-1">-</span>
-                    <span class="ms-1 @(milestone.IsDeadlineOut() ? "text-error font-semibold" : "")">
-                        @milestone.Deadline.ToShortDateString()
-                    </span>
-                </i>
-                <FluentSpacer Width="15" />
-                <FluentBadge title="@(milestone.IsDeadlineOut() ? "Веха просрочена" : "Открытых задач")"
-                    Appearance="@(milestone.IsDeadlineOut() ? Appearance.Neutral : Appearance.Accent)"
-                    style="font-size: 11px;" >
-                    @State.GetMilestoneTasks(milestone).Count(x => !x.IsClosed())
-                </FluentBadge>
-            </div>
-        </div>        
-    }
+                <div class="flex flex-row text-info text-xs" style="text-decoration-line: none !important;">
+                    <DateRangeView StartReadOnly EndReadOnly
+                        Start="State.GetMilestoneStart(milestone)"
+                        End="milestone.Deadline" NotShowYearIfCurrent />
+                </div>
+                <div class="text-xs">
+                    @if (milestone.IsDeadlineOut())
+                    {
+                        <FluentIcon Value="@(new Icons.Regular.Size24.Fire())" title="Просрочена" Color="Color.Error" />
+                    } 
+                    else if (milestone.IsClosed())
+                    {
+                        <FluentIcon Value="@(new Icons.Regular.Size24.CheckmarkCircle())" title="Закрыта" Color="Color.Success" />
+                    }
+                    else
+                    {
+                        <FluentIcon Value="@(new Icons.Regular.Size24.PlayCircleHint())" title="В работе" Color="Color.Accent" />
+                    }
+                </div>
+            </div>        
+        }
+    </div>
 }
 else
 {
@@ -33,19 +41,34 @@ else
 }
 
 @code {
+    private bool _canShoModal = true;
+
     [Parameter] public IProjectState State { get; set; } = null!;
 
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
 
-    void ShowModal(Milestone milestone)
+    private string GetStatusCss(Milestone milestone)
     {
+        if (milestone.IsClosed()) return "opacity-60";
+        if (milestone.IsDeadlineOut()) return "!border-red-500";
+        return "";
+    }
+
+    async Task ShowModal(Milestone milestone)
+    {
+        if (!_canShoModal) return;
+
+        _canShoModal = false;
+
         var parameters = new ModalParameters
         {
             { "Model", milestone },
             { "State", State }
         };
 
-        Modal.Show<MilestoneDetailsModal>(parameters, Options);
+        await Modal.Show<MilestoneDetailsModal>(parameters, Options).Result;
+        
+        _canShoModal = true;
     }
 }
