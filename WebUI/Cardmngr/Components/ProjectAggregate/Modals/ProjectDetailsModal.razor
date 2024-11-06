@@ -22,7 +22,27 @@
         {
             <span>@State.Project.Description</span>
         }
-        <DetailsCategory Open="true" Header="Вехи" >
+        <DetailsCategory Open="true" >
+            <HeaderTemplate Context="open" >
+                <div class="flex mb-1 items-center">
+                    Вехи
+                    @if (open)
+                    {
+                        <FluentIcon Value="@(new Icons.Filled.Size16.ChevronDown())" Color="Color.FillInverse" />
+                    }
+                    else
+                    {
+                        <FluentIcon Value="@(new Icons.Filled.Size16.ChevronUp())" Color="Color.FillInverse" />
+                    }
+                    <FluentSpacer />
+                    <div @onclick:stopPropagation>
+                        <Button @onclick="ShowMilestoneCreation" class="p-1 rounded-md border hover:bg-neutral-hover transition-colors duration-200" style="border-color: var(--gantt-border-color);"
+                            Disabled="@(State.ReadOnly || !State.Project.CanEdit)" Title="Добавить веху"  >
+                            <FluentIcon Value="@(new Icons.Filled.Size16.Add())" Color="Color.Custom" CustomColor="@CardmngrColors.Inverse" />
+                        </Button>
+                    </div>
+                </div>
+            </HeaderTemplate>
             <Content>
                 <MilestoneList State="State" />
             </Content>
@@ -68,7 +88,8 @@
                 </div>
             </Content>
         </DetailsCategory>
-        <Button class="py-1 px-2 rounded-lg !self-end text-inverse bg-neutral-fill-hover mt-3 hover:bg-neutral-hover transition-colors duration-200"
+        <Button class="py-1 px-2 rounded-md border !self-end text-inverse mt-3 hover:bg-neutral-hover transition-colors duration-200"
+                style="border-color: var(--gantt-border-color);"
             @onclick="ShowCreateTaskModal" >
             <div class="flex gap-1">
                 <FluentIcon Value="@(new Icons.Filled.Size16.Add())" Color="Color.Custom" CustomColor="@CardmngrColors.Inverse" />

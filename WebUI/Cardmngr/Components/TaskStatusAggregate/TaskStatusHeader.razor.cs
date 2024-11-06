@@ -5,7 +5,6 @@ using Cardmngr.Domain.Entities;
 using Cardmngr.Shared.Extensions;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Components.TaskAggregate.Modals;
-using Cardmngr.Application.Clients.SignalRHubClients;
 
 namespace Cardmngr.Components.TaskStatusAggregate;
 

@@ -10,6 +10,7 @@ using Cardmngr.Extensions;
 using Cardmngr.Shared.Utils.Comparer;
 using Blazored.Modal.Services;
 using Cardmngr.Utils;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.MilestoneAggregate.Modals;
 
@@ -26,6 +27,7 @@ public sealed partial class MilestoneDetailsModal() :
     private DateTime? Start => Model == null ? Buffer.Deadline?.AddDays(-7) : State.GetMilestoneStart(Model, Buffer.Deadline);
 
     [Inject] private IMilestoneClient MilestoneClient { get; set; } = null!;
+    [Inject] private IToastService ToastService { get; set; } = null!;
     [Parameter] public IProjectState State { get; set; } = null!;
 
     public void Dispose()
@@ -58,7 +60,17 @@ public sealed partial class MilestoneDetailsModal() :
 
     private async Task ToggleMilestoneStatus()
     {
-        var updated = await MilestoneClient.UpdateStatusAsync(Model!.Id, Model!.IsClosed() ? 0 : 1);
+        Milestone updated;
+
+        try
+        {
+            updated = await MilestoneClient.UpdateStatusAsync(Model!.Id, Model!.IsClosed() ? 0 : 1);
+        }
+        catch (HttpRequestException ex)
+        {
+            ToastService.ShowError(ex.Message);
+            return;
+        }
 
         State.UpdateMilestone(updated);
         Model = updated;
@@ -74,12 +86,34 @@ public sealed partial class MilestoneDetailsModal() :
 
         if (IsAdd)
         {
-            var added = await MilestoneClient.CreateAsync(State.Project.Id, Buffer);
+            Milestone added;
+
+            try
+            {
+                added = await MilestoneClient.CreateAsync(State.Project.Id, Buffer);
+            }
+            catch (HttpRequestException ex)
+            {
+                ToastService.ShowError(ex.Message);
+                return;
+            }
+
             State.AddMilestone(added);
         }
         else
         {
-            var updated = await MilestoneClient.UpdateAsync(Model!.Id, Buffer);
+            Milestone updated;
+
+            try
+            {
+                updated = await MilestoneClient.UpdateAsync(Model!.Id, Buffer);
+            }
+            catch (HttpRequestException ex)
+            {
+                ToastService.ShowError(ex.Message);
+                return;
+            }
+
             State.UpdateMilestone(updated);
         }
 
@@ -93,7 +127,16 @@ public sealed partial class MilestoneDetailsModal() :
 
         if (answer.Confirmed)
         {
-            await MilestoneClient.RemoveAsync(Model!.Id);
+            try
+            {
+                await MilestoneClient.RemoveAsync(Model!.Id);
+            }
+            catch (HttpRequestException ex)
+            {
+                ToastService.ShowError(ex.Message);
+                return;
+            }
+            
             State.RemoveMilestone(Model);
             
             SkipConfirmation = true;

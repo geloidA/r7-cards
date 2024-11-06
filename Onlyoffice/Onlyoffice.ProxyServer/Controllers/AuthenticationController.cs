@@ -10,4 +10,15 @@ public class AuthenticationController(IConfiguration conf) : ApiController(conf)
     {
         return ProxyRequestAsync($"{ApiUrl}/authentication", HttpProxyOptionsBuilder.Instance.WithHttpClientName("NoCookie"));
     }
+
+    [HttpPost("api/[controller]/logout")]
+    public Task Logout()
+    {
+        HttpContext.Response.Cookies.Append("asc_auth_key", "", new CookieOptions 
+        {
+            Expires = DateTimeOffset.UtcNow.AddMinutes(-1)
+        });
+
+        return Task.CompletedTask;
+    }
 }

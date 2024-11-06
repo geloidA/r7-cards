@@ -44,6 +44,8 @@
 </div>
 
 @code {
+    private static bool CanOpenModal = true;
+
     [CascadingParameter(Name = "DetailsModal")] ModalOptions Options { get; set; } = null!;
     [CascadingParameter] IModalService Modal { get; set; } = null!;
     [CascadingParameter] IProjectState State { get; set; } = null!;
@@ -63,6 +65,10 @@
 
     private async Task ShowTaskDetails()
     {
+        if (!CanOpenModal) return;
+
+        CanOpenModal = false;
+
         var parameters = new ModalParameters
         {
             { "Model", Task },
@@ -70,5 +76,7 @@
         };
 
         await Modal.Show<TaskDetailsModal>(parameters, Options).Result.ConfigureAwait(false);
+
+        CanOpenModal = true;
     }
 }

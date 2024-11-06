@@ -41,11 +41,11 @@
             <UserProjectsView Class="w-full" UserProjects="userProjects"
                 MaxHeight="500" />
         </div>
-        <FluentSpacer Width="200"/>
+        <FluentSpacer Width="150"/>
 
         <div @ref="feed" id="feed-content" class="flex flex-col p-3 h-full overflow-auto" style="width: 80%;">
-            <div class="flex gap-3">
-                <div class="flex gap-2" style="width: 60%;">
+            <div class="flex gap-10">
+                <div class="flex gap-2" style="width: 70%;">
                     <div class="font-bold text-lg">Лента</div>
                     <FluentSpacer />
                     <FluentAnchor Href="feedback-board" Appearance="Appearance.Stealth" 
@@ -69,10 +69,10 @@
                         </div>
                     </FluentButton>
                 </div>
-                <div style="width: 40%;"></div>
+                <div style="width: 30%;"></div>
             </div>
-            <div class="w-full flex gap-3 mt-2">
-                <div style="width: 60%;" >
+            <div class="w-full flex gap-10 mt-2">
+                <div style="width: 70%;" >
                     @if (_showMessageBar)
                     {
                         <FluentMessageBar Class="mb-3" Intent="@MessageIntent.Info" 
@@ -92,7 +92,7 @@
                     <FeedView />
                     <AppVersion />
                 </div>
-                <div class="flex flex-col gap-2" style="width: 40%;">
+                <div class="flex flex-col gap-2" style="width: 30%;">
                     <Cardmngr.Pages.HomeComponents.RightSidebar />
                 </div>
             </div>

@@ -13,6 +13,8 @@ using Cardmngr.Application.Clients.Subtask;
 using Blazored.Modal.Services;
 using Cardmngr.Components.Modals.ConfirmModals;
 using Cardmngr.Utils;
+using Cardmngr.Shared.Utils;
+using Cardmngr.Components.TaskAggregate.ModalComponents;
 
 namespace Cardmngr.Components.TaskAggregate.Modals;
 
@@ -20,6 +22,8 @@ public sealed partial class TaskDetailsModal() :
     AddEditModalBase<OnlyofficeTask, TaskUpdateData>(new OnlyofficeTaskUpdateDataEqualityComparer()), 
     IDisposable
 {
+    private TaskTagLabels _taskTagsLabels = null!;
+
     private bool _isDescriptionEditting;
     private bool _showSubtasks;
     private bool _isSubtasksOpen;
@@ -32,10 +36,10 @@ public sealed partial class TaskDetailsModal() :
     [Inject] private ITagColorManager TagColorGetter { get; set; } = null!;
     [Inject] private NotificationHubConnection NotificationHubConnection { get; set; } = null!;
     [Inject] private ISubtaskClient SubtaskClient { get; set; } = null!;
+    [Inject] private IToastService ToastService { get; set; } = null!;
 
     [Parameter] public IProjectState State { get; set; } = null!;
     [Parameter] public int TaskStatusId { get; set; }
-    [Parameter] public List<TaskTag> TaskTags { get; set; } = [];
 
     protected override bool CanBeSaved => !_isDescriptionEditting;
 
@@ -68,16 +72,16 @@ public sealed partial class TaskDetailsModal() :
         submitting = true;
         if (IsAdd)
         {
-            await AddTaskAsync();
+            await Catcher.CatchAsync<HttpRequestException>(AddTaskAsync, ex => ToastService.ShowError(ex.Message));
         }
         else
         {
-            var canceled = await EditTaskAsync();
+            var canceled = await Catcher.CatchAsync<HttpRequestException, bool>(EditTaskAsync, ex => ToastService.ShowError(ex.Message), true);
             if (canceled)
             {
                 submitting = false;
                 return;
-            } 
+            }
         }
 
         SkipConfirmation = true;
@@ -85,10 +89,10 @@ public sealed partial class TaskDetailsModal() :
     }
 
     private async Task AddTaskAsync()
-    {
+    {        
         var created = await TaskClient.CreateAsync(State.Project.Id, Buffer).ConfigureAwait(false);
             
-        var tagsTasks = TaskTags.Select(x => TaskClient.CreateTagAsync(created.Id, x.Name));
+        var tagsTasks = _taskTagsLabels.TaskTags.Select(x => TaskClient.CreateTagAsync(created.Id, x.Name));
         var tags = await Task.WhenAll(tagsTasks).ConfigureAwait(false);
 
         created.Tags = [.. tags];
@@ -133,10 +137,19 @@ public sealed partial class TaskDetailsModal() :
         
         if (answer.Confirmed)
         {
-            foreach (var tag in TaskTags)
+            try
+            {
+                await TaskClient.RemoveAsync(Model!.Id).ConfigureAwait(false);
+            }
+            catch (HttpRequestException ex)
+            {
+                ToastService.ShowError(ex.Message);
+                return;
+            }
+            
+            foreach (var tag in Model.Tags)
                 TagColorGetter.RemoveTag(tag);
 
-            await TaskClient.RemoveAsync(Model!.Id).ConfigureAwait(false);
             State.RemoveTask(Model);
 
             SkipConfirmation = true;
@@ -150,15 +163,20 @@ public sealed partial class TaskDetailsModal() :
 
         if (answer.Confirmed)
         {
-            var deleteTasks = Model!.Subtasks
-                .ToList()
-                .Select(x => 
-                {
-                    State.RemoveSubtask(Model.Id, x.Id);
-                    return SubtaskClient.RemoveAsync(Model.Id, x.Id);
-                });
+            try
+            {
+                var deleteTasks = Model!.Subtasks.Select(x => SubtaskClient.RemoveAsync(Model.Id, x.Id));
+                await Task.WhenAll(deleteTasks).ConfigureAwait(false);
 
-            await Task.WhenAll(deleteTasks).ConfigureAwait(false);
+                foreach (var tag in Model.Subtasks.ToList())
+                {
+                    State.RemoveSubtask(Model.Id, tag.Id);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                ToastService.ShowError(ex.Message);
+            }
         }
     }
 

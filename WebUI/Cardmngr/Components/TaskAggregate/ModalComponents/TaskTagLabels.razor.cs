@@ -3,6 +3,7 @@ using Cardmngr.Domain.Entities;
 using Cardmngr.Services;
 using Cardmngr.Utils;
 using Microsoft.AspNetCore.Components;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.TaskAggregate.ModalComponents;
 
@@ -10,19 +11,25 @@ public partial class TaskTagLabels : ComponentBase
 {
     private bool _popoverOpen;
     private string newTagText = "";
+    private List<TaskTag>? _bufferTags;
     private IList<TaskTag> searchedTags = null!;
     private readonly IEqualityComparer<TaskTag> comparer = new TaskTagNameEqualityComparer();
 
-    [Parameter] public List<TaskTag> TaskTags { get; set; } = null!;
-    [Parameter] public OnlyofficeTask OnlyofficeTask { get; set; } = null!;
-    [Parameter] public bool IsAdd { get; set; }
+    public List<TaskTag> TaskTags => _bufferTags ?? OnlyofficeTask!.Tags;
+    [Parameter] public OnlyofficeTask? OnlyofficeTask { get; set; }
 
     [Inject] ITagColorManager TagColorGetter { get; set; } = null!;
     [Inject] ITaskClient TaskClient { get; set; } = null!;
+    [Inject] IToastService ToastService { get; set; } = null!;
     [Parameter] public bool Disabled { get; set; }
 
     protected override void OnInitialized()
     {
+        if (OnlyofficeTask is null)
+        {
+            _bufferTags = [];
+        }
+
         RefreshState();
         OnSearch("");
     }
@@ -41,11 +48,22 @@ public partial class TaskTagLabels : ComponentBase
 
     private async Task CreateTag()
     {
-        if (CanCreate)
+        if (CanCreate && OnlyofficeTask != null)
         {
-            var created = await TaskClient.CreateTagAsync(OnlyofficeTask.Id, newTagText);
+            TaskTag created;
+
+            try
+            {
+                created = await TaskClient.CreateTagAsync(OnlyofficeTask.Id, newTagText);
+            }
+            catch (HttpRequestException ex)
+            {
+                ToastService.ShowError(ex.Message);
+                return;
+            }
+
             TagColorGetter.GetColor(created);
-            TaskTags?.Add(created);
+            TaskTags.Add(created);
             _popoverOpen = false;
             newTagText = "";
 
@@ -55,9 +73,17 @@ public partial class TaskTagLabels : ComponentBase
 
     private async Task AddTag(TaskTag newTag)
     {
-        if (!IsAdd)
+        if (OnlyofficeTask != null)
         {
-            await TaskClient.CreateTagAsync(OnlyofficeTask.Id, newTag.Name);
+            try
+            {
+                await TaskClient.CreateTagAsync(OnlyofficeTask.Id, newTag.Name);
+            }
+            catch (HttpRequestException ex)
+            {
+                ToastService.ShowError(ex.Message);
+                return;
+            }
         }
 
         TaskTags.Add(newTag);
@@ -70,9 +96,17 @@ public partial class TaskTagLabels : ComponentBase
     {
         if (Disabled) return;
         
-        if (!IsAdd)
+        if (OnlyofficeTask != null)
         {
-            await TaskClient.RemoveTagAsync(tag.Id);
+            try
+            {
+                await TaskClient.RemoveTagAsync(tag.Id);
+            }
+            catch (HttpRequestException ex)
+            {
+                ToastService.ShowError(ex.Message);
+                return;
+            }
         }
 
         TagColorGetter.RemoveTag(tag);

@@ -102,17 +102,20 @@
 .work-item.milestone::before,
 .work-item.milestone::after {
     content: '';
+    box-sizing: border-box;
     position: absolute;
-    width: 2px;
+    width: 10px;
     height: 10px;
     background-color: var(--accent-fill-rest);
-    transform: translateY(-38%);
+    transform: translateY(-11%);
 }
 
 .work-item.milestone::before {
     left: 0;
+    clip-path: polygon(0 0, 0 100%, 100% 0);
 }
 
 .work-item.milestone::after {
     right: 0;
+    clip-path: polygon(0 0, 100% 100%, 100% 0);
 }

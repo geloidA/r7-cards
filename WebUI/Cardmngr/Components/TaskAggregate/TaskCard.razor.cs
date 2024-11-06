@@ -40,8 +40,7 @@ public sealed partial class TaskCard : ComponentBase, IDisposable
         var parameters = new ModalParameters
         {
             { "Model", Task },
-            { "State", State },
-            { "TaskTags", Task.Tags }
+            { "State", State }
         };
 
         var res = await Modal.Show<TaskDetailsModal>(parameters, DetailsModal).Result;
@@ -50,6 +49,8 @@ public sealed partial class TaskCard : ComponentBase, IDisposable
         {
             await _taskDescription.TriggerHeightMeasure();
         }
+
+        Console.WriteLine(Task.Tags.Count);
     }
 
     private void OnMilestoneChanged(EntityChangedEventArgs<Milestone>? args)

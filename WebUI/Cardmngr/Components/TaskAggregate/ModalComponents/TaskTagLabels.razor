@@ -29,7 +29,7 @@
     </Content>
     <Popover>
         <div class="max-h-56 max-w-md w-details-popup flex flex-col justify-center gap-2">
-            @if (!IsAdd)
+            @if (OnlyofficeTask != null)
             {
                 <div class="flex gap-1" style="font-size: small;">
                     <FluentTextField Placeholder="Название тега" 
@@ -46,6 +46,10 @@
                                 @onclick="CreateTag" />
                     </FluentTextField>
                 </div>
+            }
+            else
+            {
+                <div class="text-xs text-info">В режиме создания задачи нельзя добавлять теги</div>
             }
             <div class="overflow-auto flex flex-wrap gap-1 text-xs">
                 @foreach (var tag in searchedTags)

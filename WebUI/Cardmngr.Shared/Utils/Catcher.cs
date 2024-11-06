@@ -38,26 +38,28 @@ public static class Catcher
         }
     }
 
-    public static async Task<TValue> CatchAsync<TException, TValue>(Func<Task<TValue>> func, TValue defaultValue = default!) where TException : Exception
+    public static async Task<TValue> CatchAsync<TException, TValue>(Func<Task<TValue>> func, Action<TException>? handler = null, TValue defaultValue = default!) where TException : Exception
     {
         try
         {
             return await func();
         }
-        catch (TException)
+        catch (TException ex)
         {
+            handler?.Invoke(ex);
             return defaultValue;
         }
     }
 
-    public static async ValueTask<TValue> CatchAsync<TException, TValue>(Func<ValueTask<TValue>> func, TValue defaultValue = default!) where TException : Exception
+    public static async ValueTask<TValue> CatchAsync<TException, TValue>(Func<ValueTask<TValue>> func, Action<TException>? handler = null, TValue defaultValue = default!) where TException : Exception
     {
         try
         {
             return await func();
         }
-        catch (TException)
+        catch (TException ex)
         {
+            handler?.Invoke(ex);
             return defaultValue;
         }
     }

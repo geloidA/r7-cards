@@ -22,6 +22,7 @@ public partial class SubtaskCard : KolComponentBase, IDisposable
     [CascadingParameter] OnlyofficeTask Task { get; set; } = null!;
 
     [Inject] private ISubtaskClient SubtaskClient { get; set; } = null!;
+    [Inject] private IToastService ToastService { get; set; } = null!;
 
     [Parameter, EditorRequired]
     public Subtask Subtask { get; set; } = null!;
@@ -74,8 +75,15 @@ public partial class SubtaskCard : KolComponentBase, IDisposable
 
     private async Task ChangeSubtaskStatus(bool isCompleted)
     {
-        var updated = await SubtaskClient.UpdateSubtaskStatusAsync(Task.Id, Subtask.Id, isCompleted ? Status.Closed : Status.Open);
-        State.UpdateSubtask(updated);
+        try
+        {
+            var updated = await SubtaskClient.UpdateSubtaskStatusAsync(Task.Id, Subtask.Id, isCompleted ? Status.Closed : Status.Open);
+            State.UpdateSubtask(updated);
+        }
+        catch (HttpRequestException e)
+        {
+            ToastService.ShowError(e.Message);
+        }
 
         if (InteractionMode == InteractionMode.Edit)
         {
@@ -86,21 +94,36 @@ public partial class SubtaskCard : KolComponentBase, IDisposable
 
     private async Task DeleteSubtask()
     {
-        await SubtaskClient.RemoveAsync(Task.Id, Subtask.Id);
-        State.RemoveSubtask(Task.Id, Subtask.Id);
+        try
+        {
+            await SubtaskClient.RemoveAsync(Task.Id, Subtask.Id);
+            State.RemoveSubtask(Task.Id, Subtask.Id);
+        }
+        catch (HttpRequestException e)
+        {
+            ToastService.ShowError(e.Message);
+        }
     }
 
     private async Task ChangeSubtask()
     {
-        if (InteractionMode == InteractionMode.Edit)
+        try
         {
-            var updated = await SubtaskClient.UpdateAsync(Task.Id, Subtask.Id, _buffer);
-            State.UpdateSubtask(updated);
+            if (InteractionMode == InteractionMode.Edit)
+            {
+                var updated = await SubtaskClient.UpdateAsync(Task.Id, Subtask.Id, _buffer);
+                State.UpdateSubtask(updated);
+            }
+            else if (InteractionMode == InteractionMode.Add)
+            {
+                var created = await SubtaskClient.CreateAsync(Task.Id, _buffer);
+                State.AddSubtask(Task.Id, created);
+            }
         }
-        else if (InteractionMode == InteractionMode.Add)
+        catch (HttpRequestException e)
         {
-            var created = await SubtaskClient.CreateAsync(Task.Id, _buffer);
-            State.AddSubtask(Task.Id, created);
+            ToastService.ShowError(e.Message);
+            return;
         }
 
         await EndEditMode();

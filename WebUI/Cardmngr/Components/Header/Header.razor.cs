@@ -10,6 +10,7 @@ using Onlyoffice.Api.Extensions;
 using Cardmngr.Components.Header.Modals;
 using Cardmngr.Shared.Extensions;
 using Cardmngr.Utils;
+using Onlyoffice.Api.Logics;
 
 namespace Cardmngr.Components.Header;
 
@@ -19,6 +20,7 @@ public partial class Header : KolComponentBase, IDisposable
     [Inject] public AuthenticationStateProvider AuthenticationState { get; set; } = null!;
     [Inject] public NavigationManager NavigationManager { get; set; } = null!;
     [Inject] public ILocalStorageService LocalStorage { get; set; } = null!;
+    [Inject] public IAuthApiLogic AuthService { get; set; } = null!;
 
     [CascadingParameter] HeaderInteractionService InteractionService { get; set; } = null!;
 
@@ -55,7 +57,7 @@ public partial class Header : KolComponentBase, IDisposable
 
     private async Task LogoutAsync()
     {
-        AuthenticationState.ToCookieProvider().ClearAuthInfo();
+        await AuthService.LogoutAsync();
         await LocalStorage.RemoveItemAsync("isauthenticated");
         NavigationManager.NavigateTo("login");
     }

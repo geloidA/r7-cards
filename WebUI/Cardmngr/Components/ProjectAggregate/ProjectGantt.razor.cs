@@ -173,8 +173,7 @@ public sealed partial class ProjectGantt : ComponentBase, IDisposable
             new ModalParameters
             {
                 { "Model", task },
-                { "State",  GetState(task) },
-                { "TaskTags", task.Tags }
+                { "State",  GetState(task) }
             },
             DetailsModal).Result;
     }

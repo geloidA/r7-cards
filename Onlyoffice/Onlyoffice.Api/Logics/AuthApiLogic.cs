@@ -34,4 +34,10 @@ public class AuthApiLogic(IHttpClientFactory httpClientFactory) : ApiLogicBase(h
 
         return await client.PostAsync("api/authentication", content);
     }
+
+    public async Task LogoutAsync()
+    {
+        using var client = HttpClientFactory.CreateClient("onlyoffice");
+        await client.PostAsync("api/authentication/logout", null);
+    }
 }

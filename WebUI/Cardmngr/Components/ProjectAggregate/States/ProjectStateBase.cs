@@ -78,8 +78,12 @@ public class ProjectStateBase(bool isReadOnly = false) : IProjectState
 
     private void UpdateTask(OnlyofficeTask task, EntityActionType actionType)
     {
-        _tasks.RemoveSingle(x => x.Id == task.Id);
-        task.Tags = _tagsByTaskId.TryGetValue(task.Id, out var tags) ? tags : [];
+        var oldTask = _tasks.Single(x => x.Id == task.Id);
+        _tasks.Remove(oldTask);
+
+        _tagsByTaskId[task.Id] = oldTask.Tags; // user can change tags
+        task.Tags = oldTask.Tags;
+
         _tasks.Add(task);
         OnTasksChanged(actionType, task);
         OnStateChanged();

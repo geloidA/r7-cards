@@ -13,6 +13,8 @@ public interface IAuthApiLogic
     /// <returns>Token that expires in 5 hours</returns>
     Task<HttpResponseMessage> LoginAsync(LoginModel login);
 
+    Task LogoutAsync();
+
     /// <summary>
     /// Get self profile info
     /// </summary>

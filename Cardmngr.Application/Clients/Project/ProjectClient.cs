@@ -146,16 +146,16 @@ public class ProjectClient(IProjectRepository projectRepository,
         }
 
         var resultStatuses = await Catcher.CatchAsync<HttpRequestException, List<OnlyofficeTaskStatus>>(
-            () => statuses is null ? taskStatusRepository.GetAllAsync().ToListAsync(mapper.Map<OnlyofficeTaskStatus>) : ValueTask.FromResult(statuses), []);        
+            () => statuses is null ? taskStatusRepository.GetAllAsync().ToListAsync(mapper.Map<OnlyofficeTaskStatus>) : ValueTask.FromResult(statuses), defaultValue: []);
 
         var team = await Catcher.CatchAsync<HttpRequestException, List<UserProfile>>(
-            () => projectRepository.GetTeamAsync(projectId).ToListAsync(mapper.Map<UserProfile>), []);
+            () => projectRepository.GetTeamAsync(projectId).ToListAsync(mapper.Map<UserProfile>), defaultValue: []);
 
         var project = projectRepository.GetByIdAsync(projectId);
         
         var milestones = await Catcher.CatchAsync<HttpRequestException, List<Domain.Entities.Milestone>>(
             () => milestoneRepository.GetAllByProjectIdAsync(projectId).ToListAsync(mapper.Map<Domain.Entities.Milestone>),
-            []);
+            defaultValue: []);
 
         return new ProjectStateDto
         {

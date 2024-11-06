@@ -83,10 +83,9 @@
                         </InfoItem>
                         <TaskResponsibles Disabled="!CanEdit" />
                         <TaskMilestone Disabled="!CanEdit" />
-                        <TaskTagLabels TaskTags="TaskTags" 
-                                        OnlyofficeTask="Model" 
-                                        Disabled="@(!CanEdit)" 
-                                        IsAdd="IsAdd" />
+                        <TaskTagLabels @ref="_taskTagsLabels"
+                                       OnlyofficeTask="Model" 
+                                       Disabled="@(!CanEdit)" />
                     </div>
                 </Content>
             </DetailsCategory>

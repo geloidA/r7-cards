@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using Onlyoffice.Api.Models;
 using Microsoft.AspNetCore.Components.Authorization;
-using Task = System.Threading.Tasks.Task;
 using System.Text.Json;
 using Cardmngr.Domain.Entities;
 using AutoMapper;
@@ -34,12 +33,6 @@ public class CookieStateProvider(IMapper mapper) : AuthenticationStateProvider
     }
 
     public string this[string claim] => claimsPrincipal.FindFirst(claim)?.Value ?? throw new NullReferenceException($"{claim} property is null");
-
-    public void ClearAuthInfo()
-    {
-        claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
-        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-    }
 
     public string UserId => this[ClaimTypes.NameIdentifier];
 
