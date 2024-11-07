@@ -14,6 +14,9 @@ public partial class FeedProjectMessage : KolComponentBase
 
     [Inject] private ITaskClient TaskClient { get; set; } = null!;
 
+    [Parameter, EditorRequired]
+    public Feed Feed { get; set; } = null!;
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -32,9 +35,6 @@ public partial class FeedProjectMessage : KolComponentBase
             Console.WriteLine(e.Message);
         }        
     }
-
-    [Parameter, EditorRequired]
-    public Feed Feed { get; set; } = null!;
 
     private RenderFragment RenderMessage => RenderMessageWithInfo(_msgTypes[Feed.Value.Item]);
 }

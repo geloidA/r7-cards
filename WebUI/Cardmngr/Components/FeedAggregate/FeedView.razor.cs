@@ -23,7 +23,7 @@ public partial class FeedView : KolComponentBase, IDisposable
     {
         _allFeeds = await FeedClient
             .GetFiltredAsync(FeedFilterBuilder.Instance.Product("projects"))
-            .Where(x => x.Value.Action != 2) // remove task's comment notifications
+            .Where(x => x.Value.Action != 2 && FeedMsgTypes.Types.Any(t => t.Type == x.Value.Item)) // remove task's comment notifications and unsupported feed types
             .ToListAsync().ConfigureAwait(false);
 
         _feedsByProject = GetFilteredFeeds();
