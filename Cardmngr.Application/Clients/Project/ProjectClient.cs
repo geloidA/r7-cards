@@ -25,13 +25,13 @@ public class ProjectClient(IProjectRepository projectRepository,
                 .SortOrder(FilterSortOrders.Desc))
             .ToListAsync(mapper.Map<OnlyofficeTask>);
 
-        var team = projectRepository
-            .GetTeamAsync(projectId)
-            .ToListAsync(mapper.Map<UserProfile>);
+        var team = Catcher.CatchAsync<HttpRequestException, List<UserProfile>>(
+            () => projectRepository.GetTeamAsync(projectId).ToListAsync(mapper.Map<UserProfile>),
+            defaultValue: []);
 
-        var milestones = milestoneRepository
-            .GetAllByProjectIdAsync(projectId)
-            .ToListAsync(mapper.Map<Domain.Entities.Milestone>);
+        var milestones = Catcher.CatchAsync<HttpRequestException, List<Domain.Entities.Milestone>>(
+            () => milestoneRepository.GetAllByProjectIdAsync(projectId).ToListAsync(mapper.Map<Domain.Entities.Milestone>),
+            defaultValue: []);
 
         var project = projectRepository.GetByIdAsync(projectId);
 
