@@ -1,4 +1,4 @@
-﻿<div Class="responsible-view" >
+﻿<div class="py-2" >
     <div class="flex flex-col">
         @{
             var count = 0;
@@ -15,7 +15,7 @@
     </div>
     @if (Responsibles.Count > MaxCount)
     {
-        <span class="flex justify-end" style="margin-right: 2px;">+@(Responsibles.Count - MaxCount)</span>
+        <span>+@(Responsibles.Count - MaxCount)</span>
     }
 </div>
 

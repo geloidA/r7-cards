@@ -81,8 +81,7 @@
     --main-board-bg: var(--neutral-layer-4);
     --col-title-color: var(--neutral-foreground-rest);
     --border-color: color-mix(in srgb, var(--neutral-fill-inverse-rest), transparent 90%);
-    --main-col-bg: var(--neutral-layer-2);
-    --main-card-bg: var(--neutral-layer-1);
+    --main-card-bg: var(--neutral-layer-2);
     --main-responsibles-bg: var(--neutral-layer-2);
 
     --color1: 5, 12, 156;

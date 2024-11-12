@@ -1,5 +1,5 @@
 ﻿<Smooth ShowOnFirstRender Delay="TimeSpan.FromMilliseconds(500)">
-    <div class="task-card @Task.CssDeadline()" @onclick="OpenModal" >
+    <div class="task-card transition-colors duration-200 @Task.CssDeadline()" @onclick="OpenModal" >
         <div class="flex @CssMarginTitle">
             @if (Task.Priority == Priority.High)
             {
@@ -13,6 +13,10 @@
             <TaskDescription @ref="_taskDescription"
                              Description="@Task.Description"
                              Class="max-desc-h" />
+        }     
+        @if (Task.Responsibles.Count > 0)
+        {
+            <ResponsiblesView Responsibles="@Task.Responsibles" ImageSize="20" ShowName="true" MaxCount="2" />
         }
         @if (Task.Subtasks.Count > 0)
         {
@@ -26,10 +30,6 @@
             <MilestoneLabel class="flex justify-end align-baseline me-1" 
                             Task="Task"
                             Milestone="@State.GetMilestone(Task.MilestoneId)" />
-        }
-        @if (Task.Responsibles.Count > 0)
-        {
-            <ResponsiblesView Responsibles="@Task.Responsibles" ImageSize="20" ShowName="true" MaxCount="2" />
         }
         @if (Task.Tags.Count > 0)
         {

@@ -11,6 +11,10 @@
     min-height: 150px;
 }
 
+.board-column .item-container .item .task-card:hover {
+    background-color: var(--neutral-layer-1);
+}
+
 .task-card .title {
     overflow-wrap: break-word;
     word-break: break-word;
