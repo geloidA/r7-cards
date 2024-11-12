@@ -13,13 +13,23 @@ using KolBlazor.Components.Charts.Data;
 using KolBlazor.Components.Charts.Gantt;
 using Microsoft.AspNetCore.Components;
 using Cardmngr.Domain.Enums;
+using Blazored.LocalStorage;
+using Cardmngr.Application.Clients.TaskClient;
+using Onlyoffice.Api.Models;
+using AutoMapper;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 namespace Cardmngr.Components.ProjectAggregate;
 
 public sealed partial class ProjectGantt : ComponentBase, IDisposable
 {
     private GanttChart _chart = null!;
-    private GanttDetalizationLevel _detalizationLevel = GanttDetalizationLevel.Quarter;
+    private GanttDetalizationLevel _detalizationLevel;
+
+    [Inject] private ILocalStorageService LocalStorage { get; set; } = null!;
+    [Inject] private ITaskClient TaskClient { get; set; } = null!;
+    [Inject] private IMapper Mapper { get; set; } = null!;
+    [Inject] private IToastService ToastService { get; set; } = null!;
 
     [CascadingParameter] private IProjectState? State { get; set; }
     [CascadingParameter] private IProjectStateFinder? StateFinder { get; set; }
@@ -34,7 +44,7 @@ public sealed partial class ProjectGantt : ComponentBase, IDisposable
     [Parameter] public EventCallback<GanttChartItem> ItemExpandToggled { get; set; }
     [Parameter] public GanttItemsCreator ItemsCreator { get; set; } = null!;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (Multiple)
         {
@@ -59,6 +69,8 @@ public sealed partial class ProjectGantt : ComponentBase, IDisposable
                 filterableState.TaskFilter.FilterChanged += () => RefreshState(new StateChanged { State = State });
             }
         }
+
+        _detalizationLevel = (await LocalStorage.GetItemAsync<GanttDetalizationLevel?>("gantt-detalization-level")) ?? GanttDetalizationLevel.Quarter;
     }
 
     private string GetItemClass(GanttChartItem item)
@@ -99,6 +111,7 @@ public sealed partial class ProjectGantt : ComponentBase, IDisposable
         if (firstRender)
         {
             Refresh();
+            ScrollToToday();
         }
     }
 
@@ -125,6 +138,32 @@ public sealed partial class ProjectGantt : ComponentBase, IDisposable
         throw new NotImplementedException();
     }
 
+    private async Task OnItemMoved(GanttChartItem item)
+    {
+        if (item.Data is not OnlyofficeTask task)
+        {
+            throw new NotSupportedException();
+        }
+
+        var state = GetState(task);
+
+        var updatedState = Mapper.Map<TaskUpdateData>(task);
+
+        updatedState.StartDate = item.Start;
+        updatedState.Deadline = item.End;
+
+        try
+        {
+            var updated = await TaskClient.UpdateAsync(task.Id, updatedState);
+            state.UpdateTask(updated);
+        }
+        catch (HttpRequestException ex)
+        {
+            ToastService.ShowError(ex.Message);
+            return;
+        }
+    }
+
     private void RefreshState(StateChanged args)
     {
         _chart.RefreshItem(GanttItemsCreator.GetItemKey(args.State));
@@ -140,9 +179,10 @@ public sealed partial class ProjectGantt : ComponentBase, IDisposable
         _chart.ScrollTo(DateTime.Today);
     }
 
-    private void OnDetalizationLevelChanged(GanttDetalizationLevel level)
+    private async Task OnDetalizationLevelChanged(GanttDetalizationLevel level)
     {
         _detalizationLevel = level;
+        await LocalStorage.SetItemAsync("gantt-detalization-level", level);
     }
 
     private static string GetDetalizationLevelText(GanttDetalizationLevel level)
@@ -167,9 +207,9 @@ public sealed partial class ProjectGantt : ComponentBase, IDisposable
         };
     }
 
-    private async Task OpenDetailsTaskModal(OnlyofficeTask task)
+    private Task<ModalResult> OpenDetailsTaskModal(OnlyofficeTask task)
     {
-        await Modal.Show<TaskDetailsModal>(
+        return Modal.Show<TaskDetailsModal>(
             new ModalParameters
             {
                 { "Model", task },
@@ -178,9 +218,9 @@ public sealed partial class ProjectGantt : ComponentBase, IDisposable
             DetailsModal).Result;
     }
 
-    private async Task OpenDetailsMilestoneModal(Milestone milestone)
+    private Task<ModalResult> OpenDetailsMilestoneModal(Milestone milestone)
     {
-        await Modal.Show<MilestoneDetailsModal>(
+        return Modal.Show<MilestoneDetailsModal>(
             new ModalParameters
             {
                 { "Model", milestone },
@@ -189,9 +229,9 @@ public sealed partial class ProjectGantt : ComponentBase, IDisposable
             DetailsModal).Result;
     }
 
-    private async Task OpenDetailsProjectModal(IProjectState state)
+    private Task<ModalResult> OpenDetailsProjectModal(IProjectState state)
     {
-        await Modal.Show<ProjectDetailsModal>(
+        return Modal.Show<ProjectDetailsModal>(
             new ModalParameters { { "State", state } },
             DetailsModal).Result;
     }

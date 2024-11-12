@@ -30,27 +30,27 @@
 }
 else
 {
-    <div class="flex flex-col p-1" style="overflow-y: auto; overflow-x: hidden;">
-        <CascadingValue Value="userId" Name="UserId" IsFixed >
-            <div class="flex flex-col h-full overflow-x-hidden overflow-y-auto gap-2" >
-                @if (allProjects.Count != 0)
-                {
-                    foreach (var project in allProjects)
+    @if (allProjects.Count != 0)
+    {
+        <div class="flex flex-col p-1" style="overflow-y: auto; overflow-x: hidden;">
+            <CascadingValue Value="userId" Name="UserId" IsFixed >
+                <div class="flex flex-col h-full overflow-x-hidden overflow-y-auto gap-2" >
+                    @foreach (var project in allProjects)
                     {
                         <StaticProjectStateView @key="project" ViewModel="project" />
                     }
-                }
-                else if (!_loading)
-                {
-                    @RenderNotFound();
-                }
-                else
-                {
-                    <Loading Width="75" />
-                }
-            </div>
-        </CascadingValue>
-    </div>
+                </div>
+            </CascadingValue>
+        </div>                    
+    }
+    else if (!_loading)
+    {
+        @RenderNotFound();
+    }
+    else
+    {
+        <Loading Width="75" />
+    }
 }
 @* <div class="absolute bottom-0" style="right: 0; margin-bottom: 60px !important; margin-right: 5px;">
     <DashboardWatchManager Projects="allProjects.Select(x => x.ProjectInfo)" />

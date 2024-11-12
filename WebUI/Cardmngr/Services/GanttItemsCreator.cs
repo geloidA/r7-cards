@@ -65,6 +65,7 @@ public class GanttItemsCreator(Dictionary<int, bool> milestoneExpanded)
         {
             Id = GetItemKey(task),
             Data = task,
+            CanManipulate = task.CanEdit,
             Start = task.StartDate ?? task.Created,
             End = task.GetSmartDeadline()
         };    

@@ -8,6 +8,7 @@
     <GanttChart @ref="@_chart" 
         GetItems="GetItems"
         GetItem="GetItem"
+        OnItemMoved="OnItemMoved"
         HighlightRoot="HighlightRoot"
         DayOffset="93"
         TreeGridNestMargin="10"
@@ -97,7 +98,7 @@
             @switch (item.Data)
             {
                 case OnlyofficeTask task:
-                    @RenderTaskRightPart(task)
+                    @RenderTaskRightPart((task, item))
                     break;
                 case Milestone milestone:
                     @RenderMilestoneRightPart(new(milestone, item.Start, item.End))
@@ -116,7 +117,7 @@
                         .Cast<OnlyofficeTask>()))
                     break;
                 case OnlyofficeTask task:
-                    @RenderTaskLeftPart(task)
+                    @RenderTaskLeftPart((task, item))
                     break;
             }
         </LeftItemTemplate>
@@ -176,44 +177,69 @@
         </Smooth>;        
     }
 
-    private RenderFragment<OnlyofficeTask> RenderTaskRightPart = task => @<div
+    private RenderFragment<(OnlyofficeTask Task, GanttChartItem Item)> RenderTaskRightPart = (data) => @<div
         class="item-right-part flex gap-3 text-info items-center">
-        @{ var topOffset = "mt-[5px]"; }
-        @if (task.Responsibles.Count > 0)
+        @if (data.Item is { Dragging: true, DraggingType: not DraggingType.Left})
         {
-            var max = 2;
-            <div class="gap-1 flex">
-                @foreach (var user in task.Responsibles)
-                {
-                    if (max-- == 0) break;
-                    <UserAvatar User="user" Size="20" ShowTooltip />
-                }
-                @if (max < 0)
-                {
-                    <span class="@topOffset">+@(task.Responsibles.Count - 2)</span>
-                }
-            </div>
-            <span>|</span>
-            topOffset = "";
+            switch (data.Item.DraggingType)
+            {
+                case DraggingType.Right:
+                    <div class="p-1 rounded-md text-inverse backdrop-blur-xs bg-layer-2/50">
+                        @($"{data.Item.End:dd MMM}")
+                    </div>
+                    break;
+                case DraggingType.Entire:
+                    <div class="p-1 rounded-md text-inverse backdrop-blur-xs bg-layer-2/50">
+                        @($"{data.Item.Start:dd MMM} - {data.Item.End:dd MMM}")
+                    </div>
+                    break;
+            }
         }
-        <div class="hover:max-w-max max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap @topOffset">@task.Title</div>        
+        else
+        {
+            var topOffset = "mt-[5px]";
+            if (data.Task.Responsibles.Count > 0)
+            {
+                var max = 2;
+                <div class="gap-1 flex">
+                    @foreach (var user in data.Task.Responsibles)
+                    {
+                        if (max-- == 0) break;
+                        <UserAvatar User="user" Size="20" ShowTooltip />
+                    }
+                    @if (max < 0)
+                    {
+                        <span class="@topOffset">+@(data.Task.Responsibles.Count - 2)</span>
+                    }
+                </div>
+                <span>|</span>
+                topOffset = "";
+            }
+            <div class="hover:max-w-max max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap @topOffset">@data.Task.Title</div>
+        }
     </div>;
 
-    private RenderFragment<OnlyofficeTask> RenderTaskLeftPart = task => @<div
-        class="absolute w-max mt-[5px]"
+    private RenderFragment<(OnlyofficeTask Task, GanttChartItem Item)> RenderTaskLeftPart = data => @<div
+        class="absolute w-max"
         style="right: calc(100% + 5px);">
-        @if (task.IsClosed())
+        @if (data.Item is { Dragging: true, DraggingType: DraggingType.Left })
         {
-            <FluentIcon Value="@(new Icons.Regular.Size20.CheckmarkCircle())" Width="16px" Color="Color.Success" />
+            <div class="p-1 self-center rounded-md text-xs text-inverse backdrop-blur-xs bg-layer-2/50">
+                @($"{data.Item.Start:dd MMM}")
+            </div>
+        } 
+        else if (data.Task.IsClosed())
+        {
+            <FluentIcon style="margin-top: 5px;" Value="@(new Icons.Regular.Size20.CheckmarkCircle())" Width="16px" Color="Color.Success" />
         }
-        else if (task.IsDeadlineOut())
+        else if (data.Task.IsDeadlineOut())
         {
-            <FluentIcon Value="@(new Icons.Regular.Size20.Fire())" 
+            <FluentIcon style="margin-top: 5px;" Value="@(new Icons.Regular.Size20.Fire())" 
                 Width="16px" Color="Color.Error" title="Срок истек" />
         }
-        else if (task.IsSevenDaysDeadlineOut())
+        else if (data.Task.IsSevenDaysDeadlineOut())
         {
-            <FluentIcon Value="@(new Icons.Regular.Size20.Warning())" 
+            <FluentIcon style="margin-top: 5px;" Value="@(new Icons.Regular.Size20.Warning())" 
                 Width="16px" Color="Color.Warning" title="Срок скоро истечет" />
         }
     </div>;
@@ -223,12 +249,12 @@
         @<div class="work-item milestone" title="@data.milestone.Title">
             @if (data.item.IsExpanded)
             {
-                <div class="milestone-bg cursor-auto" @onclick:stopPropagation style="height: @(data.item.Children.Count * 46 + 23)px;"></div> 
+                <div class="milestone-bg cursor-auto" @onclick:stopPropagation style="height: @(data.item.Children.Count * 46 + 35)px;"></div>
             } 
         </div>;
 
     private RenderFragment<(Milestone milestone, IEnumerable<OnlyofficeTask> tasks)> RenderMilestoneLeftPart = item => @<div 
-        class="w-max text-xs gap-[2px] flex absolute mt-1"
+        class="w-max text-xs gap-[2px] flex absolute"
         style="right: calc(100% + 5px);">
         @if (item.tasks.Any())
         {
@@ -248,7 +274,7 @@
         }
     </div>;
 
-    private RenderFragment<GanttItem<Milestone>> RenderMilestoneRightPart = item => @<div class="milestone-right-part mt-[5px]">
+    private RenderFragment<GanttItem<Milestone>> RenderMilestoneRightPart = item => @<div class="milestone-right-part">
         <span class="hover:max-w-max max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap text-info">@item.Data.Title</span>
         <DateRangeView StartReadOnly EndReadOnly
             Start="item.Start"

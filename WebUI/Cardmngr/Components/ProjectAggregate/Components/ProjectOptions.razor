@@ -1,21 +1,29 @@
-﻿
-<div id="project-options" 
-    @onclick=@(() => _popoverOpen = !_popoverOpen)
-    class="p-1 hover:bg-neutral-fill-hover rounded-md transition-colors cursor-pointer flex items-center">
-    <FluentIcon Value="@(new Icons.Filled.Size20.Options())" />
+﻿@inject NavigationManager Nav
+
+<div id="project-options" class="flex gap-3" >
+    @if (Nav.Uri.EndsWith(_ganttUri))
+    {
+        @RenderOption((new Icons.Filled.Size24.GanttChart(), _ganttUri, "Режим Ганта"))
+    }
+    else
+    {
+        @RenderOption((new Icons.Regular.Size24.GanttChart(), _ganttUri, "Режим Ганта"))
+    }
+
+    @if (Nav.Uri.EndsWith(_boardUri))
+    {
+        @RenderOption((new Icons.Filled.Size20.GridKanban(), _boardUri, "Режим доски"))
+    }
+    else
+    {
+        @RenderOption((new Icons.Regular.Size20.GridKanban(), _boardUri, "Режим доски"))
+    }
 </div>
 
-<Popover @bind-Open="@_popoverOpen" 
-    AnchorId="project-options"
-    Class="mt-1 p-0 w-52" >
-    <FluentNavMenu>
-        <FluentNavLink Icon="@(new Icons.Regular.Size16.GridKanban())" 
-            Href=@($"project/board?ProjectId={State.Project.Id}") class="text-xs">
-            Доска задач
-        </FluentNavLink>
-        <FluentNavLink Icon="@(new Icons.Regular.Size16.GanttChart())" 
-            Href=@($"project/gantt?ProjectId={State.Project.Id}") class="text-xs">
-            Таймлайн
-        </FluentNavLink>
-    </FluentNavMenu>
-</Popover>
+@code {
+
+    private RenderFragment<(Icon icon, string href, string title)> RenderOption = (option) => 
+        @<a href="@option.href" title="@option.title" class="p-1 transition-colors rounded-md hover:bg-neutral-fill-hover items-center">
+            <FluentIcon Width="20px" Value="@option.icon" />
+        </a>;
+}
