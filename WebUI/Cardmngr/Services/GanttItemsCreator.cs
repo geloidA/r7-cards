@@ -2,6 +2,7 @@ using Cardmngr.Components.ProjectAggregate.Models;
 using Cardmngr.Components.ProjectAggregate.States;
 using Cardmngr.Domain.Entities;
 using Cardmngr.Extensions;
+using Cardmngr.Shared.Extensions;
 using KolBlazor.Components.Charts.Data;
 
 namespace Cardmngr.Services;
@@ -65,7 +66,7 @@ public class GanttItemsCreator(Dictionary<int, bool> milestoneExpanded)
         {
             Id = GetItemKey(task),
             Data = task,
-            CanManipulate = task.CanEdit,
+            CanManipulate = !task.IsClosed() && task.CanEdit,
             Start = task.StartDate ?? task.Created,
             End = task.GetSmartDeadline()
         };    
