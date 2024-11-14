@@ -95,7 +95,7 @@
     --gantt-weekend-bg: var(--neutral-layer-3) !important;
     --today-bg: color-mix(in srgb, var(--accent-fill-rest), transparent 15%) !important;
     --gantt-hover-bg: #71717160 !important;
-    --gantt-odd-item-bg: color-mix(in srgb, var(--neutral-fill-inverse-rest), transparent 95%) !important;
+    --gantt-milestone-bg: color-mix(in srgb, var(--neutral-fill-inverse-rest), transparent 95%) !important;
     --gantt-border-color: var(--border-color) !important;
     --gantt-arrow-color: var(--accent-fill-rest) !important;
     --separator-color: var(--neutral-layer-3) !important;
@@ -448,6 +448,8 @@ ul.contains-task-list {
         @apply items-center flex gap-1;
     }
 
+/* Gantt */
+
 #kol-separator {
     @apply transition-colors duration-300 hover:!bg-layer-2;
 }
@@ -472,4 +474,24 @@ ul.contains-task-list {
 
 .gantt-task-custom-warning:hover {
     background-color: color-mix(in srgb, var(--warning), transparent 60%);
+}
+
+.group .resize-handler::after {
+    @apply opacity-0 transition-opacity duration-300;
+    opacity: 0;
+    display: flex;
+    margin: 16px auto auto auto;
+    content: '';
+    width: 3px;
+    height: 14px;
+    border-radius: 5px;
+    background-color: var(--neutral-layer-3);
+}
+
+.group:hover .resize-handler::after {
+    @apply opacity-100;
+}
+
+.resize-handler:active::after {
+    @apply opacity-100;
 }

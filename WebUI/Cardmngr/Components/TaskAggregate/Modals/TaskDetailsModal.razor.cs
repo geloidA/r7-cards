@@ -30,7 +30,7 @@ public sealed partial class TaskDetailsModal() :
 
     private readonly Guid lockGuid = Guid.NewGuid();
     private Components.Modals.MyBlazored.Offcanvas currentModal = null!;
-    private bool CanEdit => !State.ReadOnly && (Model == null || Model.CanEdit);
+    private bool CanEdit => !State.ReadOnly && (Model == null || (!Model.IsClosed() && Model.CanEdit));
 
     [Inject] private ITaskClient TaskClient { get; set; } = null!;
     [Inject] private ITagColorManager TagColorGetter { get; set; } = null!;

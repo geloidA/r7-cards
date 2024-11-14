@@ -50,7 +50,7 @@
                                 <TaskStatusView State="State" 
                                     TaskStatus="((IOnlyofficeTask)Buffer).Status"
                                     @bind-TaskStatusId="Buffer.TaskStatusId"
-                                    Disabled="@(!CanEdit || IsAdd)" />
+                                    Disabled="@(State.ReadOnly || IsAdd || !Model!.CanEdit)" />
                             </Content>
                         </InfoItem>
                         @if (Model is not null)

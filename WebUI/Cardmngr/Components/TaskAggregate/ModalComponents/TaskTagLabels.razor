@@ -6,7 +6,7 @@
         <div class="group flex gap-2 flex-wrap">
             @foreach (var tag in TaskTags)
             {
-                <TaskTagLabel Editable="@tag.CanEdit" 
+                <TaskTagLabel Editable="@(!Disabled && tag.CanEdit)" 
                             Tag="tag" 
                             Color="TagColorGetter.GetColor(tag)"
                             OnDismiss="RemoveTag" />
