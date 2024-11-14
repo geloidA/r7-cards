@@ -6,7 +6,7 @@ public static class HubConnectionExtensions
 {
     public static async Task SendWithReconnectAsync(this HubConnection connection, string methodName, object? arg)
     {
-        ArgumentNullException.ThrowIfNull(nameof(connection));
+        ArgumentNullException.ThrowIfNull(connection, nameof(connection));
 
         if (connection.State != HubConnectionState.Connected)
         {

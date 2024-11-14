@@ -70,7 +70,7 @@ public class TaskFilterManager : IFilterManager<OnlyofficeTask>
 
     public int RemoveFilters(IEnumerable<IFilter<OnlyofficeTask>> filters, IEqualityComparer<IFilter>? comparer = null)
     {
-        ArgumentNullException.ThrowIfNull(nameof(filters));
+        ArgumentNullException.ThrowIfNull(filters, nameof(filters));
 
         comparer ??= new FilterTypeEqualityComparer();
 
