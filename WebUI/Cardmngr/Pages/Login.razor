@@ -30,12 +30,15 @@
             <FluentValidationValidator />
             <div class="flex flex-col gap-4">
                 <div class="flex flex-col">
-                    <FluentTextField id="UserName" @bind-Value="loginData.UserName" Placeholder="Почта" />
+                    <FluentTextField id="UserName" @bind-Value="loginData.UserName" Placeholder="Почта"
+                        Appearance="FluentInputAppearance.Filled"
+                        TextFieldType="TextFieldType.Email" />
                     <FluentValidationMessage For="() => loginData.UserName" />
                 </div>
 
                 <div class="flex flex-col">
                     <FluentTextField id="Password" TextFieldType="@(showPassword ? TextFieldType.Text : TextFieldType.Password)"
+                                    Appearance="FluentInputAppearance.Filled"
                                     @bind-Value="loginData.Password" Immediate Placeholder="Пароль">
                         <FluentIcon Slot="end" Value="ShowPasswordIcon" 
                                     @onclick="() => showPassword = !showPassword" />

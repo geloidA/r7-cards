@@ -35,6 +35,7 @@
                         OptionText="x => x.Title"
                         MaximumOptionsSearch="100"
                         OnOptionsSearch="OnProjectSearch"                        
+                        Appearance="FluentInputAppearance.Filled"
                         @bind-SelectedOptions="reportRequest.Projects"
                         IconSearch="@(new Icons.Regular.Size20.ProjectionScreen())" >
 
@@ -55,6 +56,7 @@
                             OnOptionsSearch="OnUserSearch"
                             OptionText="x => x.DisplayName"
                             Disabled="reportRequest.Group.Any()"
+                            Appearance="FluentInputAppearance.Filled"
                             @bind-SelectedOptions="reportRequest.Responsibles"
                             IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())" >
 
@@ -74,6 +76,7 @@
                             MaximumSelectedOptions="1"
                             MaximumOptionsSearch="100"
                             OnOptionsSearch="OnGroupSearch"
+                            Appearance="FluentInputAppearance.Filled"
                             @bind-SelectedOptions="reportRequest.Group"
                             IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())" >
 

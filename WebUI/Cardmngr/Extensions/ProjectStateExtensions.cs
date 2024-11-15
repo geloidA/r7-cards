@@ -9,16 +9,16 @@ public static class ProjectStateExtensions
 {
     public static IEnumerable<OnlyofficeTask> GetMilestoneTasks(this IProjectStateViewer projectState, Milestone milestone)
     {
-        var tasks = projectState is IFilterableProjectState filterableState
-            ? filterableState.FilteredTasks()
-            : projectState.Tasks;
-
-        return tasks.Where(x => x.MilestoneId == milestone.Id);
+        return GetMilestoneTasks(projectState, milestone.Id);
     }
 
     public static IEnumerable<OnlyofficeTask> GetMilestoneTasks(this IProjectStateViewer projectState, int milestoneId)
     {
-        return projectState.Tasks.Where(x => x.MilestoneId == milestoneId);
+        var tasks = projectState is IFilterableProjectState filterableState
+            ? filterableState.FilteredTasks()
+            : projectState.Tasks;
+
+        return tasks.Where(x => x.MilestoneId == milestoneId);
     }
 
     /// <summary>

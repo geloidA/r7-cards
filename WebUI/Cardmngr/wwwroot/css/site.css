@@ -58,7 +58,7 @@
     }
 
     table {
-        @apply w-full my-3 rounded-lg border border-disabled border-spacing-0;
+        @apply w-full my-3 rounded-lg border border-layer-4 border-spacing-0;
     }
 
     th, td {
@@ -95,6 +95,7 @@
     --gantt-weekend-bg: var(--neutral-layer-3) !important;
     --today-bg: color-mix(in srgb, var(--accent-fill-rest), transparent 15%) !important;
     --gantt-hover-bg: #71717160 !important;
+    --gantt-odd-item-bg: color-mix(in srgb, var(--neutral-fill-inverse-rest), transparent 95%) !important;
     --gantt-milestone-bg: color-mix(in srgb, var(--neutral-fill-inverse-rest), transparent 95%) !important;
     --gantt-border-color: var(--border-color) !important;
     --gantt-arrow-color: var(--accent-fill-rest) !important;
@@ -166,11 +167,15 @@ article {
     @apply bg-layer-2;
 }
 
-.my-offcanvas-right {
+.my-offcanvas.round {
+    @apply m-4 rounded-lg bg-layer-2/50 backdrop-blur-2xl;
+}
+
+.my-offcanvas.right {
     @apply rounded-l-lg;
 }
 
-.my-offcanvas-left {
+.my-offcanvas.left {
     @apply rounded-r-lg;
 }
 
@@ -183,14 +188,14 @@ article {
     right: 0;
     width: 400px;
     border-left: 1px solid rgba(0, 0, 0, .2);
-    transform: translateX(100%);
+    transform: translateX(110%);
 }
 .offcanvas-start {
     top: 0;
     left: 0;
     width: 400px;
     border-right: 1px solid rgba(0, 0, 0, .2);
-    transform: translateX(-100%);
+    transform: translateX(-110%);
 }
 .offcanvas-header {
     @apply flex justify-between p-4;
@@ -206,7 +211,7 @@ article {
 }
 
 .offcanvas-backdrop.show {
-    @apply !opacity-50;
+    @apply !opacity-25;
 }
 .offcanvas-backdrop.fade {
     @apply opacity-0;
@@ -346,11 +351,11 @@ a:hover {
 }
 
 .editor-toolbar.fullscreen {
-    background: var(--neutral-layer-2) !important;
+    background: transparent !important;
 }
 
 .CodeMirror {
-    background: var(--neutral-layer-2) !important;
+    background: transparent !important;
     color: var(--neutral-foreground-rest) !important;
 }
 

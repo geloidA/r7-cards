@@ -24,7 +24,7 @@
             <FluentEditForm Model="reportRequest" >
                 <div class="flex flex-col">
                     <div class="flex flex-col gap-3">
-                        <FluentAutocomplete Placeholder="Все"
+                        <FluentAutocomplete Placeholder="Все" Appearance="FluentInputAppearance.Filled"
                             OptionText="@(p => p.Title)" Label="Проект:"
                             OnOptionsSearch="OnProjectSearch" AutoComplete="off" style="max-width: 500px;"
                             TOption="Project" MaximumOptionsSearch="100"
@@ -41,6 +41,7 @@
 
                         <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.PersonLightbulb())"
                             TOption="UserInfo" Placeholder="Все" AutoComplete="off"
+                            Appearance="FluentInputAppearance.Filled"
                             @bind-SelectedOptions="reportRequest.Creators"
                             MaximumOptionsSearch="100" Label="Автор:" style="max-width: 500px;"
                             OptionText="@(u => u.DisplayName)"
@@ -48,6 +49,7 @@
 
                         <FluentAutocomplete IconSearch="@(new Icons.Regular.Size20.Person())"
                             TOption="UserInfo" Placeholder="Все" AutoComplete="off"
+                            Appearance="FluentInputAppearance.Filled"
                             @bind-SelectedOptions="reportRequest.Responsibles"
                             MaximumOptionsSearch="100" Label="Ответственный:"
                             OptionText="@(u => u.DisplayName)" style="max-width: 500px;"
@@ -67,6 +69,7 @@
 
                         <FluentCombobox 
                             Items="statusTypes"
+                            Appearance="Appearance.Filled"
                             Disabled="reportRequest.OnlyDeadline"
                             OptionText="s => s.GetDesc()"
                             Label="Статус задач" style="max-width: 500px;" 

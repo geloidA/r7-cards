@@ -1,13 +1,13 @@
 ﻿@inherits KolComponentBase
 
-<div @ref="@_elementRef" class="relative" >
+<div @ref="@_elementRef" class="relative group/desc" >
     <MarkdownSection Content="@Description"
                     Class="@Class"
                     Style="@CssStyleResult" />
     @if (_hasMoreText)
     {
-        <div class="absolute flex justify-center group bottom-0 h-6 w-full" >
-             <div class="group-hover:opacity-100 p-1 opacity-0 transition-opacity rounded-full w-5 h-5 bg-layer-2"
+        <div class="absolute flex justify-center bottom-0 h-6 w-full" >
+             <div class="group-hover/desc:opacity-100 p-1 opacity-0 transition-opacity rounded-full w-5 h-5 bg-layer-2/50 backdrop-blur-sm"
                   @onclick:stopPropagation
                   title="@(_showMore ? "Скрыть" : "Показать все")"
                   @onclick="ToggleShowMore" >

@@ -151,6 +151,7 @@ public sealed partial class ProjectGantt : ComponentBase, IDisposable
 
         updatedState.StartDate = item.Start;
         updatedState.Deadline = item.End;
+        updatedState.Status = null;
 
         try
         {

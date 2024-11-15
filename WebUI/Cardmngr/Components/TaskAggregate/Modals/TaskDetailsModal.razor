@@ -9,7 +9,7 @@
 <Offcanvas @ref="currentModal" 
            Width="650" 
            Placement="MyOffcanvasPlacement.End" 
-           Class="my-offcanvas my-offcanvas-right"
+           Class="my-offcanvas round"
            OnClose="ShowCloseConfirm" >
 
     <FluentEditForm Model="Buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown" >
@@ -93,7 +93,7 @@
             <div class="flex justify-end select-none">
                 <div class="flex flex-row">
                     <FluentButton Type="ButtonType.Submit" Class="font-bold" Appearance="Appearance.Outline"
-                                Disabled="!CanEdit" Loading="submitting" >
+                                Disabled="@(State.ReadOnly || Model is { CanEdit: false })" Loading="submitting" >
                         @SubmitText
                     </FluentButton>
                     @if(!IsAdd)

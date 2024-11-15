@@ -1,7 +1,7 @@
 ﻿@using Microsoft.FluentUI.AspNetCore.Components.Extensions
 
 <Offcanvas ShowCloseBtn="false" Width="300"
-    Class="my-offcanvas my-offcanvas-right" Placement="MyOffcanvasPlacement.End" >
+    Class="my-offcanvas right" Placement="MyOffcanvasPlacement.End" >
     <OffcanvasHeader>
         <span class="font-bold text-xl gap-2 flex items-center select-none">
             <FluentIcon Value="@(new Icons.Regular.Size24.Settings())" />
@@ -17,11 +17,13 @@
             <FluentGridItem>
                 <FluentSelect Label="Тема" OptionText="GetThemeModeLabel"
                             Items="@(Enum.GetValues<DesignThemeModes>())"
+                            Appearance="Appearance.Filled"
                             @bind-SelectedOption="@Mode" />
             </FluentGridItem>
 
             <FluentGridItem>
                 <FluentSelect Label="Цвет" Height="250px"
+                            Appearance="Appearance.Filled"
                             Items="@(Enum.GetValues<OfficeColor>().Select(i => (OfficeColor?)i))"
                             @bind-SelectedOption="@OfficeColor">
                     <OptionTemplate>  

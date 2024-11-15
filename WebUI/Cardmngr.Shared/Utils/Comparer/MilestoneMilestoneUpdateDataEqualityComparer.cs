@@ -7,7 +7,16 @@ public class MilestoneMilestoneUpdateDataEqualityComparer : IEqualityComparer<Mi
 {
     public bool Equals(Milestone? x, MilestoneUpdateData? y)
     {
-        if (x == null || y == null) return false;
+        if (y == null) return false;
+
+        if (x == null)
+        {
+            return y.Title == "Новая веха" &&
+                   string.IsNullOrEmpty(y.Description) &&
+                   y.Deadline == null &&
+                   y.Responsible == null;
+        }
+
         return x.Description == y.Description &&
             x.Title == y.Title &&
             x.IsKey == y.IsKey &&

@@ -1,9 +1,9 @@
-﻿<Offcanvas Class="my-offcanvas my-offcanvas-left" Width="550">
+﻿<Offcanvas Class="my-offcanvas round" Width="550">
     <OffcanvasHeader Class="py-1 flex flex-col" >
         <StatusBar Created="State.Project.Created"
                    Updated="State.Project.Updated" />
         <div class="flex flex-row self-start mb-2 w-full">
-            <span class="self-center w-75">@State.Project.Title</span>
+            <span class="self-center w-75 font-bold text-sm">@State.Project.Title</span>
             @if (State.Project.IsPrivate)
             {
                 <div class="ms-1 self-center">
@@ -64,8 +64,7 @@
                         <Content>
                             <div class="w-fit">
                                 <div class="flex gap-1 text-xs py-0 px-1 items-center rounded-full hover:bg-layer-1 transition-colors">
-                                    <UserAvatar Style="padding-top: 0px !important; padding-bottom: 0px !important;" 
-                                                User="@State.Project.Responsible" 
+                                    <UserAvatar User="@State.Project.Responsible" 
                                                 Size="20" 
                                                 ShowName />
                                 </div>

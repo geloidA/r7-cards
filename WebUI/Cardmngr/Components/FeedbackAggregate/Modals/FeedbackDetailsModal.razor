@@ -6,7 +6,7 @@
 {
     <Offcanvas @ref="currentModal" 
                Placement="MyOffcanvasPlacement.End" 
-               Class="my-offcanvas my-offcanvas-right" 
+               Class="my-offcanvas round" 
                OnClose="ShowCloseConfirm" >
         <EditForm Model="Buffer" OnValidSubmit="SubmitAsync" @onkeydown="HandleKeyDown">
             <FluentValidationValidator />
