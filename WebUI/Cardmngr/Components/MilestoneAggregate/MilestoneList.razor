@@ -6,7 +6,7 @@
             <div @key="milestone.Id" style="border-color: var(--gantt-border-color);" @onclick="() => ShowModal(milestone)"
                  class="flex flex-row gap-2 items-center border rounded-md p-2 hover:bg-neutral-fill-hover transition-colors cursor-pointer select-none @GetStatusCss(milestone)" 
                  >
-                <FluentIcon Value="@(new MyIcons.Size16.Milestone())" Color="Color.Info" class="min-w-4" />
+                <FluentIcon Value="@(new MyIcons.Size20.MilestoneRhomb())" Color="Color.Info" />
                 <div title="@milestone.Title" class="max-w-52 min-w-52 overflow-hidden text-nowrap text-ellipsis 
                     @(milestone.IsClosed() ? " line-through" : "")">@milestone.Title</div>
                 <FluentSpacer Width="10" />

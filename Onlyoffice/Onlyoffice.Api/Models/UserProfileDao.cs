@@ -25,10 +25,10 @@ public class UserProfileDto : IUser, IEntityDto<string?>
     public bool IsOwner { get; init; }
     public bool IsSso { get; init; }
     public string? AvatarSmall { get; set; }
-    public int QuotaLimit { get; init; }
-    public int UsedSpace { get; init; }
-    public int DocsSpace { get; init; }
-    public int MailSpace { get; init; }
-    public int TalkSpace { get; init; }
+    public long QuotaLimit { get; init; }
+    public long UsedSpace { get; init; }
+    public long DocsSpace { get; init; }
+    public long MailSpace { get; init; }
+    public long TalkSpace { get; init; }
     public string? ProfileUrl { get; set; }
 }

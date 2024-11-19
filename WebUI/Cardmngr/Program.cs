@@ -29,7 +29,7 @@ builder.Services
     .AddBlazoredModal()
     .AddProjectsInfo()
     .AddKolBlazor()
-    .AddFluentUIComponents()
+    .AddFluentUIComponents(opt => opt.ValidateClassNames = false)
     .AddNotifications()
     .AddReports()
     .AddCascadingAuthenticationState()

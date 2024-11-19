@@ -5,7 +5,7 @@ namespace Cardmngr.Utils;
 public static class MyIcons
 {
     public class CardLogo : Icon { public CardLogo() : base("CardLogo", IconVariant.Regular, IconSize.Size32, 
-        @"<svg width=""32"" height=""32"" version=""1.1"" viewBox=""0 0 32 32"" xmlns=""http://www.w3.org/2000/svg"">
+        @"<svg xmlns=""http://www.w3.org/2000/svg"" version=""1.1"" viewBox=""0 0 32 32"">
  <g transform=""matrix(.76211 -.069432 .071761 .73731 -113.63 -122.67)"">
   <path transform=""rotate(-15.984,113.41,60.603)"" x=""95.779121"" y=""191.59917"" width=""20.460125"" height=""32.187824"" d=""m97.631 191.6h16.756a1.8521 1.8521 45 0 1 1.8521 1.8521v28.484a1.8521 1.8521 135 0 1-1.8521 1.8521h-16.756a1.8521 1.8521 45 0 1-1.8521-1.8521v-28.484a1.8521 1.8521 135 0 1 1.8521-1.8521z"" fill=""#402e7a"" fill-rule=""evenodd"" stroke-width=""1.4611"" style=""paint-order:stroke fill markers""/>
  </g>
@@ -27,11 +27,18 @@ public static class MyIcons
 
     public class Size16
     {
-        public class Milestone : Icon { public Milestone() : base("Milestone", IconVariant.Regular, IconSize.Size16, "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7.75 0a.75.75 0 0 1 .75.75V3h3.634c.414 0 .814.147 1.13.414l2.07 1.75a1.75 1.75 0 0 1 0 2.672l-2.07 1.75a1.75 1.75 0 0 1-1.13.414H8.5v5.25a.75.75 0 0 1-1.5 0V10H2.75A1.75 1.75 0 0 1 1 8.25v-3.5C1 3.784 1.784 3 2.75 3H7V.75A.75.75 0 0 1 7.75 0Zm4.384 8.5a.25.25 0 0 0 .161-.06l2.07-1.75a.248.248 0 0 0 0-.38l-2.07-1.75a.25.25 0 0 0-.161-.06H2.75a.25.25 0 0 0-.25.25v3.5c0 .138.112.25.25.25h9.384Z\"></path></svg>") { } }
+        public class Milestone : Icon { public Milestone() : base("Milestone", IconVariant.Regular, IconSize.Size16, "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"><path d=\"M7.75 0a.75.75 0 0 1 .75.75V3h3.634c.414 0 .814.147 1.13.414l2.07 1.75a1.75 1.75 0 0 1 0 2.672l-2.07 1.75a1.75 1.75 0 0 1-1.13.414H8.5v5.25a.75.75 0 0 1-1.5 0V10H2.75A1.75 1.75 0 0 1 1 8.25v-3.5C1 3.784 1.784 3 2.75 3H7V.75A.75.75 0 0 1 7.75 0Zm4.384 8.5a.25.25 0 0 0 .161-.06l2.07-1.75a.248.248 0 0 0 0-.38l-2.07-1.75a.25.25 0 0 0-.161-.06H2.75a.25.25 0 0 0-.25.25v3.5c0 .138.112.25.25.25h9.384Z\"></path></svg>") { } }
+        public class MilestoneRhomb : Icon { public MilestoneRhomb() : base("MilestoneRhomb", IconVariant.Regular, IconSize.Size16, "<svg width=\"17\"  xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 15 14\"><path fill-rule=\"evenodd\" d=\"M4.97 7.35a.5.5 0 0 1 0-.7l2.48-2.49c.2-.2.52-.2.71 0l2.49 2.49c.2.2.2.5 0 .7L8.16 9.84a.5.5 0 0 1-.7 0zm2.84.72L6.74 7 7.8 5.93 8.88 7z\" clip-rule=\"evenodd\"></path><path fill-rule=\"evenodd\" d=\"M1.44 8.41a2 2 0 0 1 0-2.82L6.4.64a2 2 0 0 1 2.83 0l4.95 4.95a2 2 0 0 1 0 2.82l-4.95 4.95a2 2 0 0 1-2.83 0zM2.5 6.65 7.45 1.7c.2-.2.52-.2.71 0l4.95 4.95c.2.2.2.5 0 .7L8.16 12.3a.5.5 0 0 1-.7 0L2.5 7.35a.5.5 0 0 1 0-.7\" clip-rule=\"evenodd\"></path></svg>") { } }
     }
 
     public class Size20
     {
-        public class Milestone : Icon { public Milestone() : base("Milestone", IconVariant.Regular, IconSize.Size20, "<svg width=\"20\" height=\"20\" viewBox=\"0 0 16 16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7.75 0a.75.75 0 0 1 .75.75V3h3.634c.414 0 .814.147 1.13.414l2.07 1.75a1.75 1.75 0 0 1 0 2.672l-2.07 1.75a1.75 1.75 0 0 1-1.13.414H8.5v5.25a.75.75 0 0 1-1.5 0V10H2.75A1.75 1.75 0 0 1 1 8.25v-3.5C1 3.784 1.784 3 2.75 3H7V.75A.75.75 0 0 1 7.75 0Zm4.384 8.5a.25.25 0 0 0 .161-.06l2.07-1.75a.248.248 0 0 0 0-.38l-2.07-1.75a.25.25 0 0 0-.161-.06H2.75a.25.25 0 0 0-.25.25v3.5c0 .138.112.25.25.25h9.384Z\"></path></svg>") { } }
+        public class Milestone : Icon { public Milestone() : base("Milestone", IconVariant.Regular, IconSize.Size20, "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"><path d=\"M7.75 0a.75.75 0 0 1 .75.75V3h3.634c.414 0 .814.147 1.13.414l2.07 1.75a1.75 1.75 0 0 1 0 2.672l-2.07 1.75a1.75 1.75 0 0 1-1.13.414H8.5v5.25a.75.75 0 0 1-1.5 0V10H2.75A1.75 1.75 0 0 1 1 8.25v-3.5C1 3.784 1.784 3 2.75 3H7V.75A.75.75 0 0 1 7.75 0Zm4.384 8.5a.25.25 0 0 0 .161-.06l2.07-1.75a.248.248 0 0 0 0-.38l-2.07-1.75a.25.25 0 0 0-.161-.06H2.75a.25.25 0 0 0-.25.25v3.5c0 .138.112.25.25.25h9.384Z\"></path></svg>") { } }
+        public class MilestoneRhomb : Icon { public MilestoneRhomb() : base("MilestoneRhomb", IconVariant.Regular, IconSize.Size20, "<svg width=\"21\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 15 14\"><path fill-rule=\"evenodd\" d=\"M4.97 7.35a.5.5 0 0 1 0-.7l2.48-2.49c.2-.2.52-.2.71 0l2.49 2.49c.2.2.2.5 0 .7L8.16 9.84a.5.5 0 0 1-.7 0zm2.84.72L6.74 7 7.8 5.93 8.88 7z\" clip-rule=\"evenodd\"></path><path fill-rule=\"evenodd\" d=\"M1.44 8.41a2 2 0 0 1 0-2.82L6.4.64a2 2 0 0 1 2.83 0l4.95 4.95a2 2 0 0 1 0 2.82l-4.95 4.95a2 2 0 0 1-2.83 0zM2.5 6.65 7.45 1.7c.2-.2.52-.2.71 0l4.95 4.95c.2.2.2.5 0 .7L8.16 12.3a.5.5 0 0 1-.7 0L2.5 7.35a.5.5 0 0 1 0-.7\" clip-rule=\"evenodd\"></path></svg>") { } }
+    }
+
+    public class Size24
+    {
+        public class MilestoneRhomb : Icon { public MilestoneRhomb() : base("MilestoneRhomb", IconVariant.Regular, IconSize.Size24, "<svg width=\"25\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 15 14\"><path fill-rule=\"evenodd\" d=\"M4.97 7.35a.5.5 0 0 1 0-.7l2.48-2.49c.2-.2.52-.2.71 0l2.49 2.49c.2.2.2.5 0 .7L8.16 9.84a.5.5 0 0 1-.7 0zm2.84.72L6.74 7 7.8 5.93 8.88 7z\" clip-rule=\"evenodd\"></path><path fill-rule=\"evenodd\" d=\"M1.44 8.41a2 2 0 0 1 0-2.82L6.4.64a2 2 0 0 1 2.83 0l4.95 4.95a2 2 0 0 1 0 2.82l-4.95 4.95a2 2 0 0 1-2.83 0zM2.5 6.65 7.45 1.7c.2-.2.52-.2.71 0l4.95 4.95c.2.2.2.5 0 .7L8.16 12.3a.5.5 0 0 1-.7 0L2.5 7.35a.5.5 0 0 1 0-.7\" clip-rule=\"evenodd\"></path></svg>") { } }
     }
 }

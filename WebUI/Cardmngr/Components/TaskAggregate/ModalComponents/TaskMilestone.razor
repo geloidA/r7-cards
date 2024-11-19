@@ -1,6 +1,6 @@
 ﻿<InfoItem @bind-PopoverOpen="@_popoverOpen"
           Title="Веха" Editable="!Disabled"
-          Icon="new MyIcons.Size20.Milestone()" >
+          Icon="new MyIcons.Size20.MilestoneRhomb()" >
     <Content>
         <div class="w-fit">
             @if (_selectedMilestone is null)
@@ -40,7 +40,7 @@
                     <li class="even:bg-neutral-fill-hover flex gap-2 first:rounded-t-lg last:rounded-b-lg
                         items-center cursor-pointer p-1 text-xs"
                         @onclick="() => SelectMilestone(milestone)" >
-                        <FluentIcon Value="@(new MyIcons.Size16.Milestone())"/>
+                        <FluentIcon Value="@(new MyIcons.Size16.MilestoneRhomb())"/>
                         <span>@milestone.Title</span>
                     </li>
                 }

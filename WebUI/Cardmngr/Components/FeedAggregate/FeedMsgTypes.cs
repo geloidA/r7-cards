@@ -24,7 +24,7 @@ public static class FeedMsgTypes
     public static readonly FeedMsgType Milestone = new(
         "milestone",
         "Вехи",
-        new MyIcons.Size20.Milestone(),
+        new MyIcons.Size20.MilestoneRhomb(),
         Color.Neutral,
         "Добавлена(ы) веха(и)",
         "Добавление вех");
