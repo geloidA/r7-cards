@@ -39,7 +39,7 @@ opt.Listen(host, address.Port, listenOptions =>
 
 # Клиентское приложение
 
-Приложение использует css-движок [Tailwindcss](https://tailwindcss.com/docs/), поэтому для изменения стилей в приложении необходимо его запустить:
+Приложение использует css-фреймворк [Tailwindcss](https://tailwindcss.com/docs/), поэтому для изменения стилей в приложении необходимо его запустить:
 
 ```bash
 npx tailwindcss -i wwwroot/css/site.css -o wwwroot/css/site.min.css -w
@@ -60,7 +60,7 @@ npx tailwindcss -i wwwroot/css/site.css -o wwwroot/css/site.min.css -w
 
 1. Удостоверится в работающем Onlyoffice/R7-Сервере и правильности адресов, указанных в файлах-конфигурациях;
 2. Запустить команду `dotnet watch` в проекте [Cardmngr.AppHost](/Cardmngr.AppHost);
-3. Запустить css-движок из директории `WebUI/Cardmngr/`.
+3. Запустить css-фреймворк из директории `WebUI/Cardmngr/`.
 
 Процесс разработки оставляет желать лучшего, но как настроить его лучше я не знаю...
 
